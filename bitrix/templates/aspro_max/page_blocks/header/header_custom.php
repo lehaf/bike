@@ -16,7 +16,7 @@ $logoClass = ($arTheme['COLORED_LOGO']['VALUE'] !== 'Y' ? '' : ' colored');
 $bLongHeader2 = true;
 $dopClass = 'wides_menu smalls big_header';
 ?>
-<div class="header-wrapper fix-logo header-v27">
+<div class="header-wrapper fix-logo header-v27 new-header">
 	<div class="logo_and_menu-row showed icons_top">
 		<div class="maxwidth-theme wides logo-row icons_bottom">
 				<div class="header__sub-inner">
