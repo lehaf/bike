@@ -1,6 +1,6 @@
 <?if(!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) die();?>
 <?
-\Bitrix\Main\Page\Asset::getInstance()->addCss(SITE_TEMPLATE_PATH . "/css/header/header_custom.css");
+\Bitrix\Main\Page\Asset::getInstance()->addCss(SITE_TEMPLATE_PATH . "/css/header/header_custom.css", ['GROUP' => 1000]);
 
 global $arTheme, $arRegion, $bLongHeader2, $dopClass;
 
@@ -24,9 +24,9 @@ $dopClass = 'wides_menu smalls big_header';
 						<div class="logo<?=$logoClass?>">
 							<?=CMax::ShowBufferedLogo();?>
 						</div>
-					</div>	
+					</div>
 					<div class="content-block no-area header__right-part minwidth0">
-					
+
 						<div class="subtop lines-block header__top-part items-wrapper top-block top-block-v1">
 							<?if($bIncludeRegionsList):?>
 								<div class="header__top-item">
@@ -62,7 +62,7 @@ $dopClass = 'wides_menu smalls big_header';
 										false
 									);?>
 								</div>
-							</div>	
+							</div>
 
 							<div class="right-icons  header__top-item logo_and_menu-row showed icons_top">
 								<div class="line-block line-block--40 line-block--40-1200">
@@ -99,7 +99,7 @@ $dopClass = 'wides_menu smalls big_header';
 											<?=CMax::showCabinetLink(true, true, 'big');?>
 										</div>
 									</div>
-								</div>	
+								</div>
 							</div>
 						</div>
 						<div class="subcontent">
@@ -131,11 +131,11 @@ $dopClass = 'wides_menu smalls big_header';
 									</div>
 								</div>
 							</div>
-						</div>	
+						</div>
 					</div>
 				</div>
 			<div class="lines-row"></div>
 		</div>
-		
+
 	</div>
 </div>
