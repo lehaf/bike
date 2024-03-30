@@ -1,0 +1,80 @@
+.header__main-part{
+  gap: 44px;
+  background: var(--theme-base-color);
+}
+
+.add-announcement{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-shrink: 0;
+  padding: 18px 25px;
+  border-radius: 51px;
+  background: linear-gradient(112.48deg, rgb(48, 169, 96) 13.345%,rgb(55, 199, 112) 99.515%);
+  transition: .3s;
+  text-decoration: none;
+  color: rgb(255, 255, 255);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.add-announcement:hover{
+  background: linear-gradient(244.29deg, rgb(55, 199, 113) 4.68%,rgb(55, 199, 112) 85.461%);
+  color: rgb(255, 255, 255);
+}
+
+.smalls .fix-logo .logo_and_menu-row .logo-row .logo{
+  width: 177px;
+  height: 54px;
+  line-height: 54px;
+  padding-left: 0;
+}
+
+.subcontent .subbottom .menu .mega-menu table td .wrap>a,
+.long_banner .header_wrap:not(.light-menu-color) .logo_and_menu-row .mega-menu table td .wrap>a{
+  color: rgb(255, 255, 255) !important;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 19px;
+  text-align: left;
+  text-transform: uppercase;
+  padding: 0 28px 0 0;
+}
+
+/*
+.subcontent .subbottom .menu .mega-menu table td .wrap>a {
+  padding: 0 28px 0 0 !important;
+}*/
+
+._right-menu{
+  display: flex;
+  gap: 27px;
+}
+
+.logo_and_menu-row .basket-link:not(.has_prices) .title{
+  color: rgb(255, 255, 255);
+  font-size: 14px !important;
+  font-weight: 400;
+  line-height: 19px;
+  text-transform: inherit;
+  letter-spacing: 0;
+}
+
+body .basket-link .js-basket-block{
+  display: flex !important;
+  align-items: center;
+}
+
+.logo_and_menu-row .basket-link{
+  text-decoration: none;
+}
+
+.favorite-icon path,
+.compare-icon path{
+  stroke: white !important;
+  fill: transparent!important;
+}
