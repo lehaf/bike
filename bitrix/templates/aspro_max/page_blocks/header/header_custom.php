@@ -1,16 +1,16 @@
-<? if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) die(); ?>
+<?if(!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) die();?>
 <?
-\Bitrix\Main\Page\Asset::getInstance()->addCss(SITE_TEMPLATE_PATH . "/css/header/header_custom.css");
+\Bitrix\Main\Page\Asset::getInstance()->addCss(SITE_TEMPLATE_PATH . "/css/header/header_custom.css", ['GROUP' => 1000]);
 
 global $arTheme, $arRegion, $bLongHeader2, $dopClass;
 
 $arRegions = CMaxRegionality::getRegions();
 $bIncludeRegionsList = $arRegions || ($arTheme['USE_REGIONALITY']['VALUE'] !== 'Y' && $arTheme['USE_REGIONALITY']['DEPENDENT_PARAMS']['REGIONALITY_IPCITY_IN_HEADER']['VALUE'] !== 'N');
 
-if ($arRegion)
-    $bPhone = ($arRegion['PHONES'] ? true : false);
+if($arRegion)
+	$bPhone = ($arRegion['PHONES'] ? true : false);
 else
-    $bPhone = ((int)$arTheme['HEADER_PHONES'] ? true : false);
+	$bPhone = ((int)$arTheme['HEADER_PHONES'] ? true : false);
 
 $logoClass = ($arTheme['COLORED_LOGO']['VALUE'] !== 'Y' ? '' : ' colored');
 $bLongHeader2 = true;
