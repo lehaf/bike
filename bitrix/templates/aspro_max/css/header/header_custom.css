@@ -1,6 +1,14 @@
+._header-top{
+  background: #3D3D3D;
+}
+
+._header-bottom{
+  background: var(--theme-base-color);
+  padding: 18px 0;
+}
+
 .header__main-part{
   gap: 44px;
-  background: var(--theme-base-color);
 }
 
 .add-announcement{
@@ -45,10 +53,6 @@
   padding: 0 28px 0 0;
 }
 
-/*
-.subcontent .subbottom .menu .mega-menu table td .wrap>a {
-  padding: 0 28px 0 0 !important;
-}*/
 
 ._right-menu{
   display: flex;
@@ -77,4 +81,93 @@ body .basket-link .js-basket-block{
 .compare-icon path{
   stroke: white !important;
   fill: transparent!important;
+}
+
+.top-block .header__top-item .svg:not(.svg-inline-icon_discount):not(.downs):not(.svg-inline-down) svg{
+  opacity: 1;
+}
+
+.top-block .menu>li>a{
+  color: white;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 19px;
+}
+
+.top-block .menu>li>a:hover{
+  opacity: 0.7;
+}
+
+.top-block .menu>li>a path{
+  fill: white;
+}
+
+.top-block .menu>li>a:hover path{
+  opacity: 0.7;
+}
+
+.auth_wr_inner{
+  display: flex;
+  align-items: center;
+  border-radius: 43px;
+  background: rgb(236, 236, 236);
+}
+
+.top-block .logo_and_menu-row .wrap_icon.person .personal-link{
+  margin: 0;
+  font-family: "Open Sans" ,sans-serif;
+}
+
+.auth_wr_inner .personal-link{
+  display: flex;
+  align-items: center;
+  padding: 4px 15px;
+}
+
+.logo_and_menu-row .wrap_icon .name{
+  color: rgb(80, 84, 86);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 19px;
+  text-transform: initial;
+  overflow: initial !important;
+}
+
+.auth_wr_inner:hover path{
+  fill: rgb(236, 236, 236)!important;
+}
+
+.auth_wr_inner:hover .name{
+  color: rgb(80, 84, 86) !important;
+  opacity: 0.7;
+}
+
+.top-block .menu.topest li {
+  padding: 12px 0 11px;
+}
+
+body .basket-link .js-basket-block{
+  margin: 0;
+}
+
+body .basket-link .js-basket-block .count {
+  position: absolute;
+  right: 0;
+  top: 68%;
+  background: #E1E1E1;
+  color: #3D3D3D;
+  font-size: 13px;
+  font-family: "Open Sans" ,sans-serif;
+}
+
+.nofollow .svg.inline.big {
+  top: -1px;
+}
+
+.basket-link:hover .title{
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.smalls.big_header .header-wrapper.header-v26.fix-logo .subcontent .subbottom .menu .mega-menu table td .wrap>a, .smalls.big_header .header-wrapper.header-v27.fix-logo .subcontent .subbottom .menu .mega-menu table td .wrap>a{
+  padding-top: 12px;
 }
