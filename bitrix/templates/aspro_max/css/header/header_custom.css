@@ -171,3 +171,28 @@ body .basket-link .js-basket-block .count {
 .smalls.big_header .header-wrapper.header-v26.fix-logo .subcontent .subbottom .menu .mega-menu table td .wrap>a, .smalls.big_header .header-wrapper.header-v27.fix-logo .subcontent .subbottom .menu .mega-menu table td .wrap>a{
   padding-top: 12px;
 }
+
+#mobileheader .mobileheader-v1.mobileheader-v1-custom{
+  background: rgb(219, 47, 46);
+}
+
+@media (max-width: 768px) {
+  .auth_wr_inner{
+    background: transparent;
+  }
+
+  .auth_wr_inner i.svg{
+    opacity: 1 !important;
+  }
+
+  #mobileheader .right-icons{
+    display: flex;
+    align-items: center;
+  }
+
+  .add-announcement{
+    width: 40px;
+    height: 40px;
+    padding: 0;
+  }
+}
