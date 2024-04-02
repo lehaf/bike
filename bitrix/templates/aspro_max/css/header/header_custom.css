@@ -176,6 +176,10 @@ body .basket-link .js-basket-block .count {
   background: rgb(219, 47, 46);
 }
 
+.logo_and_menu-row .wrap_icon .personal-link .name{
+  margin: 0;
+}
+
 @media (max-width: 768px) {
   .auth_wr_inner{
     background: transparent;
