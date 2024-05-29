@@ -11,8 +11,14 @@
   gap: 44px;
 }
 
+div.subtop {
+  background: #3D3D3D !important;
+ }
+
+
 .add-announcement{
   display: flex;
+  order: 2;
   align-items: center;
   justify-content: center;
   gap: 10px;
@@ -150,6 +156,10 @@ body .basket-link .js-basket-block{
   margin: 0;
 }
 
+.top-block.top-block-v1 {
+  border-bottom: none;
+}
+
 body .basket-link .js-basket-block .count {
   position: absolute;
   right: 0;
@@ -178,6 +188,19 @@ body .basket-link .js-basket-block .count {
 
 .logo_and_menu-row .wrap_icon .personal-link .name{
   margin: 0;
+}
+
+.auth_wr_inner.with_dropdown > .svg.inline {
+  right: 15px;
+  top: 15px;
+
+}
+
+@media (max-width: 1293px) {
+  .auth_wr_inner.with_dropdown > .svg.inline {
+    right: 15px;
+    top: 10px;
+  }
 }
 
 @media (max-width: 768px) {

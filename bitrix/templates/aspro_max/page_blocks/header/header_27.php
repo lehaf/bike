@@ -102,13 +102,13 @@ $dopClass = 'wides_menu smalls big_header';
 						</div>
 						<div class="subcontent">
 							<div class="subbottom menu-row header__main-part">
-								<?if (CMax::GetFrontParametrValue("ORDER_BASKET_VIEW") === "NORMAL"):?>
-								<div class="right-icons  wb top-block-item logo_and_menu-row header__main-item">
-									<div class="line-block__item line-block line-block--40 line-block--40-1200">
-										<?=CMax::ShowBasketWithCompareLink('', 'big', '', 'wrap_icon wrap_basket baskets');?>
-									</div>
-								</div>
-								<?endif;?>
+								<?php if (CMax::GetFrontParametrValue("ORDER_BASKET_VIEW") === "NORMAL"):?>
+                                    <div class="right-icons  wb top-block-item logo_and_menu-row header__main-item">
+                                        <div class="line-block__item line-block line-block--40 line-block--40-1200">
+                                            <?=CMax::ShowBasketWithCompareLink('', 'big', '', 'wrap_icon wrap_basket baskets');?>
+                                        </div>
+                                    </div>
+								<?php endif;?>
 								<div class="header__main-item minwidth0 flex1 order-1">
 									<div class="menu">
 										<div class="menu-only">

@@ -24,7 +24,10 @@
 		"CACHE_GROUPS" => "N",
 		"CACHE_TYPE" => "A",
 		"CACHE_TIME" => "36000000",
-		"BANNER_TYPE_THEME" => "BANNER_IMG_WIDE"
+		"BANNER_TYPE_THEME" => "BANNER_IMG_WIDE",
+		"COMPONENT_TEMPLATE" => "only_img",
+		"FILTER_NAME" => "arRegionLink",
+		"SHOW_MEASURE" => "Y"
 	),
 	false
 );?>
