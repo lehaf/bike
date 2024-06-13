@@ -193,8 +193,56 @@ body .basket-link .js-basket-block .count {
 .auth_wr_inner.with_dropdown > .svg.inline {
   right: 15px;
   top: 15px;
+}
+
+div.header-v27.new-header .mega-menu table td .wrap > .more-items > span:before {
+  content: "...";
+  position: absolute;
+  left: 1px;
+  /* top: -22px; */
+  width: 17px;
+  height: 11px;
+  background: url(/bitrix/templates/aspro_max/images/svg/header_icons.svg) var(--light, -124px -51px) var(--dark, -124px -51px) no-repeat;
+}
+
+div.header-v27.new-header .auth_wr_inner {
+   background: none;
+}
+
+div.header-v27.new-header  .logo_and_menu-row .wrap_icon .name {
+  color: white;
+}
+
+div.header-v27.new-header .auth_wr_inner:hover .name {
+  color: rgba(255, 255, 255, 0.7) !important;
 
 }
+
+div.header-v27.new-header div.auth_wr_inner.with_dropdown i.svg svg use {
+  fill: white !important;
+}
+
+div.header-v27.new-header .logo_and_menu-row .wrap_icon > *:hover .svg:not(.iconset_icon) svg use {
+  fill: rgba(255, 255, 255, 0.7) !important;
+}
+
+div.header-v27.new-header .auth_wr_inner.with_dropdown > .svg.inline {
+  right: 5px;
+}
+
+div.header-v27.new-header i.svg.svg-inline-cabinet svg path{
+  stroke: white;
+}
+
+body header#header div.header-v27.new-header .logo_and_menu-row .wrap_icon > *:hover .svg:not(.iconset_icon) svg path {
+  fill: none !important;
+  stroke: rgba(255, 255, 255, 0.7) !important;
+}
+
+body .mega-menu table .dropdown-menu {
+  top: 100%;
+}
+
 
 @media (max-width: 1293px) {
   .auth_wr_inner.with_dropdown > .svg.inline {

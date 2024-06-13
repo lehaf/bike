@@ -49,7 +49,7 @@ $dopClass = 'wides_menu smalls big_header';
                                                         <path d="M14.9425 2.18067C16.5889 3.82708 16.5889 6.49643 14.9425 8.14283L9.18487 13.9005C8.85561 14.2298 8.3217 14.2298 7.99244 13.9005L2.23482 8.14283C0.588394 6.49643 0.588394 3.82708 2.23482 2.18067C3.54372 0.871767 5.12364 0.470985 6.71784 1.24887C7.35061 1.55762 8.18022 2.18067 8.58865 2.99452C8.99709 2.18067 9.8267 1.55762 10.4594 1.24887C12.0536 0.470985 13.6336 0.871767 14.9425 2.18067Z" stroke="white" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
                                                     </svg>
                                                 </i>
-                                                <span class="title dark_link">Избранные товары</span>
+                                                <span class="title dark_link">Избранное</span>
                                                 <span class="count js-count empted">0</span>
                                             </span>
                                         </a>
@@ -113,7 +113,7 @@ $dopClass = 'wides_menu smalls big_header';
                                                                 <path fill-rule="evenodd" clip-rule="evenodd" d="M6.84631 6.44704C8.42484 6.44704 9.2141 5.66889 9.2141 3.72352C9.2141 1.77815 8.42484 1 6.84631 1C5.26778 1 4.47852 1.77815 4.47852 3.72352C4.47852 5.66889 5.26778 6.44704 6.84631 6.44704Z" stroke="#505456" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
                                                             </svg>
                                                         </i>
-                                                        <span class="wrap"><span class="name">Мой кабинет</span></span>
+                                                        <span class="wrap"><span class="name">Личный кабинет</span></span>
                                                     </a>
                                                     <i class="svg downs big inline " aria-hidden="true">
                                                         <svg width="5" height="3">
@@ -173,7 +173,7 @@ $dopClass = 'wides_menu smalls big_header';
                                                <?$APPLICATION->IncludeComponent("bitrix:main.include", ".default",
                                                    array(
                                                        "COMPONENT_TEMPLATE" => ".default",
-                                                       "PATH" => SITE_DIR."include/menu/menu.top_catalog_sections.php",
+                                                       "PATH" => SITE_DIR."include/menu/menu.top_catalog_sections_custom.php",
                                                        "AREA_FILE_SHOW" => "file",
                                                        "AREA_FILE_SUFFIX" => "",
                                                        "AREA_FILE_RECURSIVE" => "Y",

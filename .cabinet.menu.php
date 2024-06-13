@@ -1,13 +1,6 @@
 <?
 $aMenuLinks = Array(
 	Array(
-		"Личный кабинет",
-		SITE_DIR."/personal/index.php", 
-		Array(), 
-		Array(), 
-		"\$GLOBALS['USER']->IsAuthorized()" 
-	),
-	Array(
 		"Личные данные", 
 		SITE_DIR."/personal/private/", 
 		Array(), 
