@@ -9,7 +9,7 @@ if (!empty($sections)) {
             $rsSection = getSections([
                 '=IBLOCK_ID' => CATALOG_IBLOCK_ID,
                 '=ID' => $section,
-            ], );
+            ],);
             if (!empty($rsSection)) {
                 foreach ($rsSection as $sect) {
                     $arResult["CUSTOM_SECTIONS"]["SECTIONS_" . $key][] = $sect;
@@ -38,41 +38,26 @@ if ($_GET['type']) {
     $resultFields = setBlocksFields($arResult['SHOW_FIELDS'] ?? [], $sectId);
     $arResult['SORT_SHOW_FIELDS'] = sortFields($resultFields['fields']);
     $arResult['LAST_FIELD'] = $resultFields['lastKey'];
+
+    $entityCustomCheck = getHlblock("b_custom_check");
+    $resCustomCheck = $entityCustomCheck::getList(["select" => ["UF_FIELD"]])->fetchAll();
+    $arResult['CUSTOM_CHECK'] = array_column($resCustomCheck, "UF_FIELD");
+
+    $arResult['CURRENCIES'] = \Bitrix\Currency\CurrencyTable::getList([
+        'select' => ['CURRENCY', 'BASE']
+    ])->fetchAll();
+
+    $entityTags = getHlblock("b_tags");
+    $tags = $entityTags::getList([
+        'filter' => ['@UF_SECTIONS' => $arParams['SECTION_ID']],
+    ])->fetch();
+    $arResult['TAGS'] = $tags['UF_TAGS'];
+
+    $arResult['CATEGORIES'] = getSections([
+        '=IBLOCK_ID' => CATALOG_IBLOCK_ID,
+        '=IBLOCK_SECTION_ID' => $arParams['SECTION_ID'],
+    ]);
 }
-
-$entityCustomCheck = getHlblock("b_custom_check");
-$resCustomCheck = $entityCustomCheck::getList(["select" => ["UF_FIELD"]])->fetchAll();
-$arResult['CUSTOM_CHECK'] = array_column($resCustomCheck, "UF_FIELD");
-
-$arResult['CURRENCIES'] = \Bitrix\Currency\CurrencyTable::getList([
-    'select' => ['CURRENCY', 'BASE']
-])->fetchAll();
-
-$entityTags = getHlblock("b_tags");
-$tags = $entityTags::getList([
-    'filter' => ['@UF_SECTIONS' => $arParams['SECTION_ID']],
-])->fetch();
-$arResult['TAGS'] = $tags['UF_TAGS'];
-
-$arResult['COUNTRIES'] = \Bitrix\Sale\Location\LocationTable::getList([
-    'filter' => [
-        '=TYPE_CODE' => 'COUNTRY',
-        '=NAME.LANGUAGE_ID' => 'ru',
-        '=TYPE.NAME.LANGUAGE_ID' => 'ru',
-    ],
-    'select' => [
-        'ID',
-        'NAME_RU' => 'NAME.NAME',
-        'TYPE_CODE' => 'TYPE.CODE',
-        'CODE'
-    ]
-])->fetchAll();
-
-$arResult['CATEGORIES'] = getSections([
-    '=IBLOCK_ID' => CATALOG_IBLOCK_ID,
-    '=IBLOCK_SECTION_ID' => $arParams['SECTION_ID'],
-]);
-
 function compareBySort($a, $b)
 {
     if ($a['SORT'] == $b['SORT']) {

@@ -30,22 +30,24 @@ function pr($o, $show = false, $die = false, $fullBackTrace = false)
 //                        echo '</pre>';
                         ?>
 
-                        File: <b><?= $value["file"] ?></b> [line: <?= $value["line"] ?>] <?= $value['class'] . '->'.$value['function'].'()'?><br>
+                        File:
+                        <b><?= $value["file"] ?></b> [line: <?= $value["line"] ?>] <?= $value['class'] . '->' . $value['function'] . '()' ?>
+                        <br>
                     <? endforeach ?>
-                <?endif; ?>
+                <? endif; ?>
             </div>
-            <pre style='padding:10px;'><? is_array($o) ? var_dump($o) :  var_dump(htmlspecialcharsbx($o)) ?></pre>
+            <pre style='padding:10px;'><? is_array($o) ? var_dump($o) : var_dump(htmlspecialcharsbx($o)) ?></pre>
         </div>
-        <?if ($die == true) {
+        <? if ($die == true) {
             die();
-        }?>
+        } ?>
         <?
     } else {
         return false;
     }
 }
 
-function getSections(array $filter) : array
+function getSections(array $filter): array
 {
     $sections = \Bitrix\Iblock\SectionTable::getList([
         'filter' => $filter,
@@ -68,13 +70,15 @@ function getSections(array $filter) : array
     return $sections;
 }
 
-function getHlblock(string $name) : string
+function getHlblock(string $name): string
 {
-    $hlblock = \Bitrix\Highloadblock\HighloadBlockTable::getList(
-        ["filter" => [
-            'TABLE_NAME' => $name
-        ]]
-    )->fetch();
+    $hlblock = \Bitrix\Highloadblock\HighloadBlockTable::getList([
+        "filter" => ['TABLE_NAME' => $name],
+        'cache' => [
+            'ttl' => 36000000,
+            'cache_joins' => true
+        ],
+    ])->fetch();
 
     $entity_data_class = '';
     if (isset($hlblock['ID'])) {
@@ -84,7 +88,9 @@ function getHlblock(string $name) : string
 
     return $entity_data_class;
 }
-function setBlocksFields(array $showFields, array $sectId) : array {
+
+function setBlocksFields(array $showFields, array $sectId): array
+{
     $entityBlocks = getHlblock("b_blocks");
     $resBlocks = $entityBlocks::getList([
         'order' => ['UF_SORT' => 'ASC']
@@ -110,10 +116,10 @@ function setBlocksFields(array $showFields, array $sectId) : array {
                 ])->fetch();
 
 
-                if(!empty($fields['UF_FIELDS']) && !empty($showFields)) {
+                if (!empty($fields['UF_FIELDS']) && !empty($showFields)) {
                     $lastFieldKey = $block["UF_CODE"];
                     foreach ($showFields as $field) {
-                        if(in_array($field['ID'], $fields['UF_FIELDS'])) {
+                        if (in_array($field['ID'], $fields['UF_FIELDS'])) {
                             $sortShowFields[$block["UF_CODE"]]['FIELDS'][] = $field;
                         }
                     }
@@ -125,7 +131,8 @@ function setBlocksFields(array $showFields, array $sectId) : array {
 
     return ['lastKey' => $lastFieldKey, 'fields' => $sortShowFields];
 }
-function sortFields(array $showFields) : array
+
+function sortFields(array $showFields): array
 {
     $pairFields = [];
 //    pr($arResult['SORT_SHOW_FIELDS']);
@@ -136,10 +143,10 @@ function sortFields(array $showFields) : array
 
         $fieldsCode = array_column($item["FIELDS"], 'CODE');
 
-        if(in_array('length', $fieldsCode) && in_array('height', $fieldsCode) && $block !== 'TECHNICAL') {
-            foreach ($item['FIELDS'] as $key=>&$field) {
-                if($field['CODE'] == 'length' || $field['CODE'] == 'high') {
-                    $pairFields[$field['CODE']] =  $field;
+        if (in_array('length', $fieldsCode) && in_array('height', $fieldsCode) && $block !== 'TECHNICAL') {
+            foreach ($item['FIELDS'] as $key => &$field) {
+                if ($field['CODE'] == 'length' || $field['CODE'] == 'high') {
+                    $pairFields[$field['CODE']] = $field;
                     unset($item['FIELDS'][$key]);
                 }
             }
@@ -147,10 +154,10 @@ function sortFields(array $showFields) : array
             $item['FIELDS'] = array_merge(['pair_param' => $pairFields], $item['FIELDS']);
         }
 
-        if(in_array('race', $fieldsCode) && in_array('power', $fieldsCode) && in_array('race_unit', $fieldsCode)) {
-            foreach ($item['FIELDS'] as $key=>&$field) {
-                if($field['CODE'] == 'race' || $field['CODE'] == 'power' || $field['CODE'] == 'race_unit') {
-                    $pairFields[$field['CODE']] =  $field;
+        if (in_array('race', $fieldsCode) && in_array('power', $fieldsCode) && in_array('race_unit', $fieldsCode)) {
+            foreach ($item['FIELDS'] as $key => &$field) {
+                if ($field['CODE'] == 'race' || $field['CODE'] == 'power' || $field['CODE'] == 'race_unit') {
+                    $pairFields[$field['CODE']] = $field;
                     unset($item['FIELDS'][$key]);
                 }
             }
@@ -164,7 +171,7 @@ function sortFields(array $showFields) : array
             );
         }
 
-        if($block === 'TECHNICAL') {
+        if ($block === 'TECHNICAL') {
             $item['FIELDS'] = array_chunk($item['FIELDS'], 2);
         }
     }

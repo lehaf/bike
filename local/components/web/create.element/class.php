@@ -229,7 +229,7 @@ class CreateElement extends \CBitrixComponent
         return $form;
     }
 
-    private function getCheckProperty(string $sectionCode, array $data) : string
+    private function getCheckProperty(string $sectionCode, array $data): string
     {
         $propertyId = \Bitrix\Iblock\PropertyTable::getList([
             'filter' => [
@@ -237,8 +237,8 @@ class CreateElement extends \CBitrixComponent
             ],
             'select' => ['ID']
         ])->fetch();
-        if($propertyId) {
-            $propertyValue =  \Bitrix\Iblock\PropertyEnumerationTable::getList([
+        if ($propertyId) {
+            $propertyValue = \Bitrix\Iblock\PropertyEnumerationTable::getList([
                 'filter' => [
                     'PROPERTY_ID' => $propertyId['ID'],
                     'ID' => $data["POST"][$sectionCode]
@@ -249,57 +249,49 @@ class CreateElement extends \CBitrixComponent
 
         return $propertyValue['VALUE'] ?? "";
     }
-    private function setName(array $data) : string
+
+    private function setName(array $data): string
     {
         $section = SectionTable::getById($data['GET']['type'])->fetch();
         Debug::dumpToFile($section);
         $name = "";
 
-        if((int)$section["IBLOCK_SECTION_ID"] === TRANSPORT_SECTION_ID || (int)$section["IBLOCK_SECTION_ID"] === PARTS_SECTION_ID) {
+        if ((int)$section["IBLOCK_SECTION_ID"] === TRANSPORT_SECTION_ID || (int)$section["IBLOCK_SECTION_ID"] === PARTS_SECTION_ID) {
             $type = $this->getCheckProperty('type_' . $section['CODE'], $data);
             $year = $this->getCheckProperty('year', $data);
 
-            $name = $type. ' ' . $data["POST"]["SECTION"] . ' ' . $data["POST"]["SUBSECTION"];
-            if(!empty($data["POST"]["year"])) $name .= ', ' . $year;
+            $name = $type . ' ' . $data["POST"]["SECTION"] . ' ' . $data["POST"]["SUBSECTION"];
+            if (!empty($data["POST"]["year"])) $name .= ', ' . $year;
         }
 
-        if((int)$section["ID"] === GARAGES_SECTION_ID) {
+        if ((int)$section["ID"] === GARAGES_SECTION_ID) {
             $category = $this->getCheckProperty('category_garage', $data);
             $type = $this->getCheckProperty('type_garage', $data);
-            $name = $category. ' ' . $type;
+            $name = $category . ' ' . $type;
 
         }
-        return  $name;
+        return $name;
     }
 
-    private function checkFields(array $fields) : array {
-        $errors = [];
-//        Debug::dumpToFile($fields);
-//        if(!empty($fields)) {
-//            foreach ($fields as $field) {
-//
-//            }
-//        }
-        return $errors;
-    }
-
-    private function getRequiredFields(array $sectId) : array
+    private function getRequiredFields(array $sectId): array
     {
         $entity_data_class = '';
         $requiredFieldsId = [];
 
-        $hlblock = \Bitrix\Highloadblock\HighloadBlockTable::getList(
-            ["filter" => [
-                'TABLE_NAME' => "b_required_fields"
-            ]]
-        )->fetch();
+        $hlblock = \Bitrix\Highloadblock\HighloadBlockTable::getList([
+            "filter" => ['TABLE_NAME' => "b_required_fields"],
+            'cache' => [
+                'ttl' => 36000000,
+                'cache_joins' => true
+            ]
+            ])->fetch();
 
         if (isset($hlblock['ID'])) {
             $entity = \Bitrix\Highloadblock\HighloadBlockTable::compileEntity($hlblock);
             $entity_data_class = $entity->getDataClass();
         }
 
-        if(!empty($entity_data_class)) {
+        if (!empty($entity_data_class)) {
             $requiredFields = $entity_data_class::getList([
                 'filter' => ['=UF_SECTION' => $sectId],
                 'select' => ['UF_FIELDS'],
@@ -318,24 +310,25 @@ class CreateElement extends \CBitrixComponent
 
         return $requiredFieldsId;
     }
+
     private function ajaxPost(array $data): void
     {
         ob_end_clean();
         if (!empty($data["POST"])) {
 
-            if(!isset($data["POST"]["NAME"])) {
+            if (!isset($data["POST"]["NAME"])) {
                 $data["POST"]["NAME"] = $this->setName($data);
             }
 
-            if(!isset($data["POST"]["IBLOCK_SECTION_ID"])) {
+            if (!isset($data["POST"]["IBLOCK_SECTION_ID"])) {
                 $data["POST"]["IBLOCK_SECTION_ID"] = $data['GET']['type'];
             }
 
             $data["POST"]["USER"] = \Bitrix\Main\Engine\CurrentUser::get()->getId();
 
-            foreach ($this->userProps as $prop=>$value) {
-                if(empty($data['POST'][$prop]) && $value['CUSTOM_IS_REQUIRED'] === "Y") {
-                    $this->errors += [$prop => "Заполните поле '" . $value['NAME'] ."'" ];
+            foreach ($this->userProps as $prop => $value) {
+                if (empty($data['POST'][$prop]) && $value['CUSTOM_IS_REQUIRED'] === "Y") {
+                    $this->errors += [$prop => "Заполните поле '" . $value['NAME'] . "'"];
                 }
             }
             if (empty($data['POST']['PRICE'])) $this->errors['PRICE'] = "Заполните цену";
@@ -418,9 +411,9 @@ class CreateElement extends \CBitrixComponent
         if (empty($this->errors)) {
             $newElement = $this->createElement($elementData ?? []);
             if (Loader::includeModule('sale') && $newElement["STATUS"] === "OK") {
-                $catalogIblock = \Bitrix\Catalog\CatalogIblockTable::getList(array(
-                    'filter' => array('=IBLOCK_ID' => $this->arParams['IBLOCK_ID']),
-                ))->fetchObject();
+                $catalogIblock = \Bitrix\Catalog\CatalogIblockTable::getList([
+                    'filter' => ['=IBLOCK_ID' => $this->arParams['IBLOCK_ID']],
+                ])->fetchObject();
 
                 if ($catalogIblock) {
                     $newProduct = $this->createProduct($newElement["ID"]);
@@ -471,8 +464,8 @@ class CreateElement extends \CBitrixComponent
             ]
         ])->fetch();
 
-        if($parentSection) {
-           $arParams['PARENT_SECTION_ID'] = $parentSection['PARENT_SECTION_ID'];
+        if ($parentSection) {
+            $arParams['PARENT_SECTION_ID'] = $parentSection['PARENT_SECTION_ID'];
         }
 
         return $arParams;
@@ -491,7 +484,7 @@ class CreateElement extends \CBitrixComponent
             $this->data = $this->setData();
 
             if ($this->arParams["IS_TEMPLATE_INCLUDE"] === "Y") {
-                if($this->data['GET']['type']) {
+                if ($this->data['GET']['type']) {
                     $sectId = (!isset($this->arParams['PARENT_SECTION_ID'])) ? $this->arParams['SECTION_ID'] : [$this->arParams['PARENT_SECTION_ID'], $this->arParams['SECTION_ID']];
 
                     $rsSectionProps = \Bitrix\Iblock\SectionPropertyTable::getList([
@@ -524,6 +517,29 @@ class CreateElement extends \CBitrixComponent
                         foreach ($properties as $field) {
                             $this->arResult["SHOW_FIELDS"][$field['CODE']] = $field;
                             $this->arResult["SHOW_FIELDS"][$field['CODE']]['CUSTOM_IS_REQUIRED'] = (in_array($field['ID'], $this->requiredFields)) ? "Y" : "N";
+                            $this->arResult['COUNTRIES'] = [];
+
+                            if($field['CODE'] === 'country') {
+                                $countries = \Bitrix\Sale\Location\LocationTable::getList([
+                                    'filter' => [
+                                        '=TYPE_CODE' => 'COUNTRY',
+                                        '=NAME.LANGUAGE_ID' => 'ru',
+                                        '=TYPE.NAME.LANGUAGE_ID' => 'ru',
+                                    ],
+                                    'select' => [
+                                        'ID',
+                                        'NAME_RU' => 'NAME.NAME',
+                                        'TYPE_CODE' => 'TYPE.CODE',
+                                        'CODE'
+                                    ],
+                                    'cache' => [
+                                        'ttl' => 36000000,
+                                        'cache_joins' => true
+                                    ]
+                                ])->fetchAll();
+                                $this->arResult['COUNTRIES'] = $countries;
+                            }
+
 
                             if ($field["PROPERTY_TYPE"] === "E" || $field["PROPERTY_TYPE"] === "G") {
                                 $linkElements = ElementTable::getList([
@@ -536,21 +552,25 @@ class CreateElement extends \CBitrixComponent
                             if ($field["PROPERTY_TYPE"] === "L") {
                                 $linkElements = \Bitrix\Iblock\PropertyEnumerationTable::getList([
                                     "filter" => ["=PROPERTY_ID" => $field["ID"]],
+                                    'cache' => [
+                                        'ttl' => 36000000,
+                                        'cache_joins' => true
+                                    ],
                                 ])->fetchAll();
                                 $this->arResult["SHOW_FIELDS"][$field['CODE']]["PROPERTY_LIST"] = $linkElements;
                             }
                         }
                     }
-
-                    $rsSection = SectionTable::getList([
-                        'filter' => ['=IBLOCK_ID' => $this->arParams["IBLOCK_ID"], "ACTIVE" => "Y"],
-                        'cache' => [
-                            'ttl' => 36000000,
-                            'cache_joins' => true
-                        ],
-                    ])->fetchAll();
-                    $this->arResult["SECTIONS"] = $rsSection;
                 }
+
+                $rsSection = SectionTable::getList([
+                    'filter' => ['=IBLOCK_ID' => $this->arParams["IBLOCK_ID"], "ACTIVE" => "Y"],
+                    'cache' => [
+                        'ttl' => 36000000,
+                        'cache_joins' => true
+                    ],
+                ])->fetchAll();
+                $this->arResult["SECTIONS"] = $rsSection;
 
                 $this->templateFolder = $this->getPath() . '/templates/' . $this->getTemplateName();
                 if ($this->data['POST']['ajax'] === 'Y') {
