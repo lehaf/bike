@@ -76,10 +76,6 @@ class CreateElement extends \CBitrixComponent
     {
         $res = \Bitrix\Iblock\PropertyTable::getList([
             "filter" => ["=IBLOCK_ID" => $this->arParams["IBLOCK_ID"], "=ACTIVE" => "Y"],
-            'cache' => [
-                'ttl' => 36000,
-                'cache_joins' => true
-            ],
         ])->fetchAll();
 
         if (!empty($res)) {
@@ -243,7 +239,7 @@ class CreateElement extends \CBitrixComponent
                     'PROPERTY_ID' => $propertyId['ID'],
                     'ID' => $data["POST"][$sectionCode]
                 ],
-                'select' => ['VALUE']
+                'select' => ['VALUE'],
             ])->fetch();
         }
 
@@ -280,10 +276,6 @@ class CreateElement extends \CBitrixComponent
 
         $hlblock = \Bitrix\Highloadblock\HighloadBlockTable::getList([
             "filter" => ['TABLE_NAME' => "b_required_fields"],
-            'cache' => [
-                'ttl' => 36000000,
-                'cache_joins' => true
-            ]
             ])->fetch();
 
         if (isset($hlblock['ID'])) {
@@ -295,10 +287,6 @@ class CreateElement extends \CBitrixComponent
             $requiredFields = $entity_data_class::getList([
                 'filter' => ['=UF_SECTION' => $sectId],
                 'select' => ['UF_FIELDS'],
-                'cache' => [
-                    'ttl' => 36000000,
-                    'cache_joins' => true
-                ]
             ])->fetchAll();
 
             foreach ($requiredFields as $item) {
@@ -458,10 +446,6 @@ class CreateElement extends \CBitrixComponent
                     ['=this.IBLOCK_SECTION_ID' => 'ref.ID']
                 )
             ],
-            'cache' => [
-                'ttl' => 36000000,
-                'cache_joins' => true
-            ]
         ])->fetch();
 
         if ($parentSection) {
@@ -490,10 +474,6 @@ class CreateElement extends \CBitrixComponent
                     $rsSectionProps = \Bitrix\Iblock\SectionPropertyTable::getList([
                         "filter" => ['=IBLOCK_ID' => $this->arParams["IBLOCK_ID"] ?? 0, "=SECTION_ID" => $sectId],
                         "select" => ["PROPERTY_ID"],
-                        'cache' => [
-                            'ttl' => 36000000,
-                            'cache_joins' => true
-                        ]
                     ])->fetchAll();
                     $sectionPropsId = array_column($rsSectionProps, 'PROPERTY_ID');
 
@@ -502,10 +482,6 @@ class CreateElement extends \CBitrixComponent
                             'IBLOCK_ID' => $this->arParams["IBLOCK_ID"] ?? 0,
                             'ID' => $sectionPropsId
                         ],
-                        'cache' => [
-                            'ttl' => 36000000,
-                            'cache_joins' => true
-                        ]
                     ])->fetchAll();
 
                     if (!empty($properties)) {
@@ -539,6 +515,14 @@ class CreateElement extends \CBitrixComponent
                                 ])->fetchAll();
                                 $this->arResult['COUNTRIES'] = $countries;
                             }
+
+                            $this->arResult['CURRENCIES'] = \Bitrix\Currency\CurrencyTable::getList([
+                                'select' => ['CURRENCY', 'BASE'],
+                                'cache' => [
+                                    'ttl' => 36000000,
+                                    'cache_joins' => true
+                                ]
+                            ])->fetchAll();
 
 
                             if ($field["PROPERTY_TYPE"] === "E" || $field["PROPERTY_TYPE"] === "G") {
@@ -580,7 +564,6 @@ class CreateElement extends \CBitrixComponent
 
                 $this->includeComponentTemplate();
             }
-
 
         } else {
             echo "Введен неверный инфоблок";

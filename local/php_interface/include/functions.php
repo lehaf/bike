@@ -74,10 +74,6 @@ function getHlblock(string $name): string
 {
     $hlblock = \Bitrix\Highloadblock\HighloadBlockTable::getList([
         "filter" => ['TABLE_NAME' => $name],
-        'cache' => [
-            'ttl' => 36000000,
-            'cache_joins' => true
-        ],
     ])->fetch();
 
     $entity_data_class = '';

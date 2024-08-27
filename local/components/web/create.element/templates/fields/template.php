@@ -617,38 +617,6 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                     </form>
                 </div>
             </div>
-        <?php else: ?>
-            <?php if (!empty($arResult["CUSTOM_SECTIONS"])): ?>
-                <div class="step">
-                    <div class="wrapper">
-                        <div class="step-category">
-                            <?php foreach ($arResult["CUSTOM_SECTIONS"] as $key => $sections): ?>
-                                <div class="step-category-container <?= ($lastSectKey === $key) ? 'step-category-container--center' : ''; ?>">
-                                    <div class="step-category__title">
-                                        <?= Loc::getMessage($key) ?>
-                                    </div>
-                                    <div class="step-category-inner <?= ($lastSectKey === $key) ? 'step-category-inner--center' : ''; ?>">
-                                        <?php foreach ($sections as $number => $sect): ?>
-                                            <a class="step-category__el <?= ($number === count($sect) && $lastSectKey !== $key) ? 'step-category__el--center' : '' ?>"
-                                               data-id="<?= $sect["ID"] ?>"
-                                               href="?type=<?= $sect["ID"] ?>"
-                                            >
-                                                <div class="step-category__el__img">
-                                                    <img src="<?= $sect["PICTURE"] ?>" alt="<?= $sect["NAME"] ?>"
-                                                         data-mobile="<?= $sect["PICTURE"] ?>">
-                                                </div>
-                                                <div class="step-category__el__description">
-                                                    <?= $sect["NAME"] ?>
-                                                </div>
-                                            </a>
-                                        <?php endforeach; ?>
-                                    </div>
-                                </div>
-                            <?php endforeach; ?>
-                        </div>
-                    </div>
-                </div>
-            <?php endif; ?>
         <?php endif; ?>
     </div>
 
