@@ -45,29 +45,24 @@ function pr($o, $show = false, $die = false, $fullBackTrace = false)
     }
 }
 
-function getSections(array $filter, string $key) : array
+function getSections(array $filter) : array
 {
-    $cache = \Bitrix\Main\Data\Cache::createInstance(); // получаем экземпляр класса
-    $ttl = 36000000;
-    $cacheKey = 'section_' . $key;
-    if ($cache->initCache($ttl, $cacheKey)) { // проверяем кеш и задаём настройки
-        $sections = $cache->getVars(); // достаем переменные из кеша
-    } elseif ($cache->startDataCache()) {
-        $sections = \Bitrix\Iblock\SectionTable::getList([
-            'filter' => $filter,
-            'select' => ['ID', 'CODE', 'NAME', 'PICTURE'],
-        ])->fetchAll();
+    $sections = \Bitrix\Iblock\SectionTable::getList([
+        'filter' => $filter,
+        'select' => ['ID', 'CODE', 'NAME', 'PICTURE'],
+        'cache' => [
+            'ttl' => 36000000,
+            'cache_joins' => true
+        ],
+    ])->fetchAll();
 
-        if (!empty($sections)) {
-            foreach ($sections as &$row) {
-                if (!empty($row['PICTURE'])) {
-                    $row['PICTURE'] = CFile::GetPath($row['PICTURE']);
-                }
+    if (!empty($sections)) {
+        foreach ($sections as &$row) {
+            if (!empty($row['PICTURE'])) {
+                $row['PICTURE'] = CFile::GetPath($row['PICTURE']);
             }
-            unset($row);
         }
-
-        $cache->endDataCache($sections);
+        unset($row);
     }
 
     return $sections;

@@ -9,7 +9,7 @@ if (!empty($sections)) {
             $rsSection = getSections([
                 '=IBLOCK_ID' => CATALOG_IBLOCK_ID,
                 '=ID' => $section,
-            ], 'custom');
+            ], );
             if (!empty($rsSection)) {
                 foreach ($rsSection as $sect) {
                     $arResult["CUSTOM_SECTIONS"]["SECTIONS_" . $key][] = $sect;
@@ -19,7 +19,7 @@ if (!empty($sections)) {
             $rsSection = getSections([
                 '=IBLOCK_ID' => CATALOG_IBLOCK_ID,
                 '=IBLOCK_SECTION_ID' => $section,
-            ], 'custom');
+            ]);
 
             if (!empty($rsSection)) {
                 $arResult["CUSTOM_SECTIONS"]["SECTIONS_" . $key] = $rsSection;
@@ -71,7 +71,7 @@ $arResult['COUNTRIES'] = \Bitrix\Sale\Location\LocationTable::getList([
 $arResult['CATEGORIES'] = getSections([
     '=IBLOCK_ID' => CATALOG_IBLOCK_ID,
     '=IBLOCK_SECTION_ID' => $arParams['SECTION_ID'],
-], 'cat');
+]);
 
 function compareBySort($a, $b)
 {
