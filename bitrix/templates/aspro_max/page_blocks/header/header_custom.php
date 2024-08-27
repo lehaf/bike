@@ -160,7 +160,7 @@ $dopClass = 'wides_menu smalls big_header';
                                <div class="logo<?=$logoClass?>">
                                    <?=CMax::ShowBufferedLogo();?>
                                </div>
-                               <a href="#" class="add-announcement">
+                               <a href="<?=($USER->IsAuthorized()) ? '/add' : '/auth'?>" class="add-announcement">
                                    Разместить бесплатно
                                    <svg width="13" height="12" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                                        <path d="M6.22545 0.847656V11.1514M11.4509 5.99951H1" stroke="white" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>

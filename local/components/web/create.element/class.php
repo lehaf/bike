@@ -45,6 +45,10 @@ class CreateElement extends \CBitrixComponent
         $apiCode = \Bitrix\Iblock\IblockTable::getList([
             "select" => ["API_CODE", "CODE"],
             'filter' => ["=ID" => $this->arParams['IBLOCK_ID']],
+            'cache' => [
+                'ttl' => 36000000,
+                'cache_joins' => true
+            ],
         ])->fetchObject();
 
         if (empty($apiCode->getApiCode())) {
@@ -299,6 +303,10 @@ class CreateElement extends \CBitrixComponent
             $requiredFields = $entity_data_class::getList([
                 'filter' => ['=UF_SECTION' => $sectId],
                 'select' => ['UF_FIELDS'],
+                'cache' => [
+                    'ttl' => 36000000,
+                    'cache_joins' => true
+                ]
             ])->fetchAll();
 
             foreach ($requiredFields as $item) {
@@ -456,6 +464,10 @@ class CreateElement extends \CBitrixComponent
                     SectionTable::class,
                     ['=this.IBLOCK_SECTION_ID' => 'ref.ID']
                 )
+            ],
+            'cache' => [
+                'ttl' => 36000000,
+                'cache_joins' => true
             ]
         ])->fetch();
 
@@ -479,64 +491,66 @@ class CreateElement extends \CBitrixComponent
             $this->data = $this->setData();
 
             if ($this->arParams["IS_TEMPLATE_INCLUDE"] === "Y") {
-                $sectId = (!isset($this->arParams['PARENT_SECTION_ID'])) ? $this->arParams['SECTION_ID'] : [$this->arParams['PARENT_SECTION_ID'], $this->arParams['SECTION_ID']];
+                if($this->data['GET']['type']) {
+                    $sectId = (!isset($this->arParams['PARENT_SECTION_ID'])) ? $this->arParams['SECTION_ID'] : [$this->arParams['PARENT_SECTION_ID'], $this->arParams['SECTION_ID']];
 
-                $rsSectionProps = \Bitrix\Iblock\SectionPropertyTable::getList([
-                    "filter" => ['=IBLOCK_ID' => $this->arParams["IBLOCK_ID"] ?? 0, "=SECTION_ID" => $sectId],
-                    "select" => ["PROPERTY_ID"],
-                    'cache' => [
-                        'ttl' => 36000,
-                        'cache_joins' => true
-                    ]
-                ])->fetchAll();
-                $sectionPropsId = array_column($rsSectionProps, 'PROPERTY_ID');
+                    $rsSectionProps = \Bitrix\Iblock\SectionPropertyTable::getList([
+                        "filter" => ['=IBLOCK_ID' => $this->arParams["IBLOCK_ID"] ?? 0, "=SECTION_ID" => $sectId],
+                        "select" => ["PROPERTY_ID"],
+                        'cache' => [
+                            'ttl' => 36000000,
+                            'cache_joins' => true
+                        ]
+                    ])->fetchAll();
+                    $sectionPropsId = array_column($rsSectionProps, 'PROPERTY_ID');
 
-                $properties = \Bitrix\Iblock\PropertyTable::getList([
-                    'filter' => [
-                        'IBLOCK_ID' => $this->arParams["IBLOCK_ID"] ?? 0,
-                        'ID' => $sectionPropsId
-                    ],
-                    'cache' => [
-                        'ttl' => 36000,
-                        'cache_joins' => true
-                    ]
-                ])->fetchAll();
+                    $properties = \Bitrix\Iblock\PropertyTable::getList([
+                        'filter' => [
+                            'IBLOCK_ID' => $this->arParams["IBLOCK_ID"] ?? 0,
+                            'ID' => $sectionPropsId
+                        ],
+                        'cache' => [
+                            'ttl' => 36000000,
+                            'cache_joins' => true
+                        ]
+                    ])->fetchAll();
 
-                if (!empty($properties)) {
-                    $sectId = (!isset($this->arParams['PARENT_SECTION_ID'])) ? ["SECTION_ID" => $this->arParams['SECTION_ID']] : [
-                        "PARENT_SECTION_ID" => $this->arParams['PARENT_SECTION_ID'], "SECTION_ID" => $this->arParams['SECTION_ID']
-                    ];
-                    $this->requiredFields = $this->getRequiredFields($sectId);
+                    if (!empty($properties)) {
+                        $sectId = (!isset($this->arParams['PARENT_SECTION_ID'])) ? ["SECTION_ID" => $this->arParams['SECTION_ID']] : [
+                            "PARENT_SECTION_ID" => $this->arParams['PARENT_SECTION_ID'], "SECTION_ID" => $this->arParams['SECTION_ID']
+                        ];
+                        $this->requiredFields = $this->getRequiredFields($sectId);
 
-                    foreach ($properties as $field) {
-                        $this->arResult["SHOW_FIELDS"][$field['CODE']] = $field;
-                        $this->arResult["SHOW_FIELDS"][$field['CODE']]['CUSTOM_IS_REQUIRED'] = (in_array($field['ID'], $this->requiredFields)) ? "Y" : "N";
+                        foreach ($properties as $field) {
+                            $this->arResult["SHOW_FIELDS"][$field['CODE']] = $field;
+                            $this->arResult["SHOW_FIELDS"][$field['CODE']]['CUSTOM_IS_REQUIRED'] = (in_array($field['ID'], $this->requiredFields)) ? "Y" : "N";
 
-                        if ($field["PROPERTY_TYPE"] === "E" || $field["PROPERTY_TYPE"] === "G") {
-                            $linkElements = ElementTable::getList([
-                                "filter" => ["=IBLOCK_ID" => $field["LINK_IBLOCK_ID"]],
-                                "select" => ["NAME", "ID"]
-                            ])->fetchAll();
-                            $this->arResult["SHOW_FIELDS"][$field['CODE']]["LINK_ELEMENTS"] = $linkElements;
-                        }
+                            if ($field["PROPERTY_TYPE"] === "E" || $field["PROPERTY_TYPE"] === "G") {
+                                $linkElements = ElementTable::getList([
+                                    "filter" => ["=IBLOCK_ID" => $field["LINK_IBLOCK_ID"]],
+                                    "select" => ["NAME", "ID"]
+                                ])->fetchAll();
+                                $this->arResult["SHOW_FIELDS"][$field['CODE']]["LINK_ELEMENTS"] = $linkElements;
+                            }
 
-                        if ($field["PROPERTY_TYPE"] === "L") {
-                            $linkElements = \Bitrix\Iblock\PropertyEnumerationTable::getList([
-                                "filter" => ["=PROPERTY_ID" => $field["ID"]],
-                            ])->fetchAll();
-                            $this->arResult["SHOW_FIELDS"][$field['CODE']]["PROPERTY_LIST"] = $linkElements;
+                            if ($field["PROPERTY_TYPE"] === "L") {
+                                $linkElements = \Bitrix\Iblock\PropertyEnumerationTable::getList([
+                                    "filter" => ["=PROPERTY_ID" => $field["ID"]],
+                                ])->fetchAll();
+                                $this->arResult["SHOW_FIELDS"][$field['CODE']]["PROPERTY_LIST"] = $linkElements;
+                            }
                         }
                     }
-                }
 
-                $rsSection = SectionTable::getList([
-                    'filter' => ['=IBLOCK_ID' => $this->arParams["IBLOCK_ID"], "ACTIVE" => "Y"],
-                    'cache' => [
-                        'ttl' => 36000,
-                        'cache_joins' => true
-                    ],
-                ])->fetchAll();
-                $this->arResult["SECTIONS"] = $rsSection;
+                    $rsSection = SectionTable::getList([
+                        'filter' => ['=IBLOCK_ID' => $this->arParams["IBLOCK_ID"], "ACTIVE" => "Y"],
+                        'cache' => [
+                            'ttl' => 36000000,
+                            'cache_joins' => true
+                        ],
+                    ])->fetchAll();
+                    $this->arResult["SECTIONS"] = $rsSection;
+                }
 
                 $this->templateFolder = $this->getPath() . '/templates/' . $this->getTemplateName();
                 if ($this->data['POST']['ajax'] === 'Y') {

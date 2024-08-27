@@ -45,20 +45,29 @@ function pr($o, $show = false, $die = false, $fullBackTrace = false)
     }
 }
 
-function getSections(array $filter) : array
+function getSections(array $filter, string $key) : array
 {
-    $sections = \Bitrix\Iblock\SectionTable::getList([
-        'filter' => $filter,
-        'select' => ['ID', 'CODE', 'NAME', 'PICTURE'],
-    ])->fetchAll();
+    $cache = \Bitrix\Main\Data\Cache::createInstance(); // получаем экземпляр класса
+    $ttl = 36000000;
+    $cacheKey = 'section_' . $key;
+    if ($cache->initCache($ttl, $cacheKey)) { // проверяем кеш и задаём настройки
+        $sections = $cache->getVars(); // достаем переменные из кеша
+    } elseif ($cache->startDataCache()) {
+        $sections = \Bitrix\Iblock\SectionTable::getList([
+            'filter' => $filter,
+            'select' => ['ID', 'CODE', 'NAME', 'PICTURE'],
+        ])->fetchAll();
 
-    if (!empty($sections)) {
-        foreach ($sections as &$row) {
-            if (!empty($row['PICTURE'])) {
-                $row['PICTURE'] = CFile::GetPath($row['PICTURE']);
+        if (!empty($sections)) {
+            foreach ($sections as &$row) {
+                if (!empty($row['PICTURE'])) {
+                    $row['PICTURE'] = CFile::GetPath($row['PICTURE']);
+                }
             }
+            unset($row);
         }
-        unset($row);
+
+        $cache->endDataCache($sections);
     }
 
     return $sections;
@@ -90,19 +99,6 @@ function setBlocksFields(array $showFields, array $sectId) : array {
     $tmpLastKey = null;
 
     if (!empty($resBlocks)) {
-//        $entityRequiredFields = getHlblock("b_required_fields");
-//        $requiredFields = $entityRequiredFields::getList([
-//            'filter' => ['=UF_SECTION' => $sectId],
-//            'select' => ['UF_FIELDS'],
-//        ])->fetchAll();
-//
-//        $requiredFieldsId = [];
-//        foreach ($requiredFields as $item) {
-//            foreach ($item["UF_FIELDS"] as $value) {
-//                $requiredFieldsId[] = $value;
-//            }
-//        }
-
         foreach ($resBlocks as $block) {
             $tmpLastKey = $block["UF_CODE"];
             if (in_array($sectId['SECTION_ID'], $block["UF_SECTIONS"])) {
@@ -123,19 +119,15 @@ function setBlocksFields(array $showFields, array $sectId) : array {
                     $lastFieldKey = $block["UF_CODE"];
                     foreach ($showFields as $field) {
                         if(in_array($field['ID'], $fields['UF_FIELDS'])) {
-//                            pr($block["UF_CODE"]);
-//                            $field['CUSTOM_IS_REQUIRED'] = (in_array($field['ID'], $requiredFieldsId ?? [])) ? "Y" : "N";
                             $sortShowFields[$block["UF_CODE"]]['FIELDS'][] = $field;
                         }
                     }
                 }
             }
         }
-//        pr($sortShowFields);
     }
     $lastFieldKey = ($tmpLastKey === $lastFieldKey) ? $lastFieldKey : $tmpLastKey;
 
-//    pr($sortShowFields);
     return ['lastKey' => $lastFieldKey, 'fields' => $sortShowFields];
 }
 function sortFields(array $showFields) : array
