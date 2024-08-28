@@ -49,9 +49,10 @@ function pr($o, $show = false, $die = false, $fullBackTrace = false)
 
 function getSections(array $filter): array
 {
-    $sections = \Bitrix\Iblock\SectionTable::getList([
-        'filter' => $filter,
-        'select' => ['ID', 'CODE', 'NAME', 'PICTURE'],
+    $entity = \Bitrix\Iblock\Model\Section::compileEntityByIblock(CATALOG_IBLOCK_ID);
+    $sections = $entity::getList([
+        "select" => ['ID', 'CODE', 'NAME', 'UF_IMG'],
+        "filter" => $filter,
         'cache' => [
             'ttl' => 36000000,
             'cache_joins' => true
@@ -60,8 +61,8 @@ function getSections(array $filter): array
 
     if (!empty($sections)) {
         foreach ($sections as &$row) {
-            if (!empty($row['PICTURE'])) {
-                $row['PICTURE'] = CFile::GetPath($row['PICTURE']);
+            if (!empty($row['UF_IMG'])) {
+                $row['PICTURE'] = CFile::GetPath($row['UF_IMG']);
             }
         }
         unset($row);
@@ -131,7 +132,7 @@ function setBlocksFields(array $showFields, array $sectId): array
 function sortFields(array $showFields): array
 {
     $pairFields = [];
-//    pr($arResult['SORT_SHOW_FIELDS']);
+
     foreach ($showFields as $block => &$item) {
         if (isset($item['FIELDS']) && is_array($item['FIELDS'])) {
             usort($item['FIELDS'], 'compareBySort');
