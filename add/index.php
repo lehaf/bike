@@ -5,15 +5,13 @@ $sectionId = "";
 if(isset($_GET['type'])) {
 	$APPLICATION->SetTitle("Подать объявление");
 	$sectionId = $_GET['type'];
-	$template = 'fields';
 } else {
 	$APPLICATION->SetTitle("Выберите категорию");
-	$template = 'sections';
 }
 ?>
 <?$APPLICATION->IncludeComponent(
 	"web:create.element",
-	$template,
+	".default",
 	array(
 		"IS_TEMPLATE_INCLUDE" => "Y",
 		"COMPONENT_TEMPLATE" => ".default",
