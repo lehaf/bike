@@ -13,8 +13,6 @@
 
 .wrapper {
     max-width: 1920px;
-    margin: 0 auto;
-    padding: 0 110px;
 }
 
 @media (max-width: 1350px) {
