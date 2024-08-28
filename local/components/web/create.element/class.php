@@ -303,7 +303,7 @@ class CreateElement extends \CBitrixComponent
     {
         ob_end_clean();
         if (!empty($data["POST"])) {
-
+            Debug::dumpToFile($data['POST']);
             if (!isset($data["POST"]["NAME"])) {
                 $data["POST"]["NAME"] = $this->setName($data);
             }
@@ -536,6 +536,7 @@ class CreateElement extends \CBitrixComponent
                             if ($field["PROPERTY_TYPE"] === "L") {
                                 $linkElements = \Bitrix\Iblock\PropertyEnumerationTable::getList([
                                     "filter" => ["=PROPERTY_ID" => $field["ID"]],
+                                    "order" => ["VALUE" => "ASC"],
                                     'cache' => [
                                         'ttl' => 36000000,
                                         'cache_joins' => true
@@ -546,15 +547,6 @@ class CreateElement extends \CBitrixComponent
                         }
                     }
                 }
-
-                $rsSection = SectionTable::getList([
-                    'filter' => ['=IBLOCK_ID' => $this->arParams["IBLOCK_ID"], "ACTIVE" => "Y"],
-                    'cache' => [
-                        'ttl' => 36000000,
-                        'cache_joins' => true
-                    ],
-                ])->fetchAll();
-                $this->arResult["SECTIONS"] = $rsSection;
 
                 $this->templateFolder = $this->getPath() . '/templates/' . $this->getTemplateName();
                 if ($this->data['POST']['ajax'] === 'Y') {

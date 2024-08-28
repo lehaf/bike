@@ -1,6 +1,6 @@
 <?php if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) die(); ?>
 <?php
-$productsSections = [PRODUCTS_SECTION_ID, TIRES_SECTION_ID, SERVICES_SECTION_ID, GARAGES_SECTION_ID];
+$productsSections = [TIRES_SECTION_ID, PRODUCTS_SECTION_ID, SERVICES_SECTION_ID, GARAGES_SECTION_ID];
 $sections = [TRANSPORT_SECTION_ID, PARTS_SECTION_ID, $productsSections];
 $arResult["CUSTOM_SECTIONS"] = [];
 if (!empty($sections)) {

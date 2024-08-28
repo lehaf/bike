@@ -1,6 +1,9 @@
 // несколько селектов с кнопкой сброса
 document.addEventListener("DOMContentLoaded", () => {
     $(".step-form__btn:not(.step-form__btn-submit)").on("click", stepBtn);
+    $(".custom-input.number").on('input', function() {
+        this.value = this.value.replace(/[^0-9]/g, '');
+    });
 
     const selectList = document.querySelectorAll(".custom-select");
     const selectDisabled = document.querySelector(".select-disabled");
@@ -54,7 +57,9 @@ document.addEventListener("DOMContentLoaded", () => {
         );
     }
 
-    function ajaxSelect(listsArr, elChoices, listType) {
+    function ajaxSelect(el, listsArr, elChoices, listType) {
+        elChoices.setChoiceByValue('');
+        $(el).siblings('.choices__list').find('.choices__item--selectable').addClass('choices__placeholder');
         elChoices.clearChoices();
         $('[data-select="' + listType + '"]').empty();
         if (listsArr) {
@@ -124,15 +129,18 @@ document.addEventListener("DOMContentLoaded", () => {
                 return res.json();
             }).then(data => {
                 if (flag === 'getRegions') {
+                    let emptyOption = regionEl.querySelector('option[value=""]');
+                    if (emptyOption) emptyOption.selected = true;
+
                     let listsArr = data;
                     listsArr.unshift({ID: "", NAME: 'Область'}, {ID: "reset", NAME: "Сбросить"});
-                    ajaxSelect(listsArr, regionSelect, 'region-list');
+                    ajaxSelect(regionEl, listsArr, regionSelect, 'region-list');
                 }
 
                 if (flag === 'getCities') {
                     let cityArr = data;
                     cityArr.unshift({ID: "", NAME: 'Город'}, {ID: "reset", NAME: "Сбросить"});
-                    ajaxSelect(cityArr, citySelect, 'city-list');
+                    ajaxSelect(cityEl, cityArr, citySelect, 'city-list');
                 }
                 $('#stepForm').removeClass('blur')
             }).catch((error) => console.log(error));
@@ -320,6 +328,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const brandBlock = document.querySelector("#brandBlock");
     const modelBlock = document.querySelector("#modelBlock");
     const brandInput = document.querySelector("#brand");
+    const brandModalInput = document.querySelector("#brandModel");
 
     if (brandBlock && modelBlock && brandInput) {
         function objContent(obj, flag) {
@@ -364,7 +373,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (content && !noMark) {
                     brandInput.value = content.textContent.replace(/\s+/g, '');
                     $("#brandBlock").removeClass("active");
-                    brandModalInput.removeAttribute("disabled")
+                    brandModalInput.removeAttribute("disabled");
+                    brandModalInput.value = "";
                     getCategories('getModels', 'categories', content.getAttribute('data-id'));
 
                 } else if (noMark) {
@@ -396,8 +406,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
     }
-
-    const brandModalInput = document.querySelector("#brandModel");
 
     if (brandModalInput) {
         function inputBrandModel(objModelFull) {
@@ -550,7 +558,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const templatePhone = function () {
         return `
  <div class="form-group form-group--tel__new">
-     <input type="tel" placeholder="+375 (xx) xxx-xx-xx" class="custom-input dataUserTel" name="phone[]">
+     <input type="tel" placeholder="+375 (xx) xxx-xx-xx" class="custom-input dataUserTel">
      <span class="remove_phone">
      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M8.09758 6.44252L11.9531 10.298L10.2599 11.9912L6.40441 8.13569L2.56149 11.9786L0.845798 10.2629L4.68872 6.41999L0.842858 2.57413L2.53602 0.880967L6.38188 4.72683L10.2629 0.845859L11.9785 2.56156L8.09758 6.44252Z" fill="#666666"/>
@@ -790,8 +798,16 @@ document.addEventListener("DOMContentLoaded", () => {
             let formData = new FormData(event.target);
             formData.append('ajax', 'Y');
 
+            let phones = document.querySelectorAll('.dataUserTel');
+            if(phones.length !== 0) {
+                phones.forEach(phone => {
+                    if(phone.value.length !== 0) {
+                        formData.append('phone[]', phone.value);
+                    }
+                })
+            }
+            console.log(phones.length);
             // formData.append('NAME', 'test');
-
 
             let sectId = document.querySelectorAll("[name='IBLOCK_SECTION_ID']");
             if (sectId.length > 0) {
@@ -843,19 +859,17 @@ document.addEventListener("DOMContentLoaded", () => {
                             allErrorBlocks.forEach(error => {error.classList.remove('show');})
                         }
 
-                        let allErrorChoices = document.querySelectorAll('.choices__inner.error');
+                        let allErrorChoices = document.querySelectorAll('.error');
                         if(allErrorChoices.length !== 0) {
                             allErrorChoices.forEach(error => {error.classList.remove('error');})
                         }
 
                         for(let key in data['ERRORS']) {
                             let element = document.querySelector('[name="' + key + '"]') || document.querySelector('[name="' + key + '[]"]');
-
                             if(key === "country") {
                                 let parentCountryBlock = element.closest('.step-form__inner');
                                 let checkBlocks = parentCountryBlock.querySelectorAll('.check-block.country');
                                 checkBlocks.forEach(block => {
-                                    console.log(block.value);
                                     if (!block.value || block.value == 0) {
                                         block.closest(".form-group").querySelector(".choices__inner").classList.add("error");
                                         block.closest(".form-group").querySelector(".error-form").classList.add("show");
@@ -864,15 +878,21 @@ document.addEventListener("DOMContentLoaded", () => {
                             }
 
                             if (element) {
-                                let parentElement = element.closest('.form-group') || element.closest('.form-row');
-                                parentElement.querySelector(".choices__inner").classList.add("error");
+                                let tagName = element.tagName;
+                                let parentElement = element.closest('.form-group:not(.form-group--tel)') || element.closest('.form-row');
+
+                                if (tagName === "SELECT") {
+                                    parentElement.querySelector(".choices__inner").classList.add("error");
+                                } else {
+                                    element.classList.add("error");
+                                }
 
                                 let errorBlock = parentElement.querySelector('.error-form');
                                 if(errorBlock) errorBlock.classList.add('show');
                             }
                         }
                         $("#stepForm").removeClass('blur');
-                        let hiddenElem = document.querySelector('.error-form');
+                        let hiddenElem = document.querySelector('.error-form.show');
                         hiddenElem.scrollIntoView({block: "center", behavior: "smooth"});
                     }
                 })

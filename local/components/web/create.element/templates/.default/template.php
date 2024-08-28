@@ -84,7 +84,7 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                                     <div class="form-group row--split">
                                         <label for="price" class="form-group__label">Цена<span>*</span></label>
                                         <div class="form-group-row">
-                                            <input type="text" class="custom-input check-block"
+                                            <input type="text" class="custom-input check-block number"
                                                    placeholder="Например, 1000 BYN"
                                                    id="price"
                                                    autocomplete="off" name="PRICE">
@@ -171,6 +171,7 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                                                                    placeholder="<?= $value['NAME'] ?>" data-size="м"
                                                                 <?= ($value['CODE'] === 'square') ? 'disabled' : '' ?>
                                                             >
+                                                            <div class="error-form">Необходимо заполнить <?= $value['NAME'] ?></div>
                                                         </div>
                                                     <?php endif; ?>
                                                 <?php endforeach; ?>
@@ -238,7 +239,7 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                                                     </div>
                                                 </div>
                                             <?php elseif ($field['CODE'] === 'color' && !empty($field['PROPERTY_LIST'])): ?>
-                                                <div class="form-group form-group--radio-color">
+                                                <div class="form-group form-group--radio-color <?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? 'form-checked check-block' : '' ?>">
                                                     <label class="form-group__label"><?= $field['NAME'] ?><?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? '<span>*</span>' : '' ?></label>
                                                     <div class="form-row form-row-radio-mini form-row-radio-mini--color">
                                                         <?php foreach ($field['PROPERTY_LIST'] as $item): ?>
@@ -255,6 +256,7 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                                                             </div>
                                                         <?php endforeach; ?>
                                                     </div>
+                                                    <div class="error-form">Необходимо заполнить  «<?= $field['NAME'] ?>»</div>
                                                 </div>
                                             <?php else: ?>
                                                 <?php
@@ -473,7 +475,7 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                                                                                placeholder="+375 (xx) xxx-xx-xx"
                                                                                class="dataUserTel custom-input <?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? 'check-block' : '' ?>"
                                                                                id="dataUserTel"
-                                                                               name="<?= $field['CODE'] ?>[]">
+                                                                               name="<?= $field['CODE'] ?>">
                                                                     </div>
                                                                 </div>
                                                                 <div class="add-new-phone">
@@ -514,7 +516,7 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                                                                class="form-group__label"><?= $field['NAME'] ?><?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? '<span>*</span>' : '' ?></label>
                                                         <div class="form-row">
                                                             <input type="text"
-                                                                   class="custom-input <?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? 'check-block' : '' ?>"
+                                                                   class="custom-input number <?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? 'check-block' : '' ?>"
                                                                    placeholder="<?= $field['NAME'] ?>"
                                                                    id="<?= $field['CODE'] ?>"
                                                                    name="<?= $field['CODE'] ?>"
@@ -629,7 +631,7 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                                     </div>
                                     <div class="step-category-inner <?= ($lastSectKey === $key) ? 'step-category-inner--center' : ''; ?>">
                                         <?php foreach ($sections as $number => $sect): ?>
-                                            <a class="step-category__el <?= ($number === count($sect) && $lastSectKey !== $key) ? 'step-category__el--center' : '' ?>"
+                                            <a class="step-category__el <?= ($number === (count($sections)-1) && $lastSectKey !== $key) ? 'step-category__el--center' : '' ?>"
                                                data-id="<?= $sect["ID"] ?>"
                                                href="?type=<?= $sect["ID"] ?>"
                                             >

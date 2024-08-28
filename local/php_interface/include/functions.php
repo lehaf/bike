@@ -53,6 +53,7 @@ function getSections(array $filter): array
     $sections = $entity::getList([
         "select" => ['ID', 'CODE', 'NAME', 'UF_IMG'],
         "filter" => $filter,
+        "order" => ['SORT' => 'ASC'],
         'cache' => [
             'ttl' => 36000000,
             'cache_joins' => true
