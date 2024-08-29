@@ -189,7 +189,7 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                                                                    class="form-group__label"><?= $field['race']['NAME'] ?><?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? '<span>*</span>' : '' ?></label>
                                                             <div class="form-group-row">
                                                                 <input type="text"
-                                                                       class="custom-input <?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? 'check-block' : '' ?>"
+                                                                       class="number custom-input <?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? 'check-block' : '' ?>"
                                                                        placeholder="<?= $field['race']['NAME'] ?>"
                                                                        id="<?= $field['race']['CODE'] ?>"
                                                                        autocomplete="off">
@@ -212,7 +212,7 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                                                         <label for="<?= $field['power']['CODE'] ?>"
                                                                class="form-group__label"><?= $field['power']['NAME'] ?><?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? '<span>*</span>' : '' ?></label>
                                                         <input type="text"
-                                                               class="custom-input size-input <?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? 'check-block' : '' ?>"
+                                                               class="number custom-input size-input <?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? 'check-block' : '' ?>"
                                                                id="<?= $field['power']['CODE'] ?>"
                                                                placeholder="<?= $field['power']['NAME'] ?>"
                                                                data-size="см³">
@@ -224,7 +224,7 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                                                         <label for="lengthProduct"
                                                                class="form-group__label"><?= $field['length']['NAME'] ?><?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? '<span>*</span>' : '' ?></label>
                                                         <input type="text"
-                                                               class="custom-input size-input <?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? 'check-block' : '' ?>"
+                                                               class="custom-input number size-input <?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? 'check-block' : '' ?>"
                                                                id="<?= $field['length']['CODE'] ?>"
                                                                placeholder="<?= $field['length']['NAME'] ?>"
                                                                data-size="м">
@@ -233,7 +233,7 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                                                         <label for="widthProduct"
                                                                class="form-group__label"><?= $field['high']['NAME'] ?><?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? '<span>*</span>' : '' ?></label>
                                                         <input type="text"
-                                                               class="custom-input size-input <?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? 'check-block' : '' ?>"
+                                                               class="custom-input number size-input <?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? 'check-block' : '' ?>"
                                                                id="<?= $field['high']['CODE'] ?>"
                                                                placeholder="<?= $field['length']['NAME'] ?>"
                                                                data-size="м">

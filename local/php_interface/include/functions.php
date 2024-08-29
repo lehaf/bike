@@ -135,10 +135,6 @@ function sortFields(array $showFields): array
     $pairFields = [];
 
     foreach ($showFields as $block => &$item) {
-        if (isset($item['FIELDS']) && is_array($item['FIELDS'])) {
-            usort($item['FIELDS'], 'compareBySort');
-        }
-
         $fieldsCode = array_column($item["FIELDS"], 'CODE');
 
         if (in_array('length', $fieldsCode) && in_array('height', $fieldsCode) && $block !== 'TECHNICAL') {

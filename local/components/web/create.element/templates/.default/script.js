@@ -19,6 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     searchEnabled: true,
                     shouldSort: false,
                     searchPlaceholderValue: text,
+                    position: 'bottom'
                 })
                 if (el.id === 'categorySelect') {
                     selectCategory = selectSearch;
@@ -29,6 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const selectType = new Choices(el, {
                     searchEnabled: false,
                     shouldSort: false,
+                    position: 'bottom'
                 })
                 listenerSelect(el, selectType)
             }
@@ -57,9 +59,15 @@ document.addEventListener("DOMContentLoaded", () => {
         );
     }
 
-    function ajaxSelect(el, listsArr, elChoices, listType) {
+    function ajaxSelect(el, secondEl, listsArr, elChoices, secondElChoices, listType) {
         elChoices.setChoiceByValue('');
         $(el).siblings('.choices__list').find('.choices__item--selectable').addClass('choices__placeholder');
+        if(secondElChoices) {
+            secondElChoices.setChoiceByValue('');
+            secondElChoices.disable();
+        }
+        if(secondEl) $(secondEl).siblings('.choices__list').find('.choices__item--selectable').addClass('choices__placeholder');
+
         elChoices.clearChoices();
         $('[data-select="' + listType + '"]').empty();
         if (listsArr) {
@@ -134,13 +142,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     let listsArr = data;
                     listsArr.unshift({ID: "", NAME: 'Область'}, {ID: "reset", NAME: "Сбросить"});
-                    ajaxSelect(regionEl, listsArr, regionSelect, 'region-list');
+                    ajaxSelect(regionEl, cityEl, listsArr, regionSelect, citySelect, 'region-list');
                 }
 
                 if (flag === 'getCities') {
                     let cityArr = data;
                     cityArr.unshift({ID: "", NAME: 'Город'}, {ID: "reset", NAME: "Сбросить"});
-                    ajaxSelect(cityEl, cityArr, citySelect, 'city-list');
+                    ajaxSelect(cityEl, null, cityArr, citySelect, null,'city-list');
                 }
                 $('#stepForm').removeClass('blur')
             }).catch((error) => console.log(error));
@@ -255,7 +263,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (flag === 'getCategories') {
                     let categoryArr = data;
                     categoryArr.unshift({ID: "", NAME: 'Поиск по названию'}, {ID: "reset", NAME: "Сбросить"});
-                    ajaxSelect(categoryEl, categoryArr, selectCategory, 'cat-list');
+                    ajaxSelect(categoryEl, null, categoryArr, selectCategory, null, 'cat-list');
                 }
 
                 if (flag === 'getSubCategories') {

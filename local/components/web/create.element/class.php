@@ -306,8 +306,6 @@ class CreateElement extends \CBitrixComponent
                 $data["POST"]["NAME"] = $this->setName($data);
             }
 
-            Debug::dumpToFile($data["POST"]);
-
             if (!isset($data["POST"]["IBLOCK_SECTION_ID"])) {
                 $data["POST"]["IBLOCK_SECTION_ID"] = $data['GET']['type'];
             }
@@ -482,6 +480,7 @@ class CreateElement extends \CBitrixComponent
                             'IBLOCK_ID' => $this->arParams["IBLOCK_ID"] ?? 0,
                             'ID' => $sectionPropsId
                         ],
+                        'order' => ['SORT' => 'ASC']
                     ])->fetchAll();
 
                     if (!empty($properties)) {
@@ -493,7 +492,6 @@ class CreateElement extends \CBitrixComponent
                         foreach ($properties as $field) {
                             $this->arResult["SHOW_FIELDS"][$field['CODE']] = $field;
                             $this->arResult["SHOW_FIELDS"][$field['CODE']]['CUSTOM_IS_REQUIRED'] = (in_array($field['ID'], $this->requiredFields)) ? "Y" : "N";
-                            $this->arResult['COUNTRIES'] = [];
 
                             if($field['CODE'] === 'country') {
                                 $countries = \Bitrix\Sale\Location\LocationTable::getList([
@@ -514,6 +512,7 @@ class CreateElement extends \CBitrixComponent
                                     ]
                                 ])->fetchAll();
                                 $this->arResult['COUNTRIES'] = $countries;
+                                Debug::dumpToFile($this->arResult['COUNTRIES']);
                             }
 
                             $this->arResult['CURRENCIES'] = \Bitrix\Currency\CurrencyTable::getList([
@@ -546,6 +545,7 @@ class CreateElement extends \CBitrixComponent
                             }
                         }
                     }
+
                 }
 
                 $this->templateFolder = $this->getPath() . '/templates/' . $this->getTemplateName();
