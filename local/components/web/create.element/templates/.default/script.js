@@ -255,7 +255,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (flag === 'getCategories') {
                     let categoryArr = data;
                     categoryArr.unshift({ID: "", NAME: 'Поиск по названию'}, {ID: "reset", NAME: "Сбросить"});
-                    ajaxSelect(categoryArr, selectCategory, 'cat-list');
+                    ajaxSelect(categoryEl, categoryArr, selectCategory, 'cat-list');
                 }
 
                 if (flag === 'getSubCategories') {
@@ -584,8 +584,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 $("#square").val(result + ", м2")
             }
         }
-        const value = this.value.replace(this.getAttribute("data-size"), "");
-        this.value = value.replace(", ", "") + ", " + this.getAttribute("data-size");
+        // const value = this.value.replace(this.getAttribute("data-size"), "");
+        // this.value = value.replace(", ", "") + ", " + this.getAttribute("data-size");
 
 
     })
@@ -761,7 +761,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     } else {
                         el.classList.add("error");
                     }
-                    el.closest(".form-group").querySelector(".error-form").classList.add("show");
+                    let parent =   el.closest(".form-col") ||  el.closest(".form-group");
+                   parent.querySelector(".error-form").classList.add("show");
                     return false
                 } else if (listCheck.length === i + 1) {
                     flag = true
@@ -798,7 +799,11 @@ document.addEventListener("DOMContentLoaded", () => {
             let formData = new FormData(event.target);
             formData.append('ajax', 'Y');
 
+            let square = document.querySelector('input[name="square"]');
+            if(square) formData.append('square', square.value);
+
             let phones = document.querySelectorAll('.dataUserTel');
+            formData.delete('phone');
             if(phones.length !== 0) {
                 phones.forEach(phone => {
                     if(phone.value.length !== 0) {
@@ -806,7 +811,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
                 })
             }
-            console.log(phones.length);
+
             // formData.append('NAME', 'test');
 
             let sectId = document.querySelectorAll("[name='IBLOCK_SECTION_ID']");
@@ -879,7 +884,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                             if (element) {
                                 let tagName = element.tagName;
-                                let parentElement = element.closest('.form-group:not(.form-group--tel)') || element.closest('.form-row');
+                                let parentElement =  element.closest('.form-col') || element.closest('.form-group:not(.form-group--tel)') || element.closest('.form-row');
 
                                 if (tagName === "SELECT") {
                                     parentElement.querySelector(".choices__inner").classList.add("error");
@@ -900,89 +905,3 @@ document.addEventListener("DOMContentLoaded", () => {
         })
     }
 })
-
-
-// document.addEventListener('DOMContentLoaded', () => {
-//     let file = document.querySelectorAll("input[type='file']")[0];
-//     let file1 = document.querySelectorAll("input[type='file']")[1];
-//     let formData = new FormData();
-//     let imagesBlock = document.querySelector('.images');
-//
-//     file.addEventListener("change", event => {
-//         let files = event.target.files;
-//         for (let i = 0; i < files.length; i++) {
-//             formData.append('IMAGES[]', files[i]);
-//             let fileReader = new FileReader();
-//             fileReader.onload = function() {
-//                 let container = document.createElement('div');
-//                 let img = document.createElement('img');
-//                 let button = document.createElement('button');
-//
-//                 container.setAttribute("class", "img-container");
-//
-//                 console.log(files[i]);
-//                 img.src = fileReader.result;
-//                 img.width = 100;
-//                 img.height = 100;
-//                 img.setAttribute("data-name", files[i].name);
-//
-//                 button.innerText = "Повернуть";
-//                 button.setAttribute("class", "rotate");
-//                 container.appendChild(img);
-//                 container.appendChild(button);
-//                 imagesBlock.appendChild(container);
-//             }
-//             fileReader.readAsDataURL(files[i]);
-//
-//         }
-//     });
-//
-//     document.addEventListener("click", e => {
-//         if(!e.target.classList.contains("rotate")) return;
-//         e.target.previousSibling.setAttribute("data-rotate", "90");
-//     })
-//     document.querySelector("#submit").addEventListener("click", e => {
-//
-//         let files = file.files;
-//         let date = document.querySelector("input[type='date']");
-//         if(file.getAttribute('data-isImages') === "Y") {
-//             console.log("hello");
-//             formData.append('IMAGES[is_images]', true);
-//         }
-//
-//         let rotateImages = document.querySelectorAll("img[data-rotate]");
-//         let imagesData = {};
-//         rotateImages.forEach((img, key) => {
-//
-//             let name = img.getAttribute("data-name");
-//             let post = file.getAttribute("name").replace(/[\[\]]/g, '')
-//             let rotateValue = img.getAttribute("data-rotate");
-//             formData.append(`ROTATE_IMAGES[${post}][${key}][NAME]`, name);
-//             formData.append(`ROTATE_IMAGES[${post}][${key}][ROTATE]`, 90);
-//
-//         })
-//
-//
-//
-//         console.log(formData);
-//
-//         formData.append('ajax', 'Y');
-//         formData.append('NAME', 'name');
-//         formData.append('PRICE', '100');
-//         formData.append('DELIVERY', "DELIVERY");
-//         formData.append('PREVIEW_PICTURE', file.files[0]);
-//         formData.append('INSTRUCTIONS[]', file1.files[0]);
-//         formData.append('INSTRUCTIONS[]', file1.files[1]);
-//         formData.append('PRODUCER', 387);
-//
-//         formData.append('TABS[]', 35);
-//         formData.append('TABS[]', 36);
-//
-//         fetch(window.location.href, {
-//             method: 'POST',
-//             body: formData
-//         }).then(response => response.json())
-//             .then(data => console.log(data))
-//             .catch(error => console.error('Ошибка:', error));
-//     })
-// })

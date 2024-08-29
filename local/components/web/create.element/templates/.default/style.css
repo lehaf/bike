@@ -760,6 +760,10 @@ input[type="radio"] {
     transition: .3s;
 }
 
+.custom-textarea:focus {
+    background: #fafafa !important;
+}
+
 .textarea-info {
     position: absolute;
     width: calc(100% - 2px);
@@ -1033,7 +1037,7 @@ input[type="radio"] {
 
 .choices[data-type*=select-one] .choices__input.choices__input--cloned {
     position: absolute;
-    height: 41px;
+    height: 45px;
     z-index: 2;
     bottom: calc(100% + 4px);
     border: 1px solid #ed1c24;

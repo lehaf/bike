@@ -164,11 +164,12 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                                                     <?php if ($value['PROPERTY_TYPE'] === 'S' || $value['PROPERTY_TYPE'] === 'N'): ?>
                                                         <div class="form-col">
                                                             <label for="<?= $value['CODE'] ?>"
-                                                                   class="form-group__label"><?= $value['NAME'] ?><?= ($value['CUSTOM_CUSTOM_IS_REQUIRED'] === 'Y') ? '<span>*</span>' : '' ?></label>
+                                                                   class="form-group__label"><?= $value['NAME'] ?><?= ($value['CUSTOM_IS_REQUIRED'] === 'Y') ? '<span>*</span>' : '' ?></label>
                                                             <input type="text"
-                                                                   class="custom-input size-input <?= ($value['CODE'] !== 'square') ? 'size-input--square' : '' ?>"
+                                                                   class="number custom-input size-input <?= ($value['CUSTOM_IS_REQUIRED'] === 'Y') ? 'check-block' : '' ?> <?= ($value['CODE'] !== 'square') ? 'size-input--square' : '' ?>"
                                                                    id="<?= $value['CODE'] ?>"
-                                                                   placeholder="<?= $value['NAME'] ?>" data-size="м"
+                                                                   placeholder="<?= $value['NAME'] ?>"
+                                                                   name="<?= $value['CODE'] ?>"
                                                                 <?= ($value['CODE'] === 'square') ? 'disabled' : '' ?>
                                                             >
                                                             <div class="error-form">Необходимо заполнить <?= $value['NAME'] ?></div>

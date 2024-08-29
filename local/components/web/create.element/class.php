@@ -249,7 +249,6 @@ class CreateElement extends \CBitrixComponent
     private function setName(array $data): string
     {
         $section = SectionTable::getById($data['GET']['type'])->fetch();
-        Debug::dumpToFile($section);
         $name = "";
 
         if ((int)$section["IBLOCK_SECTION_ID"] === TRANSPORT_SECTION_ID || (int)$section["IBLOCK_SECTION_ID"] === PARTS_SECTION_ID) {
@@ -303,10 +302,11 @@ class CreateElement extends \CBitrixComponent
     {
         ob_end_clean();
         if (!empty($data["POST"])) {
-            Debug::dumpToFile($data['POST']);
             if (!isset($data["POST"]["NAME"])) {
                 $data["POST"]["NAME"] = $this->setName($data);
             }
+
+            Debug::dumpToFile($data["POST"]);
 
             if (!isset($data["POST"]["IBLOCK_SECTION_ID"])) {
                 $data["POST"]["IBLOCK_SECTION_ID"] = $data['GET']['type'];
