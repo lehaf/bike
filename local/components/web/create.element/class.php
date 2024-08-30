@@ -306,9 +306,37 @@ class CreateElement extends \CBitrixComponent
                 $data["POST"]["NAME"] = $this->setName($data);
             }
 
-            if (!isset($data["POST"]["IBLOCK_SECTION_ID"])) {
-                $data["POST"]["IBLOCK_SECTION_ID"] = $data['GET']['type'];
+            Debug::dumpToFile($data["POST"]);
+
+            $data["POST"]["IBLOCK_SECTION_ID"] = $data["POST"]["IBLOCK_SECTION_ID"] ?? $data['GET']['type'];
+
+            $fieldsToCheck = [
+                "IBLOCK_SECTION_ID" => "Заполните поле",
+                "CATEGORY" => "Заполните поле",
+                "SUBCATEGORY" => "Заполните поле"
+            ];
+
+            foreach ($fieldsToCheck as $field => $errorMessage) {
+                if (isset($data["POST"][$field]) && empty($data["POST"][$field])) {
+                    $this->errors[$field] = $errorMessage;
+                }
             }
+//            if (!isset($data["POST"]["IBLOCK_SECTION_ID"])) {
+//                $data["POST"]["IBLOCK_SECTION_ID"] = $data['GET']['type'];
+//            }
+//
+//            if(empty($data["POST"]["IBLOCK_SECTION_ID"])) {
+//                $this->errors += ["IBLOCK_SECTION_ID" => 'Заполните поле'];
+//            }
+//
+//            if(isset($data["POST"]["CATEGORY"]) && empty($data["POST"]["CATEGORY"])) {
+//                $this->errors += ["CATEGORY" => 'Заполните поле'];
+//            }
+//
+//            if(isset($data["POST"]["SUBCATEGORY"]) && empty($data["POST"]["SUBCATEGORY"])) {
+//                $this->errors += ["SUBCATEGORY" => 'Заполните поле'];
+//            }
+
 
             $data["POST"]["USER"] = \Bitrix\Main\Engine\CurrentUser::get()->getId();
 
@@ -512,7 +540,6 @@ class CreateElement extends \CBitrixComponent
                                     ]
                                 ])->fetchAll();
                                 $this->arResult['COUNTRIES'] = $countries;
-                                Debug::dumpToFile($this->arResult['COUNTRIES']);
                             }
 
                             $this->arResult['CURRENCIES'] = \Bitrix\Currency\CurrencyTable::getList([
@@ -535,7 +562,7 @@ class CreateElement extends \CBitrixComponent
                             if ($field["PROPERTY_TYPE"] === "L") {
                                 $linkElements = \Bitrix\Iblock\PropertyEnumerationTable::getList([
                                     "filter" => ["=PROPERTY_ID" => $field["ID"]],
-                                    "order" => ["VALUE" => "ASC"],
+                                    "order" => ["SORT" => "ASC"],
                                     'cache' => [
                                         'ttl' => 36000000,
                                         'cache_joins' => true

@@ -191,7 +191,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
 //вывод бренд и моделей в блоке
 
-    function getFields(sectId) {
+    function templateBtn() {
+        return `<div className="step-form__btn form__btn--disable ">
+            Далее
+            <svg width="11" height="12" viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                    d="M5.40796 11.5L11 6.00001C9.59738 4.62435 6.81062 1.87566 5.40799 0.5L4.7022 1.1828C5.96397 2.41998 7.63288 4.06854 9.10532 5.5145L-2.1919e-07 5.51447L-2.61636e-07 6.48553L9.10533 6.48553L4.70223 10.8096L5.40796 11.5Z"
+                    fill="white"></path>
+            </svg>
+        </div>`
+    }
+
+    function getFields(sectId, target) {
         $('#stepForm').addClass('blur');
         fetch(window.location.href, {
             method: 'POST',
@@ -200,12 +211,27 @@ document.addEventListener("DOMContentLoaded", () => {
         }).then(res => {
             return res.text();
         }).then(data => {
-            $('.fields .step-form__title').nextUntil('.fields .step-form__btn').remove();
-            $('.fields .step-form__title').hide();
+            let stepFormInner = $('.subcategory').closest('.step-form__inner');
 
-            if (data.trim().length !== 0) {
-                $('.fields .step-form__title').show();
-                $('.fields .step-form__title').after(data);
+            if ($(data).filter('.form-group').length === 0) {
+                $('.fields').remove();
+
+                if(stepFormInner.next().css('display') === 'none' && stepFormInner.find('.step-form__btn').length === 0) {
+                    stepFormInner.append($(data).filter('.step-form__btn'));
+                    stepFormInner.find('.step-form__btn:not(.step-form__btn-submit)').on("click", stepBtn);
+                }
+
+            } else {
+                if ($('.fields').length === 0) {
+                   stepFormInner.after('<div class="step-form__inner fields"></div>');
+                }
+
+                if($('.fields').next().css('display') !== 'none') {
+                    $('.fields').css('display', 'block');
+                    data = $(data).not('.step-form__btn');
+                }
+
+                $('.fields').html(data);
                 $(".fields .step-form__btn:not(.step-form__btn-submit)").on("click", stepBtn);
             }
 
@@ -265,24 +291,31 @@ document.addEventListener("DOMContentLoaded", () => {
                     categoryArr.unshift({ID: "", NAME: 'Поиск по названию'}, {ID: "reset", NAME: "Сбросить"});
                     ajaxSelect(categoryEl, null, categoryArr, selectCategory, null, 'cat-list');
                 }
+            }
 
-                if (flag === 'getSubCategories') {
-                    $('.subcategory').empty();
-                    if (data.length !== 0) {
-                        $('.subcategory').html(data);
-                        let subCatEl = document.querySelector('#subCategorySelect');
-                        let text = subCatEl.getAttribute("data-text")
-                        const selectSearch = new Choices(subCatEl, {
+            if (flag === 'getSubCategories') {
+                $('.subcategory').empty();
+                if (data.length !== 0) {
+                    console.log(data);
+                    $('.subcategory').html(data);
+
+                    let subCatEl = document.querySelector('#subCategorySelect');
+
+                    if(subCatEl) {
+                        let text = subCatEl.getAttribute("data-text");
+                        const newSelectSearch = new Choices(subCatEl, {
                             searchEnabled: true,
                             shouldSort: false,
                             searchPlaceholderValue: text,
+                            position: 'bottom'
                         })
-
-                        listenerSelect(subCatEl, selectSearch)
+                        listenerSelect(subCatEl, newSelectSearch)
                         subCatEl.onchange = () => getFields(subCatEl.value);
-                    } else {
-                        getFields(sectId);
+                        $('.custom-select-inner .choices__item--choice[data-id=1]').hide();
                     }
+
+                } else {
+                    getFields(sectId);
                 }
             }
 
@@ -758,11 +791,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (listCheck.length) {
             $.each(listCheck, function (i, el) {
+                console.log(el.value);
                 let tagName = el.tagName.toLowerCase();
                 if (this.classList.contains("form-checked")) {
                     flag = checkFormButton(el);
                     if (!flag) return false
-                } else if (!el.value) {
+                } else if (!el.value || el.value === "0") {
                     flag = false;
                     if (tagName === "select") {
                         el.closest(".form-group").querySelector(".choices__inner").classList.add("error");
@@ -822,16 +856,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // formData.append('NAME', 'test');
 
-            let sectId = document.querySelectorAll("[name='IBLOCK_SECTION_ID']");
-            if (sectId.length > 0) {
-                let lastSectId = sectId[sectId.length - 1].value;
-                formData.append('sectionId', lastSectId);
+            let sectId = document.querySelector("[name='SUBCATEGORY']") || document.querySelector("[name='CATEGORY']");
+            if (sectId) {
+                if(sectId.value.length !== 0) {
+                    formData.append('sectionId', sectId.value);
+                }
+                formData.append("IBLOCK_SECTION_ID", sectId.value);
             }
 
-            let subSect = document.querySelector("[name='SUBSECT']:checked");
-            if(subSect) {
-                formData.append("IBLOCK_SECTION_ID", subSect.value);
-            }
+            // let subSect = document.querySelector("[name='SUBSECT']:checked");
+            // if(subSect) {
+            //     formData.append("IBLOCK_SECTION_ID", subSect.value);
+            // }
 
             //добавление изображений
             let allImages = document.querySelectorAll(".dropzone__content .preview-img img");
@@ -849,6 +885,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     formData.append("MORE_PHOTO[]", img.getAttribute('src'));
                 })
             }
+
+            console.log(formData);
 
             $("#stepForm").addClass('blur');
             fetch(window.location.href, {

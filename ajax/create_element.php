@@ -10,11 +10,14 @@ if (isset($_POST['action'])) {
     }
     //получение марок и моделей
     if ($_POST['action'] === 'categories') {
-        $sectId = (int)$_POST['sectId'] ?? 0;
-        $categories = getSections([
-            '=IBLOCK_ID' => CATALOG_IBLOCK_ID,
-            '=IBLOCK_SECTION_ID' => $sectId,
-        ]);
+        $sectId = (int)$_POST['sectId'];
+        $categories = [];
+        if($sectId) {
+            $categories = getSections([
+                '=IBLOCK_ID' => CATALOG_IBLOCK_ID,
+                '=IBLOCK_SECTION_ID' => $sectId,
+            ]);
+        }
 
         if ($_POST['flag'] === 'getSubCategories') {
             $options = '';
@@ -25,7 +28,7 @@ if (isset($_POST['action'])) {
                 }
                 $html = '<label for="categorySelect" class="form-group__label">Подкатегория товара<span>*</span></label>
                                     <div class="form-row">
-                                        <select name="IBLOCK_SECTION_ID" class="select-type custom-select selectSearch check-block"
+                                        <select name="SUBCATEGORY" class="select-type custom-select selectSearch check-block"
                                                 id="subCategorySelect" data-text="Поиск по названию" data-select="subcat-list">
                                                 <option value="" selected>
                                                 Поиск по названию
