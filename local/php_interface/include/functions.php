@@ -137,9 +137,9 @@ function sortFields(array $showFields): array
     foreach ($showFields as $block => &$item) {
         $fieldsCode = array_column($item["FIELDS"], 'CODE');
 
-        if (in_array('length', $fieldsCode) && in_array('height', $fieldsCode) && $block !== 'TECHNICAL') {
+        if (in_array('length_tire', $fieldsCode) && in_array('height_tire', $fieldsCode) && $block !== 'TECHNICAL') {
             foreach ($item['FIELDS'] as $key => &$field) {
-                if ($field['CODE'] == 'length' || $field['CODE'] == 'high') {
+                if ($field['CODE'] == 'length_tire' || $field['CODE'] == 'height_tire') {
                     $pairFields[$field['CODE']] = $field;
                     unset($item['FIELDS'][$key]);
                 }

@@ -107,32 +107,6 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                                     </div>
                                 <?php endif; ?>
 
-                                <?php if ($key === 'OTHER_FIELDS'): ?>
-                                    <div class="form-group">
-                                        <div class="form-row">
-                                        <textarea name="DETAIL_TEXT" class="custom-textarea"
-                                                  placeholder="Введите описание" id="adDescription" maxlength="2000"
-                                                  data-text="ad-description"></textarea>
-                                            <div class="textarea-info">
-                                                Символов&nbsp;
-                                                <div class="textarea-info__number">
-                                                    0
-                                                </div>
-                                                <div class="textarea-info__full">
-                                                    /2000
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <?php if (!empty($arResult['TAGS'])): ?>
-                                        <div class="ad-description-list" data-text="ad-description">
-                                            <?php foreach ($arResult['TAGS'] as $tag): ?>
-                                                <div class="ad-description-list__el"><?= $tag ?></div>
-                                            <?php endforeach; ?>
-                                        </div>
-                                    <?php endif; ?>
-                                <?php endif; ?>
-
                                 <?php if ($key === 'PHOTO'): ?>
                                     <div class="dropzone">
                                         <div class="dropzone__description">
@@ -234,30 +208,30 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                                                 <div class="form-group row-block">
                                                     <div class="form-col">
                                                         <label for="lengthProduct"
-                                                               class="form-group__label"><?= $field['length']['NAME'] ?><?= ($field['length']['CUSTOM_IS_REQUIRED'] === 'Y') ? '<span>*</span>' : '' ?></label>
+                                                               class="form-group__label"><?= $field['length_tire']['NAME'] ?><?= ($field['length_tire']['CUSTOM_IS_REQUIRED'] === 'Y') ? '<span>*</span>' : '' ?></label>
                                                         <input type="text"
-                                                               class="custom-input number size-input <?= ($field['length']['CUSTOM_IS_REQUIRED'] === 'Y') ? 'check-block' : '' ?>"
-                                                               id="<?= $field['length']['CODE'] ?>"
-                                                               placeholder="<?= $field['length']['NAME'] ?>"
-                                                               name="<?= $field['length']['CODE'] ?>"
+                                                               class="custom-input number size-input <?= ($field['length_tire']['CUSTOM_IS_REQUIRED'] === 'Y') ? 'check-block' : '' ?>"
+                                                               id="<?= $field['length_tire']['CODE'] ?>"
+                                                               placeholder="<?= $field['length_tire']['NAME'] ?>"
+                                                               name="<?= $field['length_tire']['CODE'] ?>"
                                                         >
                                                         <div class="error-form">Необходимо заполнить
-                                                            «<?= $field['length']['NAME'] ?>»
+                                                            «<?= $field['length_tire']['NAME'] ?>»
                                                         </div>
 
 
                                                     </div>
                                                     <div class="form-col">
                                                         <label for="widthProduct"
-                                                               class="form-group__label"><?= $field['high']['NAME'] ?><?= ($field['high']['CUSTOM_IS_REQUIRED'] === 'Y') ? '<span>*</span>' : '' ?></label>
+                                                               class="form-group__label"><?= $field['height_tire']['NAME'] ?><?= ($field['height_tire']['CUSTOM_IS_REQUIRED'] === 'Y') ? '<span>*</span>' : '' ?></label>
                                                         <input type="text"
-                                                               class="custom-input number size-input <?= ($field['high']['CUSTOM_IS_REQUIRED'] === 'Y') ? 'check-block' : '' ?>"
-                                                               id="<?= $field['high']['CODE'] ?>"
-                                                               placeholder="<?= $field['length']['NAME'] ?>"
-                                                               name="<?= $field['high']['CODE'] ?>"
+                                                               class="custom-input number size-input <?= ($field['height_tire']['CUSTOM_IS_REQUIRED'] === 'Y') ? 'check-block' : '' ?>"
+                                                               id="<?= $field['height_tire']['CODE'] ?>"
+                                                               placeholder="<?= $field['height_tire']['NAME'] ?>"
+                                                               name="<?= $field['height_tire']['CODE'] ?>"
                                                         >
                                                         <div class="error-form">Необходимо заполнить
-                                                            «<?= $field['high']['NAME'] ?>»
+                                                            «<?= $field['height_tire']['NAME'] ?>»
                                                         </div>
                                                     </div>
                                                 </div>
@@ -319,7 +293,7 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                                                             <?php if ($field['MULTIPLE'] === "Y"): ?>
                                                                 <?php $count = count($field['PROPERTY_LIST']) ?>
                                                                 <div class="form-group  <?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? 'form-checked check-block' : '' ?>">
-                                                                    <?php if ($field['CODE'] !== 'PRICE_TYPE'): ?>
+                                                                    <?php if ($field['CODE'] !== 'PRICE_TYPE' || $field['CODE'] !== 'complect_garage'): ?>
                                                                         <label for="<?= $field['CODE'] ?>"
                                                                                class="form-group__label <?= ($count > 5) ? 'form-group__label--up' : '' ?>"><?= $field['NAME'] ?><?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? '<span>*</span>' : '' ?></label>
                                                                     <?php endif; ?>
@@ -584,6 +558,32 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                                         </div>
                                         <div class="error-form">Необходимо заполнить «Название товара»</div>
                                     </div>
+                                <?php endif; ?>
+
+                                <?php if ($key === 'OTHER_FIELDS'): ?>
+                                    <div class="form-group">
+                                        <div class="form-row">
+                                        <textarea name="DETAIL_TEXT" class="custom-textarea"
+                                                  placeholder="Введите описание" id="adDescription" maxlength="2000"
+                                                  data-text="ad-description"></textarea>
+                                            <div class="textarea-info">
+                                                Символов&nbsp;
+                                                <div class="textarea-info__number">
+                                                    0
+                                                </div>
+                                                <div class="textarea-info__full">
+                                                    /2000
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <?php if (!empty($arResult['TAGS'])): ?>
+                                        <div class="ad-description-list" data-text="ad-description">
+                                            <?php foreach ($arResult['TAGS'] as $tag): ?>
+                                                <div class="ad-description-list__el"><?= $tag ?></div>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    <?php endif; ?>
                                 <?php endif; ?>
 
                                 <?php if ($key === 'CATEGORY'): ?>
