@@ -95,7 +95,7 @@ $templateData = array(
 	'LINK_BLOG' => $arResult['BLOG'],
 	'LINK_STAFF' => $arResult['LINK_STAFF'],
 	'LINK_VACANCY' => $arResult['LINK_VACANCY'],
-	'REVIEWS_COUNT' => $arParams['REVIEWS_VIEW'] == 'EXTENDED' 
+	'REVIEWS_COUNT' => $arParams['REVIEWS_VIEW'] == 'EXTENDED'
 	? $arResult["PROPERTIES"]['EXTENDED_REVIEWS_COUNT']['VALUE']
 	: $arResult['PROPERTIES']['FORUM_MESSAGE_CNT']['VALUE'],
 	'CATALOG_SETS' => array(
@@ -190,7 +190,7 @@ if( $showCustomOffer && isset($arResult['OFFERS'][$arResult['OFFERS_SELECTED']])
 	$bOfferDetailText = $arParams['SHOW_SKU_DESCRIPTION'] === 'Y' && $arCurrentSKU["DETAIL_TEXT"];
 	if(strlen($arParams["SKU_DETAIL_ID"]))
 		$arResult['DETAIL_PAGE_URL'].= '?'.$arParams["SKU_DETAIL_ID"].'='.$arCurrentSKU['ID'];
-	$templateData["OFFERS_INFO"]["CURRENT_OFFER"] = $arCurrentSKU["ID"];	
+	$templateData["OFFERS_INFO"]["CURRENT_OFFER"] = $arCurrentSKU["ID"];
 	$templateData["OFFERS_INFO"]["CURRENT_OFFER_TITLE"] = $arCurrentSKU['IPROPERTY_VALUES']["ELEMENT_PAGE_TITLE"] ?? $arCurrentSKU["NAME"];
 	$templateData["OFFERS_INFO"]["CURRENT_OFFER_WINDOW_TITLE"] = $arCurrentSKU['IPROPERTY_VALUES']["ELEMENT_META_TITLE"] ?? $templateData["OFFERS_INFO"]["CURRENT_OFFER_TITLE"];
 	if ($arCurrentSKU["DISPLAY_PROPERTIES"]["ARTICLE"]["VALUE"]) {
@@ -245,7 +245,7 @@ $arOfferProps = implode(';', $arParams['OFFERS_CART_PROPERTIES']);
 // save item viewed
 $arFirstPhoto = reset($arResult['MORE_PHOTO']);
 $viwedItem = $arCurrentSKU ?? $arResult;
-$arItemPrices = $viwedItem['MIN_PRICE'];	
+$arItemPrices = $viwedItem['MIN_PRICE'];
 if(isset($viwedItem['PRICE_MATRIX']) && $viwedItem['PRICE_MATRIX'])
 {
 	$rangSelected = $viwedItem['ITEM_QUANTITY_RANGE_SELECTED'];
@@ -598,6 +598,7 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']) + $offerPropCount;
 <?endif;?>
 
 <?//top info?>
+
 <div class="product-info-wrapper">
 	<div class="product-info <?=(!$showCustomOffer ? "noffer" : "");?> product-info--type2" id="<?=$arItemIDs["strMainID"];?>">
 		<script type="text/javascript">setViewedProduct(<?=$arResult['ID']?>, <?=CUtil::PhpToJSObject($arViewedData, false)?>);</script>
@@ -617,7 +618,7 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']) + $offerPropCount;
 				'IS_CURRENT_SKU' => !!$arCurrentSKU,
 				'IS_CUSTOM_OFFERS' => $showCustomOffer,
 			], $arResult, $arParams);?>
-			
+
 			<div class="product-main">
 				<div class="product-info-headnote clearfix product-info-headnote--bordered">
 					<div class="flexbox flexbox--row align-items-center justify-content-between flex-wrap">
@@ -629,85 +630,48 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']) + $offerPropCount;
 						</div>
 						<?//article,rating,brand?>
 						<div class="col-auto">
-							<div class="product-info-headnote__inner">
-								<?$isArticle=(strlen($article["VALUE"]) || ($arResult['SHOW_OFFERS_PROPS'] && $showCustomOffer));?>
-								<?if($arParams["SHOW_RATING"] == "Y"):?>
-									<div class="product-info-headnote__rating">
-										<?$frame = $this->createFrame('dv_'.$arResult["ID"])->begin();?>
-											<div class="rating">
-												<?
-												global $arTheme;
-												if($arParams['REVIEWS_VIEW'] == 'EXTENDED'):?>
-													<div class="blog-info__rating--top-info pointer">
-														<div class="votes_block nstar with-text" itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating">
-															<meta itemprop="ratingValue" content="<?=($arResult['PROPERTIES']['EXTENDED_REVIEWS_RAITING']['VALUE'] ? $arResult['PROPERTIES']['EXTENDED_REVIEWS_RAITING']['VALUE'] : 5)?>" />
-															<meta itemprop="reviewCount" content="<?=(intval($arResult['PROPERTIES']['EXTENDED_REVIEWS_COUNT']['VALUE']) ? intval($arResult['PROPERTIES']['EXTENDED_REVIEWS_COUNT']['VALUE']) : 1)?>" />
-															<meta itemprop="bestRating" content="5" />
-															<meta itemprop="worstRating" content="1" />
-															<div class="ratings">
-																<?$message = $arResult['PROPERTIES']['EXTENDED_REVIEWS_COUNT']['VALUE'] ? GetMessage('VOTES_RESULT', array('#VALUE#' => $arResult['PROPERTIES']['EXTENDED_REVIEWS_RAITING']['VALUE'])) : GetMessage('VOTES_RESULT_NONE')?>
-																<div class="inner_rating" title="<?=$message?>">
-																	<?for($i=1;$i<=5;$i++):?>
-																		<div class="item-rating <?=$i<=round((float)$arResult['PROPERTIES']['EXTENDED_REVIEWS_RAITING']['VALUE']) ? 'filed' : ''?>"><?=CMax::showIconSvg("star", SITE_TEMPLATE_PATH."/images/svg/catalog/star_small.svg");?></div>
-																	<?endfor;?>
-																</div>
-															</div>
-														</div>
-														<?if($arResult['PROPERTIES']['EXTENDED_REVIEWS_COUNT']['VALUE']):?>
-															<span class="font_sxs"><?=$arResult['PROPERTIES']['EXTENDED_REVIEWS_COUNT']['VALUE']?></span>
-														<?endif;?>
-													</div>
-												<?else:?>
-													<?$APPLICATION->IncludeComponent(
-														"bitrix:iblock.vote",
-														"element_rating",
-														Array(
-															"IBLOCK_TYPE" => $arParams["IBLOCK_TYPE"],
-															"IBLOCK_ID" => $arResult["IBLOCK_ID"],
-															"ELEMENT_ID" => $arResult["ID"],
-															"MAX_VOTE" => 5,
-															"VOTE_NAMES" => array(),
-															"CACHE_TYPE" => $arParams["CACHE_TYPE"],
-															"CACHE_TIME" => $arParams["CACHE_TIME"],
-															"DISPLAY_AS_RATING" => 'vote_avg'
-														),
-														$component, array("HIDE_ICONS" =>"Y")
-													);?>
-												<?endif;?>
-											</div>
-										<?$frame->end();?>
-									</div>
-								<?endif;?>
-								<?if($isArticle):?>
-									<div class="product-info-headnote__article">
-										<div class="article muted font_xs" itemprop="additionalProperty" itemscope itemtype="http://schema.org/PropertyValue" <?if(!strlen($article["VALUE"])){?>id="<? echo $arItemIDs["ALL_ITEM_IDS"]['DISPLAY_PROP_ARTICLE_DIV'] ?>" style="display: none;"<?}?>>
-											<span class="article__title" itemprop="name"><?=$article["NAME"];?>:</span>
-											<span class="article__value" itemprop="value"><?=$article["VALUE"]?></span>
-										</div>
-									</div>
-								<?endif;?>
-								<?if($arResult["BRAND_ITEM"]){?>
-									<div class="product-info-headnote__brand">
-										<div class="brand" itemprop="brand" itemtype="https://schema.org/Brand" itemscope>
-											<meta itemprop="name" content="<?=$arResult["BRAND_ITEM"]["NAME"]?>" />
-											<?if(!$arResult["BRAND_ITEM"]["IMAGE"]):?>
-												<a href="<?=$arResult["BRAND_ITEM"]["DETAIL_PAGE_URL"]?>" class="brand__link dark_link"><?=$arResult["BRAND_ITEM"]["NAME"]?></a>
-											<?else:?>
-												<a class="brand__picture" href="<?=$arResult["BRAND_ITEM"]["DETAIL_PAGE_URL"]?>">
-													<img  src="<?=$arResult["BRAND_ITEM"]["IMAGE"]["src"]?>" alt="<?=$arResult["BRAND_ITEM"]["IMAGE"]["ALT"]?>" title="<?=$arResult["BRAND_ITEM"]["IMAGE"]["TITLE"]?>" />
-												</a>
-											<?endif;?>
-										</div>
-									</div>
-								<?}?>
-							</div>
+							<div class="_info-product">
+                                <div class="_info-product_el">
+                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M8 0C3.58453 0 0 3.58453 0 8C0 12.4155 3.58453 16 8 16C12.4155 16 16 12.4155 16 8C16 3.58453 12.4155 0 8 0ZM8 1.06667C11.8267 1.06667 14.9333 4.17333 14.9333 8C14.9333 11.8267 11.8267 14.9333 8 14.9333C4.17333 14.9333 1.06667 11.8267 1.06667 8C1.06667 4.17333 4.17333 1.06667 8 1.06667ZM7.46667 3.73333V8C7.46667 8.14133 7.52267 8.27733 7.62293 8.37707L9.75627 10.5104C9.96427 10.7184 10.3024 10.7184 10.5104 10.5104C10.7184 10.3024 10.7184 9.96427 10.5104 9.75627L8.53333 7.7792V3.73333C8.53333 3.43893 8.2944 3.2 8 3.2C7.7056 3.2 7.46667 3.43893 7.46667 3.73333Z" fill="#999999"/>
+                                    </svg>
+                                    <div class="_info-product_el__text">
+                                        30 ноября
+                                    </div>
+                                </div>
+                                <div class="_info-product_el">
+                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M16 8.0002C16 7.85425 15.915 7.74074 15.847 7.61101C14.0786 4.8056 11.2221 3.2002 8.04251 3.2002C4.96493 3.2002 1.98937 4.95155 0.136026 7.69209C0.0680127 7.78938 0 7.88668 0 8.0002C0 8.11371 0.0510096 8.21101 0.136026 8.3083C1.98937 11.0651 4.98193 12.8002 8.04251 12.8002C10.9671 12.8002 13.9596 11.1299 15.83 8.4056C15.932 8.27587 16 8.14614 16 8.0002ZM8.04251 11.8759C5.30499 11.8759 2.6695 10.384 0.969182 8.0002C2.6695 5.53533 5.39001 4.04344 8.04251 4.04344C10.865 4.04344 13.3475 5.47047 15.0308 8.0002C13.3305 10.384 10.695 11.8759 8.04251 11.8759ZM8.04251 5.22722C6.46121 5.22722 5.13496 6.49209 5.13496 8.0002C5.13496 9.6056 6.46121 10.7732 8.04251 10.7732C9.62381 10.7732 10.9501 9.58938 10.9501 8.0002C10.9501 6.49209 9.62381 5.22722 8.04251 5.22722ZM8.04251 9.94614C6.88629 9.94614 6.01913 9.02182 6.01913 8.01641C6.01913 7.01101 6.90329 6.08668 8.04251 6.08668C9.09671 6.08668 10.0659 6.92993 10.0659 8.01641C10.0659 9.1029 9.19872 9.94614 8.04251 9.94614Z" fill="#666666"/>
+                                    </svg>
+                                    <div class="_info-product_el__text">
+                                        105 <span>(4 сегодня)</span>
+                                    </div>
+                                </div>
+                                <div class="_info-product_el">
+                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M7.19095 5.64706H9.98552L10.367 4.12116C10.43 3.86902 10.6855 3.71572 10.9377 3.77876C11.1898 3.84179 11.3431 4.09729 11.2801 4.34943L10.9557 5.64706H11.7647C12.0246 5.64706 12.2353 5.85775 12.2353 6.11765C12.2353 6.37755 12.0246 6.58824 11.7647 6.58824H10.7204L10.0145 9.41177H11.7647C12.0246 9.41177 12.2353 9.62245 12.2353 9.88235C12.2353 10.1423 12.0246 10.3529 11.7647 10.3529H9.77919L9.39771 11.8788C9.33468 12.131 9.07918 12.2843 8.82704 12.2212C8.5749 12.1582 8.4216 11.9027 8.48464 11.6506L8.80905 10.3529H6.01448L5.63301 11.8788C5.56997 12.131 5.31447 12.2843 5.06234 12.2212C4.8102 12.1582 4.6569 11.9027 4.71993 11.6506L5.04434 10.3529H4.23529C3.9754 10.3529 3.76471 10.1423 3.76471 9.88235C3.76471 9.62245 3.9754 9.41177 4.23529 9.41177H5.27963L5.98552 6.58824H4.23529C3.9754 6.58824 3.76471 6.37755 3.76471 6.11765C3.76471 5.85775 3.9754 5.64706 4.23529 5.64706H6.22081L6.60229 4.12116C6.66532 3.86902 6.92082 3.71572 7.17296 3.77876C7.4251 3.84179 7.5784 4.09729 7.51536 4.34943L7.19095 5.64706ZM6.95566 6.58824L6.24978 9.41177H9.04434L9.75022 6.58824H6.95566ZM4.23529 16C1.89621 16 0 14.1038 0 11.7647V4.23529C0 1.89621 1.89621 0 4.23529 0H11.7647C14.1038 0 16 1.89621 16 4.23529V11.7647C16 14.1038 14.1038 16 11.7647 16H4.23529ZM4.23529 15.0588H11.7647C13.584 15.0588 15.0588 13.584 15.0588 11.7647V4.23529C15.0588 2.416 13.584 0.941176 11.7647 0.941176H4.23529C2.416 0.941176 0.941176 2.416 0.941176 4.23529V11.7647C0.941176 13.584 2.416 15.0588 4.23529 15.0588Z" fill="#666666"/>
+                                    </svg>
+                                    <div class="_info-product_el__text">
+                                        1119672687
+                                    </div>
+                                </div>
+                            </div>
 						</div>
 					</div>
-				</div>
+                    <div class="_location-product">
+                        <svg width="12" height="14" viewBox="0 0 12 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M6.00217 0C2.69349 0 0 2.5937 0 5.7694C0 7.59837 0.980934 9.52699 2.92624 11.4889C3.80708 12.3779 4.77653 13.1745 5.81928 13.8664C5.92482 13.956 6.07953 13.956 6.18506 13.8664C7.22781 13.1745 8.19725 12.3779 9.0781 11.4889C11.0234 9.52693 12.0043 7.59831 12.0043 5.7694C12.0043 2.59373 9.31087 0 6.00217 0ZM6.00217 13.2014C5.0544 12.5364 0.66506 9.3441 0.66506 5.7694C0.66506 2.95949 3.05931 0.66506 6.00217 0.66506C8.94509 0.665176 11.3393 2.95955 11.3393 5.7694C11.3393 9.32747 6.94988 12.5364 6.00217 13.2014Z" fill="#666666"/>
+                            <path d="M6.00147 3.1084C5.40176 3.1084 4.82663 3.34673 4.40259 3.77076C3.97847 4.19476 3.74023 4.77001 3.74023 5.36963C3.74023 5.96934 3.97845 6.54447 4.40259 6.9686C4.8266 7.3926 5.40173 7.63084 6.00147 7.63084C6.60121 7.63084 7.17631 7.39262 7.60034 6.9686C8.02447 6.54447 8.2627 5.96934 8.2627 5.36963C8.2627 4.77004 8.02449 4.19479 7.60034 3.77076C7.17634 3.34675 6.60121 3.1084 6.00147 3.1084ZM6.00147 6.96575C5.57815 6.96575 5.1721 6.79758 4.87277 6.49825C4.57343 6.19891 4.40527 5.79287 4.40527 5.36954C4.40527 4.94622 4.57343 4.5403 4.87277 4.24096C5.1721 3.94162 5.57815 3.77346 6.00147 3.77346C6.42479 3.77346 6.83083 3.94163 7.13017 4.24096C7.42951 4.5403 7.59767 4.94622 7.59767 5.36954C7.59767 5.79287 7.4295 6.19891 7.13017 6.49825C6.83083 6.79758 6.42479 6.96575 6.00147 6.96575Z" fill="#666666"/>
+                        </svg>
+
+                        Минск
+                    </div>
+                </div>
+
 
 				<?//buttons,props,sales?>
 				<?$bShowPropsBlock = ($arResult["OFFERS"] && $showCustomOffer) || ($arResult["SIZE_PATH"]) || ( ($arResult['DISPLAY_PROPERTIES'] || $arResult['OFFER_PROP']) && $arParams['VISIBLE_PROP_COUNT'] > 0 );?>
-				<div class="flexbox flexbox--row flex-wrap align-items-normal <?=!$bShowPropsBlock ? 'justify-center' : ''?>">
+				<div class="main-block-card flexbox flexbox--row flex-wrap align-items-normal <?=!$bShowPropsBlock ? 'justify-center' : ''?>">
 					<?if($bShowPropsBlock):?>
 						<div class="product-chars flex-50">
 
@@ -803,7 +767,7 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']) + $offerPropCount;
 												<?$j++;?>
 											<?endforeach;?>
 										</div>
-										
+
 									</div>
 									<?if($bShowMoreLink):?>
 										<div class="more-char-link"><span class="choise colored_theme_text_with_hover font_sxs dotted" data-block=".js-scrolled"><?=Loc::getMessage('ALL_CHARS');?></span></div>
@@ -814,12 +778,12 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']) + $offerPropCount;
 					<?endif;?>
 
 					<?//discount,buy|order|subscribe?>
-					<div class="product-action flex-50">
+					<div class="product-action">
 						<?if ($arResult['PRODUCT_ANALOG']):?>
 							<div class="js-item-analog js-animate-appearance"></div>
 						<?endif;?>
 						<div class="info_item">
-							<div class="middle-info-wrapper main_item_wrapper">	
+							<div class="middle-info-wrapper main_item_wrapper">
 								<div class="shadowed-block">
 									<?if($bComplect):?>
 										<div class="complect_prices_block">
@@ -827,7 +791,7 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']) + $offerPropCount;
 												<div class="prices-wrapper">
 													<div class="price font-bold font_mxs">
 														<div class="price_value_block values_wrapper">
-															<span class="price_value complect_price_value">0</span>												
+															<span class="price_value complect_price_value">0</span>
 															<span class="price_currency">
 																<?//$arResult['MIN_PRICE']['CURRENCY']?>
 																<?=str_replace("999", "", \CCurrencyLang::CurrencyFormat("999", $arResult["CURRENCIES"][0]["CURRENCY"]))?>
@@ -864,7 +828,7 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']) + $offerPropCount;
 												<?\Aspro\Functions\CAsproMax::showDiscountCounter($totalCount, $arDiscount, $arQuantityData, $arResult, $strMeasure, 'compact red', $item_id);?>
 											<?endif;?>
 										<?}?>
-										<div class="prices_block">
+										<div class="prices_block _prices_block">
 											<?//prices?>
 											<div class="cost prices detail">
 												<?if($arResult["OFFERS"]):?>
@@ -905,16 +869,11 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']) + $offerPropCount;
 													<?endif;?>
 												<?endif;?>
 											</div>
-											<div class="" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
-												<meta itemprop="price" content="<?=($arResult['MIN_PRICE']['DISCOUNT_VALUE'] ? $arResult['MIN_PRICE']['DISCOUNT_VALUE'] : $arResult['MIN_PRICE']['VALUE'])?>" />
-												<meta itemprop="priceCurrency" content="<?=$arResult['MIN_PRICE']['CURRENCY']?>" />
-												<link itemprop="availability" href="http://schema.org/<?=($templateData['TOTAL_COUNT'] ? 'InStock' : 'OutOfStock')?>" />
-												<?
-												if($arDiscount["ACTIVE_TO"]){?>
-													<meta itemprop="priceValidUntil" content="<?=date("Y-m-d", MakeTimeStamp($arDiscount["ACTIVE_TO"]))?>" />
-												<?}?>
-												<link itemprop="url" href="<?=$arResult["DETAIL_PAGE_URL"]?>" />
-											</div>
+                                            <div class="price-currency">
+                                                <div class="price-currency__i">≈ 1800 $</div>
+                                                <div class="price-currency__i">≈ 499 000 ₽</div>
+                                                <div class="price-currency__i">≈ 304 €</div>
+                                            </div>
 											<?\Aspro\Functions\CAsproMax::showBonusBlockDetail($arCurrentSKU ?: $arResult);?>
 											<?//for product wo POPUP_PRICE in fixed header?>
 											<?if($arParams['SHOW_POPUP_PRICE'] !== "Y" && !$arResult["OFFERS"]):?>
@@ -976,142 +935,22 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']) + $offerPropCount;
 													</div>
 												<?endif;?>
 											</div>
+                                            <div class="prices_block-btn" data-event="call-form">
+                                                Показать телефон
+                                            </div>
 										</div>
 
 										<?//buttons?>
-										<div class="buy_block catalog_block">
-											<?if(!$arResult["OFFERS"]):?>
-												<script>$(document).ready(function(){$('.catalog_detail input[data-sid="PRODUCT_NAME"]').attr('value', $('h1').text());});</script>
-												<div class="counter_wrapp big clearfix">
-													<?//if(($arAddToBasketData["OPTIONS"]["USE_PRODUCT_QUANTITY_DETAIL"] && $arAddToBasketData["ACTION"] == "ADD") && $arAddToBasketData["CAN_BUY"]):?>
-														<?=\Aspro\Functions\CAsproMax::showItemCounter($arAddToBasketData, $arResult["ID"], $arItemIDs, $arParams, 'md', '', true, true);?>
-													<?//endif;?>
 
-													<div id="<? echo $arItemIDs["ALL_ITEM_IDS"]['BASKET_ACTIONS']; ?>" class="button_block <?=($arAddToBasketData["ACTION"] === "OUT_OF_PRODUCTION" || ($arAddToBasketData["ACTION"] == "ORDER" /*&& !$arResult["CAN_BUY"]*/) || !$arAddToBasketData["CAN_BUY"] || !$arAddToBasketData["OPTIONS"]["USE_PRODUCT_QUANTITY_DETAIL"] || ($arAddToBasketData["ACTION"] == "SUBSCRIBE" && $arResult["CATALOG_SUBSCRIBE"] == "Y")  ? "wide" : "");?>">
-														<!--noindex-->
-															<?=$arAddToBasketData["HTML"]?>
-														<!--/noindex-->
-													</div>
-												</div>
-												<?if(isset($arResult['PRICE_MATRIX']) && $arResult['PRICE_MATRIX']) // USE_PRICE_COUNT
-												{?>
-													<?if($arResult['ITEM_PRICE_MODE'] == 'Q' && count($arResult['PRICE_MATRIX']['ROWS']) > 1):?>
-														<?$arOnlyItemJSParams = array(
-															"ITEM_PRICES" => $arResult["ITEM_PRICES"],
-															"ITEM_PRICE_MODE" => $arResult["ITEM_PRICE_MODE"],
-															"ITEM_QUANTITY_RANGES" => $arResult["ITEM_QUANTITY_RANGES"],
-															"MIN_QUANTITY_BUY" => $arAddToBasketData["MIN_QUANTITY_BUY"],
-															"SHOW_DISCOUNT_PERCENT_NUMBER" => $arParams["SHOW_DISCOUNT_PERCENT_NUMBER"],
-															"ID" => $arItemIDs["strMainID"],
-														)?>
-														<script type="text/javascript">
-															var <? echo $arItemIDs["strObName"]; ?>el = new JCCatalogOnlyElement(<? echo CUtil::PhpToJSObject($arOnlyItemJSParams, false, true); ?>);
-														</script>
-													<?endif;?>
-												<?}?>
-												<?if($arAddToBasketData["ACTION"] !== "NOTHING"):?>
-													<?=\Aspro\Functions\CAsproMax::showItemOCB($arAddToBasketData, $arResult, $arParams, false, ' round-ignore ');?>
-												<?endif;?>
-											<?elseif($arResult["OFFERS"] && $arParams['TYPE_SKU'] == 'TYPE_1'):?>
-												<div class="offer_buy_block buys_wrapp">
-													<div class="counter_wrapp big clearfix">
-														<?=\Aspro\Functions\CAsproMax::showItemCounter($arAddToBasketData, $arResult["OFFERS"][$arResult["OFFERS_SELECTED"]]["ID"], $arItemIDs, $arParams, 'md', '', true, true);?>
-														<div id="<?=$arItemIDs["ALL_ITEM_IDS"]['BASKET_ACTIONS']; ?>" class="button_block <?=($arAddToBasketData["ACTION"] === "OUT_OF_PRODUCTION" || $arAddToBasketData["ACTION"] == "ORDER" || !$arAddToBasketData["CAN_BUY"] || !$arAddToBasketData["OPTIONS"]["USE_PRODUCT_QUANTITY_DETAIL"] || $arAddToBasketData["ACTION"] == "SUBSCRIBE" ? "wide" : "");?>">
-															<!--noindex-->
-																<?=$arAddToBasketData["HTML"]?>
-															<!--/noindex-->
-														</div>
-													</div>
-													<?if(isset($arCurrentSKU['PRICE_MATRIX']) && $arCurrentSKU['PRICE_MATRIX']) // USE_PRICE_COUNT
-													{?>
-														<?if($arCurrentSKU['ITEM_PRICE_MODE'] == 'Q' && count($arCurrentSKU['PRICE_MATRIX']['ROWS']) > 1):?>
-															<?$arOnlyItemJSParams = array(
-																"ITEM_PRICES" => $arCurrentSKU["ITEM_PRICES"],
-																"ITEM_PRICE_MODE" => $arCurrentSKU["ITEM_PRICE_MODE"],
-																"ITEM_QUANTITY_RANGES" => $arCurrentSKU["ITEM_QUANTITY_RANGES"],
-																"MIN_QUANTITY_BUY" => $arAddToBasketData["MIN_QUANTITY_BUY"],
-																"SHOW_DISCOUNT_PERCENT_NUMBER" => $arParams["SHOW_DISCOUNT_PERCENT_NUMBER"],
-																"ID" => $arItemIDs["strMainID"],
-																"NOT_SHOW" => "Y",
-															)?>
-															<script type="text/javascript">
-																var <? echo $arItemIDs["strObName"]; ?>el = new JCCatalogOnlyElement(<? echo CUtil::PhpToJSObject($arOnlyItemJSParams, false, true); ?>);
-															</script>
-														<?endif;?>
-													<?}?>
-													<?if($arAddToBasketData["ACTION"] !== "NOTHING"):?>
-														<?=\Aspro\Functions\CAsproMax::showItemOCB($arAddToBasketData, $arResult["OFFERS"][$arResult["OFFERS_SELECTED"]], $arParams, false, ' round-ignore ');?>
-													<?endif;?>
-												</div>
-											<?elseif($arResult["OFFERS"] && $arParams['TYPE_SKU'] != 'TYPE_1'):?>
-												<span class="btn btn-default btn-lg slide_offer type_block"><i></i><span><?=\Bitrix\Main\Config\Option::get("aspro.max", "EXPRESSION_READ_MORE_OFFERS_DEFAULT", GetMessage("MORE_TEXT_BOTTOM"));?></span></span>
-											<?endif;?>
-										</div>
 									<?$frame->end();?>
 									<?endif;?>
 
 									<?//services?>
 									<div class="js-services"></div>
 								</div>
-								
+
 							</div>
 
-							<?//delivery calculate?>
-							<?if(
-								(
-									!$arResult["OFFERS"] &&
-									$arAddToBasketData["ACTION"] == "ADD" &&
-									$arAddToBasketData["CAN_BUY"] && 
-									!$bComplect
-								) ||
-								(
-									$arResult["OFFERS"] &&
-									$arParams['TYPE_SKU'] === 'TYPE_1'
-								)
-							):?>
-								<?$productIdForDelivery = $arCurrentSKU ? $arCurrentSKU['ID'] : $arResult['ID'];?>
-								<?=\Aspro\Functions\CAsproMax::showCalculateDeliveryBlock($productIdForDelivery, $arParams);?>
-							<?endif;?>
-
-							<?if($arParams['SHOW_SEND_GIFT'] != 'N'):?>
-								<?$sCurrentPage = (CMain::IsHTTPS()) ? "https://" : "http://";
-								$sCurrentPage .= $_SERVER["HTTP_HOST"];
-								$sCurrentPage .= $APPLICATION->GetCurPage();?>
-								<div class="text-form muted ncolor">
-									<div class="price_txt muted777 font_sxs ">
-										<?=CMax::showIconSvg("info_big pull-left", SITE_TEMPLATE_PATH.'/images/svg/catalog/iwantgift.svg', '', '', true, false);?>
-										<div class="text-form-info">
-											<span><span class="animate-load dotted" data-event="jqm" data-param-form_id="SEND_GIFT" data-name="send_gift" data-autoload-product_name="<?=CMax::formatJsName($arResult["NAME"]);?>" data-autoload-product_link="<?=$sCurrentPage;?>" data-autoload-product_id="<?=$arResult["ID"];?>"><?=($arParams["SEND_GIFT_FORM_NAME"] ? $arParams["SEND_GIFT_FORM_NAME"] : GetMessage("SEND_GIFT_FORM"));?></span></span>
-										</div>
-									</div>
-								</div>
-							<?endif;?>
-
-							<?//help text?>
-							<?if($arResult['HELP_TEXT']):?>
-								<div class="text-form">
-									<div class="price_txt muted777 font_sxs muted ncolor">
-										<?=CMax::showIconSvg("info_big pull-left", SITE_TEMPLATE_PATH.'/images/svg/catalog/info_big.svg', '', '', true, false);?>
-										<div class="text-form-info">
-											<?if(!$arResult['HELP_TEXT_FILE']):?>
-												<?=$arResult['HELP_TEXT'];?>
-											<?else:?>
-												<?$APPLICATION->IncludeComponent(
-													"bitrix:main.include",
-													"",
-													Array(
-														"AREA_FILE_SHOW" => "page",
-														"AREA_FILE_SUFFIX" => "help_text",
-														"EDIT_TEMPLATE" => ""
-													)
-												);?>
-											<?endif;?>
-										</div>
-									</div>
-								</div>
-							<?endif;?>
-
-							<?//brand?>
 							<?$this->SetViewTarget('PRODUCT_SIDE_INFO', 900);?>
 								<?if($arResult['BRAND_ITEM']):?>
 									<div class="brand-detail">
@@ -1197,6 +1036,160 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']) + $offerPropCount;
 		</script>
 	</div>
 </div>
+    <div class="maxwidth-theme">
+        <div class="equipment-inner">
+            <div class="equipment__title">
+                Комплектация
+            </div>
+            <div class="equipment">
+                <div class="equipment_el">
+                    <div class="equipment_el__i">
+                        <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M9.23714 12.8071L7.16611 10.8754C6.93335 10.6583 6.55734 10.6583 6.32457 10.8754C6.09181 11.0925 6.09181 11.4432 6.32457 11.6603L8.81935 13.9872C9.05212 14.2043 9.42813 14.2043 9.66089 13.9872L15.9754 8.09771C16.2082 7.88062 16.2082 7.52992 15.9754 7.31282C15.7427 7.09573 15.3667 7.09573 15.1339 7.31282L9.23714 12.8071Z" fill="#666666"/>
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M15.0316 7.20308C15.322 6.93229 15.7874 6.93231 16.0777 7.20313C16.3741 7.47953 16.3741 7.931 16.0777 8.20741L9.7632 14.0969C9.47282 14.3677 9.00743 14.3677 8.71704 14.0969L6.22227 11.77C5.92591 11.4936 5.92591 11.0422 6.22227 10.7658C6.51265 10.4949 6.97804 10.4949 7.26842 10.7658L9.23719 12.602L15.0316 7.20308ZM15.8731 7.42252C15.698 7.25916 15.4113 7.25916 15.2362 7.42252L9.23709 13.0121L7.06381 10.9851C6.88866 10.8218 6.60203 10.8218 6.42688 10.9851C6.25771 11.1429 6.25771 11.3929 6.42688 11.5506L8.92166 13.8775C9.09681 14.0408 9.38344 14.0408 9.55858 13.8775L15.8731 7.98802C16.0423 7.83023 16.0423 7.58031 15.8731 7.42252Z" fill="#666666"/>
+                        </svg>
+                    </div>
+                    <div class="equipment_el__text">
+                        Электростартер
+                    </div>
+                </div>
+                <div class="equipment_el">
+                    <div class="equipment_el__i">
+                        <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M9.23714 12.8071L7.16611 10.8754C6.93335 10.6583 6.55734 10.6583 6.32457 10.8754C6.09181 11.0925 6.09181 11.4432 6.32457 11.6603L8.81935 13.9872C9.05212 14.2043 9.42813 14.2043 9.66089 13.9872L15.9754 8.09771C16.2082 7.88062 16.2082 7.52992 15.9754 7.31282C15.7427 7.09573 15.3667 7.09573 15.1339 7.31282L9.23714 12.8071Z" fill="#666666"/>
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M15.0316 7.20308C15.322 6.93229 15.7874 6.93231 16.0777 7.20313C16.3741 7.47953 16.3741 7.931 16.0777 8.20741L9.7632 14.0969C9.47282 14.3677 9.00743 14.3677 8.71704 14.0969L6.22227 11.77C5.92591 11.4936 5.92591 11.0422 6.22227 10.7658C6.51265 10.4949 6.97804 10.4949 7.26842 10.7658L9.23719 12.602L15.0316 7.20308ZM15.8731 7.42252C15.698 7.25916 15.4113 7.25916 15.2362 7.42252L9.23709 13.0121L7.06381 10.9851C6.88866 10.8218 6.60203 10.8218 6.42688 10.9851C6.25771 11.1429 6.25771 11.3929 6.42688 11.5506L8.92166 13.8775C9.09681 14.0408 9.38344 14.0408 9.55858 13.8775L15.8731 7.98802C16.0423 7.83023 16.0423 7.58031 15.8731 7.42252Z" fill="#666666"/>
+                        </svg>
+                    </div>
+                    <div class="equipment_el__text">
+                        Антиблокировочная система (АБС)
+                    </div>
+                </div>
+                <div class="equipment_el">
+                    <div class="equipment_el__i">
+                        <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M9.23714 12.8071L7.16611 10.8754C6.93335 10.6583 6.55734 10.6583 6.32457 10.8754C6.09181 11.0925 6.09181 11.4432 6.32457 11.6603L8.81935 13.9872C9.05212 14.2043 9.42813 14.2043 9.66089 13.9872L15.9754 8.09771C16.2082 7.88062 16.2082 7.52992 15.9754 7.31282C15.7427 7.09573 15.3667 7.09573 15.1339 7.31282L9.23714 12.8071Z" fill="#666666"/>
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M15.0316 7.20308C15.322 6.93229 15.7874 6.93231 16.0777 7.20313C16.3741 7.47953 16.3741 7.931 16.0777 8.20741L9.7632 14.0969C9.47282 14.3677 9.00743 14.3677 8.71704 14.0969L6.22227 11.77C5.92591 11.4936 5.92591 11.0422 6.22227 10.7658C6.51265 10.4949 6.97804 10.4949 7.26842 10.7658L9.23719 12.602L15.0316 7.20308ZM15.8731 7.42252C15.698 7.25916 15.4113 7.25916 15.2362 7.42252L9.23709 13.0121L7.06381 10.9851C6.88866 10.8218 6.60203 10.8218 6.42688 10.9851C6.25771 11.1429 6.25771 11.3929 6.42688 11.5506L8.92166 13.8775C9.09681 14.0408 9.38344 14.0408 9.55858 13.8775L15.8731 7.98802C16.0423 7.83023 16.0423 7.58031 15.8731 7.42252Z" fill="#666666"/>
+                        </svg>
+                    </div>
+                    <div class="equipment_el__text">
+                        Аккустика
+                    </div>
+                </div>
+                <div class="equipment_el">
+                    <div class="equipment_el__i">
+                        <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M9.23714 12.8071L7.16611 10.8754C6.93335 10.6583 6.55734 10.6583 6.32457 10.8754C6.09181 11.0925 6.09181 11.4432 6.32457 11.6603L8.81935 13.9872C9.05212 14.2043 9.42813 14.2043 9.66089 13.9872L15.9754 8.09771C16.2082 7.88062 16.2082 7.52992 15.9754 7.31282C15.7427 7.09573 15.3667 7.09573 15.1339 7.31282L9.23714 12.8071Z" fill="#666666"/>
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M15.0316 7.20308C15.322 6.93229 15.7874 6.93231 16.0777 7.20313C16.3741 7.47953 16.3741 7.931 16.0777 8.20741L9.7632 14.0969C9.47282 14.3677 9.00743 14.3677 8.71704 14.0969L6.22227 11.77C5.92591 11.4936 5.92591 11.0422 6.22227 10.7658C6.51265 10.4949 6.97804 10.4949 7.26842 10.7658L9.23719 12.602L15.0316 7.20308ZM15.8731 7.42252C15.698 7.25916 15.4113 7.25916 15.2362 7.42252L9.23709 13.0121L7.06381 10.9851C6.88866 10.8218 6.60203 10.8218 6.42688 10.9851C6.25771 11.1429 6.25771 11.3929 6.42688 11.5506L8.92166 13.8775C9.09681 14.0408 9.38344 14.0408 9.55858 13.8775L15.8731 7.98802C16.0423 7.83023 16.0423 7.58031 15.8731 7.42252Z" fill="#666666"/>
+                        </svg>
+                    </div>
+                    <div class="equipment_el__text">
+                        Подогрев сидений
+                    </div>
+                </div>
+                <div class="equipment_el">
+                    <div class="equipment_el__i">
+                        <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M9.23714 12.8071L7.16611 10.8754C6.93335 10.6583 6.55734 10.6583 6.32457 10.8754C6.09181 11.0925 6.09181 11.4432 6.32457 11.6603L8.81935 13.9872C9.05212 14.2043 9.42813 14.2043 9.66089 13.9872L15.9754 8.09771C16.2082 7.88062 16.2082 7.52992 15.9754 7.31282C15.7427 7.09573 15.3667 7.09573 15.1339 7.31282L9.23714 12.8071Z" fill="#666666"/>
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M15.0316 7.20308C15.322 6.93229 15.7874 6.93231 16.0777 7.20313C16.3741 7.47953 16.3741 7.931 16.0777 8.20741L9.7632 14.0969C9.47282 14.3677 9.00743 14.3677 8.71704 14.0969L6.22227 11.77C5.92591 11.4936 5.92591 11.0422 6.22227 10.7658C6.51265 10.4949 6.97804 10.4949 7.26842 10.7658L9.23719 12.602L15.0316 7.20308ZM15.8731 7.42252C15.698 7.25916 15.4113 7.25916 15.2362 7.42252L9.23709 13.0121L7.06381 10.9851C6.88866 10.8218 6.60203 10.8218 6.42688 10.9851C6.25771 11.1429 6.25771 11.3929 6.42688 11.5506L8.92166 13.8775C9.09681 14.0408 9.38344 14.0408 9.55858 13.8775L15.8731 7.98802C16.0423 7.83023 16.0423 7.58031 15.8731 7.42252Z" fill="#666666"/>
+                        </svg>
+                    </div>
+                    <div class="equipment_el__text">
+                        Ветровое стекло
+                    </div>
+                </div>
+                <div class="equipment_el">
+                    <div class="equipment_el__i">
+                        <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M9.23714 12.8071L7.16611 10.8754C6.93335 10.6583 6.55734 10.6583 6.32457 10.8754C6.09181 11.0925 6.09181 11.4432 6.32457 11.6603L8.81935 13.9872C9.05212 14.2043 9.42813 14.2043 9.66089 13.9872L15.9754 8.09771C16.2082 7.88062 16.2082 7.52992 15.9754 7.31282C15.7427 7.09573 15.3667 7.09573 15.1339 7.31282L9.23714 12.8071Z" fill="#666666"/>
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M15.0316 7.20308C15.322 6.93229 15.7874 6.93231 16.0777 7.20313C16.3741 7.47953 16.3741 7.931 16.0777 8.20741L9.7632 14.0969C9.47282 14.3677 9.00743 14.3677 8.71704 14.0969L6.22227 11.77C5.92591 11.4936 5.92591 11.0422 6.22227 10.7658C6.51265 10.4949 6.97804 10.4949 7.26842 10.7658L9.23719 12.602L15.0316 7.20308ZM15.8731 7.42252C15.698 7.25916 15.4113 7.25916 15.2362 7.42252L9.23709 13.0121L7.06381 10.9851C6.88866 10.8218 6.60203 10.8218 6.42688 10.9851C6.25771 11.1429 6.25771 11.3929 6.42688 11.5506L8.92166 13.8775C9.09681 14.0408 9.38344 14.0408 9.55858 13.8775L15.8731 7.98802C16.0423 7.83023 16.0423 7.58031 15.8731 7.42252Z" fill="#666666"/>
+                        </svg>
+                    </div>
+                    <div class="equipment_el__text">
+                        Защита рук
+                    </div>
+                </div>
+                <div class="equipment_el">
+                    <div class="equipment_el__i">
+                        <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M9.23714 12.8071L7.16611 10.8754C6.93335 10.6583 6.55734 10.6583 6.32457 10.8754C6.09181 11.0925 6.09181 11.4432 6.32457 11.6603L8.81935 13.9872C9.05212 14.2043 9.42813 14.2043 9.66089 13.9872L15.9754 8.09771C16.2082 7.88062 16.2082 7.52992 15.9754 7.31282C15.7427 7.09573 15.3667 7.09573 15.1339 7.31282L9.23714 12.8071Z" fill="#666666"/>
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M15.0316 7.20308C15.322 6.93229 15.7874 6.93231 16.0777 7.20313C16.3741 7.47953 16.3741 7.931 16.0777 8.20741L9.7632 14.0969C9.47282 14.3677 9.00743 14.3677 8.71704 14.0969L6.22227 11.77C5.92591 11.4936 5.92591 11.0422 6.22227 10.7658C6.51265 10.4949 6.97804 10.4949 7.26842 10.7658L9.23719 12.602L15.0316 7.20308ZM15.8731 7.42252C15.698 7.25916 15.4113 7.25916 15.2362 7.42252L9.23709 13.0121L7.06381 10.9851C6.88866 10.8218 6.60203 10.8218 6.42688 10.9851C6.25771 11.1429 6.25771 11.3929 6.42688 11.5506L8.92166 13.8775C9.09681 14.0408 9.38344 14.0408 9.55858 13.8775L15.8731 7.98802C16.0423 7.83023 16.0423 7.58031 15.8731 7.42252Z" fill="#666666"/>
+                        </svg>
+                    </div>
+                    <div class="equipment_el__text">
+                        Круиз контроль
+                    </div>
+                </div>
+                <div class="equipment_el">
+                    <div class="equipment_el__i">
+                        <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M9.23714 12.8071L7.16611 10.8754C6.93335 10.6583 6.55734 10.6583 6.32457 10.8754C6.09181 11.0925 6.09181 11.4432 6.32457 11.6603L8.81935 13.9872C9.05212 14.2043 9.42813 14.2043 9.66089 13.9872L15.9754 8.09771C16.2082 7.88062 16.2082 7.52992 15.9754 7.31282C15.7427 7.09573 15.3667 7.09573 15.1339 7.31282L9.23714 12.8071Z" fill="#666666"/>
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M15.0316 7.20308C15.322 6.93229 15.7874 6.93231 16.0777 7.20313C16.3741 7.47953 16.3741 7.931 16.0777 8.20741L9.7632 14.0969C9.47282 14.3677 9.00743 14.3677 8.71704 14.0969L6.22227 11.77C5.92591 11.4936 5.92591 11.0422 6.22227 10.7658C6.51265 10.4949 6.97804 10.4949 7.26842 10.7658L9.23719 12.602L15.0316 7.20308ZM15.8731 7.42252C15.698 7.25916 15.4113 7.25916 15.2362 7.42252L9.23709 13.0121L7.06381 10.9851C6.88866 10.8218 6.60203 10.8218 6.42688 10.9851C6.25771 11.1429 6.25771 11.3929 6.42688 11.5506L8.92166 13.8775C9.09681 14.0408 9.38344 14.0408 9.55858 13.8775L15.8731 7.98802C16.0423 7.83023 16.0423 7.58031 15.8731 7.42252Z" fill="#666666"/>
+                        </svg>
+                    </div>
+                    <div class="equipment_el__text">
+                        Ксенон
+                    </div>
+                </div>
+                <div class="equipment_el">
+                    <div class="equipment_el__i">
+                        <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M9.23714 12.8071L7.16611 10.8754C6.93335 10.6583 6.55734 10.6583 6.32457 10.8754C6.09181 11.0925 6.09181 11.4432 6.32457 11.6603L8.81935 13.9872C9.05212 14.2043 9.42813 14.2043 9.66089 13.9872L15.9754 8.09771C16.2082 7.88062 16.2082 7.52992 15.9754 7.31282C15.7427 7.09573 15.3667 7.09573 15.1339 7.31282L9.23714 12.8071Z" fill="#666666"/>
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M15.0316 7.20308C15.322 6.93229 15.7874 6.93231 16.0777 7.20313C16.3741 7.47953 16.3741 7.931 16.0777 8.20741L9.7632 14.0969C9.47282 14.3677 9.00743 14.3677 8.71704 14.0969L6.22227 11.77C5.92591 11.4936 5.92591 11.0422 6.22227 10.7658C6.51265 10.4949 6.97804 10.4949 7.26842 10.7658L9.23719 12.602L15.0316 7.20308ZM15.8731 7.42252C15.698 7.25916 15.4113 7.25916 15.2362 7.42252L9.23709 13.0121L7.06381 10.9851C6.88866 10.8218 6.60203 10.8218 6.42688 10.9851C6.25771 11.1429 6.25771 11.3929 6.42688 11.5506L8.92166 13.8775C9.09681 14.0408 9.38344 14.0408 9.55858 13.8775L15.8731 7.98802C16.0423 7.83023 16.0423 7.58031 15.8731 7.42252Z" fill="#666666"/>
+                        </svg>
+                    </div>
+                    <div class="equipment_el__text">
+                        Защитные дуги
+                    </div>
+                </div>
+                <div class="equipment_el">
+                    <div class="equipment_el__i">
+                        <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M9.23714 12.8071L7.16611 10.8754C6.93335 10.6583 6.55734 10.6583 6.32457 10.8754C6.09181 11.0925 6.09181 11.4432 6.32457 11.6603L8.81935 13.9872C9.05212 14.2043 9.42813 14.2043 9.66089 13.9872L15.9754 8.09771C16.2082 7.88062 16.2082 7.52992 15.9754 7.31282C15.7427 7.09573 15.3667 7.09573 15.1339 7.31282L9.23714 12.8071Z" fill="#666666"/>
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M15.0316 7.20308C15.322 6.93229 15.7874 6.93231 16.0777 7.20313C16.3741 7.47953 16.3741 7.931 16.0777 8.20741L9.7632 14.0969C9.47282 14.3677 9.00743 14.3677 8.71704 14.0969L6.22227 11.77C5.92591 11.4936 5.92591 11.0422 6.22227 10.7658C6.51265 10.4949 6.97804 10.4949 7.26842 10.7658L9.23719 12.602L15.0316 7.20308ZM15.8731 7.42252C15.698 7.25916 15.4113 7.25916 15.2362 7.42252L9.23709 13.0121L7.06381 10.9851C6.88866 10.8218 6.60203 10.8218 6.42688 10.9851C6.25771 11.1429 6.25771 11.3929 6.42688 11.5506L8.92166 13.8775C9.09681 14.0408 9.38344 14.0408 9.55858 13.8775L15.8731 7.98802C16.0423 7.83023 16.0423 7.58031 15.8731 7.42252Z" fill="#666666"/>
+                        </svg>
+                    </div>
+                    <div class="equipment_el__text">
+                        Навигация
+                    </div>
+                </div>
+                <div class="equipment_el">
+                    <div class="equipment_el__i">
+                        <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M9.23714 12.8071L7.16611 10.8754C6.93335 10.6583 6.55734 10.6583 6.32457 10.8754C6.09181 11.0925 6.09181 11.4432 6.32457 11.6603L8.81935 13.9872C9.05212 14.2043 9.42813 14.2043 9.66089 13.9872L15.9754 8.09771C16.2082 7.88062 16.2082 7.52992 15.9754 7.31282C15.7427 7.09573 15.3667 7.09573 15.1339 7.31282L9.23714 12.8071Z" fill="#666666"/>
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M15.0316 7.20308C15.322 6.93229 15.7874 6.93231 16.0777 7.20313C16.3741 7.47953 16.3741 7.931 16.0777 8.20741L9.7632 14.0969C9.47282 14.3677 9.00743 14.3677 8.71704 14.0969L6.22227 11.77C5.92591 11.4936 5.92591 11.0422 6.22227 10.7658C6.51265 10.4949 6.97804 10.4949 7.26842 10.7658L9.23719 12.602L15.0316 7.20308ZM15.8731 7.42252C15.698 7.25916 15.4113 7.25916 15.2362 7.42252L9.23709 13.0121L7.06381 10.9851C6.88866 10.8218 6.60203 10.8218 6.42688 10.9851C6.25771 11.1429 6.25771 11.3929 6.42688 11.5506L8.92166 13.8775C9.09681 14.0408 9.38344 14.0408 9.55858 13.8775L15.8731 7.98802C16.0423 7.83023 16.0423 7.58031 15.8731 7.42252Z" fill="#666666"/>
+                        </svg>
+                    </div>
+                    <div class="equipment_el__text">
+                        Подогрев рукояток
+                    </div>
+                </div>
+                <div class="equipment_el">
+                    <div class="equipment_el__i">
+                        <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M9.23714 12.8071L7.16611 10.8754C6.93335 10.6583 6.55734 10.6583 6.32457 10.8754C6.09181 11.0925 6.09181 11.4432 6.32457 11.6603L8.81935 13.9872C9.05212 14.2043 9.42813 14.2043 9.66089 13.9872L15.9754 8.09771C16.2082 7.88062 16.2082 7.52992 15.9754 7.31282C15.7427 7.09573 15.3667 7.09573 15.1339 7.31282L9.23714 12.8071Z" fill="#666666"/>
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M15.0316 7.20308C15.322 6.93229 15.7874 6.93231 16.0777 7.20313C16.3741 7.47953 16.3741 7.931 16.0777 8.20741L9.7632 14.0969C9.47282 14.3677 9.00743 14.3677 8.71704 14.0969L6.22227 11.77C5.92591 11.4936 5.92591 11.0422 6.22227 10.7658C6.51265 10.4949 6.97804 10.4949 7.26842 10.7658L9.23719 12.602L15.0316 7.20308ZM15.8731 7.42252C15.698 7.25916 15.4113 7.25916 15.2362 7.42252L9.23709 13.0121L7.06381 10.9851C6.88866 10.8218 6.60203 10.8218 6.42688 10.9851C6.25771 11.1429 6.25771 11.3929 6.42688 11.5506L8.92166 13.8775C9.09681 14.0408 9.38344 14.0408 9.55858 13.8775L15.8731 7.98802C16.0423 7.83023 16.0423 7.58031 15.8731 7.42252Z" fill="#666666"/>
+                        </svg>
+                    </div>
+                    <div class="equipment_el__text">
+                        Подогрев сидений
+                    </div>
+                </div>
+                <div class="equipment_el">
+                    <div class="equipment_el__i">
+                        <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M9.23714 12.8071L7.16611 10.8754C6.93335 10.6583 6.55734 10.6583 6.32457 10.8754C6.09181 11.0925 6.09181 11.4432 6.32457 11.6603L8.81935 13.9872C9.05212 14.2043 9.42813 14.2043 9.66089 13.9872L15.9754 8.09771C16.2082 7.88062 16.2082 7.52992 15.9754 7.31282C15.7427 7.09573 15.3667 7.09573 15.1339 7.31282L9.23714 12.8071Z" fill="#666666"/>
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M15.0316 7.20308C15.322 6.93229 15.7874 6.93231 16.0777 7.20313C16.3741 7.47953 16.3741 7.931 16.0777 8.20741L9.7632 14.0969C9.47282 14.3677 9.00743 14.3677 8.71704 14.0969L6.22227 11.77C5.92591 11.4936 5.92591 11.0422 6.22227 10.7658C6.51265 10.4949 6.97804 10.4949 7.26842 10.7658L9.23719 12.602L15.0316 7.20308ZM15.8731 7.42252C15.698 7.25916 15.4113 7.25916 15.2362 7.42252L9.23709 13.0121L7.06381 10.9851C6.88866 10.8218 6.60203 10.8218 6.42688 10.9851C6.25771 11.1429 6.25771 11.3929 6.42688 11.5506L8.92166 13.8775C9.09681 14.0408 9.38344 14.0408 9.55858 13.8775L15.8731 7.98802C16.0423 7.83023 16.0423 7.58031 15.8731 7.42252Z" fill="#666666"/>
+                        </svg>
+                    </div>
+                    <div class="equipment_el__text">
+                        Ксенон
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 
 <?//detail description?>
 <?if($arResult['DETAIL_TEXT'] || $bOfferDetailText ):?>

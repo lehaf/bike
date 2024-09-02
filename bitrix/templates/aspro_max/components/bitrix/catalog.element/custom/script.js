@@ -5,6 +5,25 @@ $(document).ready(function () {
     setNewHeader();
   }, 10);
 
+  $('.prices_block-btn').on('click', function(e){
+    console.log($(this));
+    $.ajax({
+      url: '/ajax/form_custom.php',
+      data: {type: $(this).attr('data-event')},
+      type: 'GET',             // Тип запроса (GET или POST)
+      success: function(response){
+        $('#popup_iframe_wrapper').append(response);
+        $('#popup_iframe_wrapper').css({ "z-index": 3000, display: "flex" });
+
+        console.log($('#popup_iframe_wrapper'));
+        console.log(response);
+      },
+      error: function(xhr, status, error){
+        console.log(error);
+      }
+    });
+  });
+
   //change fixed header
   if (arMaxOptions["THEME"]["SHOW_HEADER_GOODS"] == "Y") $("#headerfixed .logo-row").addClass("wproducts");
 
@@ -278,4 +297,7 @@ $(document).ready(function () {
     }
   };
   BX.extend(BasketButton, BX.PopupWindowButton);
+
+
 })(window);
+
