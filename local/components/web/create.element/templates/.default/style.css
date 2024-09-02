@@ -388,7 +388,7 @@
 }
 
 .form-group-custom-select .choices__list--dropdown {
-    padding-top: 41px;
+    padding-top: 45px;
 }
 
 .form-group-custom-select .choices__list--dropdown .choices__list {
@@ -704,7 +704,7 @@ input[type="radio"] {
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 6px;
     max-height: 260px;
 }
 
@@ -727,6 +727,7 @@ input[type="radio"] {
     min-height: 21px;
     transition: .3s;
     cursor: pointer;
+  margin-bottom: 0;
 }
 
 .checkbox-label:before {

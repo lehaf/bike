@@ -524,10 +524,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const selectCurrency = document.querySelector("#currency")
 
-    const selectType = new Choices(selectCurrency, {
-        searchEnabled: false,
-        shouldSort: false,
-    })
+    if(selectCurrency) {
+        const selectType = new Choices(selectCurrency, {
+            searchEnabled: false,
+            shouldSort: false,
+        })
+    }
 
     ymaps.ready(init);
 
@@ -560,18 +562,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             });
         })
-        /*    var clusterer = new ymaps.Clusterer({
-                clusterIcons: [
-                    {
-                        href: 'img/burger.png',
-                        size: [100, 100],
-                        offset: [-50, -50]
-                    }
-                ],
-                clusterIconContentLayout: null
-            });
-
-            map.geoObjects.add(clusterer);*/
     }
 
     $(".ad-description-list").on("click", function () {

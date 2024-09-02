@@ -128,10 +128,11 @@ class CreateElement extends \CBitrixComponent
 
         $newItemId = $newElement->save();
 
-        if ($newItemId->isSuccess() && !empty($this->data['POST']['PRICE'])) {
+        if ($newItemId->isSuccess()) {
             $result = ["STATUS" => "OK", "ID" => $newItemId->getId()];
         } else {
             $this->errors = $this->addErrors($newItemId);
+            Debug::dumpToFile($this->errors);
             $result = ["STATUS" => "ERROR", "ERRORS" => $this->errors];
         }
 
@@ -146,9 +147,9 @@ class CreateElement extends \CBitrixComponent
             $price = PriceTable::add([
                 "PRODUCT_ID" => $product->getId(),
                 "CATALOG_GROUP_ID" => 1,
-                "PRICE" => $this->data["POST"]["PRICE"],
+                "PRICE" => $this->data["POST"]["PRICE"] ?? 0,
                 "CURRENCY" => ($this->data["POST"]["CURRENCY"]) ?: 'RUB',
-                "PRICE_SCALE" => $this->data["POST"]["PRICE"]
+                "PRICE_SCALE" => $this->data["POST"]["PRICE"] ?? 0
             ]);
 
             if ($price->isSuccess()) {
@@ -275,7 +276,7 @@ class CreateElement extends \CBitrixComponent
 
         $hlblock = \Bitrix\Highloadblock\HighloadBlockTable::getList([
             "filter" => ['TABLE_NAME' => "b_required_fields"],
-            ])->fetch();
+        ])->fetch();
 
         if (isset($hlblock['ID'])) {
             $entity = \Bitrix\Highloadblock\HighloadBlockTable::compileEntity($hlblock);
@@ -305,8 +306,6 @@ class CreateElement extends \CBitrixComponent
             if (!isset($data["POST"]["NAME"])) {
                 $data["POST"]["NAME"] = $this->setName($data);
             }
-
-            Debug::dumpToFile($data["POST"]);
 
             $data["POST"]["IBLOCK_SECTION_ID"] = $data["POST"]["IBLOCK_SECTION_ID"] ?? $data['GET']['type'];
 
@@ -345,7 +344,7 @@ class CreateElement extends \CBitrixComponent
                     $this->errors += [$prop => "Заполните поле '" . $value['NAME'] . "'"];
                 }
             }
-            if (empty($data['POST']['PRICE'])) $this->errors['PRICE'] = "Заполните цену";
+            if (isset($data['POST']['PRICE']) && empty($data['POST']['PRICE'])) $this->errors['PRICE'] = "Заполните цену";
 
             foreach ($data["POST"] as $prop => &$value) {
                 if (in_array($prop, $this->staticProps) || isset($this->userProps[$prop]) && !$data["FILES"][$prop]) {

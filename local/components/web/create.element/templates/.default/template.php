@@ -130,6 +130,32 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                                     </div>
                                 <?php endif; ?>
 
+                                <?php if ($key === 'OTHER_FIELDS'): ?>
+                                    <div class="form-group">
+                                        <div class="form-row">
+                                        <textarea name="DETAIL_TEXT" class="custom-textarea"
+                                                  placeholder="Введите описание" id="adDescription" maxlength="2000"
+                                                  data-text="ad-description"></textarea>
+                                            <div class="textarea-info">
+                                                Символов&nbsp;
+                                                <div class="textarea-info__number">
+                                                    0
+                                                </div>
+                                                <div class="textarea-info__full">
+                                                    /2000
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <?php if (!empty($arResult['TAGS'])): ?>
+                                        <div class="ad-description-list" data-text="ad-description">
+                                            <?php foreach ($arResult['TAGS'] as $tag): ?>
+                                                <div class="ad-description-list__el"><?= $tag ?></div>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    <?php endif; ?>
+                                <?php endif; ?>
+
                                 <?php if (!empty($block['FIELDS'])): ?>
                                     <?php if ($key === 'TECHNICAL'): ?>
                                         <?php foreach ($block['FIELDS'] as $field): ?>
@@ -293,7 +319,7 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                                                             <?php if ($field['MULTIPLE'] === "Y"): ?>
                                                                 <?php $count = count($field['PROPERTY_LIST']) ?>
                                                                 <div class="form-group  <?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? 'form-checked check-block' : '' ?>">
-                                                                    <?php if ($field['CODE'] !== 'PRICE_TYPE' || $field['CODE'] !== 'complect_garage'): ?>
+                                                                    <?php if ($field['CODE'] !== 'PRICE_TYPE'): ?>
                                                                         <label for="<?= $field['CODE'] ?>"
                                                                                class="form-group__label <?= ($count > 5) ? 'form-group__label--up' : '' ?>"><?= $field['NAME'] ?><?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? '<span>*</span>' : '' ?></label>
                                                                     <?php endif; ?>
@@ -324,7 +350,6 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                                                                                        name="<?= $field['CODE'] ?>"
                                                                                        id="radio-<?= $item['ID'] ?>"
                                                                                        value="<?= $item['ID'] ?>"
-                                                                                    <?= ($key === 0) ? 'checked' : '' ?>
                                                                                 >
                                                                                 <label for="radio-<?= $item['ID'] ?>"
                                                                                        class="<?= (in_array($field['ID'], $arResult['CUSTOM_CHECK'] ?? [])) ? 'radio-block__label' : 'radio-mini__label' ?>"><?= $item['VALUE'] ?></label>
@@ -558,32 +583,6 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                                         </div>
                                         <div class="error-form">Необходимо заполнить «Название товара»</div>
                                     </div>
-                                <?php endif; ?>
-
-                                <?php if ($key === 'OTHER_FIELDS'): ?>
-                                    <div class="form-group">
-                                        <div class="form-row">
-                                        <textarea name="DETAIL_TEXT" class="custom-textarea"
-                                                  placeholder="Введите описание" id="adDescription" maxlength="2000"
-                                                  data-text="ad-description"></textarea>
-                                            <div class="textarea-info">
-                                                Символов&nbsp;
-                                                <div class="textarea-info__number">
-                                                    0
-                                                </div>
-                                                <div class="textarea-info__full">
-                                                    /2000
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <?php if (!empty($arResult['TAGS'])): ?>
-                                        <div class="ad-description-list" data-text="ad-description">
-                                            <?php foreach ($arResult['TAGS'] as $tag): ?>
-                                                <div class="ad-description-list__el"><?= $tag ?></div>
-                                            <?php endforeach; ?>
-                                        </div>
-                                    <?php endif; ?>
                                 <?php endif; ?>
 
                                 <?php if ($key === 'CATEGORY'): ?>
