@@ -11,4 +11,10 @@
 /* Hide compare button */
 /* a.compare_item { display: none !important;  }*/
 
+.left_block {
+    width: 258px;
+}
 
+body .right_block.wide_ {
+    width: calc(100% - 290px) !important;
+}

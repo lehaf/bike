@@ -172,3 +172,20 @@ function sortFields(array $showFields): array
     unset($item);
     return $showFields;
 }
+
+function getPluralForm(int $number, array $forms) {
+    $number = abs($number) % 100;
+    if ($number >= 11 && $number <= 19) {
+        return $forms[2];
+    }
+    $remainder = $number % 10;
+    if ($remainder == 1) {
+        return $forms[0];
+    }
+    if ($remainder >= 2 && $remainder <= 4) {
+        return $forms[1];
+    }
+
+    return $forms[2];
+}
+

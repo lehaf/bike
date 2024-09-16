@@ -29,16 +29,17 @@ class CreateElement extends \CBitrixComponent
         "USER"
     ];
 
+    private array $imageExtentions = ['jpg', 'png', 'jpeg', 'gif'];
     private array $data = [];
 
     private array $errors = [];
     private array $userProps = [];
 
-    private array $imageExtentions = ['jpg', 'png', 'jpeg', 'gif'];
-
     private string $templateFolder = '';
 
     private array $requiredFields = [];
+
+    private int $elementId = 0;
 
     private function setApiCode(): void
     {
@@ -72,21 +73,6 @@ class CreateElement extends \CBitrixComponent
         return $data ?? [];
     }
 
-    private function setUserProps(): array
-    {
-        $res = \Bitrix\Iblock\PropertyTable::getList([
-            "filter" => ["=IBLOCK_ID" => $this->arParams["IBLOCK_ID"], "=ACTIVE" => "Y"],
-        ])->fetchAll();
-
-        if (!empty($res)) {
-            foreach ($res as $prop) {
-                $userProps[$prop["CODE"]] = $prop;
-            }
-        }
-
-        return $userProps ?? [];
-    }
-
     private function addErrors(object $data): array
     {
         foreach ($data->getErrors() as $error) {
@@ -103,6 +89,8 @@ class CreateElement extends \CBitrixComponent
         $newElement->setId(0);
 
         $newElement->set("ACTIVE", true);
+        $newElement->set("ACTIVE_FROM", date('d.m.Y H:i:s'));
+
         $arTransParams = array(
             "max_len" => 250,
             "change_case" => 'L',
@@ -132,7 +120,77 @@ class CreateElement extends \CBitrixComponent
             $result = ["STATUS" => "OK", "ID" => $newItemId->getId()];
         } else {
             $this->errors = $this->addErrors($newItemId);
-            Debug::dumpToFile($this->errors);
+            $result = ["STATUS" => "ERROR", "ERRORS" => $this->errors];
+        }
+
+        return $result;
+    }
+
+    private function editElement(array $data): array
+    {
+        $iblockClass = \Bitrix\Iblock\Iblock::wakeUp($this->arParams["IBLOCK_ID"])->getEntityDataClass();
+        $element = $iblockClass::getByPrimary($this->elementId, ['select' => array_keys($data)])->fetchObject();
+        $elementPhotos = $iblockClass::getByPrimary($this->elementId, ['select' => ['MORE_PHOTO', 'PREVIEW_PICTURE']])->fetchObject();
+        $delPhotos = [];
+        if(!empty($elementPhotos)) {
+            foreach ($elementPhotos->getMorePhoto()->getAll() as $photo) {
+                $delPhotos[] = $photo->getValue();
+            }
+            $delPhotos[] = $elementPhotos->getPreviewPicture();
+
+            if (!empty($delPhotos)) {
+                foreach ($delPhotos as $photo) {
+                    \CFile::Delete($photo);
+                }
+            }
+        }
+
+        $arTransParams = array(
+            "max_len" => 250,
+            "change_case" => 'L',
+            "replace_space" => '_',
+            "replace_other" => '_',
+            "delete_repeat_replace" => true
+        );
+        $element->set("CODE", \CUtil::translit($data["NAME"]["VALUE"], "ru", $arTransParams));
+
+        if (!empty($data)) {
+            foreach ($data as $prop => $item) {
+                if ($item["MULTIPLE"] && is_array($item["VALUE"])) {
+                    $propertyValues = $element->get($prop);
+                    foreach ($propertyValues as $value) {
+                        $propertyValues->remove($value);
+                    }
+                    foreach ($item["VALUE"] as $value) {
+                        $element->addTo($prop, new PropertyValue($value));
+                    }
+                } else {
+                    $element->set($prop, $item["VALUE"]);
+                }
+            }
+        }
+
+        $existingPrice = \Bitrix\Catalog\PriceTable::getList([
+            'filter' => [
+                'PRODUCT_ID' => $this->elementId,
+                'CATALOG_GROUP_ID' => 1,
+            ],
+        ])->fetch();
+
+        if ($existingPrice) {
+            PriceTable::update($existingPrice['ID'], [
+                "PRICE" => $this->data["POST"]["PRICE"] ?? 0,
+                "CURRENCY" => ($this->data["POST"]["CURRENCY"]) ?: 'RUB',
+                "PRICE_SCALE" => $this->data["POST"]["PRICE"] ?? 0
+            ]);
+        }
+
+        $newItemId = $element->save();
+
+        if ($newItemId->isSuccess()) {
+            $result = ["STATUS" => "OK", 'FORM' => $this->successFormTemplate()];
+        } else {
+            $this->errors = $this->addErrors($newItemId);
             $result = ["STATUS" => "ERROR", "ERRORS" => $this->errors];
         }
 
@@ -320,22 +378,6 @@ class CreateElement extends \CBitrixComponent
                     $this->errors[$field] = $errorMessage;
                 }
             }
-//            if (!isset($data["POST"]["IBLOCK_SECTION_ID"])) {
-//                $data["POST"]["IBLOCK_SECTION_ID"] = $data['GET']['type'];
-//            }
-//
-//            if(empty($data["POST"]["IBLOCK_SECTION_ID"])) {
-//                $this->errors += ["IBLOCK_SECTION_ID" => 'Заполните поле'];
-//            }
-//
-//            if(isset($data["POST"]["CATEGORY"]) && empty($data["POST"]["CATEGORY"])) {
-//                $this->errors += ["CATEGORY" => 'Заполните поле'];
-//            }
-//
-//            if(isset($data["POST"]["SUBCATEGORY"]) && empty($data["POST"]["SUBCATEGORY"])) {
-//                $this->errors += ["SUBCATEGORY" => 'Заполните поле'];
-//            }
-
 
             $data["POST"]["USER"] = \Bitrix\Main\Engine\CurrentUser::get()->getId();
 
@@ -348,19 +390,6 @@ class CreateElement extends \CBitrixComponent
 
             foreach ($data["POST"] as $prop => &$value) {
                 if (in_array($prop, $this->staticProps) || isset($this->userProps[$prop]) && !$data["FILES"][$prop]) {
-                    //добавление изображений
-                    if ($prop === 'PREVIEW_PICTURE' || $prop === 'DETAIL_PICTURE' || $prop === 'MORE_PHOTO') {
-                        if (is_array($value) && !empty($value)) {
-                            $images = [];
-                            foreach ($value as $item) {
-                                $images[] = $this->decodeImg($item);
-                            }
-                            $value = $images;
-                        } else {
-                            $value = $this->decodeImg($value);
-                        }
-                    }
-
                     $elementData[$prop]["VALUE"] = $value;
                     $elementData[$prop]["MULTIPLE"] = (is_array($value));
                 }
@@ -368,79 +397,122 @@ class CreateElement extends \CBitrixComponent
             unset($value);
         }
 
-        if (!empty($data["FILES"])) {
+        if (empty($this->errors)) {
 
-            $arRotateImages = $data["POST"]["ROTATE_IMAGES"];
-            foreach ($data["FILES"] as $code => $file) {
-                $fileInfo = $data["FILES"][$code];
+            if (!empty($data["FILES"])) {
+                foreach ($data["FILES"] as $code => $fileInfo) {
+                    if (in_array($code, $this->staticProps) || $code === 'picture') {
+                        // Папка для временных файлов
+                        $uploadDir = $_SERVER["DOCUMENT_ROOT"] . "/upload/tmp/";
+                        $isMultiple = is_array($fileInfo["name"]);
+                        $filesId = [];
 
-                foreach ($fileInfo["name"] as $key => $name) {
+                        $names = $isMultiple ? $fileInfo["name"] : [$fileInfo["name"]];
+                        $tmpNames = $isMultiple ? $fileInfo["tmp_name"] : [$fileInfo["tmp_name"]];
 
-                    $fileExtension = pathinfo($fileInfo["name"][$key], PATHINFO_EXTENSION);
-                    $arFile = \CFile::MakeFileArray($fileInfo["tmp_name"][$key]);
-                    $fileId = \CFile::SaveFile($arFile, "iblock");
+                        foreach ($names as $key => $name) {
+                            $filePath = $uploadDir . basename($name);
+                            if (move_uploaded_file($tmpNames[$key], $filePath)) {
+                                $arFile = \CFile::MakeFileArray($filePath);
+                                $arFile['MODULE_ID'] = 'iblock';
 
-                    if ($arRotateImages && isset($arRotateImages[$code])) {
-                        foreach ($arRotateImages[$code] as $rotateImage) {
-                            if ($rotateImage["NAME"] === $name) {
-                                $newImg = $this->imageCreateFromFile($_SERVER["DOCUMENT_ROOT"] . \CFile::GetPath($fileId), $arFile["type"]);
-                                $newImg = imagerotate($newImg, $rotateImage["ROTATE"], 0);
-                                $this->imageFile($newImg, $rotateImage["NAME"], $arFile["type"]);
-                                imagedestroy($newImg);
+                                if ($arFile) {
+                                    $filesId[] = \CFile::SaveFile($arFile, "images");
+                                }
 
-                                \CFile::Delete($fileId);
-                                $arFile = \CFile::MakeFileArray($rotateImage["NAME"]);
-                                $fileId = \CFile::SaveFile($arFile, "iblock");
+                                if (!empty($filesId)) {
+                                    unlink($filePath);
+                                }
+
                             }
                         }
-                    }
 
-                    if ($key === 0 && $data["POST"][$code] && isset($data["POST"][$code]["is_images"])) {
-                        $fileExtensionFirst = pathinfo($fileInfo["name"][0], PATHINFO_EXTENSION);
-                        if (in_array($fileExtensionFirst, $this->imageExtentions) && isset($this->userProps[$code])
-                            && str_contains($this->userProps[$code]['FILE_TYPE'], $fileExtensionFirst)) {
+                        if (!$isMultiple && !empty($filesId)) {
+                            $filesId = $filesId[0];
+                        }
 
-                            $elementData["PREVIEW_PICTURE"]["VALUE"] = $fileId;
-                            $elementData["PREVIEW_PICTURE"]["MULTIPLE"] = false;
-                            $elementData["DETAIL_PICTURE"]["VALUE"] = $fileId;
-                            $elementData["DETAIL_PICTURE"]["MULTIPLE"] = false;
+                        if ($code === 'picture' && !$isMultiple) {
+                            $elementData['PREVIEW_PICTURE']["VALUE"] = $filesId;
+                            $elementData['PREVIEW_PICTURE']["MULTIPLE"] = false;
+
+                            $elementData['DETAIL_PICTURE']["VALUE"] = $filesId;
+                            $elementData['DETAIL_PICTURE']["MULTIPLE"] = false;
 
                             continue;
                         }
-                    }
 
-                    if ((in_array($code, $this->staticProps) && in_array($fileExtension, $this->imageExtentions))
-                        || (isset($this->userProps[$code]) && str_contains($this->userProps[$code]['FILE_TYPE'], $fileExtension))) {
-                        $elementData[$code]["VALUE"][] = $fileId;
-                        $elementData[$code]["MULTIPLE"] = (isset($this->userProps[$code]) && $this->userProps[$code]['MULTIPLE'] === "Y");;
-                    } else {
-                        $this->errors[$code] = "Неверный формат файла или несуществующее свойство инфоблока";
+                        $elementData[$code]["VALUE"] = $filesId;
+                        $elementData[$code]["MULTIPLE"] = $isMultiple;
                     }
-
                 }
             }
-        }
 
-        if (empty($this->errors)) {
-            $newElement = $this->createElement($elementData ?? []);
-            if (Loader::includeModule('sale') && $newElement["STATUS"] === "OK") {
-                $catalogIblock = \Bitrix\Catalog\CatalogIblockTable::getList([
-                    'filter' => ['=IBLOCK_ID' => $this->arParams['IBLOCK_ID']],
-                ])->fetchObject();
+            if ($data['POST']['action'] === 'add') {
+                $newElement = $this->createElement($elementData ?? []);
+                if (Loader::includeModule('sale') && $newElement["STATUS"] === "OK") {
+                    $catalogIblock = \Bitrix\Catalog\CatalogIblockTable::getList([
+                        'filter' => ['=IBLOCK_ID' => $this->arParams['IBLOCK_ID']],
+                    ])->fetchObject();
 
-                if ($catalogIblock) {
-                    $newProduct = $this->createProduct($newElement["ID"]);
-                    echo json_encode($newProduct);
-                    die();
+                    if ($catalogIblock) {
+                        $newProduct = $this->createProduct($newElement["ID"]);
+                        echo json_encode($newProduct);
+                        die();
+                    }
                 }
+                echo json_encode($newElement);
             }
-            echo json_encode($newElement);
+
+            if ($data['POST']['action'] === 'edit') {
+                $edit = $this->editElement($elementData ?? []);
+                echo json_encode($edit);
+            }
+
         } else {
             echo json_encode(["STATUS" => "ERROR", "ERRORS" => $this->errors]);
         }
 
         die();
 
+    }
+
+    private function getElementField(int $elementId): array
+    {
+        $properties = \Bitrix\Iblock\ElementPropertyTable::getList([
+            'filter' => ['IBLOCK_ELEMENT_ID' => $elementId],
+            'select' => ['IBLOCK_PROPERTY_ID', 'VALUE', 'VALUE_ENUM']
+        ])->fetchAll();
+
+        $propertyIds = array_column($properties, 'IBLOCK_PROPERTY_ID');
+        $propertyInfoList = \Bitrix\Iblock\PropertyTable::getList([
+            'filter' => ['ID' => $propertyIds],
+            'select' => ['ID', 'CODE', 'PROPERTY_TYPE', 'MULTIPLE']
+        ])->fetchAll();
+
+        $propertyInfoMap = [];
+        foreach ($propertyInfoList as $propertyInfo) {
+            $propertyInfoMap[$propertyInfo['ID']] = $propertyInfo;
+        }
+
+        $result = [];
+        foreach ($properties as $property) {
+            $propertyInfo = $propertyInfoMap[$property['IBLOCK_PROPERTY_ID']];
+            $code = $propertyInfo['CODE'];
+
+            if ($propertyInfo['PROPERTY_TYPE'] === 'L') {
+                $value = $property['VALUE_ENUM'];
+            } else {
+                $value = $property['VALUE'];
+            }
+
+            if ($propertyInfo['MULTIPLE'] === 'Y') {
+                $result[$code][] = $value;
+            } else {
+                $result[$code] = $value;
+            }
+        }
+
+        return $result;
     }
 
     public function onPrepareComponentParams($arParams)
@@ -455,26 +527,34 @@ class CreateElement extends \CBitrixComponent
             'filter' => [
                 '=ID' => $arParams['SECTION_ID'],
                 '>=DEPTH_LEVEL' => 2,
-                '=IBLOCK_SECTION.DEPTH_LEVEL' => 2,
             ],
             'select' => [
                 'ID',
                 'NAME',
                 'IBLOCK_SECTION_ID',
                 'PARENT_SECTION_ID' => 'IBLOCK_SECTION.ID',
-                'PARENT_SECTION_NAME' => 'IBLOCK_SECTION.NAME'
+                'FIRST_LEVEL_PARENT_ID' => 'FIRST_LEVEL_SECTION.ID',
             ],
             'runtime' => [
                 new \Bitrix\Main\Entity\ReferenceField(
                     'IBLOCK_SECTION',
                     SectionTable::class,
-                    ['=this.IBLOCK_SECTION_ID' => 'ref.ID']
+                    ['=this.IBLOCK_SECTION_ID' => 'ref.ID'],
+                    ['join_type' => 'LEFT']
+                ),
+
+                new \Bitrix\Main\Entity\ReferenceField(
+                    'FIRST_LEVEL_SECTION',
+                    SectionTable::class,
+                    ['=this.IBLOCK_SECTION.IBLOCK_SECTION_ID' => 'ref.ID'],
+                    ['join_type' => 'LEFT']
                 )
             ],
         ])->fetch();
 
         if ($parentSection) {
             $arParams['PARENT_SECTION_ID'] = $parentSection['PARENT_SECTION_ID'];
+            $arParams['FIRST_LEVEL_PARENT_ID'] = $parentSection['FIRST_LEVEL_PARENT_ID'];
         }
 
         return $arParams;
@@ -491,10 +571,12 @@ class CreateElement extends \CBitrixComponent
         if (!empty($this->arParams["IBLOCK_ID"]) && (int)$this->arParams["IBLOCK_ID"]) {
             $this->setApiCode();
             $this->data = $this->setData();
+            $this->elementId = $this->data['GET']['element'] ?? 0;
 
             if ($this->arParams["IS_TEMPLATE_INCLUDE"] === "Y") {
                 if ($this->data['GET']['type']) {
                     $sectId = (!isset($this->arParams['PARENT_SECTION_ID'])) ? $this->arParams['SECTION_ID'] : [$this->arParams['PARENT_SECTION_ID'], $this->arParams['SECTION_ID']];
+                    if ($this->arParams['FIRST_LEVEL_PARENT_ID']) $sectId[] = $this->arParams['FIRST_LEVEL_PARENT_ID'];
 
                     $rsSectionProps = \Bitrix\Iblock\SectionPropertyTable::getList([
                         "filter" => ['=IBLOCK_ID' => $this->arParams["IBLOCK_ID"] ?? 0, "=SECTION_ID" => $sectId],
@@ -520,7 +602,7 @@ class CreateElement extends \CBitrixComponent
                             $this->arResult["SHOW_FIELDS"][$field['CODE']] = $field;
                             $this->arResult["SHOW_FIELDS"][$field['CODE']]['CUSTOM_IS_REQUIRED'] = (in_array($field['ID'], $this->requiredFields)) ? "Y" : "N";
 
-                            if($field['CODE'] === 'country') {
+                            if ($field['CODE'] === 'country') {
                                 $countries = \Bitrix\Sale\Location\LocationTable::getList([
                                     'filter' => [
                                         '=TYPE_CODE' => 'COUNTRY',
@@ -572,8 +654,77 @@ class CreateElement extends \CBitrixComponent
                         }
                     }
 
+                    if ($this->elementId) {
+                        $this->arResult['ELEMENT_FIELDS'] = $this->getElementField($this->elementId);
+
+                        $this->arResult['ELEMENT_PRICE'] = \Bitrix\Catalog\PriceTable::getList([
+                            'filter' => ['PRODUCT_ID' => $this->elementId],
+                            'select' => ['PRICE', 'CURRENCY']
+                        ])->fetch();
+
+                        $elementProps = \Bitrix\Iblock\ElementTable::getList([
+                            'filter' => [
+                                'ID' => $this->elementId,
+                            ],
+                            'select' => ['ID', 'NAME', 'PREVIEW_PICTURE', 'DETAIL_TEXT', 'IBLOCK_SECTION_ID'],
+                        ])->fetch();
+
+                        $sectionResult = \Bitrix\Iblock\SectionTable::getList([
+                            'filter' => ['ID' => $elementProps['IBLOCK_SECTION_ID'], '!=DEPTH_LEVEL' => [1, 2]],
+                            'select' => [
+                                'NAME',
+                                'IBLOCK_SECTION_ID',
+                                'SECTION_NAME' => 'PARENT_SECTION.NAME',
+                            ],
+                            'runtime' => [
+                                new \Bitrix\Main\Entity\ReferenceField(
+                                    'PARENT_SECTION',
+                                    \Bitrix\Iblock\SectionTable::getEntity(),
+                                    ['=this.IBLOCK_SECTION_ID' => 'ref.ID'],
+                                    ['join_type' => 'left']
+                                ),
+                            ],
+                        ])->fetch();
+
+                        if ($this->arResult['ELEMENT_FIELDS']['MORE_PHOTO']) {
+                            array_unshift($this->arResult['ELEMENT_FIELDS']['MORE_PHOTO'], $elementProps['PREVIEW_PICTURE']);
+                        }
+                        $this->arResult['ELEMENT_PROPS'] = $elementProps;
+                        $this->arResult['ELEMENT_PROPS']['IBLOCK_SECTION_NAME'] = $sectionResult['NAME'];
+                        $this->arResult['ELEMENT_PROPS']['SECTION_ID'] = $sectionResult['IBLOCK_SECTION_ID'] ?? $elementProps['IBLOCK_SECTION_ID'];
+                        $this->arResult['ELEMENT_PROPS']['SECTION_NAME'] = $sectionResult['SECTION_NAME'] ?? $sectionResult['NAME'];
+
+                        if ($this->arResult['ELEMENT_FIELDS']['country']) {
+                            $cityResult = \Bitrix\Sale\Location\LocationTable::getByPrimary($this->arResult['ELEMENT_FIELDS']['country'], [
+                                'select' => ['ID', 'PARENT_ID']
+                            ])->fetch();
+
+                            $parentId = $cityResult['PARENT_ID'];
+
+                            while ($parentId) {
+                                $parentLocation = \Bitrix\Sale\Location\LocationTable::getByPrimary($parentId, [
+                                    'select' => ['ID', 'PARENT_ID', 'TYPE_ID']
+                                ])->fetch();
+
+                                if ($parentLocation['TYPE_ID'] == 3) { // Регион
+                                    $regionId = $parentLocation['ID'];
+                                } elseif ($parentLocation['TYPE_ID'] == 1) { // Страна
+                                    $countryId = $parentLocation['ID'];
+                                }
+
+                                $parentId = $parentLocation['PARENT_ID'];
+                            }
+
+                            $this->arResult['ELEMENT_COUNTRY'] = [
+                                'COUNTRY' => $countryId ?? 0,
+                                'REGION' => $regionId ?? 0,
+                                'CITY' => $cityResult['ID']
+                            ];
+                        }
+                    }
                 }
 
+//                Debug::dumpToFile($this->arResult["SHOW_FIELDS"]);
                 $this->templateFolder = $this->getPath() . '/templates/' . $this->getTemplateName();
                 if ($this->data['POST']['ajax'] === 'Y') {
                     $this->userProps = $this->arResult["SHOW_FIELDS"] ?? [];

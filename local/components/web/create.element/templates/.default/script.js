@@ -1,5 +1,19 @@
 // несколько селектов с кнопкой сброса
 document.addEventListener("DOMContentLoaded", () => {
+    let params = window
+        .location
+        .search
+        .replace('?','')
+        .split('&')
+        .reduce(
+            function(p,e){
+                var a = e.split('=');
+                p[ decodeURIComponent(a[0])] = decodeURIComponent(a[1]);
+                return p;
+            },
+            {}
+        );
+
     $(".step-form__btn:not(.step-form__btn-submit)").on("click", stepBtn);
     $(".custom-input.number").on('input', function() {
         this.value = this.value.replace(/[^0-9]/g, '');
@@ -8,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const selectList = document.querySelectorAll(".custom-select");
     const selectDisabled = document.querySelector(".select-disabled");
     let selectCategory = '';
-    let subSelectCategory = '';
+    let subSelect = '';
 
     setSelect(selectList);
     function setSelect(selectList) {
@@ -36,7 +50,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         })
 
-
         $('.custom-select-inner .choices__item--choice[data-id=1]').hide();
     }
 
@@ -63,6 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
         elChoices.setChoiceByValue('');
         $(el).siblings('.choices__list').find('.choices__item--selectable').addClass('choices__placeholder');
         if(secondElChoices) {
+            console.log('disable');
             secondElChoices.setChoiceByValue('');
             secondElChoices.disable();
         }
@@ -87,6 +101,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
             $('.custom-select-inner:not(".select-no_reset") .choices__item--choice[data-id=2]').attr("data-value", "reset");
             $('.custom-select-inner .choices__item--choice[data-id=1]').hide();
+
+
+            let elementId = el.getAttribute('data-el');
+            if(elementId) {
+                elChoices.setChoiceByValue(elementId);
+                elChoices.enable();
+            }
+
         }
     }
 
@@ -110,16 +132,19 @@ document.addEventListener("DOMContentLoaded", () => {
         const countrySelect = new Choices(countryEl, {
             searchEnabled: false,
             shouldSort: false,
+            position: 'bottom'
         })
 
         const regionSelect = new Choices(regionEl, {
             searchEnabled: false,
             shouldSort: false,
+            position: 'bottom'
         })
 
         const citySelect = new Choices(cityEl, {
             searchEnabled: false,
             shouldSort: false,
+            position: 'bottom'
         })
 
         addListener(countryEl, countrySelect, regionSelect, citySelect)
@@ -284,6 +309,16 @@ document.addEventListener("DOMContentLoaded", () => {
                     objContentModel(listModels, flag);
                     inputBrandModel(listModelsFull);
                     clickModelBlock(listModelsFull);
+                    if(params['element']) {
+                        let models = modelBlock.querySelectorAll('.brand-list__el input');
+                        if(models.length !== 0) {
+                            models.forEach(model => {
+                                if(model.value === modelBlock.getAttribute('data-el')) model.checked = true;
+                            })
+                            modelBlock.removeAttribute('data-el');
+                        }
+                    }
+
                 }
 
                 if (flag === 'getCategories') {
@@ -296,7 +331,6 @@ document.addEventListener("DOMContentLoaded", () => {
             if (flag === 'getSubCategories') {
                 $('.subcategory').empty();
                 if (data.length !== 0) {
-                    console.log(data);
                     $('.subcategory').html(data);
 
                     let subCatEl = document.querySelector('#subCategorySelect');
@@ -311,7 +345,14 @@ document.addEventListener("DOMContentLoaded", () => {
                         })
                         listenerSelect(subCatEl, newSelectSearch)
                         subCatEl.onchange = () => getFields(subCatEl.value);
+                        if(params['element']) {
+                            getFields($('.subcategory').attr('data-el'));
+                        }
                         $('.custom-select-inner .choices__item--choice[data-id=1]').hide();
+
+                        if(params['element']) {
+                            newSelectSearch.setChoiceByValue($('.subcategory').attr('data-el'));
+                        }
                     }
 
                 } else {
@@ -340,7 +381,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const templateModalItem = (id, name) => {
         return `
     <div class="form-col brand-list__el">
-         <input type="radio" class="radio-block" name="SUBSECT" id="modal-${id}" value="${id}" data-id="${id}">
+         <input type="radio" class="radio-block" name="SUBSECT" id="modal-${id}" value="${id}" data-id="${id}"}>
          <label for="modal-${id}" class="radio-mini__label">${name}</label>
     </div>
     `
@@ -436,7 +477,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         function objContentModel(obj, flag) {
             modelBlock.innerHTML = "";
+            let elementModelId = modelBlock.getAttribute('data-el');
             for (let el in obj) {
+                let checked = "";
                 let itemBrand = templateModalItem(obj[el].ID, obj[el].NAME);
                 modelBlock.innerHTML = modelBlock.innerHTML + itemBrand;
             }
@@ -615,10 +658,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 $("#square").val(result + ", м2")
             }
         }
-        // const value = this.value.replace(this.getAttribute("data-size"), "");
-        // this.value = value.replace(", ", "") + ", " + this.getAttribute("data-size");
-
-
     })
 
 // Загрузка фото в объявлении
@@ -667,28 +706,48 @@ document.addEventListener("DOMContentLoaded", () => {
 
     }
 
+    let files = [];
+
     $("#inputFile").on("change", function () {
-        let imgList = Array.from(this.files)
+        let imgList = [...Array.from(this.files), ...files];
+        files = [];
         readerImgFile(imgList)
         this.value = ""
     })
+
+    if(params['element']) {
+        fetch('/ajax/edit_element.php', {
+            method: 'POST',
+            body: new URLSearchParams({action: 'photos', elementsId: params['element'], iblock: document.querySelector('.steps-content').getAttribute('data-iblock')}),
+            headers: {'X-Requested-With': 'XMLHttpRequest'}
+        }).then(res => {
+            return res.json();
+        }).then(async data => {
+            for (const img of data) {
+                let imgBlob = await getFileBlob(img);
+                let imgFile = new File([imgBlob], img.split('/').pop(), {type: imgBlob.type});
+                files.push(imgFile);
+            }
+            $("#inputFile").change();
+            console.log(images);
+        }).catch((error) => console.log(error));
+    }
 
 
     $(".dropzone__content").on("click", () => {
         let target = event.target
         if (target.closest(".preview-remove")) {
             let dataName = target.closest(".preview-remove").getAttribute("data-file")
-
             let removeItemImg = fileListImg.find(file => file.name === dataName)
 
             fileListImg = fileListImg.filter(file => file !== removeItemImg)
 
             const itemPreview = document.querySelector(`[data-file="${dataName}"]`).closest(".preview-img")
             itemPreview.classList.add("remove")
+            itemPreview.remove()
 
-            setTimeout(() => {
-                itemPreview.remove()
-            }, 300)
+            // setTimeout(() => {
+            // }, 300)
 
         } else if (target.closest(".ad-main-photo")) {
             let previewImgList = document.querySelectorAll(".preview-img");
@@ -696,6 +755,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 el.classList.remove("is-active");
             })
             target.closest(".preview-img").classList.add("is-active");
+
+            const dataName = target.closest(".preview-img").querySelector(".preview-remove").getAttribute("data-file");
+            const selectedFile = fileListImg.find(file => file.name === dataName);
+            if (selectedFile) {
+                fileListImg = fileListImg.filter(file => file !== selectedFile);
+                fileListImg.unshift(selectedFile);
+            }
+
         }
         loadedImg()
     })
@@ -781,7 +848,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (listCheck.length) {
             $.each(listCheck, function (i, el) {
-                console.log(el.value);
                 let tagName = el.tagName.toLowerCase();
                 if (this.classList.contains("form-checked")) {
                     flag = checkFormButton(el);
@@ -826,19 +892,31 @@ document.addEventListener("DOMContentLoaded", () => {
     let form = document.querySelector("#stepForm");
 
     if (form) {
-        form.addEventListener('submit', (event) => {
+        form.addEventListener('submit', async (event) => {
             event.preventDefault();
             let formData = new FormData(event.target);
             formData.append('ajax', 'Y');
+            formData.append('action', 'add');
+            if(params['element']) {
+               formData.set('action', 'edit');
+            }
+
+            console.log(fileListImg);
+            let preview = fileListImg.shift();
+            formData.append('picture', preview);
+
+            fileListImg.forEach((img, key) => {
+                formData.append("MORE_PHOTO[" + key + "]", img);
+            })
 
             let square = document.querySelector('input[name="square"]');
-            if(square) formData.append('square', square.value);
+            if (square) formData.append('square', square.value);
 
             let phones = document.querySelectorAll('.dataUserTel');
             formData.delete('phone');
-            if(phones.length !== 0) {
+            if (phones.length !== 0) {
                 phones.forEach(phone => {
-                    if(phone.value.length !== 0) {
+                    if (phone.value.length !== 0) {
                         formData.append('phone[]', phone.value);
                     }
                 })
@@ -848,35 +926,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
             let sectId = document.querySelector("[name='SUBCATEGORY']") || document.querySelector("[name='CATEGORY']");
             if (sectId) {
-                if(sectId.value.length !== 0) {
+                if (sectId.value.length !== 0) {
                     formData.append('sectionId', sectId.value);
                 }
                 formData.append("IBLOCK_SECTION_ID", sectId.value);
             }
 
-            // let subSect = document.querySelector("[name='SUBSECT']:checked");
-            // if(subSect) {
-            //     formData.append("IBLOCK_SECTION_ID", subSect.value);
-            // }
-
-            //добавление изображений
-            let allImages = document.querySelectorAll(".dropzone__content .preview-img img");
-            let previewImg = document.querySelector(".dropzone__content .preview-img.is-active img") || allImages[0];
-
-            if (allImages.length !== 0 && previewImg) {
-                allImages = Array.from(allImages).filter(function (item) {
-                    return item !== previewImg;
-                });
-
-                formData.append('PREVIEW_PICTURE', previewImg.getAttribute('src'));
-                formData.append('DETAIL_PICTURE', previewImg.getAttribute('src'));
-
-                allImages.forEach(img => {
-                    formData.append("MORE_PHOTO[]", img.getAttribute('src'));
-                })
+            let subSect = document.querySelector("[name='SUBSECT']:checked");
+            if (subSect) {
+                formData.append("IBLOCK_SECTION_ID", subSect.value);
             }
-
-            console.log(formData);
 
             $("#stepForm").addClass('blur');
             fetch(window.location.href, {
@@ -894,20 +953,24 @@ document.addEventListener("DOMContentLoaded", () => {
                         }
                     }
 
-                    if(data['STATUS'] === 'ERROR') {
+                    if (data['STATUS'] === 'ERROR') {
                         let allErrorBlocks = document.querySelectorAll('.error-form.show');
-                        if(allErrorBlocks.length !== 0) {
-                            allErrorBlocks.forEach(error => {error.classList.remove('show');})
+                        if (allErrorBlocks.length !== 0) {
+                            allErrorBlocks.forEach(error => {
+                                error.classList.remove('show');
+                            })
                         }
 
                         let allErrorChoices = document.querySelectorAll('.error');
-                        if(allErrorChoices.length !== 0) {
-                            allErrorChoices.forEach(error => {error.classList.remove('error');})
+                        if (allErrorChoices.length !== 0) {
+                            allErrorChoices.forEach(error => {
+                                error.classList.remove('error');
+                            })
                         }
 
-                        for(let key in data['ERRORS']) {
+                        for (let key in data['ERRORS']) {
                             let element = document.querySelector('[name="' + key + '"]') || document.querySelector('[name="' + key + '[]"]');
-                            if(key === "country") {
+                            if (key === "country") {
                                 let parentCountryBlock = element.closest('.step-form__inner');
                                 let checkBlocks = parentCountryBlock.querySelectorAll('.check-block.country');
                                 checkBlocks.forEach(block => {
@@ -920,7 +983,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                             if (element) {
                                 let tagName = element.tagName;
-                                let parentElement =  element.closest('.form-col') || element.closest('.form-group:not(.form-group--tel)') || element.closest('.form-row');
+                                let parentElement = element.closest('.form-col') || element.closest('.form-group:not(.form-group--tel)') || element.closest('.form-row');
 
                                 if (tagName === "SELECT") {
                                     parentElement.querySelector(".choices__inner").classList.add("error");
@@ -929,7 +992,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 }
 
                                 let errorBlock = parentElement.querySelector('.error-form');
-                                if(errorBlock) errorBlock.classList.add('show');
+                                if (errorBlock) errorBlock.classList.add('show');
                             }
                         }
                         $("#stepForm").removeClass('blur');
@@ -939,5 +1002,24 @@ document.addEventListener("DOMContentLoaded", () => {
                 })
                 .catch(error => console.error('Ошибка:', error));
         })
+    }
+
+    if(params['element']) {
+        getLocation('getRegions', 'location', countryEl.getAttribute('data-el'));
+        getLocation('getCities', 'location', regionEl.getAttribute('data-el'));
+
+
+        if(brandInput) {
+            getCategories('getModels', 'categories', brandInput.getAttribute('data-el'));
+        }
+
+        if(categoryEl) {
+            getCategories('getSubCategories', 'categories', categoryEl.getAttribute('data-el'));
+        }
+    }
+    async function getFileBlob(url) {
+        const response = await fetch(url);
+        const blob = await response.blob();
+        return blob;
     }
 })

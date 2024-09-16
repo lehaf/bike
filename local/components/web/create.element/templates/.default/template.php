@@ -27,7 +27,7 @@ if ($_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {
 }
 $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO', 'OTHER_FIELDS'];
 ?>
-    <div class="steps-content" <?= $showCategories ?>>
+    <div class="steps-content" data-iblock="<?=$arParams['IBLOCK_ID']?>" <?= $showCategories ?> >
         <?php if (isset($_GET['type'])): ?>
             <div class="step">
                 <div class="wrapper">
@@ -61,7 +61,11 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                                                 <input type="text" class="custom-input check-block"
                                                        placeholder="Поиск марки"
                                                        id="brand"
-                                                       autocomplete="off" name="SECTION">
+                                                       autocomplete="off"
+                                                       name="SECTION"
+                                                       value="<?= ($arResult['ELEMENT_PROPS']) ? $arResult['ELEMENT_PROPS']['SECTION_NAME'] : '' ?>"
+                                                    <?= ($arResult['ELEMENT_PROPS']) ? 'data-el=' . $arResult['ELEMENT_PROPS']['SECTION_ID'] : '' ?>
+                                                >
                                                 <div class="error-form">Необходимо заполнить «Марка»</div>
                                                 <div class="brand-list" id="brandBlock">
                                                 </div>
@@ -74,9 +78,15 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                                                 <input type="text" class="custom-input check-block"
                                                        placeholder="Поиск модели"
                                                        id="brandModel"
-                                                       autocomplete="off" disabled name="SUBSECTION">
+                                                       autocomplete="off"
+                                                    <?= (!$arResult['ELEMENT_PROPS']) ? "disabled" : "" ?>
+                                                       value="<?= ($arResult['ELEMENT_PROPS']) ? $arResult['ELEMENT_PROPS']['IBLOCK_SECTION_NAME'] : '' ?>"
+                                                       name="SUBSECTION"
+                                                >
                                                 <div class="error-form">Необходимо заполнить «Модель»</div>
-                                                <div class="brand-list brand-list--model" id="modelBlock">
+                                                <div class="brand-list brand-list--model"
+                                                     id="modelBlock"
+                                                    <?= ($arResult['ELEMENT_PROPS']) ? 'data-el=' . $arResult['ELEMENT_PROPS']['IBLOCK_SECTION_ID'] : '' ?>>
                                                 </div>
                                             </div>
                                         </div>
@@ -90,12 +100,16 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                                             <input type="text" class="custom-input check-block number"
                                                    placeholder="Например, 1000 BYN"
                                                    id="price"
-                                                   autocomplete="off" name="PRICE">
+                                                   autocomplete="off" name="PRICE"
+                                                   value="<?= (isset($arResult['ELEMENT_PRICE'])) ? floor($arResult['ELEMENT_PRICE']['PRICE']) : '' ?>"
+                                            >
                                             <div class="form-group custom-select-inner form-group-custom-select select-no_reset">
                                                 <div class="form-row">
                                                     <select class="custom-select" id="currency" name="CURRENCY">
                                                         <?php foreach ($arResult['CURRENCIES'] as $curKey => $currency): ?>
-                                                            <option value="<?= $currency['CURRENCY'] ?>" <?= ($currency['BASE'] === 'Y') ? 'selected' : '' ?>>
+                                                            <option value="<?= $currency['CURRENCY'] ?>"
+                                                                <?= ($currency['BASE'] === 'Y' || $currency['CURRENCY'] === $arResult['ELEMENT_PRICE']['CURRENCY']) ? 'selected' : '' ?>
+                                                            >
                                                                 <?= $currency['CURRENCY'] ?>
                                                             </option>
                                                         <?php endforeach; ?>
@@ -126,6 +140,27 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                                    Добавить фото
                                 </span>
                                             </label>
+<!--                                            --><?php //if (!empty($arResult['ELEMENT_FIELDS']['MORE_PHOTO'])): ?>
+<!--                                                --><?php //foreach ($arResult['ELEMENT_FIELDS']['MORE_PHOTO'] as $index => $image): ?>
+<!--                                                    --><?php //$imgArr = \CFile::GetFileArray($image); ?>
+<!--                                                    <div class="preview-img --><?php //= ($index === 0) ? 'is-active' : '' ?><!--"-->
+<!--                                                         data-img="--><?php //= $imgArr['FILE_NAME'] ?><!--">-->
+<!--                                                        <img src="--><?php //= $imgArr['SRC'] ?><!--" alt="img">-->
+<!--                                                        <span class="preview-remove"-->
+<!--                                                              data-file="banner-background-b5a2ptzqzslvvuvv.jpg">-->
+<!--                                                            <svg width="8" height="9" viewBox="0 0 8 9" fill="none"-->
+<!--                                                                 xmlns="http://www.w3.org/2000/svg">-->
+<!--                                                                <path d="M7.46063 0.844419L0.671515 7.63353M7.50912 7.68203L0.623021 0.795925"-->
+<!--                                                                      stroke="white" stroke-width="0.923168"-->
+<!--                                                                      stroke-linecap="round"-->
+<!--                                                                      stroke-linejoin="round"></path>-->
+<!--                                                            </svg>-->
+<!--                                                            </span>-->
+<!--                                                        <span class="main-photo">Главное фото</span>-->
+<!--                                                        <span class="ad-main-photo">Сделать главным</span>-->
+<!--                                                    </div>-->
+<!--                                                --><?php //endforeach; ?>
+<!--                                            --><?php //endif; ?>
                                         </div>
                                     </div>
                                 <?php endif; ?>
@@ -135,7 +170,8 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                                         <div class="form-row">
                                         <textarea name="DETAIL_TEXT" class="custom-textarea"
                                                   placeholder="Введите описание" id="adDescription" maxlength="2000"
-                                                  data-text="ad-description"></textarea>
+                                                  data-text="ad-description"
+                                        ><?= $arResult['ELEMENT_PROPS']['DETAIL_TEXT'] ?></textarea>
                                             <div class="textarea-info">
                                                 Символов&nbsp;
                                                 <div class="textarea-info__number">
@@ -196,13 +232,16 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                                                                        id="<?= $field['race']['CODE'] ?>"
                                                                        autocomplete="off"
                                                                        name="<?= $field['race']['CODE'] ?>"
+                                                                       value="<?= $arResult['ELEMENT_FIELDS']['race'] ?>"
                                                                 >
                                                                 <div class="form-group custom-select-inner form-group-custom-select select-no_reset">
                                                                     <div class="form-row">
                                                                         <select name="type-moto" class="custom-select"
                                                                                 name="<?= $field['race_unit']['CODE'] ?>">
                                                                             <?php foreach ($field['race_unit']['PROPERTY_LIST'] as $num => $value): ?>
-                                                                                <option value="<?= $value['ID'] ?>" <?= ($key === 0) ? 'selected' : '' ?>>
+                                                                                <option value="<?= $value['ID'] ?>"
+                                                                                    <?= ($key === 0 || $value['ID'] === $arResult['ELEMENT_FIELDS']['race_unit']) ? 'selected' : '' ?>
+                                                                                >
                                                                                     <?= $value['VALUE'] ?>
                                                                                 </option>
                                                                             <?php endforeach; ?>
@@ -224,6 +263,7 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                                                                id="<?= $field['power']['CODE'] ?>"
                                                                placeholder="<?= $field['power']['NAME'] ?>"
                                                                name="<?= $field['power']['CODE'] ?>"
+                                                               value="<?= $arResult['ELEMENT_FIELDS']['power'] ?>"
                                                         >
                                                         <div class="error-form">Необходимо заполнить
                                                             «<?= $field['power']['NAME'] ?>»
@@ -240,6 +280,7 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                                                                id="<?= $field['length_tire']['CODE'] ?>"
                                                                placeholder="<?= $field['length_tire']['NAME'] ?>"
                                                                name="<?= $field['length_tire']['CODE'] ?>"
+                                                               value="<?= $arResult['ELEMENT_FIELDS']['length_tire'] ?>"
                                                         >
                                                         <div class="error-form">Необходимо заполнить
                                                             «<?= $field['length_tire']['NAME'] ?>»
@@ -255,6 +296,7 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                                                                id="<?= $field['height_tire']['CODE'] ?>"
                                                                placeholder="<?= $field['height_tire']['NAME'] ?>"
                                                                name="<?= $field['height_tire']['CODE'] ?>"
+                                                               value="<?= $arResult['ELEMENT_FIELDS']['height_tire'] ?>"
                                                         >
                                                         <div class="error-form">Необходимо заполнить
                                                             «<?= $field['height_tire']['NAME'] ?>»
@@ -270,7 +312,9 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                                                                 <input type="radio" class="radio-block"
                                                                        name="<?= $field['CODE'] ?>"
                                                                        id="color-<?= $item['ID'] ?>"
-                                                                       value="<?= $item['ID'] ?>">
+                                                                       value="<?= $item['ID'] ?>"
+                                                                    <?= ($item['ID'] === $arResult['ELEMENT_FIELDS'][$field['CODE']]) ? 'checked' : '' ?>
+                                                                >
                                                                 <label for="color-<?= $item['ID'] ?>"
                                                                        class="radio-color__label">
                                                         <span class="_color-item"
@@ -302,7 +346,7 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                                                                             Сбросить
                                                                         </option>
                                                                         <?php foreach ($field['PROPERTY_LIST'] as $item): ?>
-                                                                            <option value="<?= $item['ID'] ?>">
+                                                                            <option value="<?= $item['ID'] ?>" <?= ($item['ID'] === $arResult['ELEMENT_FIELDS'][$field['CODE']]) ? 'selected' : '' ?>>
                                                                                 <?= $item['VALUE'] ?>
                                                                             </option>
                                                                         <?php endforeach; ?>
@@ -330,7 +374,9 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                                                                                        class="input-checkbox"
                                                                                        name="<?= $field['CODE'] ?>[]"
                                                                                        id="check-<?= $item['ID'] ?>"
-                                                                                       value="<?= $item['ID'] ?>">
+                                                                                       value="<?= $item['ID'] ?>"
+                                                                                    <?= (in_array($item['ID'], $arResult['ELEMENT_FIELDS'][$field['CODE']] ?? [])) ? 'checked' : '' ?>
+                                                                                >
                                                                                 <label for="check-<?= $item['ID'] ?>"
                                                                                        class="checkbox-label"><?= $item['VALUE'] ?></label>
                                                                             </div>
@@ -350,6 +396,7 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                                                                                        name="<?= $field['CODE'] ?>"
                                                                                        id="radio-<?= $item['ID'] ?>"
                                                                                        value="<?= $item['ID'] ?>"
+                                                                                    <?= ($item['ID'] === $arResult['ELEMENT_FIELDS'][$field['CODE']]) ? 'checked' : '' ?>
                                                                                 >
                                                                                 <label for="radio-<?= $item['ID'] ?>"
                                                                                        class="<?= (in_array($field['ID'], $arResult['CUSTOM_CHECK'] ?? [])) ? 'radio-block__label' : 'radio-mini__label' ?>"><?= $item['VALUE'] ?></label>
@@ -373,6 +420,7 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                                                                 <div class="form-row">
                                                                     <select name="COUNTRY"
                                                                             class="select-type  custom-select-list <?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? 'check-block' : '' ?>  country"
+                                                                        <?= ($arResult['ELEMENT_COUNTRY']) ? 'data-el=' . $arResult['ELEMENT_COUNTRY']['COUNTRY'] : '' ?>
                                                                             id="country">
                                                                         <option value="" selected>
                                                                             Страна
@@ -381,7 +429,7 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                                                                             Сбросить
                                                                         </option>
                                                                         <?php foreach ($arResult['COUNTRIES'] as $country): ?>
-                                                                            <option value="<?= $country['ID'] ?>">
+                                                                            <option value="<?= $country['ID'] ?>" <?= ($country['ID'] === $arResult['ELEMENT_COUNTRY']['COUNTRY']) ? 'selected' : '' ?>>
                                                                                 <?= $country['NAME_RU'] ?>
                                                                             </option>
                                                                         <?php endforeach; ?>
@@ -398,7 +446,9 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                                                                     <select name="REGION"
                                                                             class="select-type  custom-select-list <?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? 'check-block' : '' ?>  country"
                                                                             id="region"
-                                                                            data-select="region-list" disabled>
+                                                                            data-select="region-list"
+                                                                        <?= ($arResult['ELEMENT_COUNTRY']) ? 'data-el=' . $arResult['ELEMENT_COUNTRY']['REGION'] : '' ?>
+                                                                            disabled>
                                                                         <option value="" selected>
                                                                             Область
                                                                         </option>
@@ -415,7 +465,9 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                                                                     <select name="country"
                                                                             class="select-type  custom-select-list <?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? 'check-block' : '' ?> country"
                                                                             id="city"
-                                                                            data-select="city-list" disabled>
+                                                                            data-select="city-list"
+                                                                        <?= ($arResult['ELEMENT_COUNTRY']) ? 'data-el=' . $arResult['ELEMENT_COUNTRY']['CITY'] : '' ?>
+                                                                            disabled>
                                                                         <option value="" selected>
                                                                             Город
                                                                         </option>
@@ -479,7 +531,9 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                                                                                class="custom-input <?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? 'check-block' : '' ?>"
                                                                                placeholder="" id="videoLink"
                                                                                name="<?= $field['CODE'] ?>"
-                                                                               autocomplete="off">
+                                                                               autocomplete="off"
+                                                                               value="<?= $arResult['ELEMENT_FIELDS']['VIDEO_YOUTUBE'] ?>"
+                                                                        >
                                                                     </div>
                                                                     <div class="error-form">Необходимо заполнить
                                                                         «<?= $field['NAME'] ?>»
@@ -501,8 +555,30 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                                                                                placeholder="+375 (xx) xxx-xx-xx"
                                                                                class="dataUserTel custom-input <?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? 'check-block' : '' ?>"
                                                                                id="dataUserTel"
-                                                                               name="<?= $field['CODE'] ?>">
+                                                                               name="<?= $field['CODE'] ?>"
+                                                                               value="<?= $arResult['ELEMENT_FIELDS']['phone'][0] ?>"
+                                                                        >
                                                                     </div>
+                                                                    <?php if (!empty($arResult['ELEMENT_FIELDS']['phone']) && count($arResult['ELEMENT_FIELDS']['phone']) > 1): ?>
+                                                                        <?php unset($arResult['ELEMENT_FIELDS']['phone'][0]) ?>
+                                                                        <?php foreach ($arResult['ELEMENT_FIELDS']['phone'] as $phone): ?>
+                                                                            <div class="form-group form-group--tel__new">
+                                                                                <input type="tel"
+                                                                                       placeholder="+375 (xx) xxx-xx-xx"
+                                                                                       class="custom-input dataUserTel"
+                                                                                       value="<?= $phone ?>"
+                                                                                >
+                                                                                <span class="remove_phone">
+                                                                                    <svg width="12" height="12"
+                                                                                         viewBox="0 0 12 12" fill="none"
+                                                                                         xmlns="http://www.w3.org/2000/svg">
+                                                                                        <path d="M8.09758 6.44252L11.9531 10.298L10.2599 11.9912L6.40441 8.13569L2.56149 11.9786L0.845798 10.2629L4.68872 6.41999L0.842858 2.57413L2.53602 0.880967L6.38188 4.72683L10.2629 0.845859L11.9785 2.56156L8.09758 6.44252Z"
+                                                                                              fill="#666666"/>
+                                                                                    </svg>
+                                                                                </span>
+                                                                            </div>
+                                                                        <?php endforeach; ?>
+                                                                    <?php endif; ?>
                                                                 </div>
                                                                 <div class="add-new-phone">
                                                                     <svg width="12" height="13" viewBox="0 0 12 13"
@@ -529,7 +605,9 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                                                                    class="custom-input <?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? 'check-block' : '' ?>"
                                                                    placeholder="<?= $field['NAME'] ?>"
                                                                    id="<?= $field['CODE'] ?>"
-                                                                   name="<?= $field['CODE'] ?>">
+                                                                   name="<?= $field['CODE'] ?>"
+                                                                   value="<?= $arResult['ELEMENT_FIELDS'][$field['CODE']] ?>"
+                                                            >
                                                         </div>
                                                         <div class="error-form">Необходимо заполнить
                                                             «<?= $field['NAME'] ?>»
@@ -546,6 +624,7 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                                                                    placeholder="<?= $field['NAME'] ?>"
                                                                    id="<?= $field['CODE'] ?>"
                                                                    name="<?= $field['CODE'] ?>"
+                                                                   value="<?= $arResult['ELEMENT_FIELDS'][$field['CODE']] ?>"
                                                             >
                                                         </div>
                                                         <div class="error-form">Необходимо заполнить
@@ -570,7 +649,8 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                                         <div class="form-row form-row--rel">
                                         <textarea name="NAME" class="custom-textarea check-block"
                                                   placeholder="Введите название запчасти" id="nameText"
-                                                  maxlength="2000"></textarea>
+                                                  maxlength="2000"
+                                        ><?= $arResult['ELEMENT_PROPS']['DETAIL_TEXT'] ?></textarea>
                                             <div class="textarea-info">
                                                 Символов&nbsp;
                                                 <div class="textarea-info__number">
@@ -596,6 +676,7 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                                                         id="categorySelect"
                                                         data-text="Поиск по названию"
                                                         data-select="cat-list"
+                                                    <?= ($arResult['ELEMENT_PROPS']) ? 'data-el=' . $arResult['ELEMENT_PROPS']['SECTION_ID'] : '' ?>
                                                 >
                                                     <option value="" selected>
                                                         Поиск по названию
@@ -608,7 +689,9 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                                 <?php endif; ?>
 
                                 <?php if ($key === 'SUBCATEGORY'): ?>
-                                    <div class="form-group custom-select-inner form-group-custom-select select-search subcategory">
+                                    <div class="form-group custom-select-inner form-group-custom-select select-search subcategory"
+                                        <?= ($arResult['ELEMENT_PROPS']) ? 'data-el=' . $arResult['ELEMENT_PROPS']['IBLOCK_SECTION_ID'] : '' ?>
+                                    >
                                     </div>
                                     <div class="form-group">
                                         <label for="nameText" class="form-group__label">Название
@@ -616,7 +699,7 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                                         <div class="form-row form-row--rel">
                                         <textarea name="NAME" class="custom-textarea check-block"
                                                   placeholder="Введите название запчасти" id="nameText"
-                                                  maxlength="2000"></textarea>
+                                                  maxlength="2000"><?= $arResult['ELEMENT_PROPS']['NAME'] ?></textarea>
                                             <div class="textarea-info">
                                                 Символов&nbsp;
                                                 <div class="textarea-info__number">
