@@ -4,10 +4,6 @@ use web\CreateElement;
 
 require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/prolog_before.php");
 if (isset($_POST['action'])) {
-    if($_POST['action'] == 'test') {
-        echo  json_encode($_POST);
-        die();
-    }
     //получение марок и моделей
     if ($_POST['action'] === 'categories') {
         $sectId = (int)$_POST['sectId'];
