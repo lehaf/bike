@@ -1,5 +1,31 @@
 <?
+$empty = \Bitrix\Iblock\Iblock::wakeUp(CATALOG_IBLOCK_ID)->getEntityDataClass();
+$elementCount = $empty::getList([
+    'filter' => ['=USER.VALUE' => \Bitrix\Main\Engine\CurrentUser::get()->getId()],
+    'count_total' => 1,
+])->getCount();
 $aMenuLinks = Array(
+    Array(
+        "Мой кабинет",
+        SITE_DIR."/personal/",
+        Array(),
+        Array(),
+        "\$GLOBALS['USER']->IsAuthorized()"
+    ),
+    Array(
+        "Мои объявления " . '(' . $elementCount . ')',
+        SITE_DIR."/personal/ads/",
+        Array(),
+        Array(),
+        "\$GLOBALS['USER']->IsAuthorized()"
+    ),
+    Array(
+        "Личный счет",
+        SITE_DIR."/personal/account/",
+        Array(),
+        Array(),
+        "\$GLOBALS['USER']->IsAuthorized()"
+    ),
 	Array(
 		"Личные данные", 
 		SITE_DIR."/personal/private/", 
