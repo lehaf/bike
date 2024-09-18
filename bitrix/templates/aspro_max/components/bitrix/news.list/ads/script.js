@@ -22,27 +22,29 @@ document.addEventListener('DOMContentLoaded', () => {
             );
         let symbol = (params[''] === 'undefined') ? '?' : '&';
 
-        setTabs(params);
+        setTabs();
         setItems();
         setMenuItems();
         setSelect();
         productsTabs();
-        updateCategorySelect(params);
+        updateCategorySelect();
         updateProducts();
     }
 
-    function setTabs(params) {
+    function setTabs() {
         let tabs = document.querySelectorAll('.advert-tabs__item');
         let subTabs = document.querySelectorAll('.menu-item a');
         if (tabs.length !== 0) {
-            if (!params["section"]) {
+            let section = searchParams.get('section');
+
+            if (!section) {
                 searchParams.append('section', tabs[0].getAttribute('data-sect'));
                 window.history.pushState({}, '', `${url.pathname}?${searchParams.toString()}`);
                 tabs[0].classList.add('active');
                 getAds(url.href);
             }
 
-            if(!document.querySelector('.advert-tabs__item[data-sect="' + params["section"] +'"]')) {
+            if(!document.querySelector('.advert-tabs__item[data-sect="' + section +'"]')) {
                 let container = document.querySelector('.container');
                 container.style.filter = "blur(5px)";
                 searchParams.set('section', tabs[0].getAttribute('data-sect'));
@@ -373,11 +375,14 @@ document.addEventListener('DOMContentLoaded', () => {
             productTabs.forEach(tab => {
                 tab.addEventListener('click', event => {
                     event.preventDefault();
-                    let newUrl = currentUrl + symbol + 'subsection=' + tab.getAttribute('data-sect');
+                    console.log();
+                    let symbol = (searchParams.toString()) ? '&' : '?';
+                    let newUrl = url.href + symbol + 'subsection=' + tab.getAttribute('data-sect');
                     let activeTab = document.querySelector('a.selected');
                     if (activeTab) {
                         activeTab.classList.remove('selected');
                     }
+                    console.log(newUrl);
                     tab.classList.add('selected');
                     getProducts(newUrl);
                 })
@@ -399,12 +404,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }).then(data => {
             container.innerHTML = data;
             container.removeAttribute('style');
-            // container.removeAttribute('style');
-            // oldListBlock.remove();
-            // let element = document.createElement('div');
-            // element.innerHTML = data;
-            // let listBlock = element.querySelector('.advert-list') || element.querySelector('.product-block');
-            // if (tabsBlock) tabsBlock.after(listBlock);
             init();
         }).catch((error) => console.log(error));
     }
@@ -423,7 +422,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }).catch((error) => console.log(error));
     }
 
-    function updateCategorySelect(params) {
+    function updateCategorySelect() {
         let updateProductSelect = document.querySelector('#updateProduct');
         if (updateProductSelect) {
             updateProductSelect.onchange = (event) => {
@@ -434,7 +433,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (updateProductSelect.value === 'category') {
                     fetch('/ajax/edit_product.php', {
                         method: 'POST',
-                        body: new URLSearchParams({action: 'getCategories', sectId: params['section']}),
+                        body: new URLSearchParams({action: 'getCategories', sectId: searchParams.get('section')}),
                         headers: {'X-Requested-With': 'XMLHttpRequest'}
                     }).then(res => {
                         return res.json();

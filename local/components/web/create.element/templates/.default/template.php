@@ -9,7 +9,7 @@ $this->setFrameMode(true);
 use \Bitrix\Main\Page\Asset;
 
 Asset::getInstance()->addCss("https://cdn.jsdelivr.net/npm/choices.js@9.0.1/public/assets/styles/choices.min.css");
-Asset::getInstance()->addCss($templateFolder . '/style.css');
+Asset::getInstance()->addCss($templateFolder . '/style.css', ['GROUP' => 1000]);
 
 $lastSectKey = (!empty($arResult["CUSTOM_SECTIONS"])) ? array_key_last($arResult["CUSTOM_SECTIONS"]) : "";
 

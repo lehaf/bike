@@ -15,7 +15,7 @@ $this->setFrameMode(true);
 use \Bitrix\Main\Page\Asset;
 
 Asset::getInstance()->addCss("https://cdn.jsdelivr.net/npm/choices.js@9.0.1/public/assets/styles/choices.min.css");
-Asset::getInstance()->addCss($templateFolder . '/style.css');
+Asset::getInstance()->addCss($templateFolder . '/style.css', ['GROUP' => 1000]);
 $firstTab = $arResult['SECTIONS'][array_key_first($arResult['SECTIONS'])]['ID'];
 $activeSect = (isset($_GET['section'])) ? $_GET['section'] : $firstTab;
 $ajax = false;

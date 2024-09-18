@@ -1,6 +1,7 @@
 <div class="product-block">
     <div class="product-menu">
         <ul class="menu">
+            <?php if ($ajax === true && $_POST['action'] === 'updateProductsMenu') {ob_end_clean();} ?>
             <?php foreach ($arResult['SECTION_TREE'] as $section) {
                 $hasSubmenu = !empty($section['CHILDREN']);
                 $class = $hasSubmenu ? 'menu-item has-submenu' : 'menu-item';
@@ -26,6 +27,8 @@
                 </li>
                 <?php
             } ?>
+            <?php if ($ajax === true && $_POST['action'] === 'updateProductsMenu') {die();} ?>
+
         </ul>
     </div>
     <div class="product-content">
