@@ -81,6 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 let elementsId = elements.length !== 0 ? Array.from(elements).map(element => element.value) : [];
 
                 if (action.length !== 0 && elementsId.length !== 0) {
+                    console.log(action);
                     ajaxAction(action, elements);
                 }
             })
@@ -195,6 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 elementsBlock.forEach(element => {
                     element.querySelector('.product-item__name').innerHTML = sectionName;
                 })
+
                 ajaxUpdateProductsMenu();
             }
 
@@ -202,7 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function ajaxUpdateProductsMenu() {
-        fetch(currentUrl, {
+        fetch(url.href, {
             method: 'POST',
             body: new URLSearchParams({action: 'updateProductsMenu'}),
             headers: {'X-Requested-With': 'XMLHttpRequest'}
@@ -375,7 +377,6 @@ document.addEventListener('DOMContentLoaded', () => {
             productTabs.forEach(tab => {
                 tab.addEventListener('click', event => {
                     event.preventDefault();
-                    console.log();
                     let symbol = (searchParams.toString()) ? '&' : '?';
                     let newUrl = url.href + symbol + 'subsection=' + tab.getAttribute('data-sect');
                     let activeTab = document.querySelector('a.selected');
