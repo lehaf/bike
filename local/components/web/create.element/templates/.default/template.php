@@ -26,7 +26,7 @@ if ($_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {
     $ajax = true;
 }
 $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO', 'OTHER_FIELDS'];
-$notShowLabel = ['PRICE_TYPE', 'complect_garage'];
+$notShowLabel = ['PRICE_TYPE'];
 ?>
     <div class="steps-content" data-iblock="<?=$arParams['IBLOCK_ID']?>" <?= $showCategories ?> >
         <?php if (isset($_GET['type'])): ?>
@@ -334,12 +334,13 @@ $notShowLabel = ['PRICE_TYPE', 'complect_garage'];
                                                 switch ($field["PROPERTY_TYPE"]):
                                                     case "L": ?>
                                                         <?php if ($field["LIST_TYPE"] === 'L' && !empty($field['PROPERTY_LIST'])): ?>
-                                                            <div class="form-group custom-select-inner form-group-custom-select">
+                                                            <?php $isSearch = (strpos($field['CODE'], 'search') !== false) ? ['select-search', 'selectSearch'] : '' ?>
+                                                            <div class="form-group custom-select-inner form-group-custom-select <?=$isSearch[0]?>">
                                                                 <label for="<?= $field['CODE'] ?>"
                                                                        class="form-group__label"><?= $field['NAME'] ?><?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? '<span>*</span>' : '' ?></label>
                                                                 <div class="form-row">
                                                                     <select name="<?= $field['CODE'] ?>"
-                                                                            class="select-type custom-select <?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? 'check-block' : '' ?>"
+                                                                            class="select-type custom-select <?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? 'check-block' : '' ?> <?=$isSearch[1]?>"
                                                                             id="<?= $field['CODE'] ?>">
                                                                         <option value="" selected>
                                                                             <?= $field['NAME'] ?>
@@ -368,7 +369,7 @@ $notShowLabel = ['PRICE_TYPE', 'complect_garage'];
                                                                 <div class="form-group  <?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? 'form-checked check-block' : '' ?>">
                                                                     <?php if (!in_array($field['CODE'], $notShowLabel)): ?>
                                                                         <label for="<?= $field['CODE'] ?>"
-                                                                               class="form-group__label <?= ($count > 5) ? 'form-group__label--up' : '' ?>"><?= $field['NAME'] ?><?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? '<span>*</span>' : '' ?></label>
+                                                                               class="form-group__label form-group__label--up"><?= $field['NAME'] ?><?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? '<span>*</span>' : '' ?></label>
                                                                     <?php endif; ?>
                                                                     <div class="form-row <?= ($count > 5) ? 'form-row-checkbox' : 'checkbox-row' ?>">
                                                                         <?php foreach ($field['PROPERTY_LIST'] as $item): ?>

@@ -1,4 +1,5 @@
-<div class="advert-list" data-iblock="<?=$arParams['IBLOCK_ID']?>">
+<?php $sectionCode = $arResult['SECTIONS'][$activeSect]['CODE'] ?>
+<div class="advert-list" data-iblock="<?= $arParams['IBLOCK_ID'] ?>">
     <?php foreach ($arResult["ITEMS"] as $arItem): ?>
         <?php
         $this->AddEditAction($arItem['ID'], $arItem['EDIT_LINK'], CIBlock::GetArrayByID($arItem["IBLOCK_ID"], "ELEMENT_EDIT"));
@@ -13,7 +14,8 @@
                     </div>
                     <div class="advert-item__info">
                         <div class="advert-item__info__left">
-                            <a href="/<?=$arItem['DETAIL_PAGE_URL']?>" class="advert-item__title"><?= $arItem['NAME'] ?></a>
+                            <a href="/<?= $arItem['DETAIL_PAGE_URL'] ?>"
+                               class="advert-item__title"><?= $arItem['NAME'] ?></a>
                             <div class="advert-item__status">
                                 <?php if ($arItem['ACTIVE'] === 'N'): ?>
                                     <div class="advert-item__status__content">
@@ -55,43 +57,62 @@
                                 </div>
                             </div>
                             <div class="advert-description">
-                                <?php if((int)$arResult['PARENT_SECTION_ID'] !== TRANSPORT_SECTION_ID):?>
+                                <?php if ((int)$arResult['PARENT_SECTION_ID'] !== TRANSPORT_SECTION_ID): ?>
                                     <div class="advert-description__text">
-                                        <?=$arItem['DETAIL_TEXT']?>
+                                        <?= $arItem['DETAIL_TEXT'] ?>
                                     </div>
-                                <?php else:?>
+                                <?php else: ?>
                                     <div class="advert-description-list">
                                         <div class="advert-description__inner">
-                                            <div class="advert-description-list__el">
-                                                <?= $arItem['PROPERTIES']['power']['VALUE'] ?> см3 <span>/</span>
-                                            </div>
-                                            <div class="advert-description-list__el">
-                                                <?= $arItem['PROPERTIES']['energy']['VALUE'] ?> л.с. <span>/</span>
-                                            </div>
-                                            <div class="advert-description-list__el">
-                                                <?= $arItem['PROPERTIES']['cycles_number']['VALUE_ENUM'] ?> такта
-                                                <span>/</span>
-                                            </div>
+                                            <?php if (!empty($arItem['PROPERTIES']['power']['VALUE'])): ?>
+                                                <div class="advert-description-list__el">
+                                                    <?= $arItem['PROPERTIES']['power']['VALUE'] ?> см3 <span>/</span>
+                                                </div>
+                                            <?php endif; ?>
+
+                                            <?php if (!empty($arItem['PROPERTIES']['energy']['VALUE'])): ?>
+                                                <div class="advert-description-list__el">
+                                                    <?= $arItem['PROPERTIES']['energy']['VALUE'] ?> л.с. <span>/</span>
+                                                </div>
+                                            <?php endif; ?>
+
+                                            <?php if (!empty($arItem['PROPERTIES']['cycles_number_' . $sectionCode]['VALUE'])): ?>
+                                                <div class="advert-description-list__el">
+                                                    <?= $arItem['PROPERTIES']['cycles_number_' . $sectionCode]['VALUE_ENUM'] ?>
+                                                    такта
+                                                    <span>/</span>
+                                                </div>
+                                            <?php endif; ?>
                                         </div>
                                         <div class="advert-description__inner">
-                                            <div class="advert-description-list__el">
-                                                <?= $arItem['PROPERTIES']['cylinders_count']['VALUE_ENUM'] ?> цилиндр <span>/</span>
-                                            </div>
-                                            <div class="advert-description-list__el">
-                                                <?= $arItem['PROPERTIES']['cylinder_place_bike']['VALUE_ENUM'] ?>
-                                                <span>/</span>
-                                            </div>
+                                            <?php if (!empty($arItem['PROPERTIES']['cylinders_count_' . $sectionCode]['VALUE'])): ?>
+                                                <div class="advert-description-list__el">
+                                                    <?= $arItem['PROPERTIES']['cylinders_count_' . $sectionCode]['VALUE_ENUM'] ?>
+                                                    цилиндр <span>/</span>
+                                                </div>
+                                            <?php endif; ?>
+
+                                            <?php if (!empty($arItem['PROPERTIES']['cylinder_place_' . $sectionCode]['VALUE'])): ?>
+                                                <div class="advert-description-list__el">
+                                                    <?= $arItem['PROPERTIES']['cylinder_place_' . $sectionCode]['VALUE_ENUM'] ?>
+                                                    <span>/</span>
+                                                </div>
+                                            <?php endif; ?>
                                         </div>
-                                        <div class="advert-description__inner">
-                                            <div class="advert-description-list__el">
-                                                <?= $arItem['PROPERTIES']['transmission']['VALUE_ENUM'] ?> <span>/</span>
+
+                                        <?php if (!empty($arItem['PROPERTIES']['transmission']['VALUE'])): ?>
+                                            <div class="advert-description__inner">
+                                                <div class="advert-description-list__el">
+                                                    <?= $arItem['PROPERTIES']['transmission']['VALUE_ENUM'] ?>
+                                                    <span>/</span>
+                                                </div>
                                             </div>
-                                        </div>
+                                        <?php endif; ?>
                                     </div>
-                                <?php endif;?>
+                                <?php endif; ?>
 
                                 <div class="advert-description__data">
-                                    <div class="advert-description__data__el"> <?= $arItem['PROPERTIES']['count_door_' . $arResult['SECTIONS'][$activeSect]['CODE']]['VALUE_ENUM'] ?></div>
+                                    <div class="advert-description__data__el"> <?= $arItem['PROPERTIES']['count_door_' . $sectionCode]['VALUE_ENUM'] ?></div>
                                     <div class="advert-description__data__el"><?= $arItem['PROPERTIES']['color']['VALUE_ENUM'] ?></div>
                                 </div>
                             </div>

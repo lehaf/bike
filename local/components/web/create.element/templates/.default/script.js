@@ -33,7 +33,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     searchEnabled: true,
                     shouldSort: false,
                     searchPlaceholderValue: text,
-                    position: 'bottom'
+                    position: 'bottom',
+                    noResultsText: 'Ничего не найдено',
                 })
                 if (el.id === 'categorySelect') {
                     selectCategory = selectSearch;
