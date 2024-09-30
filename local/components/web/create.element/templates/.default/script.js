@@ -76,7 +76,6 @@ document.addEventListener("DOMContentLoaded", () => {
         elChoices.setChoiceByValue('');
         $(el).siblings('.choices__list').find('.choices__item--selectable').addClass('choices__placeholder');
         if(secondElChoices) {
-            console.log('disable');
             secondElChoices.setChoiceByValue('');
             secondElChoices.disable();
         }
@@ -580,7 +579,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const searchInput = document.querySelector("#mapInput");
 
         var map = new ymaps.Map('map', {
-                center: [53.90, 27.56],
+                center: [55.70, 37.56],
                 zoom: 12,
                 controls: ['zoomControl'],
                 behaviors: ['drag'],
@@ -598,6 +597,12 @@ document.addEventListener("DOMContentLoaded", () => {
         var suugestView = new ymaps.SuggestView(searchInput);
 
         searchInput.addEventListener("input", function () {
+            let inputValue = this.value.trim();
+            let coords = inputValue.split(',').map(function (item) {
+                return parseFloat(item.trim());
+            });
+            map.setCenter(coords);
+
             searchControl.search(this.value);
             searchControl.events.add('load', function (event) {
                 if (!event.get('skip') && searchControl.getResultsCount()) {
@@ -616,6 +621,7 @@ document.addEventListener("DOMContentLoaded", () => {
             } else {
                 $(".custom-textarea[data-text=\"ad-description\"]").val(blockVal + target.text() + ", ");
             }
+            $(".custom-textarea[data-text=\"ad-description\"]").next().find(".textarea-info__number").text($(".custom-textarea[data-text=\"ad-description\"]").val().length);
             target.remove();
             if (!$(".ad-description-list").children().length) {
                 $(".ad-description-list").remove()
@@ -653,7 +659,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     $(".size-input").on("change", function () {
         if ($(this).hasClass("size-input--square")) {
-            let result = squareProduct($("#length"), $("#width"), $("#height"))
+            let result = squareProduct($("#length"), $("#width"))
             if (result !== undefined) {
                 $("#square").val(result + ", м2")
             }
@@ -873,9 +879,9 @@ document.addEventListener("DOMContentLoaded", () => {
             $(this).remove()
         }
     }
-    const squareProduct = function (a, b, c) {
-        if (a.val() && b.val() && c.val()) {
-            return a.val().replace(/\D+$/, '') * b.val().replace(/\D+$/, '') * c.val().replace(/\D+$/, '');
+    const squareProduct = function (a, b) {
+        if (a.val() && b.val()) {
+            return a.val().replace(/\D+$/, '') * b.val().replace(/\D+$/, '');
         }
 
     }

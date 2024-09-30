@@ -16,6 +16,9 @@
     box-sizing: content-box;
 }
 
+input:not(.btn) {
+    line-height: inherit ;
+}
 
 .wrapper {
     max-width: 1920px;
@@ -250,6 +253,11 @@
     margin: 0 auto;
 }
 
+.fields-wrapper {
+    max-width: 690px;
+    margin: 30px auto;
+}
+
 .step-form__btn {
     display: flex;
     align-items: center;
@@ -289,6 +297,10 @@
     font-weight: 400;
     font-size: 14px;
     color: #333;
+}
+
+.form-group__label--up {
+    top: 0;
 }
 
 .form-group__label span {
@@ -357,7 +369,7 @@
 
 .choices__list--dropdown {
     visibility: hidden;
-    z-index: 1;
+    z-index: 3;
     position: absolute;
     width: 100%;
     border: none;
@@ -383,7 +395,7 @@
     content: "";
     width: 11px;
     height: 10px;
-    background: url("../img/cross.svg") no-repeat center;
+    background: url("./images/cross.svg") no-repeat center;
     left: 22px;
     top: 50%;
     transform: translate(0, -50%);
@@ -430,7 +442,7 @@
     content: "";
     width: 11px;
     height: 7px;
-    background: url("../img/active.svg") no-repeat center;
+    background: url("./images/active.svg") no-repeat center;
     left: 22px;
     top: 50%;
     transform: translate(0, -50%);
@@ -751,7 +763,7 @@ input[type="radio"] {
 }
 
 .input-checkbox:checked + .checkbox-label:before {
-    background: #ed1c24 url("../img/check.svg") no-repeat center;
+    background: #ed1c24 url("./images/check.svg") no-repeat center;
     border-color: #ed1c24;
 }
 
@@ -764,6 +776,10 @@ input[type="radio"] {
     background: #fafafa;
     resize: none;
     transition: .3s;
+}
+
+textarea.custom-textarea:focus {
+    background: #fafafa;
 }
 
 .textarea-info {
@@ -876,6 +892,9 @@ input[type="radio"] {
     flex-wrap: wrap;
     gap: 10px;
     padding: 15px 0 30px;
+}
+
+.ad-description-list--line {
     border-bottom: 1px solid #ebebeb;
 }
 
@@ -1044,7 +1063,7 @@ input[type="radio"] {
     bottom: calc(100% + 4px);
     border: 1px solid #ed1c24;
     padding: 5px 30px 5px 43px;
-    background: #fafafa url("../img/search.svg") no-repeat 17px center;
+    background: #fafafa url("./images/search.svg") no-repeat 17px center;
 }
 
 .select-search .choices__list--dropdown {
@@ -1054,7 +1073,7 @@ input[type="radio"] {
 
 .form-group-custom-select.select-search .choices[data-type*=select-one] .choices__inner {
     padding: 6px 30px 5px 43px;
-    background: #fafafa url("../img/search.svg") no-repeat 17px center;
+    background: #fafafa url("./images/search.svg") no-repeat 17px center;
 }
 
 .select-search .choices[data-type*=select-one]:after {
@@ -1697,6 +1716,7 @@ input[type="file"] {
 }
 
 .form-row {
+    position: relative;
     width: 100%;
 }
 
@@ -1735,7 +1755,7 @@ input[type="file"] {
 }
 
 .choices[data-type*=select-multiple] .choices__button {
-    background-image: url("../img/cross.svg");
+    background-image: url("./images/cross.svg");
 }
 
 .form-row__col.is-active .add-select {

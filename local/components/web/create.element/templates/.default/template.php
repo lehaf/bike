@@ -26,6 +26,7 @@ if ($_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {
     $ajax = true;
 }
 $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO', 'OTHER_FIELDS'];
+$notShowLabel = ['PRICE_TYPE', 'complect_garage'];
 ?>
     <div class="steps-content" data-iblock="<?=$arParams['IBLOCK_ID']?>" <?= $showCategories ?> >
         <?php if (isset($_GET['type'])): ?>
@@ -38,6 +39,7 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                             $class .= ($key === 'OTHER_FIELDS' || $key === 'PHOTO') ? ' step-form__inner--big' : '';
                             $class .= ($key === 'FIELDS') ? ' fields' : '';
                             ?>
+                            <?php if($key === 'MODEL' && empty($arResult['CATEGORIES'])) continue;?>
                             <div class="step-form__inner <?= $class ?>">
                                 <?php if ($ajax === true && $key === 'FIELDS') {
                                     ob_end_clean();
@@ -184,13 +186,14 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                                         </div>
                                     </div>
                                     <?php if (!empty($arResult['TAGS'])): ?>
-                                        <div class="ad-description-list" data-text="ad-description">
+                                        <div class="ad-description-list <?=(!empty($block['FIELDS'])) ? 'ad-description-list--line' : ''?>" data-text="ad-description">
                                             <?php foreach ($arResult['TAGS'] as $tag): ?>
                                                 <div class="ad-description-list__el"><?= $tag ?></div>
                                             <?php endforeach; ?>
                                         </div>
                                     <?php endif; ?>
                                 <?php endif; ?>
+
 
                                 <?php if (!empty($block['FIELDS'])): ?>
                                     <?php if ($key === 'TECHNICAL'): ?>
@@ -218,7 +221,6 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                                         <?php endforeach; ?>
                                     <?php else: ?>
                                         <?php foreach ($block['FIELDS'] as $name => $field): ?>
-
                                             <?php if ($name === 'pair_race'): ?> <!-- парные свойства пробег-объем-->
                                                 <div class="form-group row-block">
                                                     <div class="form-col form-col--select row--split">
@@ -362,8 +364,9 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                                                         <?php if ($field["LIST_TYPE"] === 'C' && !empty($field['PROPERTY_LIST'])): ?>
                                                             <?php if ($field['MULTIPLE'] === "Y"): ?>
                                                                 <?php $count = count($field['PROPERTY_LIST']) ?>
+
                                                                 <div class="form-group  <?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? 'form-checked check-block' : '' ?>">
-                                                                    <?php if ($field['CODE'] !== 'PRICE_TYPE'): ?>
+                                                                    <?php if (!in_array($field['CODE'], $notShowLabel)): ?>
                                                                         <label for="<?= $field['CODE'] ?>"
                                                                                class="form-group__label <?= ($count > 5) ? 'form-group__label--up' : '' ?>"><?= $field['NAME'] ?><?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? '<span>*</span>' : '' ?></label>
                                                                     <?php endif; ?>
@@ -644,8 +647,7 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
 
                                 <?php if ($key === 'NAME'): ?>
                                     <div class="form-group">
-                                        <label for="nameText" class="form-group__label">Название
-                                            товара<span>*</span></label>
+                                        <label for="nameText" class="form-group__label">Название<span>*</span></label>
                                         <div class="form-row form-row--rel">
                                         <textarea name="NAME" class="custom-textarea check-block"
                                                   placeholder="Введите название запчасти" id="nameText"
@@ -661,15 +663,14 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="error-form">Необходимо заполнить «Название товара»</div>
+                                        <div class="error-form">Необходимо заполнить «Название»</div>
                                     </div>
                                 <?php endif; ?>
 
                                 <?php if ($key === 'CATEGORY'): ?>
                                     <?php if (!empty($arResult['CATEGORIES'])): ?>
                                         <div class="form-group custom-select-inner form-group-custom-select select-search">
-                                            <label for="categorySelect" class="form-group__label">Категория
-                                                товара<span>*</span></label>
+                                            <label for="categorySelect" class="form-group__label">Категория<span>*</span></label>
                                             <div class="form-row">
                                                 <select name="CATEGORY"
                                                         class="select-type custom-select selectSearch check-block"
@@ -682,7 +683,7 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                                                         Поиск по названию
                                                     </option>
                                                 </select>
-                                                <div class="error-form">Необходимо заполнить «Категория товара»</div>
+                                                <div class="error-form">Необходимо заполнить «Категория»</div>
                                             </div>
                                         </div>
                                     <?php endif; ?>
@@ -694,8 +695,7 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                                     >
                                     </div>
                                     <div class="form-group">
-                                        <label for="nameText" class="form-group__label">Название
-                                            товара<span>*</span></label>
+                                        <label for="nameText" class="form-group__label">Название<span>*</span></label>
                                         <div class="form-row form-row--rel">
                                         <textarea name="NAME" class="custom-textarea check-block"
                                                   placeholder="Введите название запчасти" id="nameText"
@@ -710,7 +710,7 @@ $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO',
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="error-form">Необходимо заполнить «Название товара»</div>
+                                        <div class="error-form">Необходимо заполнить «Название»</div>
                                     </div>
                                 <?php endif; ?>
 
