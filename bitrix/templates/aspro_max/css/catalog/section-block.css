@@ -1,0 +1,215 @@
+div.item-title{
+    font-weight: 600;
+    font-size: 14px;
+    max-height: 38px;
+    line-height: 14px;
+    min-height: 16px;
+}
+
+.catalog_block .catalog_item .image_wrapper_block {
+    padding-top: 77%;
+}
+
+/*.image_wrapper_block img{*/
+/*    margin: 0;*/
+/*}*/
+
+.catalog_block .catalog_item .image_wrapper_block{
+    margin: 0 auto 25px;
+}
+
+.section-gallery-wrapper__item-nav:before{
+    bottom: -2px !important;
+}
+
+.price-dollar{
+    font-weight: 400;
+    font-size: 14px;
+    color: #666;
+}
+
+.prices-row{
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.catalog_block .catalog_item:not(.big) > div .item_info {
+    padding-bottom: 25px;
+    justify-content: initial!important;
+}
+
+.item_info_product{
+    font-weight: 400;
+    font-size: 13px;
+    color: #666;
+    margin: 5px 0 0;
+}
+
+.cost.prices .price{
+    margin: 0 !important;
+    font-size: 17px !important;
+    color: #333 !important;
+}
+
+.item_info_row{
+    display: flex;
+    align-items: center;
+    gap: 5px 15px;
+}
+
+.article_block{
+    font-weight: 400;
+    font-size: 13px;
+    color: #666;
+}
+
+.item_info_row > div{
+    padding: 0 !important;
+    margin: 0!important;
+}
+
+
+.item_info--bottom_block{
+    display: flex;
+    flex-grow: 1;
+    align-items: self-end;
+}
+
+.catalog_item .cost.prices {
+    margin-top: 20px;
+}
+
+.item-stock .icon.no-stock {
+    background-color: #ed1c24;
+}
+
+.item-stock .no-stock + .value {
+    color: #ed1c24;
+}
+
+.item-stock .icon.request {
+    background-color: #e79900;
+}
+
+.item-stock .request + .value {
+    color: #e79900;
+}
+
+@media (max-width: 768px) {
+    .description__name-product,
+    .product-description,
+    .description-text,
+    .like_icons__list,
+    .item_info_product,
+    .item-card-location__data,
+    .item-card-location,
+    .product-text,
+    .item-data-card{
+        display: none;
+    }
+
+    .compact-catalog .ajax_load .item .catalog_item > div,
+    .compact-catalog .ajax_load .item .catalog-adaptive {
+        padding-bottom: 20px !important;
+    }
+
+    .item_info_row{
+        flex-direction: column;
+        align-items: flex-start;
+        margin-top: 8px;
+    }
+
+    .prices-row{
+        gap: 5px;
+        margin-top: 20px;
+    }
+
+    .table-view .item-actions .item-price{
+        width: 100% !important;
+    }
+
+    body .compact-catalog .sa_block .article_block, body .compact-catalog .sa_block .rating{
+        display: flex !important;
+        flex-direction: column;
+        flex-grow: 1;
+    }
+
+    .table-view__item-wrapper{
+        display: flex !important;
+        flex-direction: column !important;
+    }
+
+
+    .table-view__item .table-view__info-wrapper .item-actions {
+        flex-grow: 1;
+        justify-content: flex-end;
+    }
+
+    .table-view__item .table-view__info-wrapper{
+        display: flex !important;
+        flex-direction: column;
+        flex-grow: 1;
+    }
+
+    .wrapp_stockers .value.font_sxs,
+    .wrapp_stockers .muted.font_sxs{
+        font-size: 13px !important;
+    }
+
+    .prices-all>div{
+        display: none;
+    }
+
+    .prices-all>div:first-child{
+        display: block;
+    }
+
+    .compact-catalog .ajax_load .item .item-title a > span{
+        font-weight: 400;
+    }
+
+    .display_list .list_item .information_wrapp{
+        flex-basis: 0 !important;
+    }
+
+    .list_item.item_info.catalog-adaptive{
+        display: flex !important;
+        flex-direction: column;
+    }
+
+    .information_wrapp.main_item_wrapper{
+        flex-grow: 1;
+        align-items: self-end;
+        display: flex;
+    }
+
+    .catalog_block .catalog_item .image_wrapper_block {
+        padding-top: 98%;
+    }
+}
+
+
+@media (max-width: 400px) {
+    .compact-catalog .catalog_block .catalog_item > div .item_info {
+        padding-bottom: 0 !important;
+    }
+}
+
+@media (max-width: 600px) {
+    .compact-catalog .table-view .item-foto__picture {
+        height: 138px;
+        line-height: 150px;
+    }
+
+    .compact-catalog .table-view .item-foto__picture > a img{
+        height: 138px;
+        width: 100%;
+        object-fit: contain;
+    }
+
+    .display_list .list_item .image_block{
+        flex-basis: 138px !important;
+    }
+}

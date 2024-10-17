@@ -140,7 +140,7 @@ if ($section) {
 		$linkedBannersRowsMobile = $section['UF_BANNERS_MOBILE'];
 	}
 
-	if (!$typeTmpSKU || !$viewTmpFilter || !$arSection["DISPLAY"] || !$bSetElementsLineRow 
+	if (!$typeTmpSKU || !$viewTmpFilter || !$arSection["DISPLAY"] || !$bSetElementsLineRow
 		|| !$linkedArticles	|| !$linkedArticlesPos || $linkedArticlesRows || $linkedArticlesRowsMobile
 		|| !$linkedBanners	|| !$linkedBannersPos || $linkedBannersRows || $linkedBannersRowsMobile || !$viewTableProps
 		) {
@@ -192,7 +192,7 @@ if ($section) {
 			if ($sectionParent['UF_TABLE_PROPS'] && !$viewTableProps) {
                 $viewTableProps = $sectionParent['UF_TABLE_PROPS'];
             }
-			
+
 
 			if ($section['DEPTH_LEVEL'] > 2) {
 				if (!$typeTmpSKU || !$viewTmpFilter || !$arSection["DISPLAY"] || !$bSetElementsLineRow  || !$viewTableProps) {
@@ -380,7 +380,7 @@ if ($bHideSideSectionBlock) {
 					unset($arParams['STORES'][$key]);
 			}
 		}
-		
+
 		$NextSectionID = $arSection["ID"];?>
 		<?if($arParams["USE_SHARE"] == "Y" && $arSection):?>
 			<?$this->SetViewTarget('product_share');?>
@@ -469,12 +469,12 @@ if ($bHideSideSectionBlock) {
 		{
 			if($arRegion["LIST_STORES"] && $arParams["HIDE_NOT_AVAILABLE"] == "Y")
 			{
-				if($arParams['STORES']){					
+				if($arParams['STORES']){
 					if(CMax::checkVersionModule('18.6.200', 'iblock')){
 						$arStoresFilter = array(
 							'STORE_NUMBER' => $arParams['STORES'],
 							'>STORE_AMOUNT' => 0,
-						);						
+						);
 					}
 					else{
 						if(count($arParams['STORES']) > 1){
@@ -506,7 +506,7 @@ if ($bHideSideSectionBlock) {
 							array('TYPE' => array('2','3')),
 							$arTmpFilter,
 						);
-						
+
 					}
 				}
 			}
@@ -535,7 +535,6 @@ if ($bHideSideSectionBlock) {
 				$arParams['OFFERS_CART_PROPERTIES'] = (array)\Bitrix\Catalog\Product\PropertyCatalogFeature::getBasketPropertyCodes($arSKU['IBLOCK_ID'], ['CODE' => 'Y']);
 			}
 		?>
-
 		<?$arTransferParams = array(
 			"SHOW_ABSENT" => $arParams["SHOW_ABSENT"],
 			"HIDE_NOT_AVAILABLE_OFFERS" => $arParams["HIDE_NOT_AVAILABLE_OFFERS"],

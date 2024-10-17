@@ -1,0 +1,76 @@
+@media (min-width: 768px) {
+    .table-view__item .like_icons.list{
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .table-view .item-icons.s_2{
+        width: initial !important;
+    }
+
+    .info-data-price{
+        display: flex;
+        align-items: flex-start;
+        gap: 17px;
+    }
+
+    .table-view .item-actions{
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-grow: 1;
+        gap: 30px;
+    }
+
+    .table-view .item-actions .item-price{
+        padding-right: 50px !important;
+    }
+
+    .table-view .item-data-card{
+        min-width: 143px;
+    }
+
+    .table-view .item-info{
+        margin-top: 12px;
+    }
+
+    .with-opt-buy .table-view__item-wrapper{
+        padding-left: 0!important;
+    }
+
+    .table-view div.item-title{
+        line-height: 18px;
+    }
+
+    .table-view .item-foto{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .table-view .wrapp_stockers{
+        font-size: 13px;
+    }
+
+    .table-view .wrapp_stockers > div{
+        padding-right: 15px !important;
+    }
+
+    .table-view__info-wrapper{
+        align-items: flex-start !important;
+    }
+
+    .prices-all__i,
+    .cost.prices .price .values_wrapper{
+        white-space: nowrap !important;
+    }
+
+    .table-view__info .article_block {
+        padding-top: 0;
+    }
+
+    .item-card-location--l {
+        margin-top: 23px;
+    }
+}
+
