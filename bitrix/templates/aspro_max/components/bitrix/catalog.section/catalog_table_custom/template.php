@@ -417,12 +417,11 @@ $bColProps = $arParams['SHOW_PROPS_TABLE'] == 'cols';
                                                         <?php endif; ?>
 
                                                         <? $bHasArticle = isset($arItem['ARTICLE']) && $arItem['ARTICLE']['VALUE']; ?>
-                                                        <div class="article_block"
-                                                             <? if ($bHasArticle): ?>data-name="<?= Loc::getMessage('ARTICLE_FULL'); ?>"
-                                                             data-value="<?= $arItem['ARTICLE']['VALUE']; ?>"<? endif; ?>><? if ($bHasArticle) { ?>
-                                                                <div class="muted"><?= Loc::getMessage('ARTICLE_FULL'); ?>
-                                                                : <?= $arItem['ARTICLE']['VALUE']; ?></div><? } ?></div>
-
+                                                        <div class="article_block">
+                                                            <div class="muted"><?= Loc::getMessage('ARTICLE_FULL'); ?>
+                                                                : <?= $arItem['PROPERTIES']['article_part']['VALUE']; ?>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                     <?php if (!empty($arItem['DETAIL_TEXT'])): ?>
                                                         <?php $class = (in_array($arParams['SECTION_ID'], SECTION_TYPE_3)) ? 'description-text--m' : '' ?>

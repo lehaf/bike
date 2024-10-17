@@ -318,12 +318,9 @@
                                         <!--                                            --><?php //= $arQuantityDataCMP["HTML"]; ?>
                                         <!--                                        --><? // endif; ?>
                                         <?php if (in_array($arParams['SECTION_ID'], SECTION_TYPE_2) || in_array($arParams['SECTION_ID'], SECTION_TYPE_4)): ?>
-                                            <div class="article_block muted font_sxs"
-                                                 <? if (isset($arItem['ARTICLE']) && $arItem['ARTICLE']['VALUE']): ?>data-name="<?= $arItem['ARTICLE']['NAME']; ?>"
-                                                 data-value="<?= $arItem['ARTICLE']['VALUE']; ?>"<? endif; ?>>
-                                                <? if (isset($arItem['ARTICLE']) && $arItem['ARTICLE']['VALUE']) { ?>
-                                                    <?= Loc::getMessage('ARTICLE_FULL'); ?>: <?= $arItem['ARTICLE']['VALUE']; ?>
-                                                <? } ?>
+                                            <div class="article_block muted font_sxs">
+                                                <?= Loc::getMessage('ARTICLE_FULL'); ?>
+                                                : <?= $arItem['PROPERTIES']['article_part']['VALUE']; ?>
                                             </div>
                                         <?php endif; ?>
                                     </div>

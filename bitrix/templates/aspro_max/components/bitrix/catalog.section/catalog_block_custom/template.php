@@ -347,11 +347,11 @@
                             <?php endif; ?>
                             <?php if (in_array($arParams['SECTION_ID'], SECTION_TYPE_2) || in_array($arParams['SECTION_ID'], SECTION_TYPE_4)): ?>
                                 <? $bHasArticle = isset($arItem['ARTICLE']) && $arItem['ARTICLE']['VALUE']; ?>
-                                <div class="article_block"
-                                     <? if ($bHasArticle): ?>data-name="<?= Loc::getMessage('T_ARTICLE_COMPACT'); ?>"
-                                     data-value="<?= $arItem['ARTICLE']['VALUE']; ?>"<? endif; ?>><? if ($bHasArticle) { ?>
-                                        <div class="muted font_sxs"><?= Loc::getMessage('ARTICLE_FULL'); ?>
-                                        : <?= $arItem['ARTICLE']['VALUE']; ?></div><? } ?></div>
+                                <div class="article_block">
+                                    <div class="muted font_sxs"><?= Loc::getMessage('ARTICLE_FULL'); ?>
+                                        : <?= $arItem['PROPERTIES']['article_part']['VALUE']; ?>
+                                    </div>
+                                </div>
                             <?php endif; ?>
                         </div>
                     <?php endif; ?>
@@ -379,9 +379,10 @@
 
                     <? ob_start(); ?>
                     <?php $isPriceContract = (is_array($arItem['PROPERTIES']['PRICE_TYPE']['VALUE_XML_ID']) && in_array('contract-price', $arItem['PROPERTIES']['PRICE_TYPE']['VALUE_XML_ID'])); ?>
-                    <div class="cost prices clearfix<?= $arParams['TYPE_VIEW_BASKET_BTN'] === 'TYPE_2' && !$bBigBlock ? ' prices--with_icons_block' : '' ?>">
-                        <div class="price_matrix_wrapper prices-row">
-                            <div class="price font-bold font_mxs">
+                    <?php if (!empty($arItem['PRICES_CUST'])): ?>
+                        <div class="cost prices clearfix<?= $arParams['TYPE_VIEW_BASKET_BTN'] === 'TYPE_2' && !$bBigBlock ? ' prices--with_icons_block' : '' ?>">
+                            <div class="price_matrix_wrapper prices-row">
+                                <div class="price font-bold font_mxs">
                                 <span class="values_wrapper">
                                     <span class="price_value">
                                         <?php if ($isPriceContract): ?>
@@ -391,14 +392,15 @@
                                         <?php endif; ?>
                                     </span>
                                 </span>
-                            </div>
-                            <?php if (!$isPriceContract): ?>
-                                <div class="price-dollar">
-                                    ≈ <?= $arItem['PRICES_CUST']['CONVERT']['USD'] ?>
                                 </div>
-                            <?php endif; ?>
+                                <?php if (!$isPriceContract && !empty($arItem['PRICES_CUST'])): ?>
+                                    <div class="price-dollar">
+                                        ≈ <?= $arItem['PRICES_CUST']['CONVERT']['USD'] ?>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
                         </div>
-                    </div>
+                    <?php endif; ?>
                     <? \Aspro\Functions\CAsproMax::showBonusBlockList($arCurrentSKU ?: $arItem); ?>
                     <? $itemPrice = ob_get_clean(); ?>
 
@@ -707,7 +709,7 @@
                 <? endif; ?>
 
                 <? if ($arParams["AJAX_REQUEST"] != "Y"): ?>
-                <? if (!$bSlide): // close js_wrapper_items      ?>
+                <? if (!$bSlide): // close js_wrapper_items         ?>
                 <!-- items-container -->
             </div>
             <? endif; ?>
