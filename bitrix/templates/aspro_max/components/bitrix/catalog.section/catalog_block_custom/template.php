@@ -345,8 +345,7 @@
                                     <span class="value font_sxs"><?= $arItem['PROPERTIES']['status']['VALUE'] ?></span>
                                 </div>
                             <?php endif; ?>
-                            <?php if (in_array($arParams['SECTION_ID'], SECTION_TYPE_2) || in_array($arParams['SECTION_ID'], SECTION_TYPE_4)): ?>
-                                <? $bHasArticle = isset($arItem['ARTICLE']) && $arItem['ARTICLE']['VALUE']; ?>
+                            <?php if (!empty($arItem['PROPERTIES']['article_part']['VALUE']) && (in_array($arParams['SECTION_ID'], SECTION_TYPE_2) || in_array($arParams['SECTION_ID'], SECTION_TYPE_4))): ?>
                                 <div class="article_block">
                                     <div class="muted font_sxs"><?= Loc::getMessage('ARTICLE_FULL'); ?>
                                         : <?= $arItem['PROPERTIES']['article_part']['VALUE']; ?>

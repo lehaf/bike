@@ -317,7 +317,7 @@
                                         <!--                                        --><? // if (isset($arQuantityDataCMP) && $arQuantityDataCMP && $arItem['OFFERS'] && !empty($arItem['OFFERS_PROP'])): ?>
                                         <!--                                            --><?php //= $arQuantityDataCMP["HTML"]; ?>
                                         <!--                                        --><? // endif; ?>
-                                        <?php if (in_array($arParams['SECTION_ID'], SECTION_TYPE_2) || in_array($arParams['SECTION_ID'], SECTION_TYPE_4)): ?>
+                                        <?php if (!empty($arItem['PROPERTIES']['article_part']['VALUE'])  && (in_array($arParams['SECTION_ID'], SECTION_TYPE_2) || in_array($arParams['SECTION_ID'], SECTION_TYPE_4))): ?>
                                             <div class="article_block muted font_sxs">
                                                 <?= Loc::getMessage('ARTICLE_FULL'); ?>
                                                 : <?= $arItem['PROPERTIES']['article_part']['VALUE']; ?>
