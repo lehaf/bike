@@ -15,3 +15,6 @@ const SECTION_TYPE_1 = [10694, 10063, 7540, 9007, 10536, 10682]; //мототр�
 const SECTION_TYPE_2 = [10684, 10685, 10686, 10687, 10688, 10689]; //запчасти
 const SECTION_TYPE_3 = [10683, 10693, 10692]; // услуги, гаражи, шины
 const SECTION_TYPE_4 = [10691]; // товары
+
+const ALL_TRANSPORT_SECTION = 10682;
+const ALL_PARTS_SECTION = 10684;

@@ -10,6 +10,16 @@ if ($bHeaderStickyMenu || $bHeaderStickyMenuSm) {
     }
 }
 
+if((int)$arSection["ID"] === ALL_TRANSPORT_SECTION) {
+    LocalRedirect($_SERVER['REQUEST_URI'] . 'bike/', true, '301 Moved Permanently');
+    exit();
+}
+
+if((int)$arSection["ID"] === ALL_PARTS_SECTION) {
+    LocalRedirect($_SERVER['REQUEST_URI'] . 'zapchasti_mototsikly/', true, '301 Moved Permanently');
+    exit();
+}
+
 $ajax = false;
 if ($_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {
     $ajax = true;

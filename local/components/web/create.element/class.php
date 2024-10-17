@@ -91,6 +91,7 @@ class CreateElement extends \CBitrixComponent
         $newElement->set("ACTIVE", true);
         $newElement->set("ACTIVE_FROM", date('d.m.Y H:i:s'));
         $newElement->set("SEARCHABLE_CONTENT", strtoupper($data["NAME"]["VALUE"]));
+        $newElement->set("CREATED_BY", \Bitrix\Main\Engine\CurrentUser::get()->getId());
 
 
         $arTransParams = array(
@@ -120,6 +121,7 @@ class CreateElement extends \CBitrixComponent
 
         if ($newItemId->isSuccess()) {
             $newElement->setXmlId($newElement->getId());
+            $newElement->save();
             $result = ["STATUS" => "OK", "ID" => $newItemId->getId()];
         } else {
             $this->errors = $this->addErrors($newItemId);
