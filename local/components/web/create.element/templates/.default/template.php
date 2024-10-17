@@ -9,7 +9,8 @@ $this->setFrameMode(true);
 use \Bitrix\Main\Page\Asset;
 
 Asset::getInstance()->addCss("https://cdn.jsdelivr.net/npm/choices.js@9.0.1/public/assets/styles/choices.min.css");
-Asset::getInstance()->addCss($templateFolder . '/style.css', ['GROUP' => 1000]);
+Asset::getInstance()->addCss(SITE_TEMPLATE_PATH . '/css/catalog/filter.css', ['GROUP' => 1000]);
+Asset::getInstance()->addJs(SITE_TEMPLATE_PATH . '/js/custom/main.js', ['GROUP' => 1000]);
 
 $lastSectKey = (!empty($arResult["CUSTOM_SECTIONS"])) ? array_key_last($arResult["CUSTOM_SECTIONS"]) : "";
 
@@ -28,7 +29,7 @@ if ($_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {
 $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO', 'OTHER_FIELDS'];
 $notShowLabel = ['PRICE_TYPE'];
 ?>
-    <div class="steps-content" data-iblock="<?=$arParams['IBLOCK_ID']?>" <?= $showCategories ?> >
+    <div class="steps-content" data-iblock="<?= $arParams['IBLOCK_ID'] ?>" <?= $showCategories ?> >
         <?php if (isset($_GET['type'])): ?>
             <div class="step">
                 <div class="wrapper">
@@ -39,7 +40,7 @@ $notShowLabel = ['PRICE_TYPE'];
                             $class .= ($key === 'OTHER_FIELDS' || $key === 'PHOTO') ? ' step-form__inner--big' : '';
                             $class .= ($key === 'FIELDS') ? ' fields' : '';
                             ?>
-                            <?php if($key === 'MODEL' && empty($arResult['CATEGORIES'])) continue;?>
+                            <?php if ($key === 'MODEL' && empty($arResult['CATEGORIES'])) continue; ?>
                             <div class="step-form__inner <?= $class ?>">
                                 <?php if ($ajax === true && $key === 'FIELDS') {
                                     ob_end_clean();
@@ -142,27 +143,6 @@ $notShowLabel = ['PRICE_TYPE'];
                                    Добавить фото
                                 </span>
                                             </label>
-<!--                                            --><?php //if (!empty($arResult['ELEMENT_FIELDS']['MORE_PHOTO'])): ?>
-<!--                                                --><?php //foreach ($arResult['ELEMENT_FIELDS']['MORE_PHOTO'] as $index => $image): ?>
-<!--                                                    --><?php //$imgArr = \CFile::GetFileArray($image); ?>
-<!--                                                    <div class="preview-img --><?php //= ($index === 0) ? 'is-active' : '' ?><!--"-->
-<!--                                                         data-img="--><?php //= $imgArr['FILE_NAME'] ?><!--">-->
-<!--                                                        <img src="--><?php //= $imgArr['SRC'] ?><!--" alt="img">-->
-<!--                                                        <span class="preview-remove"-->
-<!--                                                              data-file="banner-background-b5a2ptzqzslvvuvv.jpg">-->
-<!--                                                            <svg width="8" height="9" viewBox="0 0 8 9" fill="none"-->
-<!--                                                                 xmlns="http://www.w3.org/2000/svg">-->
-<!--                                                                <path d="M7.46063 0.844419L0.671515 7.63353M7.50912 7.68203L0.623021 0.795925"-->
-<!--                                                                      stroke="white" stroke-width="0.923168"-->
-<!--                                                                      stroke-linecap="round"-->
-<!--                                                                      stroke-linejoin="round"></path>-->
-<!--                                                            </svg>-->
-<!--                                                            </span>-->
-<!--                                                        <span class="main-photo">Главное фото</span>-->
-<!--                                                        <span class="ad-main-photo">Сделать главным</span>-->
-<!--                                                    </div>-->
-<!--                                                --><?php //endforeach; ?>
-<!--                                            --><?php //endif; ?>
                                         </div>
                                     </div>
                                 <?php endif; ?>
@@ -186,7 +166,8 @@ $notShowLabel = ['PRICE_TYPE'];
                                         </div>
                                     </div>
                                     <?php if (!empty($arResult['TAGS'])): ?>
-                                        <div class="ad-description-list <?=(!empty($block['FIELDS'])) ? 'ad-description-list--line' : ''?>" data-text="ad-description">
+                                        <div class="ad-description-list <?= (!empty($block['FIELDS'])) ? 'ad-description-list--line' : '' ?>"
+                                             data-text="ad-description">
                                             <?php foreach ($arResult['TAGS'] as $tag): ?>
                                                 <div class="ad-description-list__el"><?= $tag ?></div>
                                             <?php endforeach; ?>
@@ -238,7 +219,7 @@ $notShowLabel = ['PRICE_TYPE'];
                                                                 >
                                                                 <div class="form-group custom-select-inner form-group-custom-select select-no_reset">
                                                                     <div class="form-row">
-                                                                        <select name="type-moto" class="custom-select"
+                                                                        <select class="custom-select"
                                                                                 name="<?= $field['race_unit']['CODE'] ?>">
                                                                             <?php foreach ($field['race_unit']['PROPERTY_LIST'] as $num => $value): ?>
                                                                                 <option value="<?= $value['ID'] ?>"
@@ -335,12 +316,12 @@ $notShowLabel = ['PRICE_TYPE'];
                                                     case "L": ?>
                                                         <?php if ($field["LIST_TYPE"] === 'L' && !empty($field['PROPERTY_LIST'])): ?>
                                                             <?php $isSearch = (strpos($field['CODE'], 'search') !== false) ? ['select-search', 'selectSearch'] : '' ?>
-                                                            <div class="form-group custom-select-inner form-group-custom-select <?=$isSearch[0]?>">
+                                                            <div class="form-group custom-select-inner form-group-custom-select <?= $isSearch[0] ?>">
                                                                 <label for="<?= $field['CODE'] ?>"
                                                                        class="form-group__label"><?= $field['NAME'] ?><?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? '<span>*</span>' : '' ?></label>
                                                                 <div class="form-row">
                                                                     <select name="<?= $field['CODE'] ?>"
-                                                                            class="select-type custom-select <?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? 'check-block' : '' ?> <?=$isSearch[1]?>"
+                                                                            class="select-type custom-select <?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? 'check-block' : '' ?> <?= $isSearch[1] ?>"
                                                                             id="<?= $field['CODE'] ?>">
                                                                         <option value="" selected>
                                                                             <?= $field['NAME'] ?>
@@ -671,7 +652,8 @@ $notShowLabel = ['PRICE_TYPE'];
                                 <?php if ($key === 'CATEGORY'): ?>
                                     <?php if (!empty($arResult['CATEGORIES'])): ?>
                                         <div class="form-group custom-select-inner form-group-custom-select select-search">
-                                            <label for="categorySelect" class="form-group__label">Категория<span>*</span></label>
+                                            <label for="categorySelect"
+                                                   class="form-group__label">Категория<span>*</span></label>
                                             <div class="form-row">
                                                 <select name="CATEGORY"
                                                         class="select-type custom-select selectSearch check-block"
@@ -764,15 +746,11 @@ $notShowLabel = ['PRICE_TYPE'];
         <?php endif; ?>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.6.4.js"
-            integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E="
-            crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/choices.js@9.0.1/public/assets/scripts/choices.min.js"></script>
     <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&amp;apikey=e2caa9ca-c646-4d64-b8c9-bbe9b1227165"
             type="text/javascript"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery.maskedinput@1.4.1/src/jquery.maskedinput.min.js"
             type="text/javascript"></script>
-
 
 <?php
 

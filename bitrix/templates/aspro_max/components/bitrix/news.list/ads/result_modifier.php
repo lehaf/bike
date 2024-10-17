@@ -53,29 +53,7 @@ $arResult['SECTIONS'] = $filteredItems;
 
 if (!empty($arResult['ITEMS'])) {
     //получение доступных валют и цен
-    $itemsId = array_column($arResult['ITEMS'], 'ID');
-    $baseCurrency = \Bitrix\Currency\CurrencyManager::getBaseCurrency();
-    $currencies = \Bitrix\Currency\CurrencyTable::getList([
-        'select' => ['CURRENCY'],
-        'order' => ['SORT' => 'ASC'],
-    ])->fetchAll();
-
-    $desiredCurrencies = array_column($currencies, 'CURRENCY');
-
-    $prices = PriceTable::getList([
-        'filter' => [
-            '=PRODUCT_ID' => $itemsId,
-            '=CATALOG_GROUP_ID' => 1,
-            '>PRICE' => 0
-        ],
-        'select' => ['PRODUCT_ID', 'PRICE', 'CURRENCY']
-    ])->fetchAll();
-    $pricesByProductId = [];
-    if(!empty($prices)) {
-        foreach ($prices as $priceData) {
-            $pricesByProductId[$priceData['PRODUCT_ID']] = $priceData;
-        }
-    }
+    $allPrices = getItemPrices($arResult);
 
     foreach ($arResult['ITEMS'] as &$item) {
         //получение ссылки на детальную страницу
@@ -92,25 +70,10 @@ if (!empty($arResult['ITEMS'])) {
         $item['PUBLISH_DAYS'] = ($interval->days === 0) ? 1 : $interval->days;
 
         //конвертация цены
-        $itemPrices = $pricesByProductId[$item['ID']];
+//        $itemPrices = $pricesByProductId[$item['ID']];
+        $itemPrices = $allPrices['prices'][$item['ID']];
         if ($itemPrices) {
-            $basePrice = $itemPrices['PRICE'];
-            $convertBaseCurrency = $itemPrices['CURRENCY'];
-
-            foreach ($desiredCurrencies as $currency) {
-                if (!isset($pricesInCurrencies[$currency])) {
-                    $convertedPrice = \CCurrencyRates::ConvertCurrency($basePrice, $convertBaseCurrency, $currency);
-                    $formattedPrice = \CCurrencyLang::CurrencyFormat($convertedPrice, $currency, true);
-
-                    if ($currency === $baseCurrency) {
-                        $pricesInCurrencies = ['BASE' => $formattedPrice];
-                    } else {
-                        $pricesInCurrencies['CONVERT'][$currency] = $formattedPrice;
-                    }
-
-                }
-            }
-            $item['PRICES'] = $pricesInCurrencies;
+            $item['PRICES'] = convertPrice($itemPrices, $allPrices['desired'], $allPrices['base']);
         }
 
         //получение названия раздела
@@ -136,26 +99,7 @@ if (!empty($arResult['ITEMS'])) {
 
 
         //получение даты добавления в виде "7 сентября"
-        $dateTime = new DateTime($item['ACTIVE_FROM']);
-
-        $months = [
-            1 => 'января',
-            2 => 'февраля',
-            3 => 'марта',
-            4 => 'апреля',
-            5 => 'мая',
-            6 => 'июня',
-            7 => 'июля',
-            8 => 'августа',
-            9 => 'сентября',
-            10 => 'октября',
-            11 => 'ноября',
-            12 => 'декабря'
-        ];
-
-        $day = $dateTime->format('j');
-        $month = $months[(int)$dateTime->format('n')];
-        $item['FORMAT_ACTIVE_FROM'] = $day . ' ' . $month;
+        $item['FORMAT_ACTIVE_FROM'] = convertDate($item['ACTIVE_FROM'] ?? $item['DATE_CREATE']);
     }
 
     $arResult['PARENT_SECTION_ID'] = Bitrix\Iblock\SectionTable::getList([

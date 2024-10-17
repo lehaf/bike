@@ -90,6 +90,8 @@ class CreateElement extends \CBitrixComponent
 
         $newElement->set("ACTIVE", true);
         $newElement->set("ACTIVE_FROM", date('d.m.Y H:i:s'));
+        $newElement->set("SEARCHABLE_CONTENT", strtoupper($data["NAME"]["VALUE"]));
+
 
         $arTransParams = array(
             "max_len" => 250,
@@ -117,6 +119,7 @@ class CreateElement extends \CBitrixComponent
         $newItemId = $newElement->save();
 
         if ($newItemId->isSuccess()) {
+            $newElement->setXmlId($newElement->getId());
             $result = ["STATUS" => "OK", "ID" => $newItemId->getId()];
         } else {
             $this->errors = $this->addErrors($newItemId);

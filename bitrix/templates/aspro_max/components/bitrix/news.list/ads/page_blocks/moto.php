@@ -78,8 +78,8 @@
 
                                             <?php if (!empty($arItem['PROPERTIES']['cycles_number_' . $sectionCode]['VALUE'])): ?>
                                                 <div class="advert-description-list__el">
-                                                    <?= $arItem['PROPERTIES']['cycles_number_' . $sectionCode]['VALUE_ENUM'] ?>
-                                                    такта
+                                                    <?=$arItem['PROPERTIES']['cycles_number_' . $sectionCode]['VALUE_ENUM']?>
+                                                    <?=getPluralForm($arItem['PROPERTIES']['cycles_number_' . $sectionCode]['VALUE_ENUM'], ['такт', 'такта', 'тактов'])?>
                                                     <span>/</span>
                                                 </div>
                                             <?php endif; ?>
@@ -87,8 +87,9 @@
                                         <div class="advert-description__inner">
                                             <?php if (!empty($arItem['PROPERTIES']['cylinders_count_' . $sectionCode]['VALUE'])): ?>
                                                 <div class="advert-description-list__el">
-                                                    <?= $arItem['PROPERTIES']['cylinders_count_' . $sectionCode]['VALUE_ENUM'] ?>
-                                                    цилиндр <span>/</span>
+                                                    <?=$arItem['PROPERTIES']['cylinders_count_' . $sectionCode]['VALUE_ENUM']?>
+                                                    <?= getPluralForm($arItem['PROPERTIES']['cylinders_count_' . $sectionCode]['VALUE_ENUM'], ['цилиндр', 'цилиндра', 'цилиндров']) ?>
+                                                    <span>/</span>
                                                 </div>
                                             <?php endif; ?>
 
