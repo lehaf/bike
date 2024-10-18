@@ -91,8 +91,7 @@ class CreateElement extends \CBitrixComponent
         $newElement->set("ACTIVE", true);
         $newElement->set("ACTIVE_FROM", date('d.m.Y H:i:s'));
         $newElement->set("SEARCHABLE_CONTENT", strtoupper($data["NAME"]["VALUE"]));
-        $newElement->set("CREATED_BY", \Bitrix\Main\Engine\CurrentUser::get()->getId());
-
+        $newElement->set("CREATED_BY", $data["USER"]["VALUE"]);
 
         $arTransParams = array(
             "max_len" => 250,
@@ -362,6 +361,18 @@ class CreateElement extends \CBitrixComponent
         return $requiredFieldsId;
     }
 
+    private function convertRace (int $race, string $unit ) : float
+    {
+        $motoHours = 1.2;
+        $mile = 0.621371;
+        if($unit === "moto-hours") {
+            $race = round($race / $motoHours, 2);
+        } elseif ($unit === "mile") {
+            $race = round($race / $mile, 2);
+        }
+
+        return $race;
+    }
     private function ajaxPost(array $data): void
     {
         ob_end_clean();
@@ -370,6 +381,7 @@ class CreateElement extends \CBitrixComponent
                 $data["POST"]["NAME"] = $this->setName($data);
             }
 
+            //раздел элемента
             $data["POST"]["IBLOCK_SECTION_ID"] = $data["POST"]["IBLOCK_SECTION_ID"] ?? $data['GET']['type'];
 
             $fieldsToCheck = [
@@ -393,6 +405,16 @@ class CreateElement extends \CBitrixComponent
             }
             if (isset($data['POST']['PRICE']) && empty($data['POST']['PRICE'])) $this->errors['PRICE'] = "Заполните цену";
 
+            //конвертация пробега в км
+            if(isset($this->userProps['race_km']) && !empty($data['POST']['race_unit']) && !empty($data['POST']['race'])) {
+                $raceUnitXmlId = \Bitrix\Iblock\PropertyEnumerationTable::getList([
+                    "filter" => ["=ID" => $data['POST']['race_unit']],
+                    "select" => ["XML_ID"],
+                ])->fetch()["XML_ID"];
+
+                $data["POST"]["race_km"] = $this->convertRace((int)$data["POST"]["race"], $raceUnitXmlId);
+            }
+
             foreach ($data["POST"] as $prop => &$value) {
                 if (in_array($prop, $this->staticProps) || isset($this->userProps[$prop]) && !$data["FILES"][$prop]) {
                     $elementData[$prop]["VALUE"] = $value;
@@ -403,7 +425,7 @@ class CreateElement extends \CBitrixComponent
         }
 
         if (empty($this->errors)) {
-
+            //добавление картинок
             if (!empty($data["FILES"])) {
                 foreach ($data["FILES"] as $code => $fileInfo) {
                     if (in_array($code, $this->staticProps) || $code === 'picture') {
