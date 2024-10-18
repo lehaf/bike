@@ -341,12 +341,12 @@ $price = $arResult['ITEMS']['BASE'];
             </div>
             <!--        пробег-->
             <div class="form-row__col">
-                <div class="form-row__col <?= (!empty($arResult['ITEMS']['race']['VALUES']['MIN']['HTML_VALUE'])) ? 'is-active' : '' ?>">
+                <div class="form-row__col <?= (!empty($arResult['ITEMS']['race_km']['VALUES']['MIN']['HTML_VALUE'])) ? 'is-active' : '' ?>">
                     <input
                             type="text"
-                            name="<?= $arResult['ITEMS']['race']['VALUES']['MIN']['CONTROL_NAME'] ?>"
-                            id="<?= $arResult['ITEMS']['race']['VALUES']['MIN']['CONTROL_ID'] ?>"
-                            value="<?= $arResult['ITEMS']['race']['VALUES']['MIN']['HTML_VALUE'] ?>"
+                            name="<?= $arResult['ITEMS']['race_km']['VALUES']['MIN']['CONTROL_NAME'] ?>"
+                            id="<?= $arResult['ITEMS']['race_km']['VALUES']['MIN']['CONTROL_ID'] ?>"
+                            value="<?= $arResult['ITEMS']['race_km']['VALUES']['MIN']['HTML_VALUE'] ?>"
                             class="custom-input input-change left-input"
                             placeholder="Пробег (км), от"
                             data-text="км"
@@ -358,12 +358,12 @@ $price = $arResult['ITEMS']['BASE'];
 </svg>
                     </span>
                 </div>
-                <div class="form-row__col <?= (!empty($arResult['ITEMS']['race']['VALUES']['MAX']['HTML_VALUE'])) ? 'is-active' : '' ?>">
+                <div class="form-row__col <?= (!empty($arResult['ITEMS']['race_km']['VALUES']['MAX']['HTML_VALUE'])) ? 'is-active' : '' ?>">
                     <input
                             type="text"
-                            name="<?= $arResult['ITEMS']['race']['VALUES']['MAX']['CONTROL_NAME'] ?>"
-                            id="<?= $arResult['ITEMS']['race']['VALUES']['MAX']['CONTROL_ID'] ?>"
-                            value="<?= $arResult['ITEMS']['race']['VALUES']['MAX']['HTML_VALUE'] ?>"
+                            name="<?= $arResult['ITEMS']['race_km']['VALUES']['MAX']['CONTROL_NAME'] ?>"
+                            id="<?= $arResult['ITEMS']['race_km']['VALUES']['MAX']['CONTROL_ID'] ?>"
+                            value="<?= $arResult['ITEMS']['race_km']['VALUES']['MAX']['HTML_VALUE'] ?>"
                             class="custom-input input-change right-input"
                             placeholder="до"
                             data-text="км"

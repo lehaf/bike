@@ -228,7 +228,7 @@ $price = $arResult['ITEMS']['BASE'];
                 <input
                         type="text"
                         name="<?= $arParams['FILTER_NAME'] ?>_article"
-                        value="<?=$_GET[$arParams['FILTER_NAME'] . '_article']?>"
+                        value="<?= $_GET[$arParams['FILTER_NAME'] . '_article'] ?>"
                         class="custom-input input-change left-input"
                         placeholder="Артикул"
                 >
@@ -248,14 +248,18 @@ $price = $arResult['ITEMS']['BASE'];
                            value="Y" <?= ($_GET[$arParams['FILTER_NAME'] . '_photo']) ? 'checked' : '' ?>>
                     <label for="photo" class="checkbox-label">С фото</label>
                 </div>
-                <div class="col">
-                    <input type="checkbox" class="input-checkbox" name="<?=$arResult['ITEMS']['status']['CONTROL_NAME']?>"
-                           id="<?=$arResult['ITEMS']['status']['CONTROL_ID']?>"
-                           value="<?=$arResult['ITEMS']['status']['HTML_VALUE']?>"
-                        <?= ($arResult['ITEMS']['status']['CHECKED']) ? 'checked' : '' ?>
-                    >
-                    <label for="<?=$arResult['ITEMS']['status']['CONTROL_ID']?>" class="checkbox-label"><?=$arResult['ITEMS']['status']['VALUE']?></label>
-                </div>
+                <?php if (!empty($arResult['ITEMS']['status'])): ?>
+                    <div class="col">
+                        <input type="checkbox" class="input-checkbox"
+                               name="<?= $arResult['ITEMS']['status']['CONTROL_NAME'] ?>"
+                               id="<?= $arResult['ITEMS']['status']['CONTROL_ID'] ?>"
+                               value="<?= $arResult['ITEMS']['status']['HTML_VALUE'] ?>"
+                            <?= ($arResult['ITEMS']['status']['CHECKED']) ? 'checked' : '' ?>
+                        >
+                        <label for="<?= $arResult['ITEMS']['status']['CONTROL_ID'] ?>"
+                               class="checkbox-label"><?= $arResult['ITEMS']['status']['VALUE'] ?></label>
+                    </div>
+                <?php endif; ?>
                 <?php if (!empty($arResult['ITEMS']['state_part']['VALUES'])): ?>
                     <?php foreach ($arResult['ITEMS']['state_part']['VALUES'] as $ar): ?>
                         <div class="col">
