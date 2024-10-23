@@ -10,12 +10,12 @@ if ($bHeaderStickyMenu || $bHeaderStickyMenuSm) {
     }
 }
 
-if((int)$arSection["ID"] === ALL_TRANSPORT_SECTION) {
+if ((int)$arSection["ID"] === ALL_TRANSPORT_SECTION) {
     LocalRedirect($_SERVER['REQUEST_URI'] . 'bike/', true, '301 Moved Permanently');
     exit();
 }
 
-if((int)$arSection["ID"] === ALL_PARTS_SECTION) {
+if ((int)$arSection["ID"] === ALL_PARTS_SECTION) {
     LocalRedirect($_SERVER['REQUEST_URI'] . 'zapchasti_mototsikly/', true, '301 Moved Permanently');
     exit();
 }
@@ -178,48 +178,50 @@ if (isset($isAjaxFilter) && $isAjaxFilter == "Y") {
 } ?>
 <!--фильтр для мототранспортра-->
 <?php if (in_array($arResult["VARIABLES"]["SECTION_ID"], array_merge(SECTION_TYPE_1, SECTION_TYPE_2))): ?>
-    <?php $filterTemplate = (in_array($arResult['VARIABLES']['SECTION_ID'], SECTION_TYPE_2)) ? 'part' : $arResult["VARIABLES"]["SECTION_CODE"]?>
-    <?php
-    $APPLICATION->IncludeComponent(
-        "bitrix:catalog.smart.filter",
-        $filterTemplate,
-        array(
-            "IBLOCK_TYPE" => $arParams["IBLOCK_TYPE"],
-            "IBLOCK_ID" => $arParams["IBLOCK_ID"],
-            "AJAX_FILTER_FLAG" => (isset($isAjaxFilter) ? $isAjaxFilter : ''),
-            "SECTION_ID" => (isset($arSection["ID"]) ? $arSection["ID"] : ''),
-            "FILTER_NAME" => $arParams["FILTER_NAME"],
-            "PRICE_CODE" => ($arParams["USE_FILTER_PRICE"] == 'Y' ? $arParams["FILTER_PRICE_CODE"] : $arParams["PRICE_CODE"]),
-            "CACHE_TYPE" => $arParams["CACHE_TYPE"],
-            "CACHE_TIME" => $arParams["CACHE_TIME"],
-            "CACHE_NOTES" => "",
-            "CACHE_GROUPS" => $arParams["CACHE_GROUPS"],
-            "SAVE_IN_SESSION" => "N",
-            "XML_EXPORT" => "Y",
-            "SECTION_TITLE" => "NAME",
-            "SECTION_DESCRIPTION" => "DESCRIPTION",
-            "SHOW_HINTS" => $arParams["SHOW_HINTS"],
-            'CONVERT_CURRENCY' => $arParams['CONVERT_CURRENCY'],
-            'CURRENCY_ID' => "BYN",
-            'DISPLAY_ELEMENT_COUNT' => $arParams['DISPLAY_ELEMENT_COUNT'],
-            "INSTANT_RELOAD" => "Y",
-            "VIEW_MODE" => strtolower($arTheme["FILTER_VIEW"]["VALUE"]),
-            "SEF_MODE" => (strlen($arResult["URL_TEMPLATES"]["smart_filter"]) ? "Y" : "N"),
-            "SEF_RULE" => $arResult["FOLDER"] . $arResult["URL_TEMPLATES"]["smart_filter"],
-            "SMART_FILTER_PATH" => $arResult["VARIABLES"]["SMART_FILTER_PATH"],
-            "HIDE_NOT_AVAILABLE" => $arParams["HIDE_NOT_AVAILABLE"],
-            "SEF_RULE_FILTER" => $arResult["URL_TEMPLATES"]["smart_filter"],
-            "SORT_BUTTONS" => $arParams["SORT_BUTTONS"],
-            "SORT_PRICES" => $arParams["SORT_PRICES"],
-            "AVAILABLE_SORT" => $arAvailableSort,
-            "SORT" => $sort,
-            "SORT_ORDER" => $sort_order,
-            "TOP_VERTICAL_FILTER_PANEL" => $TOP_VERTICAL_FILTER_PANEL,
-            "SHOW_SORT" => ($arParams['SHOW_SORT_IN_FILTER'] != 'N'),
-            "STORES" => $arParams["STORES"],
-        ),
-        $component);
-    ?>
+    <?php if ($itemsCnt): ?>
+        <?php $filterTemplate = (in_array($arResult['VARIABLES']['SECTION_ID'], SECTION_TYPE_2)) ? 'part' : $arResult["VARIABLES"]["SECTION_CODE"] ?>
+        <?php
+        $APPLICATION->IncludeComponent(
+            "bitrix:catalog.smart.filter",
+            $filterTemplate,
+            array(
+                "IBLOCK_TYPE" => $arParams["IBLOCK_TYPE"],
+                "IBLOCK_ID" => $arParams["IBLOCK_ID"],
+                "AJAX_FILTER_FLAG" => (isset($isAjaxFilter) ? $isAjaxFilter : ''),
+                "SECTION_ID" => (isset($arSection["ID"]) ? $arSection["ID"] : ''),
+                "FILTER_NAME" => $arParams["FILTER_NAME"],
+                "PRICE_CODE" => ($arParams["USE_FILTER_PRICE"] == 'Y' ? $arParams["FILTER_PRICE_CODE"] : $arParams["PRICE_CODE"]),
+                "CACHE_TYPE" => $arParams["CACHE_TYPE"],
+                "CACHE_TIME" => $arParams["CACHE_TIME"],
+                "CACHE_NOTES" => "",
+                "CACHE_GROUPS" => $arParams["CACHE_GROUPS"],
+                "SAVE_IN_SESSION" => "N",
+                "XML_EXPORT" => "Y",
+                "SECTION_TITLE" => "NAME",
+                "SECTION_DESCRIPTION" => "DESCRIPTION",
+                "SHOW_HINTS" => $arParams["SHOW_HINTS"],
+                'CONVERT_CURRENCY' => $arParams['CONVERT_CURRENCY'],
+                'CURRENCY_ID' => "BYN",
+                'DISPLAY_ELEMENT_COUNT' => $arParams['DISPLAY_ELEMENT_COUNT'],
+                "INSTANT_RELOAD" => "Y",
+                "VIEW_MODE" => strtolower($arTheme["FILTER_VIEW"]["VALUE"]),
+                "SEF_MODE" => (strlen($arResult["URL_TEMPLATES"]["smart_filter"]) ? "Y" : "N"),
+                "SEF_RULE" => $arResult["FOLDER"] . $arResult["URL_TEMPLATES"]["smart_filter"],
+                "SMART_FILTER_PATH" => $arResult["VARIABLES"]["SMART_FILTER_PATH"],
+                "HIDE_NOT_AVAILABLE" => $arParams["HIDE_NOT_AVAILABLE"],
+                "SEF_RULE_FILTER" => $arResult["URL_TEMPLATES"]["smart_filter"],
+                "SORT_BUTTONS" => $arParams["SORT_BUTTONS"],
+                "SORT_PRICES" => $arParams["SORT_PRICES"],
+                "AVAILABLE_SORT" => $arAvailableSort,
+                "SORT" => $sort,
+                "SORT_ORDER" => $sort_order,
+                "TOP_VERTICAL_FILTER_PANEL" => $TOP_VERTICAL_FILTER_PANEL,
+                "SHOW_SORT" => ($arParams['SHOW_SORT_IN_FILTER'] != 'N'),
+                "STORES" => $arParams["STORES"],
+            ),
+            $component);
+        ?>
+    <?php endif; ?>
 <?php else: ?>
     <? if ($iSectionsCount && $arParams["HIDE_SUBSECTIONS_LIST"] !== "Y"): ?>
         <? $this->SetViewTarget("top_content"); ?>
@@ -389,6 +391,7 @@ if (isset($isAjaxFilter) && $isAjaxFilter == "Y") {
             <? endif; ?>
         <? endif; ?>
         <div class="item-cnt" data-count="<?= $itemsCnt; ?>"></div>
+
         <? if ($itemsCnt): ?>
             <? if ($isAjax == "N") {
                 $frame = new \Bitrix\Main\Page\FrameHelper("viewtype-block");
@@ -420,9 +423,10 @@ if (isset($isAjaxFilter) && $isAjaxFilter == "Y") {
             );
             $SMART_FILTER_SORT = $arSort;
             ?>
+            <?php $customClass = (in_array($arResult["VARIABLES"]["SECTION_ID"], array_merge(SECTION_TYPE_1, SECTION_TYPE_2, SECTION_TYPE_3, SECTION_TYPE_4))) ? '_custom' : '';?>
             <? $APPLICATION->IncludeComponent(
                 "bitrix:catalog.section",
-                $template . '_custom',
+                $template . $customClass,
                 array(
                     "USE_REGION" => ($arRegion ? "Y" : "N"),
                     "STORES" => $arParams['STORES'],
@@ -584,19 +588,17 @@ if (isset($isAjaxFilter) && $isAjaxFilter == "Y") {
 
 
         <? else: ?>
-            <? if (!$iSectionsCount): ?>
-                <div class="no_goods">
-                    <div class="no_products">
-                        <div class="wrap_text_empty">
-                            <? if ($_REQUEST["set_filter"]) { ?>
-                                <? $APPLICATION->IncludeFile(SITE_DIR . "include/section_no_products_filter.php", array(), array("MODE" => "html", "NAME" => GetMessage('EMPTY_CATALOG_DESCR'))); ?>
-                            <? } else { ?>
-                                <? $APPLICATION->IncludeFile(SITE_DIR . "include/section_no_products.php", array(), array("MODE" => "html", "NAME" => GetMessage('EMPTY_CATALOG_DESCR'))); ?>
-                            <? } ?>
-                        </div>
+            <div class="no_goods">
+                <div class="no_products">
+                    <div class="wrap_text_empty">
+                        <? if ($_REQUEST["set_filter"]) { ?>
+                            <? $APPLICATION->IncludeFile(SITE_DIR . "include/section_no_products_filter.php", array(), array("MODE" => "html", "NAME" => GetMessage('EMPTY_CATALOG_DESCR'))); ?>
+                        <? } else { ?>
+                            <? $APPLICATION->IncludeFile(SITE_DIR . "include/section_no_products.php", array(), array("MODE" => "html", "NAME" => GetMessage('EMPTY_CATALOG_DESCR'))); ?>
+                        <? } ?>
                     </div>
                 </div>
-            <? endif; ?>
+            </div>
         <? endif; ?>
 
         <? if ($isAjax == "N") { ?>
