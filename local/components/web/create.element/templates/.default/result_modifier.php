@@ -43,10 +43,6 @@ if ($_GET['type']) {
     $entityCustomCheck = getHlblock("b_custom_check");
     $resCustomCheck = $entityCustomCheck::getList(["select" => ["UF_FIELD"]])->fetchAll();
     $arResult['CUSTOM_CHECK'] = array_column($resCustomCheck, "UF_FIELD");
-//
-//    $arResult['CURRENCIES'] = \Bitrix\Currency\CurrencyTable::getList([
-//        'select' => ['CURRENCY', 'BASE']
-//    ])->fetchAll();
 
     $entityTags = getHlblock("b_tags");
     $tags = $entityTags::getList([
@@ -55,41 +51,25 @@ if ($_GET['type']) {
     $arResult['TAGS'] = $tags['UF_TAGS'];
 
     $arResult['CATEGORIES'] = getSections([
-        '=IBLOCK_ID' => CATALOG_IBLOCK_ID,
+        '=IBLOCK_ID' => $arParams['IBLOCK_ID'],
         '=IBLOCK_SECTION_ID' => $arParams['SECTION_ID'],
     ]);
 
-    if($_GET['element']) {
-        pr($arResult['ELEMENT_PROPS']);
-
-//        $sectionResult = Bitrix\Iblock\SectionTable::getList([
-//            'filter' => ['ID' => $arResult['ELEMENT_PROPS']['IBLOCK_SECTION_ID']],
-//            'select' => ['ID', 'NAME', 'IBLOCK_ID', 'IBLOCK_SECTION_ID']
-//        ])->fetch();
-//
-//        pr($sectionResult);
-//        $cityResult = Bitrix\Sale\Location\LocationTable::getByPrimary(2941, [
-//            'select' => ['ID', 'PARENT_ID', 'TYPE_ID']
-//        ])->fetch();
-//
-//        $parentId = $cityResult['PARENT_ID'];
-//
-//        while ($parentId) {
-//            $parentLocation = Bitrix\Sale\Location\LocationTable::getByPrimary($parentId, [
-//                'select' => ['ID', 'PARENT_ID', 'TYPE_ID']
-//            ])->fetch();
-//
-//            if ($parentLocation['TYPE_ID'] == 3) { // Регион
-//                $regionName = $parentLocation['ID'];
-//            } elseif ($parentLocation['TYPE_ID'] == 1) { // Страна
-//                $countryName = $parentLocation['ID'];
-//            }
-//
-//            $parentId = $parentLocation['PARENT_ID'];
-//        }
+    if($arResult['SORT_SHOW_FIELDS']['PRICE']) {
+        $priceTypes = ['auction', 'exchange', 'contract_price'];
+        $arResult['SORT_SHOW_FIELDS']['PRICE']['PRICE_TYPE_ROW'] = array_filter($arResult['SORT_SHOW_FIELDS']['PRICE']['FIELDS'], function($value) use ($priceTypes) {
+            return getPriceType($value, $priceTypes);
+        });
+        $arResult['SORT_SHOW_FIELDS']['PRICE']['FIELDS'] = array_filter($arResult['SORT_SHOW_FIELDS']['PRICE']['FIELDS'], function($value) use ($priceTypes) {
+            return unsetPriceType($value, $priceTypes);
+        });
     }
 }
+function getPriceType($value, $priceTypes) {
+    return in_array($value['CODE'], $priceTypes);
+}
 
-
-
+function unsetPriceType($value, $priceTypes) {
+    return !in_array($value['CODE'], $priceTypes);
+}
 ?>

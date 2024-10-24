@@ -642,6 +642,9 @@ class CreateElement extends \CBitrixComponent
                                         'TYPE_CODE' => 'TYPE.CODE',
                                         'CODE'
                                     ],
+                                    'order' => [
+                                        'SORT' => 'ASC'
+                                    ],
                                     'cache' => [
                                         'ttl' => 36000000,
                                         'cache_joins' => true

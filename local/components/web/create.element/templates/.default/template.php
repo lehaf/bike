@@ -8,6 +8,14 @@ $this->setFrameMode(true);
 
 use \Bitrix\Main\Page\Asset;
 
+?>
+    <script src="https://cdn.jsdelivr.net/npm/choices.js@9.0.1/public/assets/scripts/choices.min.js"></script>
+    <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&amp;apikey=e2caa9ca-c646-4d64-b8c9-bbe9b1227165"
+            type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery.maskedinput@1.4.1/src/jquery.maskedinput.min.js"
+            type="text/javascript"></script>
+
+<?php
 Asset::getInstance()->addCss("https://cdn.jsdelivr.net/npm/choices.js@9.0.1/public/assets/styles/choices.min.css");
 Asset::getInstance()->addCss(SITE_TEMPLATE_PATH . '/css/catalog/filter.css', ['GROUP' => 1000]);
 Asset::getInstance()->addJs(SITE_TEMPLATE_PATH . '/js/custom/main.js', ['GROUP' => 1000]);
@@ -97,7 +105,7 @@ $notShowLabel = ['PRICE_TYPE'];
                                 <?php endif; ?>
 
                                 <?php if ($key === 'PRICE'): ?>
-                                    <div class="form-group row--split">
+                                    <div class="form-group row--split" data-type="price">
                                         <label for="price" class="form-group__label">Цена<span>*</span></label>
                                         <div class="form-group-row">
                                             <input type="text" class="custom-input check-block number"
@@ -122,6 +130,28 @@ $notShowLabel = ['PRICE_TYPE'];
                                         </div>
                                         <div class="error-form">Необходимо заполнить «Цена»</div>
                                     </div>
+                                    <?php if (!empty($block['PRICE_TYPE_ROW'])): ?>
+                                        <div class="form-group">
+                                            <div class="form-row checkbox-row">
+                                                <?php foreach ($block['PRICE_TYPE_ROW'] as $item): ?>
+                                                    <div class="col">
+                                                        <input type="checkbox"
+                                                               class="input-checkbox <?= ($item['CODE'] === 'contract_price') ? 'contract-price' : '' ?>"
+                                                               name="<?= $item['CODE'] ?>"
+                                                               id="check-<?= $item['ID'] ?>"
+                                                               value="<?= $item['PROPERTY_LIST'][0]['ID'] ?>"
+                                                            <?= ($item['PROPERTY_LIST'][0]['ID'] === $arResult['ELEMENT_FIELDS'][$item['CODE']]) ? 'checked' : '' ?>
+                                                        >
+                                                        <label for="check-<?= $item['ID'] ?>"
+                                                               class="checkbox-label"><?= $item['NAME'] ?></label>
+                                                    </div>
+                                                <?php endforeach; ?>
+                                            </div>
+                                            <div class="error-form">Необходимо заполнить
+                                                «<?= $item['NAME'] ?>»
+                                            </div>
+                                        </div>
+                                    <?php endif; ?>
                                 <?php endif; ?>
 
                                 <?php if ($key === 'PHOTO'): ?>
@@ -745,12 +775,6 @@ $notShowLabel = ['PRICE_TYPE'];
             <?php endif; ?>
         <?php endif; ?>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/choices.js@9.0.1/public/assets/scripts/choices.min.js"></script>
-    <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&amp;apikey=e2caa9ca-c646-4d64-b8c9-bbe9b1227165"
-            type="text/javascript"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jquery.maskedinput@1.4.1/src/jquery.maskedinput.min.js"
-            type="text/javascript"></script>
 
 <?php
 
