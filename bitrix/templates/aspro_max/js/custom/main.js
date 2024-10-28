@@ -2,19 +2,19 @@ document.addEventListener("DOMContentLoaded", () => {
     let params = window
         .location
         .search
-        .replace('?','')
+        .replace('?', '')
         .split('&')
         .reduce(
-            function(p,e){
+            function (p, e) {
                 var a = e.split('=');
-                p[ decodeURIComponent(a[0])] = decodeURIComponent(a[1]);
+                p[decodeURIComponent(a[0])] = decodeURIComponent(a[1]);
                 return p;
             },
             {}
         );
 
     $(".step-form__btn:not(.step-form__btn-submit)").on("click", stepBtn);
-    $(".custom-input.number").on('input', function() {
+    $(".custom-input.number").on('input', function () {
         this.value = this.value.replace(/[^0-9]/g, '');
     });
 
@@ -24,6 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let subSelect = '';
 
     setSelect(selectList);
+
     function setSelect(selectList) {
         selectList.forEach((el) => {
             if (el.classList.contains("selectSearch")) {
@@ -72,18 +73,18 @@ document.addEventListener("DOMContentLoaded", () => {
     function ajaxSelect(el, secondEl, listsArr, elChoices, secondElChoices, listType) {
         elChoices.setChoiceByValue('');
         $(el).siblings('.choices__list').find('.choices__item--selectable').addClass('choices__placeholder');
-        if(secondElChoices) {
+        if (secondElChoices) {
             secondElChoices.setChoiceByValue('');
             secondElChoices.disable();
         }
-        if(secondEl) $(secondEl).siblings('.choices__list').find('.choices__item--selectable').addClass('choices__placeholder');
+        if (secondEl) $(secondEl).siblings('.choices__list').find('.choices__item--selectable').addClass('choices__placeholder');
 
         elChoices.clearChoices();
         $('[data-select="' + listType + '"]').empty();
         if (listsArr) {
             for (let i = 0; i < listsArr.length; i++) {
                 o = new Option(listsArr[i]['NAME'], i, false, false);
-                $('[data-select="'+ listType +'"]').append(o);
+                $('[data-select="' + listType + '"]').append(o);
                 elChoices.setChoices(
                     [
                         {value: listsArr[i]['ID'], label: listsArr[i]['NAME'], disabled: false},
@@ -100,7 +101,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
             let elementId = el.getAttribute('data-el');
-            if(elementId) {
+            console.log(el);
+            if (elementId) {
+                console.log(elementId);
                 elChoices.setChoiceByValue(elementId);
                 elChoices.enable();
             }
@@ -113,8 +116,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const cityEl = document.querySelector("#city");
 
     selectAdd();
+
     function selectAdd() {
-        if(countryEl && regionEl) {
+        if (countryEl && regionEl) {
             countryEl.onchange = () => getLocation('getRegions', 'location', countryEl.value);
             regionEl.onchange = () => getLocation('getCities', 'location', regionEl.value);
         }
@@ -169,7 +173,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (flag === 'getCities') {
                     let cityArr = data;
                     cityArr.unshift({ID: "", NAME: 'Город'}, {ID: "reset", NAME: "Сбросить"});
-                    ajaxSelect(cityEl, null, cityArr, citySelect, null,'city-list');
+                    ajaxSelect(cityEl, null, cityArr, citySelect, null, 'city-list');
+                    console.log(cityEl);
+                    console.log(citySelect);
                 }
                 $('#stepForm').removeClass('blur')
             }).catch((error) => console.log(error));
@@ -237,7 +243,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if ($(data).filter('.form-group').length === 0) {
                 $('.fields').remove();
 
-                if(stepFormInner.next().css('display') === 'none' && stepFormInner.find('.step-form__btn').length === 0) {
+                if (stepFormInner.next().css('display') === 'none' && stepFormInner.find('.step-form__btn').length === 0) {
                     stepFormInner.append($(data).filter('.step-form__btn'));
                     stepFormInner.find('.step-form__btn:not(.step-form__btn-submit)').on("click", stepBtn);
                 }
@@ -247,7 +253,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     stepFormInner.after('<div class="step-form__inner fields"></div>');
                 }
 
-                if($('.fields').next().css('display') !== 'none') {
+                if ($('.fields').next().css('display') !== 'none') {
                     $('.fields').css('display', 'block');
                     data = $(data).not('.step-form__btn');
                 }
@@ -288,7 +294,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }).then(res => {
             return res.json();
         }).then(data => {
-            if(data.length !== 0) {
+            if (data.length !== 0) {
                 if (flag === 'getMarks') {
                     let listMarksFull = data;
                     let listMarks = listMarksFull.slice(0, 27);
@@ -305,11 +311,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     objContentModel(listModels, flag);
                     inputBrandModel(listModelsFull);
                     clickModelBlock(listModelsFull);
-                    if(params['element']) {
+                    if (params['element']) {
                         let models = modelBlock.querySelectorAll('.brand-list__el input');
-                        if(models.length !== 0) {
+                        if (models.length !== 0) {
                             models.forEach(model => {
-                                if(model.value === modelBlock.getAttribute('data-el')) model.checked = true;
+                                if (model.value === modelBlock.getAttribute('data-el')) model.checked = true;
                             })
                             modelBlock.removeAttribute('data-el');
                         }
@@ -331,7 +337,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     let subCatEl = document.querySelector('#subCategorySelect');
 
-                    if(subCatEl) {
+                    if (subCatEl) {
                         let text = subCatEl.getAttribute("data-text");
                         const newSelectSearch = new Choices(subCatEl, {
                             searchEnabled: true,
@@ -341,12 +347,12 @@ document.addEventListener("DOMContentLoaded", () => {
                         })
                         listenerSelect(subCatEl, newSelectSearch)
                         subCatEl.onchange = () => getFields(subCatEl.value);
-                        if(params['element']) {
+                        if (params['element']) {
                             getFields($('.subcategory').attr('data-el'));
                         }
                         $('.custom-select-inner .choices__item--choice[data-id=1]').hide();
 
-                        if(params['element']) {
+                        if (params['element']) {
                             newSelectSearch.setChoiceByValue($('.subcategory').attr('data-el'));
                         }
                     }
@@ -535,6 +541,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     setColor();
+
     function setColor() {
         const colorLIst = $("._color-item");
 
@@ -562,7 +569,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const selectCurrency = document.querySelector("#currency")
 
-    if(selectCurrency) {
+    if (selectCurrency) {
         const selectType = new Choices(selectCurrency, {
             searchEnabled: false,
             shouldSort: false,
@@ -598,7 +605,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 return parseFloat(item.trim());
             });
             map.setCenter(coords);
-
+            //
             searchControl.search(this.value);
             searchControl.events.add('load', function (event) {
                 if (!event.get('skip') && searchControl.getResultsCount()) {
@@ -717,10 +724,14 @@ document.addEventListener("DOMContentLoaded", () => {
         this.value = ""
     })
 
-    if(params['element']) {
+    if (params['element']) {
         fetch('/ajax/edit_element.php', {
             method: 'POST',
-            body: new URLSearchParams({action: 'photos', elementsId: params['element'], iblock: document.querySelector('.steps-content').getAttribute('data-iblock')}),
+            body: new URLSearchParams({
+                action: 'photos',
+                elementsId: params['element'],
+                iblock: document.querySelector('.steps-content').getAttribute('data-iblock')
+            }),
             headers: {'X-Requested-With': 'XMLHttpRequest'}
         }).then(res => {
             return res.json();
@@ -861,7 +872,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     } else {
                         el.classList.add("error");
                     }
-                    let parent =   el.closest(".form-col") ||  el.closest(".form-group");
+                    let parent = el.closest(".form-col") || el.closest(".form-group");
                     parent.querySelector(".error-form").classList.add("show");
                     return false
                 } else if (listCheck.length === i + 1) {
@@ -875,6 +886,7 @@ document.addEventListener("DOMContentLoaded", () => {
             $(this).remove()
         }
     }
+
     const squareProduct = function (a, b) {
         if (a.val() && b.val()) {
             return a.val().replace(/\D+$/, '') * b.val().replace(/\D+$/, '');
@@ -899,7 +911,7 @@ document.addEventListener("DOMContentLoaded", () => {
             let formData = new FormData(event.target);
             formData.append('ajax', 'Y');
             formData.append('action', 'add');
-            if(params['element']) {
+            if (params['element']) {
                 formData.set('action', 'edit');
             }
 
@@ -1006,18 +1018,59 @@ document.addEventListener("DOMContentLoaded", () => {
         })
     }
 
-    if(params['element']) {
-        getLocation('getRegions', 'location', countryEl.getAttribute('data-el'));
-        getLocation('getCities', 'location', regionEl.getAttribute('data-el'));
+    let checkContractPrice = document.querySelector('.contract-price');
+    if (checkContractPrice) {
+        let inputPrice = document.querySelector('div[data-type="price"]');
+        if (checkContractPrice.checked) inputPrice.style.display = "none";
+        checkContractPrice.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                inputPrice.style.display = "none";
+                inputPrice.querySelector('input').value = 1;
+            } else {
+                inputPrice.style.display = "block";
+                inputPrice.querySelector('input').value = "";
+            }
+        })
+    }
 
-        if(brandInput) {
+    if (params['element']) {
+        getLocationPromise('getRegions', 'location', countryEl.getAttribute('data-el'))
+            .then(() => {
+                return getLocationPromise('getCities', 'location', regionEl.getAttribute('data-el'));
+            })
+            .then(() => {
+                console.log('Все запросы завершены.');
+            })
+            .catch((error) => {
+                console.error('Ошибка:', error);
+            });
+        // getLocation('getRegions', 'location', countryEl.getAttribute('data-el'));
+        // getLocation('getCities', 'location', regionEl.getAttribute('data-el'));
+
+        if (brandInput) {
             getCategories('getModels', 'categories', brandInput.getAttribute('data-el'));
         }
 
-        if(categoryEl) {
+        if (categoryEl) {
             getCategories('getSubCategories', 'categories', categoryEl.getAttribute('data-el'));
         }
     }
+
+    function getLocationPromise(flag, action, id) {
+        return new Promise((resolve, reject) => {
+            getLocation(flag, action, id); // Вызов оригинальной функции
+
+            // Установить таймер для ожидания завершения асинхронной операции
+            const checkCompletion = setInterval(() => {
+                // Проверяем, завершился ли процесс
+                if (!$('#stepForm').hasClass('blur')) {
+                    clearInterval(checkCompletion); // Остановить проверку
+                    resolve(); // Разрешить промис
+                }
+            }, 100); // Проверять каждые 100 мс
+        });
+    }
+
     async function getFileBlob(url) {
         const response = await fetch(url);
         const blob = await response.blob();
