@@ -78,8 +78,8 @@
 
                                             <?php if (!empty($arItem['PROPERTIES']['cycles_number_' . $sectionCode]['VALUE'])): ?>
                                                 <div class="advert-description-list__el">
-                                                    <?=$arItem['PROPERTIES']['cycles_number_' . $sectionCode]['VALUE_ENUM']?>
-                                                    <?=getPluralForm($arItem['PROPERTIES']['cycles_number_' . $sectionCode]['VALUE_ENUM'], ['такт', 'такта', 'тактов'])?>
+                                                    <?= $arItem['PROPERTIES']['cycles_number_' . $sectionCode]['VALUE_ENUM'] ?>
+                                                    <?= getPluralForm($arItem['PROPERTIES']['cycles_number_' . $sectionCode]['VALUE_ENUM'], ['такт', 'такта', 'тактов']) ?>
                                                     <span>/</span>
                                                 </div>
                                             <?php endif; ?>
@@ -87,7 +87,7 @@
                                         <div class="advert-description__inner">
                                             <?php if (!empty($arItem['PROPERTIES']['cylinders_count_' . $sectionCode]['VALUE'])): ?>
                                                 <div class="advert-description-list__el">
-                                                    <?=$arItem['PROPERTIES']['cylinders_count_' . $sectionCode]['VALUE_ENUM']?>
+                                                    <?= $arItem['PROPERTIES']['cylinders_count_' . $sectionCode]['VALUE_ENUM'] ?>
                                                     <?= getPluralForm($arItem['PROPERTIES']['cylinders_count_' . $sectionCode]['VALUE_ENUM'], ['цилиндр', 'цилиндра', 'цилиндров']) ?>
                                                     <span>/</span>
                                                 </div>
@@ -122,13 +122,15 @@
                             <?php if (!empty($arItem['PRICES'])): ?>
                                 <div class="advert-price">
                                     <div class="advert-price__title">
-                                        <?= $arItem['PRICES']['BASE'] ?>
+                                        <?= (!empty($arItem['PROPERTIES']['contract_price']['VALUE'])) ? "Договорная" : $arItem['PRICES']['BASE'] ?>
                                     </div>
-                                    <div class="advert-price-list">
-                                        <?php foreach ($arItem['PRICES']['CONVERT'] as $price): ?>
-                                            <div class="advert-price-list__el">≈ <?= $price ?></div>
-                                        <?php endforeach; ?>
-                                    </div>
+                                    <?php if (empty($arItem['PROPERTIES']['contract_price']['VALUE'])): ?>
+                                        <div class="advert-price-list">
+                                            <?php foreach ($arItem['PRICES']['CONVERT'] as $price): ?>
+                                                <div class="advert-price-list__el">≈ <?= $price ?></div>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    <?php endif; ?>
                                 </div>
                             <?php endif; ?>
                             <div class="advert-edit">

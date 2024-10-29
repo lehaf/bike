@@ -54,6 +54,12 @@ if (isset($_POST['action']) && isset($_POST['elementsId'])) {
             $result = ['success' => true];
             break;
         case 'category':
+            if (!empty($_POST['elementsId'])) {
+                foreach ($_POST['elementsId'] as $elementId) {
+                    \CIBlockElement::SetElementSection($elementId, $_POST['section']);
+                }
+            }
+
             $edit = \Bitrix\Iblock\ElementTable::updateMulti(
                 $_POST['elementsId'],
                 [

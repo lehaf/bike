@@ -220,6 +220,7 @@ $notShowLabel = ['PRICE_TYPE'];
                                                                    id="<?= $value['CODE'] ?>"
                                                                    placeholder="<?= $value['NAME'] ?>"
                                                                    name="<?= $value['CODE'] ?>"
+                                                                   value="<?= $arResult['ELEMENT_FIELDS'][$value['CODE']]?>"
                                                                 <?= ($value['CODE'] === 'square') ? 'disabled' : '' ?>
                                                             >
                                                             <div class="error-form">Необходимо заполнить
@@ -504,7 +505,9 @@ $notShowLabel = ['PRICE_TYPE'];
                                                                    class="custom-input <?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? 'check-block' : '' ?>"
                                                                    placeholder="[Широта, долгота]" id="mapInput"
                                                                    autocomplete="off"
-                                                                   name="<?= $field['CODE'] ?>">
+                                                                   name="<?= $field['CODE'] ?>"
+                                                                   value="<?= $arResult['ELEMENT_FIELDS']['location'] ?>"
+                                                            >
                                                         </div>
                                                         <p class="description-text">
                                                             Координаты задаются в виде [широта, долгота] через запятую,
@@ -732,7 +735,7 @@ $notShowLabel = ['PRICE_TYPE'];
                                 <?php else: ?>
                                     <button type="submit"
                                             class="step-form__btn step-form__btn-submit form__btn--disable">
-                                        <?= Loc::getMessage('SUBMIT') ?>
+                                        <?=($arResult['ELEMENT_PROPS']) ? Loc::getMessage('EDIT') : Loc::getMessage('SUBMIT')?>
                                     </button>
                                 <?php endif; ?>
                                 <?php if ($ajax === true && $key === 'FIELDS') die(); ?>
