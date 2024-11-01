@@ -18,11 +18,13 @@ document.addEventListener("DOMContentLoaded", () => {
         this.value = this.value.replace(/[^0-9]/g, '');
     });
 
+    let selectTypes = [];//new
     const selectList = document.querySelectorAll(".custom-select");
     const selectDisabled = document.querySelector(".select-disabled");
     let selectCategory = '';
     let subSelect = '';
 
+    console.log('select');
     setSelect(selectList);
 
     function setSelect(selectList) {
@@ -48,6 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     position: 'bottom'
                 })
                 listenerSelect(el, selectType)
+                selectTypes.push(selectType);//new
             }
         })
 
@@ -59,8 +62,10 @@ document.addEventListener("DOMContentLoaded", () => {
             'change',
             function (event) {
                 let textContent = event.target.textContent.replace(/\s+/g, '')
-                if (textContent === "Сбросить" || textContent === "Любая") {
+                if (textContent === "Сбросить" || textContent === "Любая" || textContent === "Любой") {
                     select.setChoiceByValue('');
+                } else if(el.getAttribute("data-type") === "currency"){
+                    changePrice()
                 }
                 setTimeout(() => {
                     $('.custom-select-inner .choices__item--choice[data-id=1]').hide();
@@ -69,6 +74,40 @@ document.addEventListener("DOMContentLoaded", () => {
             false,
         );
     }
+
+    function changePrice(){
+        let startPrice = document.querySelector(".price-start");
+        let endPrice = document.querySelector(".price-end");
+        let localСurrency = startPrice.getAttribute("data-text").toLowerCase();
+        if(localСurrency === "byn"){
+            startPrice.setAttribute("data-text" , "USD");
+            startPrice.setAttribute("placeholder" , "Цена (USD), от");
+            endPrice.setAttribute("data-text" , "USD");
+            if(startPrice.value){
+                let sumStart = startPrice.value.slice(0,-5);
+                console.log(sumStart)
+                startPrice.value = sumStart + ", " + "USD";
+            }
+            if(endPrice.value){
+                let sumStart = endPrice.value.slice(0,-5);
+                endPrice.value = sumStart + ", " + "USD";
+            }
+        }else{
+            startPrice.setAttribute("data-text" , "BYN");
+            startPrice.setAttribute("placeholder" , "Цена (BYN), от");
+            endPrice.setAttribute("data-text" , "BYN");
+
+            if(startPrice.value){
+                let sumStart = startPrice.value.slice(0,-5);
+                startPrice.value = sumStart + ", " + "BYN";
+            }
+            if(endPrice.value){
+                let sumStart = endPrice.value.slice(0,-5);
+                endPrice.value = sumStart + ", " + "BYN";
+            }
+        }
+    }
+
 
     function ajaxSelect(el, secondEl, listsArr, elChoices, secondElChoices, listType) {
         elChoices.setChoiceByValue('');
@@ -119,8 +158,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function selectAdd() {
         if (countryEl && regionEl) {
-            countryEl.onchange = () => getLocation('getRegions', 'location', countryEl.value);
-            regionEl.onchange = () => getLocation('getCities', 'location', regionEl.value);
+            countryEl.onchange = () => {
+                $('.select-region').addClass('loading-state');
+                getLocation('getRegions', 'location', countryEl.value)
+            };
+            regionEl.onchange = () => {
+                $('.select-city').addClass('loading-state');
+                getLocation('getCities', 'location', regionEl.value);
+            };
         }
         let categoryEl = document.querySelector('#categorySelect');
         if (categoryEl) {
@@ -151,6 +196,11 @@ document.addEventListener("DOMContentLoaded", () => {
         addListener(regionEl, regionSelect, citySelect)
         addListener(cityEl, citySelect, false)
 
+        $(".reset-parameters").on("click", function () {
+            countrySelect.setChoiceByValue('');
+            regionSelect.setChoiceByValue('');
+            citySelect.setChoiceByValue('');
+        })
         // window.onload = selectCountry;
         function getLocation(flag, action, id) {
             $('#stepForm').addClass('blur');
@@ -168,14 +218,14 @@ document.addEventListener("DOMContentLoaded", () => {
                     let listsArr = data;
                     listsArr.unshift({ID: "", NAME: 'Область'}, {ID: "reset", NAME: "Сбросить"});
                     ajaxSelect(regionEl, cityEl, listsArr, regionSelect, citySelect, 'region-list');
+                    $('.select-region').removeClass('loading-state');
                 }
 
                 if (flag === 'getCities') {
                     let cityArr = data;
                     cityArr.unshift({ID: "", NAME: 'Город'}, {ID: "reset", NAME: "Сбросить"});
                     ajaxSelect(cityEl, null, cityArr, citySelect, null, 'city-list');
-                    console.log(cityEl);
-                    console.log(citySelect);
+                    $('.select-city').removeClass('loading-state');
                 }
                 $('#stepForm').removeClass('blur')
             }).catch((error) => console.log(error));
@@ -576,45 +626,6 @@ document.addEventListener("DOMContentLoaded", () => {
         })
     }
 
-    ymaps.ready(init);
-
-    function init() {
-        const searchInput = document.querySelector("#mapInput");
-
-        var map = new ymaps.Map('map', {
-                center: [55.70, 37.56],
-                zoom: 12,
-                controls: ['zoomControl'],
-                behaviors: ['drag'],
-            }
-        );
-
-        var searchControl = new ymaps.control.SearchControl({
-            options: {
-                provider: 'yandex#search',
-                noPlacemark: true,
-                noSelect: true,
-            }
-        });
-        map.controls.add(searchControl);
-        var suugestView = new ymaps.SuggestView(searchInput);
-
-        searchInput.addEventListener("input", function () {
-            let inputValue = this.value.trim();
-            let coords = inputValue.split(',').map(function (item) {
-                return parseFloat(item.trim());
-            });
-            map.setCenter(coords);
-            //
-            searchControl.search(this.value);
-            searchControl.events.add('load', function (event) {
-                if (!event.get('skip') && searchControl.getResultsCount()) {
-                    searchControl.showResult(0);
-                }
-            });
-        })
-    }
-
     $(".ad-description-list").on("click", function () {
         let target = $(event.target);
         if (target.closest(".ad-description-list__el").length) {
@@ -631,33 +642,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
     })
-
-    const maskPhone = () => {
-        $(".dataUserTel").mask("+375 (99) 999-99-99");
-    }
-
-    maskPhone()
-
-    const templatePhone = function () {
-        return `
- <div class="form-group form-group--tel__new">
-     <input type="tel" placeholder="+375 (xx) xxx-xx-xx" class="custom-input dataUserTel">
-     <span class="remove_phone">
-     <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M8.09758 6.44252L11.9531 10.298L10.2599 11.9912L6.40441 8.13569L2.56149 11.9786L0.845798 10.2629L4.68872 6.41999L0.842858 2.57413L2.53602 0.880967L6.38188 4.72683L10.2629 0.845859L11.9785 2.56156L8.09758 6.44252Z" fill="#666666"/>
-</svg>
-</span>
- </div>
-`
-    }
-
-    $('.add-new-phone').on('click', function () {
-        $('.form-tel-container').append(templatePhone)
-        maskPhone()
-        $(".remove_phone").on("click", function (event) {
-            this.parentElement.remove();
-        })
-    });
 
 
     $(".size-input").on("change", function () {
@@ -756,8 +740,8 @@ document.addEventListener("DOMContentLoaded", () => {
             fileListImg = fileListImg.filter(file => file !== removeItemImg)
 
             const itemPreview = document.querySelector(`[data-file="${dataName}"]`).closest(".preview-img")
-            itemPreview.classList.add("remove")
-            itemPreview.remove()
+            itemPreview.classList.add("remove");
+            itemPreview.remove();
 
             // setTimeout(() => {
             // }, 300)
@@ -1033,6 +1017,22 @@ document.addEventListener("DOMContentLoaded", () => {
         })
     }
 
+    //new code start
+    $("#filter").on("reset", function (event) {
+        $(".is-active").removeClass("is-active");
+        cntParamСontent.textContent = "0";
+        // selectTypes.forEach(selectType => {
+        //     selectType.setChoiceByValue('');
+        //     selectType.removeActiveItems();
+        // });
+        //
+        // setTimeout(()=>{
+        //     $('.custom-select-inner .choices__item--choice[data-id=1]').hide();
+        //     $('.custom-select-inner:not(".select-no_reset") .choices__item--choice[data-id=2]').attr("data-value", "reset");
+        // })
+    });
+    // new code end
+
     if (params['element']) {
         getLocationPromise('getRegions', 'location', countryEl.getAttribute('data-el'))
             .then(() => {
@@ -1056,6 +1056,99 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    const maskPhone = () => {
+        $(".dataUserTel").mask("+375 (99) 999-99-99");
+    }
+
+    maskPhone()
+
+    const templatePhone = function () {
+        return `
+ <div class="form-group form-group--tel__new">
+     <input type="tel" placeholder="+375 (xx) xxx-xx-xx" class="custom-input dataUserTel">
+     <span class="remove_phone">
+     <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M8.09758 6.44252L11.9531 10.298L10.2599 11.9912L6.40441 8.13569L2.56149 11.9786L0.845798 10.2629L4.68872 6.41999L0.842858 2.57413L2.53602 0.880967L6.38188 4.72683L10.2629 0.845859L11.9785 2.56156L8.09758 6.44252Z" fill="#666666"/>
+</svg>
+</span>
+ </div>
+`
+    }
+
+    $('.add-new-phone').on('click', function () {
+        $('.form-tel-container').append(templatePhone)
+        maskPhone()
+        $(".remove_phone").on("click", function (event) {
+            this.parentElement.remove();
+        })
+    });
+
+    ymaps.ready(init);
+
+    function init() {
+        const searchInput = document.querySelector("#mapInput");
+
+        var map = new ymaps.Map('map', {
+                center: [55.70, 37.56],
+                zoom: 12,
+                controls: ['zoomControl'],
+                behaviors: ['drag'],
+            }
+        );
+
+        var searchControl = new ymaps.control.SearchControl({
+            options: {
+                provider: 'yandex#search',
+                noPlacemark: true,
+                noSelect: true,
+            }
+        });
+        map.controls.add(searchControl);
+        // var suugestView = new ymaps.SuggestView(searchInput);
+
+        searchInput.addEventListener("input", function () {
+            let inputValue =this.value.trim();
+            let coords = inputValue.split(',').map(function (item) {
+                return parseFloat(item.trim());
+            });
+            map.setCenter(coords);
+            //
+            searchControl.search(this.value);
+            searchControl.events.add('load', function (event) {
+                if (!event.get('skip') && searchControl.getResultsCount()) {
+                    searchControl.showResult(0);
+                }
+            });
+        })
+
+        if(params['element']) {
+            let inputValue = searchInput.value.trim();
+            if(inputValue.length !== 0) {
+                let coordinates = inputValue.split(',').map(function (item) {
+                    return parseFloat(item.trim());
+                });
+
+                var myPlacemark = new ymaps.Placemark(coordinates);
+                // Получение адреса по координатам
+                ymaps.geocode(coordinates).then(function (res) {
+                    var address = res.geoObjects.get(0).properties.get('text'); // Получаем полный адрес
+                    const parts = address.split(',').map(part => part.trim());
+                    const city = parts[0]; // Город
+                    const street = parts[1] ? parts[1] + ',' + (parts[2] ? ' ' + parts[2] : '') : '';
+
+                    // Форматируем содержимое балуна
+                    var balloonContent = '<strong>' + street + '</strong><br><small>' + city + '</small>';
+                    myPlacemark.properties.set('balloonContent', balloonContent); // Устанавливаем отформатированное содержимое в балун
+
+                    // Открываем балун с адресом
+                    map.geoObjects.add(myPlacemark);
+                    myPlacemark.balloon.open();
+                });
+            }
+        }
+
+    }
+
     function getLocationPromise(flag, action, id) {
         return new Promise((resolve, reject) => {
             getLocation(flag, action, id); // Вызов оригинальной функции
@@ -1076,4 +1169,5 @@ document.addEventListener("DOMContentLoaded", () => {
         const blob = await response.blob();
         return blob;
     }
+
 })
