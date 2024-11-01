@@ -81,7 +81,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 let elementsId = elements.length !== 0 ? Array.from(elements).map(element => element.value) : [];
 
                 if (action.length !== 0 && elementsId.length !== 0) {
-                    console.log(action);
                     ajaxAction(action, elements);
                 }
             })
@@ -325,6 +324,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
         });
+        productsTabs();
     }
 
     function setSelect() {
