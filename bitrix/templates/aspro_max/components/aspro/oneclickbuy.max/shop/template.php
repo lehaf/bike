@@ -65,6 +65,7 @@ if(!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true)die();?>
 							<input type="text" class="inputtext captcha" name="captcha_word" size="30" maxlength="50" value="" required="" aria-required="true">
 						</div>
 					</div>
+					<template class="ocb-captcha-place"></template>
 				<?endif;?>
 				<?if($arParams["SHOW_LICENCE"] == "Y"):?>
 					<div class="form license_form <?=($arParams['SHOW_OFFER'] == 'Y' ? 'w_offer_pub ' : '' )?>">
@@ -208,9 +209,10 @@ if(!funcDefined('oneClickReInitCaptcha')){
 				$(data.ext.captcha_html).insertBefore($('#one_click_buy_form .sms_confirm .but-r'));
 			}
 			else{
-				$(data.ext.captcha_html).insertBefore($('#one_click_buy_form .form'));
+				$(data.ext.captcha_html).insertBefore($('#one_click_buy_form .ocb-captcha-place'));
 			}
 		}
+		BX.onCustomEvent("onRenderCaptcha");
 	}
 }
 
@@ -372,24 +374,34 @@ if(!funcDefined('oneClickSubmitHandler')){
 							bSend = false;
 						}
 					}
+					if (arMaxOptions.THEME.ONE_CLICK_BUY_CAPTCHA === 'Y' && window.asproRecaptcha.ver === "3" && typeof grecaptcha != "undefined") {
+						bSend = false;
+						grecaptcha.execute(window.asproRecaptcha.key, { action: "maxscore" }).then(function(token){
+							$(form).find(".g-recaptcha-response").html(token);
+							sendRequest();
+						});
+					}
 				}
-
-				if(bSend){
-					$(form).closest('.form').addClass('sending');
-					$.ajax({
-						url: form_url,
-						data: $(form).serialize(),
-						type: 'POST',
-						dataType: 'json',
-						error: function(data) {
-							oneClickResultHandler(form_url, bPopup, type, {result: 'N', message: '', err: '<?=GetMessage('ONE_CLICK_REQUEST_ERROR')?>'});
-						},
-						success: function(data) {
-							oneClickResultHandler(form_url, bPopup, type, data);
-						}
-					});
+				if (bSend) {
+					sendRequest();
 				}
 			}
+		}
+
+		function sendRequest() {
+			$(form).closest('.form').addClass('sending');
+			$.ajax({
+				url: form_url,
+				data: $(form).serialize(),
+				type: 'POST',
+				dataType: 'json',
+				error: function(data) {
+					oneClickResultHandler(form_url, bPopup, type, {result: 'N', message: '', err: '<?=GetMessage('ONE_CLICK_REQUEST_ERROR')?>'});
+				},
+				success: function(data) {
+					oneClickResultHandler(form_url, bPopup, type, data);
+				}
+			});
 		}
 
 		return false;

@@ -105,8 +105,8 @@ $MESS['MD_IMG'] = "средняя картинка";
 $MESS['BIG_IMG'] = "большая картинка";
 $MESS['TITLE_SHOW_FON_NAME'] = "Отображать текст на фоне картинки";
 
-$MESS["SIDE_LEFT_BLOCK_NAME"] = 'Расположение левого блока';
-$MESS["TYPE_LEFT_BLOCK_NAME"] = 'Тип левого блока';
+$MESS["SIDE_LEFT_BLOCK_DETAIL_NAME"] = 'Расположение левого блока';
+$MESS["TYPE_LEFT_BLOCK_DETAIL_NAME"] = 'Тип левого блока';
 $MESS['T_LEFT'] = "слева";
 $MESS['T_RIGHT'] = "справа";
 $MESS['T_FULL'] = "полный";

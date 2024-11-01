@@ -373,44 +373,9 @@ $APPLICATION->SetPageProperty("HIDE_LEFT_BLOCK", "Y");?>
 							{
 								if($arRegion["LIST_STORES"] && $arParams["HIDE_NOT_AVAILABLE"] == "Y")
 								{
-									if($arParams['STORES']){
-										if(CMax::checkVersionModule('18.6.200', 'iblock')){
-											$arStoresFilter = array(
-												'STORE_NUMBER' => $arParams['STORES'],
-												'>STORE_AMOUNT' => 0,
-											);
-										}
-										else{
-											if(count($arParams['STORES']) > 1){
-												$arStoresFilter = array('LOGIC' => 'OR');
-												foreach($arParams['STORES'] as $storeID)
-												{
-													$arStoresFilter[] = array(">CATALOG_STORE_AMOUNT_".$storeID => 0);
-												}
-											}
-											else{
-												foreach($arParams['STORES'] as $storeID)
-												{
-													$arStoresFilter = array(">CATALOG_STORE_AMOUNT_".$storeID => 0);
-												}
-											}
-										}
-
-										$arTmpFilter = array('!TYPE' => array('2', '3'));
-										if($arStoresFilter){
-											if(count($arStoresFilter) > 1){
-												$arTmpFilter[] = $arStoresFilter;
-											}
-											else{
-												$arTmpFilter = array_merge($arTmpFilter, $arStoresFilter);
-											}
-
-											$GLOBALS[$arParams["FILTER_NAME"]][] = array(
-												'LOGIC' => 'OR',
-												array('TYPE' => array('2', '3')),
-												$arTmpFilter,
-											);
-										}
+									$arStoresFilter = TSolution\Filter::getAvailableByStores($arParams['STORES']);
+									if($arStoresFilter){
+										$GLOBALS[$arParams["FILTER_NAME"]][] = $arStoresFilter;
 									}
 								}
 
@@ -451,47 +416,17 @@ $APPLICATION->SetPageProperty("HIDE_LEFT_BLOCK", "Y");?>
 
 							<div class="inner_wrapper">
 								<div class="ajax_load cur <?=$display?>" data-code="<?=$display?>">
-									<?$arTransferParams = array(
-										"SHOW_ABSENT" => $arParams["SHOW_ABSENT"],
-										"HIDE_NOT_AVAILABLE_OFFERS" => $arParams["HIDE_NOT_AVAILABLE_OFFERS"],
-										"PRICE_CODE" => $arParams["PRICE_CODE"],
-										"OFFER_TREE_PROPS" => $arParams["OFFER_TREE_PROPS"],
-										"CACHE_TIME" => $arParams["CACHE_TIME"],
-										"CONVERT_CURRENCY" => $arParams["CONVERT_CURRENCY"],
-										"CURRENCY_ID" => $arParams["CURRENCY_ID"],
-										"OFFERS_SORT_FIELD" => $arParams["OFFERS_SORT_FIELD"],
-										"OFFERS_SORT_ORDER" => $arParams["OFFERS_SORT_ORDER"],
-										"OFFERS_SORT_FIELD2" => $arParams["OFFERS_SORT_FIELD2"],
-										"OFFERS_SORT_ORDER2" => $arParams["OFFERS_SORT_ORDER2"],
+									<?$arConfigTransfer = array(
 										"LIST_OFFERS_LIMIT" => $arParams["LIST_OFFERS_LIMIT"],
 										"LIST_OFFERS_PROPERTY_CODE" => $arParams["LIST_OFFERS_PROPERTY_CODE"],
-										"SHOW_DISCOUNT_TIME" => $arParams["SHOW_DISCOUNT_TIME"],
-										"SHOW_COUNTER_LIST" => $arParams["SHOW_COUNTER_LIST"],
-										"PRICE_VAT_INCLUDE" => $arParams["PRICE_VAT_INCLUDE"],
-										"USE_PRICE_COUNT" => $arParams["USE_PRICE_COUNT"],
-										"SHOW_MEASURE" => $arParams["SHOW_MEASURE"],
-										"CACHE_GROUPS" => $arParams["CACHE_GROUPS"],
-										"SHOW_OLD_PRICE" => $arParams["SHOW_OLD_PRICE"],
-										"SHOW_DISCOUNT_PERCENT" => $arParams["SHOW_DISCOUNT_PERCENT"],
-										"SHOW_DISCOUNT_PERCENT_NUMBER" => $arParams["SHOW_DISCOUNT_PERCENT_NUMBER"],
 										"USE_REGION" => ($arRegion ? "Y" : "N"),
-										"STORES" => $arParams["STORES"],
-										"DEFAULT_COUNT" => $arParams["DEFAULT_COUNT"],
-										//"BASKET_URL" => $arTheme["BASKET_PAGE_URL"]["VALUE"],
-										"OFFERS_CART_PROPERTIES" => $arParams["OFFERS_CART_PROPERTIES"],
-										"PRODUCT_PROPERTIES" => $arParams["PRODUCT_PROPERTIES"],
-										"PARTIAL_PRODUCT_PROPERTIES" => $arParams["PARTIAL_PRODUCT_PROPERTIES"],
-										"ADD_PROPERTIES_TO_BASKET" => $arParams["ADD_PROPERTIES_TO_BASKET"],
-										"SHOW_DISCOUNT_TIME_EACH_SKU" => $arParams["SHOW_DISCOUNT_TIME_EACH_SKU"],
-										"SHOW_ARTICLE_SKU" => $arParams["SHOW_ARTICLE_SKU"],
-										"OFFER_ADD_PICT_PROP" => $arParams["OFFER_ADD_PICT_PROP"],
-										"PRODUCT_QUANTITY_VARIABLE" => $arParams["PRODUCT_QUANTITY_VARIABLE"],
-										"OFFER_SHOW_PREVIEW_PICTURE_PROPS" => $arParams["OFFER_SHOW_PREVIEW_PICTURE_PROPS"],
 										"SHOW_GALLERY" => $arParams["SHOW_GALLERY_GOODS"],
 										"MAX_GALLERY_ITEMS" => $arParams["MAX_GALLERY_GOODS_ITEMS"],
-										"ADD_PICT_PROP" => $arParams["ADD_PICT_PROP"],
 										"ADD_DETAIL_TO_SLIDER" => $arParams["ADD_DETAIL_TO_SLIDER"],
-									);?>
+									);
+
+									$arTransferParams = \Aspro\Functions\CAsproMax::getTransferParams($arParams, $arConfigTransfer);?>
+
 									<div class=" <?=$display;?> js_wrapper_items" data-params='<?//=str_replace('\'', '"', CUtil::PhpToJSObject($arTransferParams, false))?>'>
 										<?\Aspro\Functions\CAsproMax::replacePropsParams($arParams);?>
 										<?$APPLICATION->IncludeComponent(

@@ -441,7 +441,8 @@ $(document).ready(function () {
               .attr("name")
               .replace(current_type + "_", "")
           );
-          $(
+          let orderIndex = $(this).index() + 1;
+          let dragBlock = $(
             'div[data-class="' +
               $(this)
                 .find('.blocks input[type="checkbox"]')
@@ -449,7 +450,9 @@ $(document).ready(function () {
                 .toLowerCase()
                 .replace(current_type + "_", "") +
               '_drag"]'
-          ).attr("data-order", $(this).index() + 1);
+          );
+          dragBlock.attr("data-order", orderIndex);
+          dragBlock.css('--order-index', orderIndex);
         });
 
         $("input[name=" + name + "]").val(order.join(","));
@@ -896,33 +899,37 @@ $(document).ready(function () {
     if ($tab.hasClass("share_tab") || $tab.hasClass("demos_tab") || $tab.hasClass("updates_tab")) {
       $.removeCookie("styleSwitcherType", { path: "/" });
       $.removeCookie("styleSwitcher", { path: "/" });
-
-      if ($tab.is(".share_tab.loading_state")) {
-        if ($(".style-switcher .contents.share").length) {
-          $.ajax({
-            url: $(".style-switcher .contents.share").data("script"),
-            type: "POST",
-            data: {
-              siteId: arAsproOptions["SITE_ID"],
-              siteDir: arAsproOptions["SITE_DIR"],
-              lang: BX.message.LANGUAGE_ID,
-            },
-            beforeSend: function () {
-              $tab.addClass("loading_state");
-              $(".style-switcher .contents.share").addClass("form sending");
-            },
-            success: function (response) {
-              // put response to content
-              $(".style-switcher .contents.share").html(response);
-            },
-            error: function (jqXhr) {
-              console.log(jqXhr);
-            },
-            complete: function () {
-              $tab.removeClass("loading_state");
-              $(".style-switcher .contents.share").removeClass("form sending");
-            },
-          });
+      if ($tab.is(".updates_tab.loading_state")) {
+        getExternalNews();
+      }
+      else {
+        if ($tab.is(".share_tab.loading_state")) {
+          if ($(".style-switcher .contents.share").length) {
+            $.ajax({
+              url: $(".style-switcher .contents.share").data("script"),
+              type: "POST",
+              data: {
+                siteId: arAsproOptions["SITE_ID"],
+                siteDir: arAsproOptions["SITE_DIR"],
+                lang: BX.message.LANGUAGE_ID,
+              },
+              beforeSend: function () {
+                $tab.addClass("loading_state");
+                $(".style-switcher .contents.share").addClass("form sending");
+              },
+              success: function (response) {
+                // put response to content
+                $(".style-switcher .contents.share").html(response);
+              },
+              error: function (jqXhr) {
+                console.log(jqXhr);
+              },
+              complete: function () {
+                $tab.removeClass("loading_state");
+                $(".style-switcher .contents.share").removeClass("form sending");
+              },
+            });
+          }
         }
       }
     }

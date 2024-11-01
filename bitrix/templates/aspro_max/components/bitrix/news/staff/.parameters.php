@@ -1,13 +1,21 @@
 <?
 if(!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) die();
 
-use Bitrix\Main\Web\Json; 
+use Bitrix\Main\Web\Json,
+	Bitrix\Main\Loader;
+
+if (!Loader::includeModule('iblock'))
+	return;
+
+$request = \Bitrix\Main\Application::getInstance()->getContext()->getRequest();
+$siteId = $request->get("src_site") ?? $request->get("site");
 
 /* get component template pages & params array */
 $arPageBlocksParams = array();
 if(\Bitrix\Main\Loader::includeModule('aspro.max')){
 	$arPageBlocks = CMax::GetComponentTemplatePageBlocks(__DIR__);
 	$arPageBlocksParams = CMax::GetComponentTemplatePageBlocksParams($arPageBlocks);
+	$arCurrentValues['SECTION_ELEMENTS_TYPE_VIEW'] = $arCurrentValues['SECTION_ELEMENTS_TYPE_VIEW'] === 'FROM_MODULE' ? CMax::GetFrontParametrValue('STAFF_PAGE', $siteId) : $arCurrentValues['SECTION_ELEMENTS_TYPE_VIEW'];
 	CMax::AddComponentTemplateModulePageBlocksParams(__DIR__, $arPageBlocksParams); // add option value FROM_MODULE
 }
 
@@ -74,13 +82,6 @@ $arTemplateParameters = array_merge($arPageBlocksParams, array(
 		"TYPE" => "LIST",
 		"VALUES" => array("small" => GetMessage("GALLERY_SMALL"),"big" => GetMessage("GALLERY_BIG")),
 		"DEFAULT" => "small",
-	),
-	"STAFF_TYPE_DETAIL" => Array(
-		"PARENT" => "DETAIL_SETTINGS",
-		"NAME" => GetMessage("STAFF_TYPE_DETAIL_NAME"),
-		"TYPE" => "LIST",
-		"VALUES" => array( 'list' => GetMessage('T_LIST'), 'block' => GetMessage('T_BLOCK')),
-		"DEFAULT" => 'list',
 	),
 	"IBLOCK_LINK_NEWS_ID" => Array( 
             "NAME" => GetMessage("IBLOCK_LINK_NEWS_NAME"), 
@@ -202,24 +203,16 @@ $arTemplateParameters = array_merge($arPageBlocksParams, array(
 	),
 ));
 
-$arTemplateParameters['IMAGE_POSITION'] = array(
-	'PARENT' => 'LIST_SETTINGS',
-	'SORT' => 250,
-	'NAME' => GetMessage('IMAGE_POSITION'),
-	'TYPE' => 'LIST',
-	'VALUES' => array(
-		'left' => GetMessage('IMAGE_POSITION_LEFT'),
-		'right' => GetMessage('IMAGE_POSITION_RIGHT'),
-	),
-	'DEFAULT' => 'left',
-);
-
-$arTemplateParameters['COUNT_IN_LINE'] = array(
-	'PARENT' => 'LIST_SETTINGS',
-	'NAME' => GetMessage('COUNT_IN_LINE'),
-	'TYPE' => 'STRING',
-	'DEFAULT' => '3',
-);
+if (strpos($arCurrentValues['SECTION_ELEMENTS_TYPE_VIEW'], 'list_elements_1') !== false) {
+	$arTemplateParameters = array_merge($arTemplateParameters, array(
+		'COUNT_IN_LINE' => array(
+			'PARENT' => 'LIST_SETTINGS',
+			'NAME' => GetMessage('COUNT_IN_LINE'),
+			'TYPE' => 'STRING',
+			'DEFAULT' => '3'
+		),
+	));
+}
 
 $arTemplateParameters['DETAIL_BLOCKS_ALL_ORDER'] = array(  
 	'PARENT' => 'DETAIL_SETTINGS', 
@@ -245,8 +238,7 @@ $arTemplateParameters['DETAIL_BLOCKS_ALL_ORDER'] = array(
 		'projects' => GetMessage('CP_BC_TPL_CONTENT_BLOCK_PROJECTS'), 
 		'landings' => GetMessage('CP_BC_TPL_CONTENT_BLOCK_LANDINGS'),
 		'form_order' => GetMessage('CP_BC_TPL_CONTENT_BLOCK_FORM_ORDER'),
-		'partners' => GetMessage('CP_BC_TPL_CONTENT_BLOCK_PARTNERS'),
-		'sale' => GetMessage('CP_BC_TPL_CONTENT_BLOCK_SALE'), 
+		'partners' => GetMessage('CP_BC_TPL_CONTENT_BLOCK_PARTNERS'), 
 		'staff' => GetMessage('CP_BC_TPL_CONTENT_BLOCK_STAFF'), 
 	)), 
 	'DEFAULT' => 'tizers,desc,char,docs,services,news,vacancy,blog,reviews,projects,staff,comments,brands,gallery,video,goods,landings,form_order,partners,sale'  

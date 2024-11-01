@@ -139,7 +139,8 @@ if($arResult['BENEFITS'])
 										<?=$arParams['~REGION']['DETAIL_TEXT'];?>
 									<?else:?>
 										<?if(isset($arResult['DISPLAY_PROPERTIES']['COMPANY_NAME']) && $arResult['DISPLAY_PROPERTIES']['COMPANY_NAME']['VALUE']):?>
-											<h3><?=$arResult['DISPLAY_PROPERTIES']['COMPANY_NAME']['VALUE'];?></h3>
+											<?=Aspro\Functions\CAsproMax::showTitleH($arResult['DISPLAY_PROPERTIES']['COMPANY_NAME']['VALUE']);?>
+											
 										<?endif;?>
 										<?if($arResult['PREVIEW_TEXT']):?>
 											<div class="preview-text muted777"><?=$arResult['PREVIEW_TEXT'];?></div>
@@ -174,7 +175,7 @@ if($arResult['BENEFITS'])
 							<?if($bNoImg):?>
 								<div class="with-text-block-wrapper">
 									<?=$text;?>
-									<div class="js-h3"></div>
+									<div class="js-h2"></div>
 									<?=$button;?>
 								</div>
 							<?elseif($bImage):?>
@@ -187,7 +188,7 @@ if($arResult['BENEFITS'])
 														<video id="company_video" muted playsinline controls loop><source  class="video-block" data-src="<?=$videoPlayerSrc;?>" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"' /></video>
 													</template>
 												<?else:?>
-													<iframe id="company_video_iframe" class="video-block__iframe" data-src="<?=$videoPlayerSrc;?>"></iframe>
+													<iframe class="video-block__iframe" data-src="<?=$videoPlayerSrc;?>"></iframe>
 												<?endif;?>
 											</div>
 										</div>

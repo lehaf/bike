@@ -1,5 +1,4 @@
-<?
-$APPLICATION->IncludeComponent(
+<?$APPLICATION->IncludeComponent(
     "bitrix:news.list", 
     "front_news", 
     array(
@@ -15,8 +14,8 @@ $APPLICATION->IncludeComponent(
         "PROPERTY_CODE" => $arParams["LIST_PROPERTY_CODE"],
         "CHECK_DATES" => $arParams["CHECK_DATES"],
         "DETAIL_URL"	=>	$arResult["FOLDER"].$arResult["URL_TEMPLATES"]["detail"],
-	"SECTION_URL"	=>	$arResult["FOLDER"].$arResult["URL_TEMPLATES"]["section"],
-	"IBLOCK_URL"	=>	$arResult["FOLDER"].$arResult["URL_TEMPLATES"]["news"],
+	    "SECTION_URL"	=>	$arResult["FOLDER"].$arResult["URL_TEMPLATES"]["section"],
+	    "IBLOCK_URL"	=>	$arResult["FOLDER"].$arResult["URL_TEMPLATES"]["news"],
         "AJAX_MODE" => $arParams["AJAX_MODE"],
         "AJAX_OPTION_JUMP" => $arParams["AJAX_OPTION_JUMP"],
         "AJAX_OPTION_STYLE" => $arParams["AJAX_OPTION_STYLE"],
@@ -59,23 +58,17 @@ $APPLICATION->IncludeComponent(
         "SIZE_IN_ROW" => $arParams["SIZE_IN_ROW"],
         "TYPE_IMG" => $arParams["TYPE_IMG"],
         "SHOW_SECTION_NAME" => "Y",
-        "BORDERED" => $arParams["SHOW_BORDER_ELEMENT"],
         "FON_BLOCK_2_COLS" => "Y",
-        "BG_POSITION" => $arParams["BG_POSITION"],
         "INCLUDE_FILE" => "",
         "SHOW_SUBSCRIBE" => "N",
-        "TITLE_SHOW_FON" => $arParams["TITLE_SHOW_FON"],
         "TITLE_SUBSCRIBE" => "",
         "PAGER_BASE_LINK_ENABLE" => $arParams["PAGER_BASE_LINK_ENABLE"],
         "SHOW_404" => $arParams["SHOW_404"],
         "IS_AJAX" => CMax::checkAjaxRequest(),
         "MESSAGE_404" => "",
-	"USE_PERMISSIONS"	=>	$arParams["USE_PERMISSIONS"],
-	"GROUP_PERMISSIONS"	=>	$arParams["GROUP_PERMISSIONS"],
-	"USE_BG_IMAGE_ALTERNATE" => $arParams["USE_BG_IMAGE_ALTERNATE"],
+	    "USE_PERMISSIONS"	=>	$arParams["USE_PERMISSIONS"],
+	    "GROUP_PERMISSIONS"	=>	$arParams["GROUP_PERMISSIONS"],
+	    "USE_BG_IMAGE_ALTERNATE" => $arParams["USE_BG_IMAGE_ALTERNATE"],
     ),
     $component
-);
-
-
-?>
+);?>

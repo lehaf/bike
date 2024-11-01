@@ -1127,14 +1127,6 @@ body .char-side .properties .properties.js-offers-props {
 .product-view--type2 .product-action .text-form + .text-form {
   padding: 10px 0px 16px;
 }
-
-.product-container .counter_block .minus {
-  left: 10px;
-}
-.product-container .counter_block .plus {
-  right: 10px;
-}
-
 .wrapper_inner.wide_page .product-view--type2 .content_wrapper_block.front_tizers {
   border-left-width: 0px;
   border-right-width: 0px;
@@ -1680,76 +1672,6 @@ body .simple_page .top-content-block > div {
 }
 .catalog_detail .offers_table .property .props_item.whint > span {
   padding-left: 22px;
-}
-
-.catalog_detail .props_list .props_item.whint {
-  display: inline;
-  padding-right: 10px;
-  background-color: #fff;
-  background-color: var(--card_bg_black);
-}
-.catalog_detail .props_list .props_item.whint span {
-  padding-right: 0px;
-}
-.catalog_detail .props_list .hint {
-  position: relative;
-  top: -1px;
-  left: 2px;
-  right: auto;
-  display: inline;
-}
-.catalog_detail .props_list .hint .icon {
-  background-color: #fff;
-  background-color: var(--card_bg_hover_black);
-  position: relative;
-}
-.catalog_detail .props_list .hint + span {
-  padding-left: 22px;
-}
-.catalog_detail .hint .tooltip {
-  left: 1px;
-  text-align: left;
-}
-.catalog_detail .hint.active .tooltip {
-  opacity: 1;
-  z-index: 204;
-}
-.catalog_detail .hint .tooltip:after {
-  left: 2px;
-}
-.catalog_detail .char_name .hint .icon {
-  left: 0px;
-}
-.catalog_detail .property .char_name .hint .icon {
-  top: 1px;
-  border-radius: 100%;
-}
-.catalog_detail .props_block .char_name .hint .icon {
-  top: -1px;
-  border-radius: 100%;
-}
-.catalog_detail .props_block .char_name {
-  position: relative;
-}
-.catalog_detail .props_block .char_name .hint .icon i {
-  padding-left: 0;
-  margin-left: -1px;
-}
-.catalog_detail .props_block .char_name .hint {
-  display: inline;
-  position: relative;
-  padding-left: 3px;
-}
-.catalog_detail .props_block .char_name .hint .icon {
-  position: relative;
-}
-.catalog_detail .props_block .hint .tooltip {
-  left: 3px;
-  top: 20px;
-}
-
-.props_block .props_item.muted.whint {
-  display: inline;
 }
 
 #main .list-offers .table-view .calculate-delivery {

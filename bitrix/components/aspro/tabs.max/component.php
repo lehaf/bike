@@ -1,223 +1,397 @@
-<?if(!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true) die();?>
-<?\Bitrix\Main\Loader::includeModule('iblock');
-$arTabs = $arShowProp = array();
-global $USER;
+<?
+if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) die();
 
-$bUseModuleProps = \Bitrix\Main\Config\Option::get("iblock", "property_features_enabled", "N") === "Y";
+use Bitrix\Main\Loader,
+	Bitrix\Main\Web\Json,
+	CMaxCache as TSolutionCache,
+	CMaxCondition as TSolutionCondition;
 
-$arResult["SHOW_SLIDER_PROP"] = false;
-if(strlen($arParams["FILTER_NAME"])<=0 || !preg_match("/^[A-Za-z_][A-Za-z01-9_]*$/", $arParams["FILTER_NAME"]))
-{
-	$arrFilter = array();
+global $arTheme, $arRegion;
+$arResult = $arTabs = $arSections = [];
+	
+if (
+	!Loader::includeModule('iblock') ||
+	!Loader::includeModule('aspro.max')
+) {
+	return;
 }
-else
-{
-	$arrFilter = $GLOBALS[$arParams["FILTER_NAME"]] ?? [];
-	if(!is_array($arrFilter))
-		$arrFilter = array();
+
+if (!include_once($_SERVER['DOCUMENT_ROOT'].SITE_TEMPLATE_PATH.'/vendor/php/solution.php')) {
+	throw new \Exception('Error include solution constants');
 }
 
-$arFilter = array("ACTIVE" => "Y", "IBLOCK_ID" => $arParams["IBLOCK_ID"]);
-if($arParams["SECTION_ID"])
-	$arFilter[]=array("SECTION_ID" => $arParams["SECTION_ID"], "INCLUDE_SUBSECTIONS" => "Y");
-elseif($arParams["SECTION_CODE"])
-	$arFilter[]=array("SECTION_CODE" => $arParams["SECTION_CODE"], "INCLUDE_SUBSECTIONS" => "Y");
 
-global $arTheme, $bShowCatalogTab;
+$context = \Bitrix\Main\Context::getCurrent();
+$request = $context->getRequest();
 
-//if(!isset($arTheme["INDEX_TYPE"]["SUB_PARAMS"][$arTheme["INDEX_TYPE"]["VALUE"]]["CATALOG_TAB"]["VALUE"]))
-$bShowCatalogTab = true;
-
-$bCatalogIndex = $bShowCatalogTab;
-$arParams["SET_SKU_TITLE"] = (CMax::GetFrontParametrValue("CHANGE_TITLE_ITEM_LIST") == "Y" ? "Y" : "");
-$arParams["SHOW_PROPS"] = (CMax::GetFrontParametrValue("SHOW_PROPS_BLOCK") == "Y" ? "Y" : "N");
-$arParams["DISPLAY_TYPE"] = "block";
-$arParams["TYPE_SKU"] = "TYPE_1";
-$arParams["MAX_SCU_COUNT_VIEW"] = CMax::GetFrontParametrValue("MAX_SCU_COUNT_VIEW");
-$arParams["USE_CUSTOM_RESIZE_LIST"] = CMax::GetFrontParametrValue("USE_CUSTOM_RESIZE_LIST");
-$arParams["IS_COMPACT_SLIDER"] = CMax::GetFrontParametrValue("MOBILE_CATALOG_LIST_ELEMENTS_COMPACT") == 'Y' && CMax::GetFrontParametrValue("MOBILE_COMPACT_LIST_ELEMENTS") == 'slider';
-$arParams["CHECK_REQUEST_BLOCK"] = CMax::checkRequestBlock('catalog_tab');
-$arParams["USE_FAST_VIEW"] = CMax::GetFrontParametrValue('USE_FAST_VIEW_PAGE_DETAIL');
-$arParams["DISPLAY_WISH_BUTTONS"] = CMax::GetFrontParametrValue('CATALOG_DELAY');
-
-$arParams["USE_PERMISSIONS"] = isset($arParams["USE_PERMISSIONS"]) && $arParams["USE_PERMISSIONS"] == "Y";
-if(!isset($arParams["GROUP_PERMISSIONS"]) || !is_array($arParams["GROUP_PERMISSIONS"]))
-	$arParams["GROUP_PERMISSIONS"] = array(1);
-
-$bUSER_HAVE_ACCESS = !$arParams["USE_PERMISSIONS"];
-if($arParams["USE_PERMISSIONS"] && isset($GLOBALS["USER"]) && is_object($GLOBALS["USER"]))
-{
-	$arUserGroupArray = $USER->GetUserGroupArray();
-	foreach($arParams["GROUP_PERMISSIONS"] as $PERM)
-	{
-		if(in_array($PERM, $arUserGroupArray))
-		{
-			$bUSER_HAVE_ACCESS = true;
-			break;
-		}
+// get current mainblock file & code
+$arResult['BLOCK_FILE'] = '';
+$arResult['BLOCK_CODE'] = 'catalog_tab';
+foreach (array_column(debug_backtrace(), 'file') as $file) {
+	if (preg_match('/([\/]include[\/]mainpage[\/]components[\/]([^\/]*)[\/].*)/', $file, $arMatch)) {
+		//$arResult['BLOCK_FILE'] = '/'.ltrim(str_replace($_SERVER['DOCUMENT_ROOT'], '', $file), DIRECTORY_SEPARATOR);
+		$arResult['BLOCK_FILE'] = '/'.ltrim(SITE_DIR.$arMatch[1], DIRECTORY_SEPARATOR);
+		$arResult['BLOCK_CODE'] = $arMatch[2];
 	}
 }
 
-if(CMax::GetFrontParametrValue('SHOW_POPUP_PRICE') == 'Y')
-	$arParams['SHOW_POPUP_PRICE'] = 'Y';
+$arParams['AJAX_LOAD'] = ($arParams['AJAX_LOAD'] ?? 'Y') === 'N' ? 'N' : 'Y';
 
-$arParams['TYPE_VIEW_BASKET_BTN'] = CMax::GetFrontParametrValue('TYPE_VIEW_BASKET_BTN');
-$arParams['REVIEWS_VIEW'] = CMax::GetFrontParametrValue('REVIEWS_VIEW') ==  'EXTENDED';
+// is ajax
+$bAjax = TSolution::checkAjaxRequest();
 
-$arParams['OFFER_TREE_PROPS'] = $arParams['OFFER_TREE_PROPS'] ?? [];
-if($arParams['OFFER_TREE_PROPS'])
-{
-	$keys = array_search('ARTICLE', $arParams['OFFER_TREE_PROPS']);
-	if(false !== $keys)
-		unset($arParams['OFFER_TREE_PROPS'][$keys]);
+// if mainblock pagination
+$arParams['CHECK_REQUEST_BLOCK'] = TSolution::checkRequestBlock($arResult['BLOCK_CODE']);
+
+if (
+	$request->getQuery('BLOCK') &&
+	!$arParams['CHECK_REQUEST_BLOCK']
+) {
+	return;
 }
 
-
-if(!in_array('DETAIL_PAGE_URL', $arParams['OFFERS_FIELD_CODE']))
-	$arParams['OFFERS_FIELD_CODE'][] = 'DETAIL_PAGE_URL';
-if(!in_array('NAME', $arParams['OFFERS_FIELD_CODE']))
-	$arParams['OFFERS_FIELD_CODE'][] = 'NAME';
-
-$arParams["IS_AJAX"] = CMax::checkAjaxRequest();
-
-$context = \Bitrix\Main\Application::getInstance()->getContext();
-$request = $context->getRequest();
-
-if($arParams['IS_AJAX'] == 'Y')
-{
+// if ajax
+if ($bAjax) {
 	// $APPLICATION->ShowCss();
 	// $APPLICATION->ShowHeadScripts();
 	$APPLICATION->ShowAjaxHead();
-
+	
 	// not load core.js in CJSCore:Init()
 	CJSCore::markExtensionLoaded('core');
-
+	
 	// not load main.popup.bundle.js, ui.font.opensans.css
-	$arParams["DISABLE_INIT_JS_IN_COMPONENT"] = "Y";
+	$arParams['DISABLE_INIT_JS_IN_COMPONENT'] = 'Y';
 }
 
-if($bCatalogIndex)
-{
-	if($arParams["IS_AJAX"] != 'Y')
-	{
-		$this->IncludeComponentTemplate();
+// globals filter
+if (
+	!strlen($arParams['FILTER_NAME']) ||
+	!preg_match("/^[A-Za-z_][A-Za-z01-9_]*$/", $arParams['FILTER_NAME'])
+) {
+	$arParams['FILTER_NAME'] = 'mainTabsFilter';
+}
+$arrFilter = is_array($GLOBALS[$arParams['FILTER_NAME']]) ? $GLOBALS[$arParams['FILTER_NAME']] : [];
+
+// top section
+$arTopSection = [];
+if (
+	$arParams['SECTION_ID'] ||
+	$arParams['SECTION_CODE']
+) {
+	$arTopSectionFilter = [
+		'IBLOCK_ID' => $arParams['IBLOCK_ID'],
+		'ACTIVE' => 'Y',
+		'GLOBAL_ACTIVE' => 'Y',
+		'ACTIVE_DATE' => 'Y',
+	];
+	if ($arParams['SECTION_ID']) {
+		$arTopSectionFilter['ID'] = $arParams['SECTION_ID'];
+	} elseif($arParams['SECTION_CODE']) {
+		$arTopSectionFilter['CODE'] = $arParams['SECTION_CODE'];
 	}
-	else
+
+	if (
+		$arTopSection = TSolutionCache::CIBLockSection_GetList(
+			array(
+				'SORT' => 'ASC',
+				'CACHE' => array(
+					'TAG' => TSolutionCache::GetIBlockCacheTag($arParams['IBLOCK_ID']),
+					'MULTI' => 'N',
+				)
+			),
+			$arTopSectionFilter,
+			false,
+			array('ID', 'CODE', 'DEPTH_LEVEL')
+		)
+	) {
+		$topSectionDepthLevel = $arTopSection['DEPTH_LEVEL'];
+	}
+}
+
+// elements filter
+$arFilter = array('ACTIVE' => 'Y',  'IBLOCK_ID' => $arParams['IBLOCK_ID'], 'SECTION_GLOBAL_ACTIVE' => 'Y');
+
+if ($arTopSection) {
+	$arFilter['SECTION_ID'] = $arTopSection['ID'];
+	$arFilter['INCLUDE_SUBSECTIONS'] = 'Y';
+}
+
+if (
+	isset($arParams['CUSTOM_FILTER']) &&
+	is_string($arParams['CUSTOM_FILTER'])
+){
+	try{
+		$arTmpFilter = Json::decode(htmlspecialchars_decode($arParams['CUSTOM_FILTER']));
+	}
+	catch(\Exception $e){
+		$arTmpFilter = array();
+	}
+
+	$cond = new TSolutionCondition();
+	try{
+		$arParams['CUSTOM_FILTER'] = $cond->parseCondition($arTmpFilter, array());
+	}
+	catch(\Exception $e){
+		$arParams['CUSTOM_FILTER'] = array();
+	}
+}
+else {
+	$arParams['CUSTOM_FILTER'] = array();
+}
+
+if (
+	$arParams['CUSTOM_FILTER'] &&
+	is_array($arParams['CUSTOM_FILTER'])
+) {
+	$arFilter[] = $arParams['CUSTOM_FILTER'];
+}
+
+$arParams["COMPATIBLE_MODE"] = "Y";
+$arParams["SET_SKU_TITLE"] = (TSolution::GetFrontParametrValue("CHANGE_TITLE_ITEM_LIST") == "Y" ? "Y" : "");
+$arParams["SHOW_PROPS"] = (TSolution::GetFrontParametrValue("SHOW_PROPS_BLOCK") == "Y" ? "Y" : "N");
+$arParams["DISPLAY_TYPE"] = "block";
+$arParams["TYPE_SKU"] = "TYPE_1";
+$arParams["MAX_SCU_COUNT_VIEW"] = TSolution::GetFrontParametrValue("MAX_SCU_COUNT_VIEW");
+$arParams["USE_CUSTOM_RESIZE_LIST"] = TSolution::GetFrontParametrValue("USE_CUSTOM_RESIZE_LIST");
+$arParams["IS_COMPACT_SLIDER"] = TSolution::GetFrontParametrValue("MOBILE_CATALOG_LIST_ELEMENTS_COMPACT") == 'Y' && TSolution::GetFrontParametrValue("MOBILE_COMPACT_LIST_ELEMENTS") == 'slider';
+$arParams["USE_FAST_VIEW"] = TSolution::GetFrontParametrValue('USE_FAST_VIEW_PAGE_DETAIL');
+$arParams["DISPLAY_WISH_BUTTONS"] = TSolution::GetFrontParametrValue('CATALOG_DELAY');
+$arParams["SHOW_POPUP_PRICE"] = TSolution::GetFrontParametrValue('SHOW_POPUP_PRICE');
+$arParams['TYPE_VIEW_BASKET_BTN'] = TSolution::GetFrontParametrValue('TYPE_VIEW_BASKET_BTN');
+$arParams['REVIEWS_VIEW'] = TSolution::GetFrontParametrValue('REVIEWS_VIEW') ==  'EXTENDED';
+
+$arParams['OFFER_TREE_PROPS'] = $arParams['OFFER_TREE_PROPS'] ?? [];
+if ($arParams['OFFER_TREE_PROPS']) {
+	$keys = array_search('ARTICLE', $arParams['OFFER_TREE_PROPS']);
+	if (false !== $keys) {
+		unset($arParams['OFFER_TREE_PROPS'][$keys]);
+	}
+}
+
+if (!in_array('DETAIL_PAGE_URL', $arParams['OFFERS_FIELD_CODE'])) {
+	$arParams['OFFERS_FIELD_CODE'][] = 'DETAIL_PAGE_URL';
+}
+
+if (!in_array('NAME', $arParams['OFFERS_FIELD_CODE'])) {
+	$arParams['OFFERS_FIELD_CODE'][] = 'NAME';
+}
+
+if (
+	$bAjax || 
+	$arParams['AJAX_LOAD'] === 'N'
+) {
+	$bUseModuleProps = \Bitrix\Main\Config\Option::get("iblock", "property_features_enabled", "N") === "Y";
+	if ($bUseModuleProps) {
+		$arSKU = CCatalogSKU::GetInfoByProductIBlock($arParams['IBLOCK_ID']);
+		$arParams['OFFERS_CART_PROPERTIES'] = (array)\Bitrix\Catalog\Product\PropertyCatalogFeature::getBasketPropertyCodes($arSKU['IBLOCK_ID'], ['CODE' => 'Y']);
+	}
+
+	if($arParams['STORES'])
 	{
-		$arShowProp = CMaxCache::CIBlockPropertyEnum_GetList(Array("sort" => "asc", "id" => "desc", "CACHE" => array("TAG" => CMaxCache::GetPropertyCacheTag($arParams["TABS_CODE"]))), Array("ACTIVE" => "Y", "IBLOCK_ID" => $arParams["IBLOCK_ID"], "CODE" => $arParams["TABS_CODE"]));
-
-		if($arShowProp)
+		foreach($arParams['STORES'] as $key => $store)
 		{
-			if($arParams['STORES'])
+			if(!$store)
+				unset($arParams['STORES'][$key]);
+		}
+	}
+	$arFilterStores = array();
+	global $arRegion;
+	if(CMax::GetFrontParametrValue('USE_REGIONALITY') == 'Y')
+		$arParams['USE_REGION'] = 'Y';
+
+	$arRegion = CMaxRegionality::getCurrentRegion();
+	if($arRegion && $arParams['USE_REGION'] == 'Y')
+	{
+		if(CMax::GetFrontParametrValue('REGIONALITY_FILTER_ITEM') == 'Y' && CMax::GetFrontParametrValue('REGIONALITY_FILTER_CATALOG') == 'Y'){
+			$arFilter['PROPERTY_LINK_REGION'] = $arRegion['ID'];
+			CMax::makeElementFilterInRegion($arFilter, $arRegion['ID']);
+		}
+		
+		if($arRegion['LIST_PRICES'])
+		{
+			if(reset($arRegion['LIST_PRICES']) != 'component')
 			{
-				foreach($arParams['STORES'] as $key => $store)
-				{
-					if(!$store)
-						unset($arParams['STORES'][$key]);
-				}
+				$arParams['PRICE_CODE'] = array_keys($arRegion['LIST_PRICES']);
+				$arParams['~PRICE_CODE'] = array_keys($arRegion['LIST_PRICES']);
 			}
-			$arFilterStores = array();
-			global $arRegion;
-			if(CMax::GetFrontParametrValue('USE_REGIONALITY') == 'Y')
-				$arParams['USE_REGION'] = 'Y';
-
-			$arRegion = CMaxRegionality::getCurrentRegion();
-			if($arRegion && $arParams['USE_REGION'] == 'Y')
+		}
+		if($arRegion['LIST_STORES'])
+		{
+			if(reset($arRegion['LIST_STORES']) != 'component')
 			{
-				if(CMax::GetFrontParametrValue('REGIONALITY_FILTER_ITEM') == 'Y' && CMax::GetFrontParametrValue('REGIONALITY_FILTER_CATALOG') == 'Y'){
-					$arFilter['PROPERTY_LINK_REGION'] = $arRegion['ID'];
-					CMax::makeElementFilterInRegion($arFilter, $arRegion['ID']);
-				}
-				
-				if($arRegion['LIST_PRICES'])
-				{
-					if(reset($arRegion['LIST_PRICES']) != 'component')
-					{
-						$arParams['PRICE_CODE'] = array_keys($arRegion['LIST_PRICES']);
-						$arParams['~PRICE_CODE'] = array_keys($arRegion['LIST_PRICES']);
-					}
-				}
-				if($arRegion['LIST_STORES'])
-				{
-					if(reset($arRegion['LIST_STORES']) != 'component')
-					{
-						$arParams['STORES'] = $arRegion['LIST_STORES'];
-						$arParams['~STORES'] = $arRegion['LIST_STORES'];
-					}
-
-					if($arParams["HIDE_NOT_AVAILABLE"] == "Y")
-					{
-						
-						/*
-						$arTmpFilter["LOGIC"] = "OR";
-						foreach($arParams['STORES'] as $storeID)
-						{
-							$arTmpFilter[] = array(">CATALOG_STORE_AMOUNT_".$storeID => 0);
-						}
-						$arFilterStores[] = $arTmpFilter;
-						*/
-						
-						if(CMax::checkVersionModule('18.6.200', 'iblock')){
-							$arTmpFilter["LOGIC"] = "OR";
-							$arTmpFilter[] = array('TYPE' => array('2','3'));//complects and offers
-							$arTmpFilter[] = array(
-								'STORE_NUMBER' => $arParams['STORES'],
-								'>STORE_AMOUNT' => 0,
-							);						
-						}
-						else{
-							if(count($arParams['STORES']) > 1){
-								$arTmpFilter = array('LOGIC' => 'OR');
-								foreach($arParams['STORES'] as $storeID)
-								{
-									$arTmpFilter[] = array(">CATALOG_STORE_AMOUNT_".$storeID => 0);
-								}
-							}
-							else{
-								foreach($arParams['STORES'] as $storeID)
-								{
-									$arTmpFilter = array(">CATALOG_STORE_AMOUNT_".$storeID => 0);
-								}
-							}
-						}
-						$arFilterStores[] = $arTmpFilter;
-						
-
-					}
-				}
+				$arParams['STORES'] = $arRegion['LIST_STORES'];
+				$arParams['~STORES'] = $arRegion['LIST_STORES'];
 			}
 
-			foreach($arShowProp as $key => $prop)
-			{
-				$arItems = array();
-				$arFilterProp = array("PROPERTY_".$arParams["TABS_CODE"]."_VALUE" => array($prop));
-
-				$arItems = CMaxCache::CIBLockElement_GetList(array('CACHE' => array("MULTI" => "N", "TAG" => CMaxCache::GetIBlockCacheTag($arParams["IBLOCK_ID"]))), array_merge($arFilter, $arrFilter, $arFilterStores, $arFilterProp), false, array("nTopCount" => 1), array("ID"));
-				if($arItems)
-				{
-					$arTabs[$key] = array(
-						"CODE" => $key,
-						"TITLE" => $prop,
-						"FILTER" => array_merge($arFilter, $arrFilter, $arFilterStores, $arFilterProp)
-					);
-					$arResult["SHOW_SLIDER_PROP"] = true;
+			if($arParams["HIDE_NOT_AVAILABLE"] == "Y")
+			{				
+				$arRegionStoresFilter = TSolution\Filter::getAvailableByStores($arParams['STORES']);
+				if($arRegionStoresFilter){
+					$arFilterStores[] = $arRegionStoresFilter;
 				}
 			}
 		}
-		else
-		{
+	}
+	
+
+	if ($arParams['SHOW_TABS'] === 'N') {
+		$arItemsFilter = array_merge($arFilter, $arrFilter, $arFilterStores);
+		$arItems = TSolutionCache::CIBlockElement_GetList(
+			[
+				'CACHE' => [
+					'MULTI' => 'Y',
+					'TAG' => TSolutionCache::GetIBlockCacheTag($arParams['IBLOCK_ID'])
+				]
+			],
+			$arItemsFilter,
+			false,
+			['
+				nTopCount' => 1,
+			],
+			['ID']
+		);
+	
+		if ($arItems) {
+			$arTabs[] = [
+				'CODE' => 'all',
+				'FILTER' => $arItemsFilter,
+			];
+		}
+		else {
+			// no elements
 			return;
 		}
-		$arParams["PROP_CODE"] = $arParams["TABS_CODE"];
-		$arResult["TABS"] = $arTabs;
-
-		if ($bUseModuleProps){
-			$arSKU = CCatalogSKU::GetInfoByProductIBlock($arParams['IBLOCK_ID']);
-			$arParams['OFFERS_CART_PROPERTIES'] = (array)\Bitrix\Catalog\Product\PropertyCatalogFeature::getBasketPropertyCodes($arSKU['IBLOCK_ID'], ['CODE' => 'Y']);
+	}
+	else {
+		if ($arParams['TABS_FILTER'] === 'SECTION') {
+			$arItemsFilter = array_merge($arFilter, $arrFilter, $arFilterStores);
+			$arItems = TSolutionCache::CIBlockElement_GetList(
+				array(
+					'CACHE' => array(
+						'MULTI' => 'Y',
+						'TAG' => TSolutionCache::GetIBlockCacheTag($arParams['IBLOCK_ID'])
+					)
+				),
+				$arItemsFilter,
+				false,
+				false,
+				array('ID', 'IBLOCK_SECTION_ID')
+			);
+		
+			if ($arItems) {
+				$topSectionDepthLevel = $arTopSection ? $arTopSection['DEPTH_LEVEL'] : 0;
+				$arSectionsID = [];
+				
+				foreach ($arItems as $arItem) {
+					if ($arItem['IBLOCK_SECTION_ID']) {
+						$arSectionsID = array_merge($arSectionsID, (array)$arItem['IBLOCK_SECTION_ID']);
+					}
+				}
+		
+				if ($arSectionsID) {
+					$arSectionsFilter = array("IBLOCK_ID" => $arParams['IBLOCK_ID'], "ACTIVE" => "Y", "GLOBAL_ACTIVE" => "Y", "ACTIVE_DATE" => "Y");
+					$arSectionsTmp = TSolutionCache::CIBLockSection_GetList(array("SORT" => "ASC", 'CACHE' => array('TAG' => TSolutionCache::GetIBlockCacheTag($arParams['IBLOCK_ID']))), array_merge($arSectionsFilter, ['ID' => $arSectionsID]), false, array("ID", "LEFT_MARGIN", "RIGHT_MARGIN", "CODE"));
+		
+					if ($arSectionsTmp) {
+						foreach ($arSectionsTmp as $arSection) {
+							if (!empty($arSection)) {
+								$arSections[] = TSolutionCache::CIBLockSection_GetList(array("SORT" => "ASC", 'CACHE' => array('TAG' => TSolutionCache::GetIBlockCacheTag($arParams['IBLOCK_ID']), 'MULTI' => 'N')), array_merge($arSectionsFilter, array("<=LEFT_BORDER" => $arSection["LEFT_MARGIN"], ">=RIGHT_BORDER" => $arSection["RIGHT_MARGIN"], "DEPTH_LEVEL" => $topSectionDepthLevel + 1)), false, array('ID', 'NAME', 'CODE'));
+							}
+		
+							if ($arSections) {
+								foreach ($arSections as $arSectionTmp) {
+									if (!$arTabs[$arSectionTmp['ID']]){
+										$arTabs[$arSectionTmp['ID']]["CODE"] = $arSectionTmp['ID'];
+										$arTabs[$arSectionTmp['ID']]["TITLE"] = $arSectionTmp["NAME"];
+										$arTabs[$arSectionTmp['ID']]["SORT"] = $arSectionTmp["SORT"];
+		
+										$arTabs[$arSectionTmp['ID']]['FILTER'] = array_merge(
+											$arItemsFilter,
+											[
+												'INCLUDE_SUBSECTIONS' => 'Y',
+												'SECTION_ID' => $arSectionTmp['ID'],
+											]
+										);
+									}
+								}
+							}
+						}
+	
+						uasort($arTabs, function($a, $b) {
+							return $a['SORT'] <=> $b['SORT'];
+						});
+					}
+				}		
+			}
+			else {
+				// no elements
+				return;
+			}
 		}
-		?>
-		<?$this->IncludeComponentTemplate('ajax');?>
-	<?}?>
-<?}
-else
-	return;?>
+		elseif($arParams['HIT_PROP']) {
+			// get items grouped by HIT_PROP values
+			$arItems = TSolutionCache::CIBlockElement_GetList(
+				array(
+					'CACHE' => array(
+						'MULTI' => 'Y',
+						'TAG' => TSolutionCache::GetIBlockCacheTag($arParams['IBLOCK_ID']),
+						'GROUP' => array('PROPERTY_HIT_ENUM_ID'),
+					)
+				),
+				array_merge($arFilter, $arrFilter, $arFilterStores, ['!PROPERTY_'.$arParams['HIT_PROP'] => false]),
+				false,
+				false,
+				array('ID', 'PROPERTY_'.$arParams['HIT_PROP'])
+			);			
+		
+			if ($arItems) {
+				// get some HIT_PROP values
+				$arShowProp = [];
+				$rsProp = CIBlockPropertyEnum::GetList(
+					array(
+						'sort' => 'asc',
+						'id' => 'desc',
+					),
+					array(
+						'ACTIVE' => 'Y',
+						'IBLOCK_ID' => $arParams['IBLOCK_ID'],
+						'CODE' => $arParams['HIT_PROP'],
+						'ID' => array_keys($arItems),
+					)
+				);
+				while ($arProp = $rsProp->Fetch()) {
+					$arShowProp[$arProp['EXTERNAL_ID']] = $arProp['VALUE'];
+				}
+			
+				if ($arShowProp) {
+					foreach ($arShowProp as $key => $prop) {
+						$arFilterProp = array('PROPERTY_'.$arParams['HIT_PROP'].'_VALUE' => array($prop));				
+						$arTabs[$key] = array(
+							'CODE' => $key,
+							'TITLE' => $prop,
+							'FILTER' => array_merge($arFilterProp, $arFilter, $arFilterStores)
+						);
+					}
+				} else {
+					return;
+				}
+				
+				$arParams['PROP_CODE'] = $arParams['HIT_PROP'];
+			}
+			else {
+				// no elements
+				return;
+			}
+		}
+		else {
+			return;
+		}
+	}
+
+	$arResult['TABS'] = $arTabs ?: [[]];
+	
+	$this->IncludeComponentTemplate('ajax');
+}
+else {
+	$this->IncludeComponentTemplate();
+}

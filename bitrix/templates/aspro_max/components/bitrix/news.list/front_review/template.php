@@ -28,7 +28,7 @@ endif;?>
 					<div class="row">
 						<div class="col-md-3">
 							<?if($arParams['TITLE_BLOCK'] || $arParams['TITLE_BLOCK_ALL']):?>
-								<h3><?=$arParams['TITLE_BLOCK'];?></h3>
+								<?=Aspro\Functions\CAsproMax::showTitleH($arParams['TITLE_BLOCK']);?>
 								<?// intro text?>
 								<?if($arParams['INCLUDE_FILE']):?>
 									<div class="text_before_items font_xs">
@@ -54,7 +54,7 @@ endif;?>
 						<div class="col-md-9">
 			<?else:?>
 				<div class="top_block">
-					<h3><?=$arParams['TITLE_BLOCK'];?></h3>
+					<?=Aspro\Functions\CAsproMax::showTitleH($arParams['TITLE_BLOCK']);?>
 					<?if($arParams['TITLE_BLOCK_ALL']):?>
 						<a href="<?=SITE_DIR.$arParams['ALL_URL'];?>" class="pull-right font_upper muted"><?=$arParams['TITLE_BLOCK_ALL'] ;?></a>
 					<?endif;?>
@@ -180,7 +180,7 @@ endif;?>
 									<div itemprop="reviewBody" class="preview-text"><?=$arItem['FIELDS']['PREVIEW_TEXT'];?></div>
 									<?if(($arParams['PREVIEW_TRUNCATE_LEN'] > 0) && (strlen($arItem['~PREVIEW_TEXT']) > $arParams['PREVIEW_TRUNCATE_LEN'])):?>
 										<div class="link-block-more">
-											<span><span class="btn btn-transparent-border-color btn-xs animate-load" data-event="jqm" data-param-id="<?=$arItem['ID'];?>" data-param-type="review" data-name="review"><?=Loc::getMessage('MORE_REVIEWS');?></span></span>
+											<span><span class="btn btn-transparent-border-color font_sxs animate-load" data-event="jqm" data-param-id="<?=$arItem['ID'];?>" data-param-type="review" data-name="review"><?=Loc::getMessage('MORE_REVIEWS');?></span></span>
 										</div>
 									<?endif;?>
 									<?$arVideo = (isset($arItem['DISPLAY_PROPERTIES']['VIDEO']) && is_array($arItem['DISPLAY_PROPERTIES']['VIDEO']['VALUE']) ? $arItem['DISPLAY_PROPERTIES']['VIDEO']['~VALUE'] : '');?>

@@ -321,17 +321,10 @@ JCSmartFilter.prototype.setUrlSortDisplay = function (url) {
 };
 
 JCSmartFilter.prototype.filterCatalog = function (url, set_disabled, reset, count) {
-  if (url.match(/%(?![0-9][0-9a-fA-F]+)/g)) {
-    url = url.replace(/%(?![0-9][0-9a-fA-F]+)/g, '%25');
-
-    if (($('.bx-ie').length && !$('.bx-ie11').length) || !$('.bx-core').length) {
-      location.href = url;
-    } else {
-      window.history.pushState(null, document.title, url);
-    }
-  } else if (window.History.enabled || window.history.pushState != null) {
-    window.History.pushState(null, document.title, decodeURIComponent(url));
-  } else {
+  if (window.History.enabled || window.history.pushState != null) {
+    window.history.pushState(null, document.title, url);
+  }
+  else {
     location.href = url;
   }
 

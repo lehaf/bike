@@ -158,6 +158,8 @@ if ($typeTmpSKU) {
 		$typeSKU = $arType['XML_ID'];
 	}
 }
+$typeSKU = Aspro\Functions\CAsproMax::processRetriveOptionValue('TYPE_SKU', $typeSKU);
+
 $arSection['UF_SECTION_TIZERS'] = $sectionTizers;
 $arSection['UF_HELP_TEXT'] = $sectionHelpText;
 
@@ -194,6 +196,16 @@ $detailOfferPropsParamCode = $arParams["DETAIL_OFFERS_PROPERTY_CODE"] ? "DETAIL_
 
 $arParams['BIG_DATA_FILTER_IDS'] = $arElement['ID'];
 
+if(CMax::GetFrontParametrValue('TOP_MENU_FIXED') === 'Y') {
+	if(CMax::GetFrontParametrValue('SHOW_HEADER_GOODS') === 'Y') {
+		CMax::$arCssVariables['--fixed-header'] = '105px';
+	}
+
+	if(CMax::GetFrontParametrValue('USE_DETAIL_TABS') === 'Y') {
+		CMax::$arCssVariables['--fixed-tabs'] = '49px';
+	}
+}
+
 if($bFastViewMode)
 	include_once('element_fast_view.php');
 else if($bReviewsSort)
@@ -204,6 +216,18 @@ else
 
 <? CJSCore::Init(array('ls')); ?>
 	<script>//$(document).ready(function(){$(".buy_block .counter_block input[type=text]").change()})</script>
+
+
+<!-- noindex -->
+<template class="props-template">
+	<?TSolution\Functions::showBlockHtml([
+		'FILE' => 'catalog/props/list.php',
+		'PARAMS' => [
+			'ITEM_CLASSES' => 'properties__item--compact font_xs',
+		]
+	]);?>
+</template>
+<!-- /noindex -->
 
 <?
 $arExt = [

@@ -2,7 +2,7 @@
 	"bitrix:news.list",
 	"news-list",
 	Array(
-		"IMAGE_POSITION" => "left",
+		"IMAGE_POSITION" => $arParams["IMAGE_POSITION"],
 		"SHOW_CHILD_SECTIONS" => $arParams["SHOW_CHILD_SECTIONS"],
 		"DEPTH_LEVEL" => 1,
 		"IS_AJAX" => (isset($_GET["AJAX_REQUEST"]) && $_GET["AJAX_REQUEST"] == "Y"),
@@ -41,7 +41,6 @@
 		"ACTIVE_DATE_FORMAT"	=>	$arParams["LIST_ACTIVE_DATE_FORMAT"],
 		"USE_PERMISSIONS"	=>	$arParams["USE_PERMISSIONS"],
 		"GROUP_PERMISSIONS"	=>	$arParams["GROUP_PERMISSIONS"],
-		"SHOW_DETAIL_LINK"	=>	$arParams["SHOW_DETAIL_LINK"],
 		"FILTER_NAME"	=>	$arParams["FILTER_NAME"],
 		"HIDE_LINK_WHEN_NO_DETAIL"	=>	$arParams["HIDE_LINK_WHEN_NO_DETAIL"],
 		"CHECK_DATES"	=>	$arParams["CHECK_DATES"],

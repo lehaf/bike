@@ -141,12 +141,6 @@
 .hot-wrapper-items .counter_wrapp.list .to-cart.btn-lg{
   max-height: 48px;
 }
-.hot-wrapper-items .counter_block .minus{
-  left: 10px;
-}
-.hot-wrapper-items .counter_block .plus{
-  right: 10px;
-}
 @media (max-width: 991px) {
   .hot-wrapper-items .item_info {
     text-align: center;

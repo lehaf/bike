@@ -28,7 +28,7 @@ $arParams['SHOW_STORES_POPUP'] = (boolean)($arParams['SHOW_STORES_POPUP'] ?? fal
 				<div class="fast_view_params"></div>
 				<?if($arParams['TITLE_BLOCK']):?>
 					<div class="top_block">
-						<?=CMax::showIconSvg("hot", SITE_TEMPLATE_PATH."/images/svg/flame_productoftheday.svg", "", "", true, false);?><h3><?=$arParams['TITLE_BLOCK'];?></h3>
+						<?=CMax::showIconSvg("hot", SITE_TEMPLATE_PATH."/images/svg/flame_productoftheday.svg", "", "", true, false);?><?=Aspro\Functions\CAsproMax::showTitleH($arParams['TITLE_BLOCK']);?>
 						<?if($arParams["ALL_URL"] && $arParams["TITLE_BLOCK_ALL"]):?>
 							<a href="<?=SITE_DIR.$arParams["ALL_URL"];?>" class="pull-right font_upper muted"><?=$arParams["TITLE_BLOCK_ALL"] ;?></a>
 						<?endif;?>

@@ -244,7 +244,9 @@ function submitComment()
 		<?
 	}
 	?>
-	BX.submit(obForm);
+	// BX.submit(obForm);
+	var eventdata = {type: 'form_submit', form: $(obForm)};
+	BX.onCustomEvent('onSubmitForm', [eventdata]);
 }
 
 function hideShowComment(url, id)

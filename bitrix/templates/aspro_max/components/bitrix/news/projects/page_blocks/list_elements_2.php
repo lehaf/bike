@@ -1,5 +1,4 @@
-<?
-$APPLICATION->IncludeComponent(
+<?$APPLICATION->IncludeComponent(
     "bitrix:news.list", 
     "front_news", 
     array(
@@ -15,8 +14,8 @@ $APPLICATION->IncludeComponent(
         "PROPERTY_CODE" => $arParams["LIST_PROPERTY_CODE"],
         "CHECK_DATES" => $arParams["CHECK_DATES"],
         "DETAIL_URL"	=>	$arResult["FOLDER"].$arResult["URL_TEMPLATES"]["detail"],
-	"SECTION_URL"	=>	$arResult["FOLDER"].$arResult["URL_TEMPLATES"]["section"],
-	"IBLOCK_URL"	=>	$arResult["FOLDER"].$arResult["URL_TEMPLATES"]["news"],
+	    "SECTION_URL"	=>	$arResult["FOLDER"].$arResult["URL_TEMPLATES"]["section"],
+	    "IBLOCK_URL"	=>	$arResult["FOLDER"].$arResult["URL_TEMPLATES"]["news"],
         "AJAX_MODE" => $arParams["AJAX_MODE"],
         "AJAX_OPTION_JUMP" => $arParams["AJAX_OPTION_JUMP"],
         "AJAX_OPTION_STYLE" => $arParams["AJAX_OPTION_STYLE"],
@@ -49,10 +48,8 @@ $APPLICATION->IncludeComponent(
         "DISPLAY_PREVIEW_TEXT" => $arParams["DISPLAY_PREVIEW_TEXT"],
         "AJAX_OPTION_ADDITIONAL" => "",
         "COMPONENT_TEMPLATE" => "front_news",
-        //"SET_BROWSER_TITLE" => "N",
         "SET_META_KEYWORDS" => "Y",
         "SET_META_DESCRIPTION" => "Y",
-        //"SET_LAST_MODIFIED" => "N",
         "INCLUDE_SUBSECTIONS" => "Y",
         "STRICT_SECTION_CHECK" => $arParams["STRICT_SECTION_CHECK"],
         "TITLE_BLOCK" => "",
@@ -61,7 +58,6 @@ $APPLICATION->IncludeComponent(
         "SIZE_IN_ROW" => $arParams["SIZE_IN_ROW"],
         "TYPE_IMG" => $arParams["TYPE_IMG"],
         "SHOW_SECTION_NAME" => "Y",
-        "BORDERED" => $arParams["SHOW_BORDER_ELEMENT"],
         "FON_BLOCK_2_COLS" => 'N',//"Y",
         "BG_POSITION" => $arParams["BG_POSITION"],
         "INCLUDE_FILE" => "",
@@ -72,16 +68,12 @@ $APPLICATION->IncludeComponent(
         "SHOW_404" => $arParams["SHOW_404"],
         "IS_AJAX" => CMax::checkAjaxRequest(),
         "MESSAGE_404" => "",
-	"USE_PERMISSIONS"	=>	$arParams["USE_PERMISSIONS"],
-	"GROUP_PERMISSIONS"	=>	$arParams["GROUP_PERMISSIONS"],
-	"USE_BG_IMAGE_ALTERNATE" => 'N',//$arParams["USE_BG_IMAGE_ALTERNATE"],
-	"ALL_BLOCK_BG" => 'Y',//$arParams["ALL_BLOCK_BG"],
-	"USE_SECTIONS_TABS" => (isset($arParams["TYPE_HEAD_BLOCK"]) && ($arParams["TYPE_HEAD_BLOCK"]=='sections_mix'||$arParams["TYPE_HEAD_BLOCK"]=='sections_links'))? 'Y' : 'N',
-	"USE_DATE_MIX_TABS" => (isset($arParams["TYPE_HEAD_BLOCK"]) && $arParams["TYPE_HEAD_BLOCK"]=='years_mix')? 'Y' : 'N',
-	
+	    "USE_PERMISSIONS"	=>	$arParams["USE_PERMISSIONS"],
+	    "GROUP_PERMISSIONS"	=>	$arParams["GROUP_PERMISSIONS"],
+	    "USE_BG_IMAGE_ALTERNATE" => 'N',//$arParams["USE_BG_IMAGE_ALTERNATE"],
+	    "ALL_BLOCK_BG" => 'Y',//$arParams["ALL_BLOCK_BG"],
+	    "USE_SECTIONS_TABS" => (isset($arParams["TYPE_HEAD_BLOCK"]) && ($arParams["TYPE_HEAD_BLOCK"]=='sections_mix'||$arParams["TYPE_HEAD_BLOCK"]=='sections_links'))? 'Y' : 'N',
+	    "USE_DATE_MIX_TABS" => (isset($arParams["TYPE_HEAD_BLOCK"]) && $arParams["TYPE_HEAD_BLOCK"]=='years_mix')? 'Y' : 'N',	
     ),
     $component
-);
-
-
-?>
+);?>

@@ -1,58 +1,72 @@
 $(document).ready(function(){
 	InitLeftMenuAim = function() {
 		let $block = $('.menu.dropdown:not(.aim-init)');
-		let $isBlockHover = $block.find('.full.has-child.v_hover').length
+		let $isBlockHover = $block.find('.full.has-child.v_hover').length;
 		if ($isBlockHover) {
 			$block.addClass("aim-init");
 			loadScripts(arAsproOptions["SITE_TEMPLATE_PATH"] + "/vendor/js/jquery.menu-aim.js", function() {
+				let timer = null;
+
 				$block.menuAim({
 					tolerance: 75,
-					rowSelector: "> .full.has-child.v_hover",
-					activate: function (a) {
+					rowSelector: "> .full.v_hover",
+					activate: function(a) {
 						$(a).find(".dropdown-block").show();
-	
 						let $this = $(a),
 							menu = $this.find('> .dropdown-block'),
 							winHeight = $(window).height();
-	
-						// menu.css('max-height', 'none');
-						menu.find('.mCustomScrollBox').css('max-height', 'none');
-						
-						if ($this.hasClass('m_line')) {
-							let mt = parseInt($this.height());
-							let pos = BX.pos(menu[0], true);							
-							if (pos.height) {
-								let cmt = parseInt(menu[0].style.marginTop);
-								cmt = isNaN(cmt) ? 0 : cmt;
-								
-								let bottom = pos.bottom - cmt - mt;
-								if (bottom >= winHeight) {
-									mt = mt + bottom - winHeight;
-								}
+						if (menu.length) {
+							// menu.css('max-height', 'none');
+							menu.find('.mCustomScrollBox').css('max-height', 'none');
+							
+							if ($this.hasClass('m_line')) {
+								let mt = parseInt($this.height());
+								let pos = BX.pos(menu[0], true);							
+								if (pos.height) {
+									let cmt = parseInt(menu[0].style.marginTop);
+									cmt = isNaN(cmt) ? 0 : cmt;
+									
+									let bottom = pos.bottom - cmt - mt;
+									if (bottom >= winHeight) {
+										mt = mt + bottom - winHeight;
+									}
 
-								let top = pos.top - cmt - mt;
-								if (top < 0) {
-									mt = mt + top;
+									let top = pos.top - cmt - mt;
+									if (top < 0) {
+										mt = mt + top;
+									}
 								}
+								menu.css('margin-top',  '-' + mt + 'px');								
 							}
+					
+							$('body').addClass('menu-hovered');
 
-							menu.css('margin-top',  '-' + mt + 'px');
-						}
-				
-						$('body').addClass('menu-hovered');
-				
-						$this.one('mouseleave', function () {
-							$('body').removeClass('menu-hovered');
-						});
+							if (timer) {
+								clearTimeout(timer);
+								timer = null;
+							}
+						}						
 					},
-					deactivate: function (a) {
+					deactivate: function(a) {
 						$(a).find(".dropdown-block").hide();
+
+						if (timer) {
+							clearTimeout(timer);
+							timer = null;
+						}
+
+						timer = setTimeout(() => {
+							$('body').removeClass('menu-hovered');
+						}, 100);
 					},
 					exitMenu: function (a) {
 						$(a).find(".dropdown-block").hide();
+						$('body').removeClass('menu-hovered');
+
 						return true;
 					},
 				});
+				
 			});
 		}
 	}
@@ -81,4 +95,5 @@ $(document).ready(function(){
 	);
 
 	InitLeftMenuAim();
+	
 });

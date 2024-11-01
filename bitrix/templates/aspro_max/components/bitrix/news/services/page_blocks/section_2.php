@@ -2,7 +2,6 @@
 	"bitrix:news.list",
 	"content-sections-blocks",
 	Array(
-		"IMAGE_CATALOG_POSITION" => $arParams["IMAGE_CATALOG_POSITION"],
 		"SHOW_CHILD_SECTIONS" => $arParams["SHOW_CHILD_SECTIONS"],
 		"DEPTH_LEVEL" => $arSubSections[0]["DEPTH_LEVEL"],
 		"SHOW_SECTION_PREVIEW_DESCRIPTION" => $arParams["SHOW_SECTION_PREVIEW_DESCRIPTION"],

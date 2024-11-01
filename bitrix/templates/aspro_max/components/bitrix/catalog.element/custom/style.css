@@ -103,6 +103,10 @@
   text-transform: uppercase;
   color: #fff;
   background: #37c771;
+<<<<<<< HEAD
+=======
+  margin-top: 30px;
+>>>>>>> c80798c (update aspro)
 }
 
 .price-currency{
@@ -110,11 +114,14 @@
   align-items: center;
   justify-content: center;
   gap: 22px;
+<<<<<<< HEAD
   margin-bottom: 10px;
 }
 
 .price-currency.price-currency--left {
   justify-content: left;
+=======
+>>>>>>> c80798c (update aspro)
 }
 
 .price-currency__i{
@@ -133,15 +140,25 @@
   color: #999;
 }
 
+<<<<<<< HEAD
 .product-container .prices_block .cost.prices.detail .price.price--center{
   display: block;
   font-weight: 700;
   font-size: 26px !important;
   letter-spacing: 0.02em;
+=======
+.product-container .prices_block .cost.prices.detail .price.font_mxs{
+  display: block;
+  font-weight: 700;
+  font-size: 26px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+>>>>>>> c80798c (update aspro)
   color: #333;
   text-align: center;
 }
 
+<<<<<<< HEAD
 .product-container .prices_block .cost.prices.detail,
 .product-container .prices_block .item-stock{
   margin-bottom: 30px;
@@ -158,6 +175,8 @@
   text-align: left !important;
 }
 
+=======
+>>>>>>> c80798c (update aspro)
 ._prices_block.prices_block{
   width: 380px;
   box-shadow: 0 4px 18px 0 rgba(0, 0, 0, 0.1);
@@ -428,7 +447,10 @@
 
 #map {
   height: 631px;
+<<<<<<< HEAD
   margin-top: 40px;
+=======
+>>>>>>> c80798c (update aspro)
 }
 
 .ymaps-2-1-79-map-bg {

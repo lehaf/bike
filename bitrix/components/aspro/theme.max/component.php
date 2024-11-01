@@ -6,8 +6,21 @@
 <?
 require_once('function.php');
 
+
 $arResult = array();
 $arFrontParametrs = CMax::GetFrontParametrsValues(SITE_ID);
+
+$bAjaxWidget = isset($_REQUEST['BLOCK']) && $_REQUEST['BLOCK'] === 'widget';
+$bShowTemplate = $bAjaxWidget || $arParams['SHOW_TEMPLATE'] === 'Y';
+
+if($bShowTemplate){
+	global $arMergeOptions;
+
+	if(isset($_SESSION['arMergeOptions']) && !empty($_SESSION['arMergeOptions'])){
+		$arFrontParametrs = array_merge((array)$arFrontParametrs, (array)$_SESSION['arMergeOptions']);
+	}
+	$_SESSION['arMergeOptions'] = (array)$arMergeOptions;
+}
 
 foreach(CMax::$arParametrsList as $blockCode => $arBlock)
 {
@@ -219,57 +232,56 @@ if($arResult)
 		$arResult = array_merge($arResult, $arGroups2);
 	?>
 <?}
+    if($bShowTemplate){
+		$bPageSpeedTest = CMax::isPageSpeedTest(); // it`s page speed test now
+		$bLightVersion = CMax::checkIndexBot(); // it`s page speed test & need light version now
 
-$bPageSpeedTest = CMax::isPageSpeedTest(); // it`s page speed test now
-$bLightVersion = CMax::checkIndexBot(); // it`s page speed test & need light version now
+		$active = $arResult['THEME_SWITCHER']['VALUE'] == 'Y';
+		$arResult['SHOW_RESET'] = ((isset($_SESSION['THEME']) && $_SESSION['THEME']) && (isset($_SESSION['THEME'][SITE_ID]) && $_SESSION['THEME'][SITE_ID]));
+		$arResult['CAN_SAVE'] = ($GLOBALS['USER']->IsAdmin() && $arResult['SHOW_RESET']);
 
-$active = $arResult['THEME_SWITCHER']['VALUE'] == 'Y';
-$arResult['SHOW_RESET'] = ((isset($_SESSION['THEME']) && $_SESSION['THEME']) && (isset($_SESSION['THEME'][SITE_ID]) && $_SESSION['THEME'][SITE_ID]));
-$arResult['CAN_SAVE'] = ($GLOBALS['USER']->IsAdmin() && $arResult['SHOW_RESET']);
+		$themeDir = strToLower($arResult['BASE_COLOR']['VALUE'].($arResult['BASE_COLOR']['VALUE'] !== 'CUSTOM' ? '' : '_'.SITE_ID));
+		$themeBgDir = strToLower($arResult['BGCOLOR_THEME']['VALUE'].($arResult['BGCOLOR_THEME']['VALUE'] !== 'CUSTOM' ? '' : '_'.SITE_ID));
+		$APPLICATION->SetAdditionalCSS(SITE_TEMPLATE_PATH.'/themes/'.$themeDir.'/theme.css', true);
+		$APPLICATION->SetAdditionalCSS(SITE_TEMPLATE_PATH.'/bg_color/'.$themeBgDir.'/bgcolors.css', true);
 
-// $APPLICATION->AddHeadString(CMax::GetBannerStyle($arResult['BANNER_WIDTH']['VALUE'], $arResult['TOP_MENU']['VALUE']), true);
+		$APPLICATION->SetAdditionalCSS(SITE_TEMPLATE_PATH.'/css/widths/width-'.$arResult['PAGE_WIDTH']['VALUE'].'.css', true);
+		$APPLICATION->SetAdditionalCSS(SITE_TEMPLATE_PATH.'/css/fonts/font-'.$arResult['FONT_STYLE']['VALUE'].'.css', true);
 
-$themeDir = strToLower($arResult['BASE_COLOR']['VALUE'].($arResult['BASE_COLOR']['VALUE'] !== 'CUSTOM' ? '' : '_'.SITE_ID));
-$themeBgDir = strToLower($arResult['BGCOLOR_THEME']['VALUE'].($arResult['BGCOLOR_THEME']['VALUE'] !== 'CUSTOM' ? '' : '_'.SITE_ID));
-$APPLICATION->SetAdditionalCSS(SITE_TEMPLATE_PATH.'/themes/'.$themeDir.'/theme.css', true);
-$APPLICATION->SetAdditionalCSS(SITE_TEMPLATE_PATH.'/bg_color/'.$themeBgDir.'/bgcolors.css', true);
-
-$APPLICATION->SetAdditionalCSS(SITE_TEMPLATE_PATH.'/css/widths/width-'.$arResult['PAGE_WIDTH']['VALUE'].'.css', true);
-$APPLICATION->SetAdditionalCSS(SITE_TEMPLATE_PATH.'/css/fonts/font-'.$arResult['FONT_STYLE']['VALUE'].'.css', true);
-
-if($bLightVersion){
-	\Bitrix\Main\Data\StaticHtmlCache::getInstance()->markNonCacheable();
-}
-else{
-	if(
-		$active &&
-		(
-			(
-				(!isset($_REQUEST['ajax']) || strtolower($_REQUEST['ajax']) !== 'y') &&
+		if($bLightVersion){
+			\Bitrix\Main\Data\StaticHtmlCache::getInstance()->markNonCacheable();
+		}
+		else{
+			if(
+				$active &&
 				(
-					!isset($_SERVER['HTTP_X_REQUESTED_WITH']) ||
-					strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) !== 'xmlhttprequest'
+					(
+						(!isset($_REQUEST['ajax']) || strtolower($_REQUEST['ajax']) !== 'y') &&
+						(
+							!isset($_SERVER['HTTP_X_REQUESTED_WITH']) ||
+							strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) !== 'xmlhttprequest'
+						)
+					) ||
+					(isset($_REQUEST['BLOCK']) && $_REQUEST['BLOCK'] === 'widget')
 				)
-			) ||
-			(isset($_REQUEST['BLOCK']) && $_REQUEST['BLOCK'] === 'widget')
-		)
-	){
-		\Bitrix\Main\Data\StaticHtmlCache::getInstance()->markNonCacheable();
+			){
+				\Bitrix\Main\Data\StaticHtmlCache::getInstance()->markNonCacheable();
 
-		
-		if(!$bPageSpeedTest){
-			$this->IncludeComponentTemplate();
+				
+				if(!$bPageSpeedTest){
+					$this->IncludeComponentTemplate();
+				}
+			}
+
+			$APPLICATION->SetAdditionalCSS(SITE_TEMPLATE_PATH.'/css/custom.css', true);
+		}
+
+		$file = \Bitrix\Main\Application::getDocumentRoot().'/bitrix/components/aspro/theme.max/css/user_font_'.SITE_ID.'.css';
+
+		if($arResult['CUSTOM_FONT']['VALUE'] && \Bitrix\Main\IO\File::isFileExists($file)){
+			$APPLICATION->SetAdditionalCSS($componentPath.'/css/user_font_'.SITE_ID.'.css', true);
 		}
 	}
 
-	$APPLICATION->SetAdditionalCSS(SITE_TEMPLATE_PATH.'/css/custom.css', true);
-}
-
-$file = \Bitrix\Main\Application::getDocumentRoot().'/bitrix/components/aspro/theme.max/css/user_font_'.SITE_ID.'.css';
-
-if($arResult['CUSTOM_FONT']['VALUE'] && \Bitrix\Main\IO\File::isFileExists($file)){
-	$APPLICATION->SetAdditionalCSS($componentPath.'/css/user_font_'.SITE_ID.'.css', true);
-}
-
-return $arResult;
+	return $arResult;
 ?>

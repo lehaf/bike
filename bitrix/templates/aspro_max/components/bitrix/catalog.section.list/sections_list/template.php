@@ -38,7 +38,7 @@
 											<?if($bBigBlock || $bSlideBlock):?>
 												<span class="element-count2 muted font_xs"><?=\Aspro\Functions\CAsproMax::declOfNum($arItems["ELEMENT_CNT"], array(Loc::getMessage('COUNT_ELEMENTS_TITLE'), Loc::getMessage('COUNT_ELEMENTS_TITLE_2'), Loc::getMessage('COUNT_ELEMENTS_TITLE_3')))?></span>
 											<?else:?>
-												<span class="element-count muted font_xxs rounded3"><?=$arItems["ELEMENT_CNT"];?></span>
+												<span class="element-count muted font_sxs rounded3"><?=$arItems["ELEMENT_CNT"];?></span>
 											<?endif;?>
 										<?endif;?>
 									</li>

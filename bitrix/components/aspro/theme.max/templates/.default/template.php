@@ -98,7 +98,7 @@ $bUseDemoLink = Option::get(Solution::moduleID, 'USE_DEMO_LINK', 'N', SITE_ID) =
 						</div>
 					</div>
 					<div class="section-block share_tab loading_state" data-type="share"><?=CMax::showIconSvg("share", $templateFolder."/images/svg/share.svg");?><?=GetMessage("TITLE_TAB_SHARE");?></div>
-					<div class="section-block updates_tab hidden" data-type="updates"><?=CMax::showIconSvg("updates", $templateFolder."/images/svg/updates.svg");?><?=GetMessage("TITLE_TAB_UPDATES");?></div>
+					<div class="section-block updates_tab loading_state" data-type="updates"><?=CMax::showIconSvg("updates", $templateFolder."/images/svg/updates.svg");?><?=GetMessage("TITLE_TAB_UPDATES");?></div>
 					<div class="section-block demos_tab hidden" data-type="demos"><?=CMax::showIconSvg("demo_small", $templateFolder."/images/svg/demo_small.svg");?><?=GetMessage("TITLE_TAB_DEMOS");?></div>
 				</div>
 
@@ -143,7 +143,7 @@ $bUseDemoLink = Option::get(Solution::moduleID, 'USE_DEMO_LINK', 'N', SITE_ID) =
 												<div class="inner">
 													<div class="img">
 														<div class="img_inner">
-															<img src="<?=$arThematic['PREVIEW_PICTURE'].'?'.filemtime($_SERVER['DOCUMENT_ROOT'].$arThematic['PREVIEW_PICTURE'])?>" alt="<?=$arThematic['TITLE']?>" title="<?=$arThematic['TITLE']?>" class="img-responsive">
+															<img data-src="" src="<?=$arThematic['PREVIEW_PICTURE'].'?'.filemtime($_SERVER['DOCUMENT_ROOT'].$arThematic['PREVIEW_PICTURE'])?>" alt="<?=$arThematic['TITLE']?>" title="<?=$arThematic['TITLE']?>" class="img-responsive">
 														</div>
 													</div>
 													<div class="title"><?=$arThematic['TITLE']?></div>
@@ -171,7 +171,7 @@ $bUseDemoLink = Option::get(Solution::moduleID, 'USE_DEMO_LINK', 'N', SITE_ID) =
 																	<div class="checked"><?=CMax::showIconSvg("check_configuration", $templateFolder."/images/svg/check_configuration.svg");?></div>
 																</div>
 															</div>
-															<img src="<?=$arPreset['PREVIEW_PICTURE'].'?'.filemtime($_SERVER['DOCUMENT_ROOT'].$arPreset['PREVIEW_PICTURE'])?>" title="<?=$arPreset['TITLE']?>" class="img-responsive" />
+															<img data-src="" src="<?=$arPreset['PREVIEW_PICTURE'].'?'.filemtime($_SERVER['DOCUMENT_ROOT'].$arPreset['PREVIEW_PICTURE'])?>" title="<?=$arPreset['TITLE']?>" class="img-responsive" />
 														</div>
 													<?endif;?>
 													<div class="info">
@@ -332,44 +332,49 @@ $bUseDemoLink = Option::get(Solution::moduleID, 'USE_DEMO_LINK', 'N', SITE_ID) =
 																								<?$j = 0;?>
 																								<div class="inner-wrapper" data-key="<?=$key;?>">
 																									<?foreach($arOption['SUB_PARAMS'][$key] as $key2 => $arSubOptions):?>
-																										<?$isRow = (($arSubOptions['TYPE'] == 'checkbox' && (isset($arSubOptions['ONE_ROW']) && $arSubOptions['ONE_ROW'] == 'Y')) ? true : false);?>
-																										<div class="option-wrapper <?=((isset($arSubOptions['DRAG']) && $arSubOptions['DRAG'] == 'N') ? "no_drag" : "");?> <?=(($arSubOptions['VALUE'] == 'N' && $isRow) ? "disabled" : "");?>">
-																											<div class="drag"><?=\CMax::showSpriteIconSvg('/bitrix/components/aspro/theme.max/templates/.default/images/svg/sprite.svg#drag', 'svg-drag')?></div>
-																											<?if($isRow):?>
-																												<table class="">
-																													<tr>
-																														<td><div class="blocks"></div></td>
-																														<td><div class="blocks block-title <?=((isset($arSubOptions['TEMPLATE']) && $arSubOptions['TEMPLATE']) ? 'subtitle' : '')?>"><span><?=$arSubOptions['TITLE'];?></span></div></td>
-																														<td>
-																															<?if(isset($arSubOptions['FON'])):?>
-																																<div class="filter label_block sm">
-																																	<input type="checkbox" id="fon<?=$key.$key2?>" name="fon<?=$key.$key2?>" value="<?=$arResult['FON_PARAMS']['fon'.$key.$key2]?>" <?=($arResult['FON_PARAMS']['fon'.$key.$key2] == 'Y' ? "checked" : "");?> data-index_type="<?=$key;?>" data-index_block="<?=$key2;?>" data-dynamic="Y">
-																																	<label for="fon<?=$key.$key2?>" class="hover_color_theme"><?=\Bitrix\Main\Localization\Loc::getMessage('FON_BLOCK');?></label>
+																										<?if (
+																											$arSubOptions &&
+																											is_array($arSubOptions)
+																										):?>
+																											<?$isRow = (($arSubOptions['TYPE'] == 'checkbox' && (isset($arSubOptions['ONE_ROW']) && $arSubOptions['ONE_ROW'] == 'Y')) ? true : false);?>
+																											<div class="option-wrapper <?=((isset($arSubOptions['DRAG']) && $arSubOptions['DRAG'] == 'N') ? "no_drag" : "");?> <?=(($arSubOptions['VALUE'] == 'N' && $isRow) ? "disabled" : "");?>">
+																												<div class="drag"><?=\CMax::showSpriteIconSvg('/bitrix/components/aspro/theme.max/templates/.default/images/svg/sprite.svg#drag', 'svg-drag')?></div>
+																												<?if($isRow):?>
+																													<table class="">
+																														<tr>
+																															<td><div class="blocks"></div></td>
+																															<td><div class="blocks block-title <?=((isset($arSubOptions['TEMPLATE']) && $arSubOptions['TEMPLATE']) ? 'subtitle' : '')?>"><span><?=$arSubOptions['TITLE'];?></span></div></td>
+																															<td>
+																																<?if(isset($arSubOptions['FON'])):?>
+																																	<div class="filter label_block sm">
+																																		<input type="checkbox" id="fon<?=$key.$key2?>" name="fon<?=$key.$key2?>" value="<?=$arResult['FON_PARAMS']['fon'.$key.$key2]?>" <?=($arResult['FON_PARAMS']['fon'.$key.$key2] == 'Y' ? "checked" : "");?> data-index_type="<?=$key;?>" data-index_block="<?=$key2;?>" data-dynamic="Y">
+																																		<label for="fon<?=$key.$key2?>" class="hover_color_theme"><?=\Bitrix\Main\Localization\Loc::getMessage('FON_BLOCK');?></label>
+																																	</div>
+																																<?endif;?>
+																																<div class="blocks value">
+																																	<?=ShowOptions($key.'_'.$key2, $arSubOptions, $arOption);?>
 																																</div>
-																															<?endif;?>
-																															<div class="blocks value">
-																																<?=ShowOptions($key.'_'.$key2, $arSubOptions, $arOption);?>
+																															</td>
+																														</tr>
+																													</table>
+																												<?else:?>
+																													<div class="block-title"><?=$arSubOptions['TITLE'];?></div>
+																													<div class="value">
+																														<?=ShowOptions($key.'_'.$key2, $arSubOptions);?>
+																													</div>
+																												<?endif;?>
+																												<?if(isset($arSubOptions['TEMPLATE']) && $arSubOptions['TEMPLATE']):?>
+																													<div class="template_block">
+																														<?$code = $key.'_'.$key2.'_TEMPLATE';?>
+																														<div class="item <?=str_replace('_TEMPLATE', '', $code);?>" <?=(isset($_COOKIE['STYLE_SWITCHER_TEMPLATE'.$j]) && $_COOKIE['STYLE_SWITCHER_TEMPLATE'.$j] == 'Y' ? "style='display:block;'" : "");?>>
+																															<div class="options" data-code="<?=$code?>">
+																																<?=ShowOptions($code, $arResult['TEMPLATE_PARAMS'][$key][$code]);?>
 																															</div>
-																														</td>
-																													</tr>
-																												</table>
-																											<?else:?>
-																												<div class="block-title"><?=$arSubOptions['TITLE'];?></div>
-																												<div class="value">
-																													<?=ShowOptions($key.'_'.$key2, $arSubOptions);?>
-																												</div>
-																											<?endif;?>
-																											<?if(isset($arSubOptions['TEMPLATE']) && $arSubOptions['TEMPLATE']):?>
-																												<div class="template_block">
-																													<?$code = $key.'_'.$key2.'_TEMPLATE';?>
-																													<div class="item <?=str_replace('_TEMPLATE', '', $code);?>" <?=(isset($_COOKIE['STYLE_SWITCHER_TEMPLATE'.$j]) && $_COOKIE['STYLE_SWITCHER_TEMPLATE'.$j] == 'Y' ? "style='display:block;'" : "");?>>
-																														<div class="options" data-code="<?=$code?>">
-																															<?=ShowOptions($code, $arResult['TEMPLATE_PARAMS'][$key][$code]);?>
 																														</div>
 																													</div>
-																												</div>
-																											<?endif;?>
-																										</div>
+																												<?endif;?>
+																											</div>
+																										<?endif;?>
 																										<?$j++;?>
 																									<?endforeach;?>
 																								</div>
@@ -522,7 +527,19 @@ $bUseDemoLink = Option::get(Solution::moduleID, 'USE_DEMO_LINK', 'N', SITE_ID) =
 											<!-- /noindex -->
 										</div>
 									</div>
-									<div class="body_block scrollblock"><div class="news"><div class="loading-state">News</div></div></div>
+									<div class="body_block scrollblock">
+										<div class="news">
+										<?for ($i = 0; $i < 4; ++$i):?>
+												<div class="item clearfix">
+													<div class="image image-rounded-x switcher-skeleton-item" style="height:112px"></div>													
+													<div class="info">
+														<div class="period outer-rounded-x switcher-skeleton-item" style="height:26px"></div>
+														<div class="title outer-rounded-x switcher-skeleton-item" style="height:52px"></div>
+													</div>
+												</div>
+											<?endfor;?>
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>

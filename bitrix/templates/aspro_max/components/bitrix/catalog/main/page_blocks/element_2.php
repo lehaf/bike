@@ -26,7 +26,7 @@
 			"PICTURE_RATIO" => $sViewPictureDetail,
 			"DETAIL_DOCS_PROP"=>$arParams["DETAIL_DOCS_PROP"],
 			"SHOW_DISCOUNT_TIME"=>$arParams["SHOW_DISCOUNT_TIME"],
-			"TYPE_SKU" => ($typeSKU ? $typeSKU : $arTheme["TYPE_SKU"]["VALUE"]),
+			"TYPE_SKU" => $typeSKU,
 			"SEF_URL_TEMPLATES" => $arParams["SEF_URL_TEMPLATES"],
 			"IBLOCK_REVIEWS_TYPE" => $arParams["IBLOCK_REVIEWS_TYPE"],
 			"IBLOCK_REVIEWS_ID" => $arParams["IBLOCK_REVIEWS_ID"],

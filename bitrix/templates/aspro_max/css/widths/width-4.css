@@ -116,10 +116,6 @@ body.fill_bg_y .top_big_one_banner {
   }
 }
 @media (min-width: 992px) {
-  .item-views.company:not(.type2) .text,
-  .with-padding.item-views.company:not(.type2) .item.video-block {
-    max-width: 614px;
-  }
   .item-views.company.type2.md .text {
     max-width: 936px;
   }

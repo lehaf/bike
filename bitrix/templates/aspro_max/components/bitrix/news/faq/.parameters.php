@@ -22,12 +22,6 @@ $arTemplateParameters = array_merge($arPageBlocksParams, array(
 		'DEFAULT' => 'list',
 		'REFRESH' => 'Y'
 	),
-	'SHOW_DETAIL_LINK' => array(
-		'PARENT' => 'LIST_SETTINGS',
-		'NAME' => GetMessage('SHOW_DETAIL_LINK'),
-		'TYPE' => 'CHECKBOX',
-		'DEFAULT' => 'Y',
-	),
 	'SHOW_TABS' => array(
 		'PARENT' => 'LIST_SETTINGS',
 		'SORT' => 100,

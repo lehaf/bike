@@ -264,6 +264,9 @@ if($arResult["ITEMS"]){?>
 							<div class="bx_filter_block <?=($arItem['IS_PROP_INLINE'] ? "limited_block" : "");?>" <?=$style;?>>
 								<div class="bx_filter_parameters_box_container <?=($arItem["DISPLAY_TYPE"]=="G" ? "pict_block" : "");?> <?=(!$arItem['IS_PROP_INLINE'] && $arItem["DISPLAY_TYPE"] != 'A' ? 'scrollblock' : '');?>">
 								<?
+								if(count($arItem['VALUES']) < 2)
+									$arItem["DISPLAY_TYPE"] = 'DEFAULT';
+								
 								$arCur = current($arItem["VALUES"]);
 								switch ($arItem["DISPLAY_TYPE"]){
 									case "A"://NUMBERS_WITH_SLIDER
@@ -724,17 +727,22 @@ if($arResult["ITEMS"]){?>
 										<?
 										break;
 									default://CHECKBOXES
-										$count=count($arItem["VALUES"]);
-										$i=1;
-										if(!$arItem["FILTER_HINT"]){
-											$prop = CIBlockProperty::GetByID($arItem["ID"], $arItem["IBLOCK_ID"])->GetNext();
-											$arItem["FILTER_HINT"]=$prop["HINT"];
+										$count = count($arItem["VALUES"]);
+										$i = 1;
+
+										if ($arParams["SHOW_HINTS"] !== 'N' && !$arItem["FILTER_HINT"]){
+											$getProp = CIBlockProperty::GetByID($arItem["ID"], $arParams["IBLOCK_ID"]);
+											if($prop = $getProp->GetNext()) {
+												$arItem["FILTER_HINT"]=$prop["HINT"];
+											}
 										}
+
 										if($arItem["IBLOCK_ID"]!=$arParams["IBLOCK_ID"] && strpos($arItem["FILTER_HINT"],'line')!==false){
 											$isSize=true;
 										}else{
 											$isSize=false;
 										}?>
+
 										<?$j=1;
 										$isHidden = false;?>
 
@@ -748,7 +756,8 @@ if($arResult["ITEMS"]){?>
 												$isHidden = true;?>
 												<div class="hidden_values filter label_block">
 											<?endif;?>
-											<div class="filter label_block">
+											<?$bHint = $arItem["FILTER_HINT"] && strpos( $arItem["FILTER_HINT"],'line')===false;?>
+											<div class="filter label_block <?= ($count < 2) ? 'single' : ''?> <?=$bHint ? 'props-hint' : ''?>">
 											<input
 												type="checkbox"
 												value="<? echo $ar["HTML_VALUE"] ?>"
@@ -767,6 +776,20 @@ if($arResult["ITEMS"]){?>
 													endif;?></span>
 												</span>
 											</label>
+											<?if($arItem['IS_PROP_INLINE']):?>
+												<div class="char_name single">
+													<div class="props_list">
+														<?if($arParams["SHOW_HINTS"] !== 'N') :?>											
+															<?if( $arItem["FILTER_HINT"] && strpos( $arItem["FILTER_HINT"],'line')===false) :?>
+																	<div class="hint">
+																		<span class="icon"><i>?</i></span>
+																		<div class="tooltip" style="display: none;"><?=$arItem["FILTER_HINT"]?></div>
+																	</div>
+															<?endif;?>
+														<?endif;?>
+													</div>
+												</div>
+											<?endif;?>
 											<?$i++;?>
 											<?$j++;?>
 											</div>
@@ -775,7 +798,6 @@ if($arResult["ITEMS"]){?>
 											</div>
 											<div class="inner_expand_text"><span class="expand_block colored_theme_text_with_hover"><?=Loc::getMessage("FILTER_EXPAND_VALUES");?></span></div>
 										<?endif;?>
-
 										<?if($arItem['IS_PROP_INLINE']):?>
 											<span class="delete_filter colored_theme_bg_hovered_hover" title="<?=Loc::getMessage("CLEAR_VALUE")?>">
 												<?=CMax::showIconSvg("delete_filter", SITE_TEMPLATE_PATH.'/images/svg/catalog/cancelfilter.svg', '', '', false, false);?>
@@ -785,24 +807,24 @@ if($arResult["ITEMS"]){?>
 								<?}?>
 								</div>
 								<div class="clb"></div>
+								<?if(!$arItem['IS_PROP_INLINE']):?>
 								<div class="char_name">
 									<div class="props_list">
-										<?if($arParams["SHOW_HINTS"] !== 'N'){
-											if(!$arItem["FILTER_HINT"]){
+										<?if($arParams["SHOW_HINTS"] !== 'N'):?>
+											<?if(!$arItem["FILTER_HINT"]){
 												$prop = CIBlockProperty::GetByID($arItem["ID"], $arParams["IBLOCK_ID"])->GetNext();
 												$arItem["FILTER_HINT"]=$prop["HINT"];
-											}?>
-											<?if( $arItem["FILTER_HINT"] && strpos( $arItem["FILTER_HINT"],'line')===false){?>
+											}
+											if( $arItem["FILTER_HINT"] && strpos( $arItem["FILTER_HINT"],'line')===false):?>
 												<div class="hint"><span class="icon"><i>?</i></span><span class="text"><?=Loc::getMessage('HINT');?></span><div class="tooltip" style="display: none;"><?=$arItem["FILTER_HINT"]?></div></div>
-											<?}?>
-										<?}?>
+											<?endif;?>
+										<?endif;?>
 									</div>
 								</div>
-								<?if(!$arItem['IS_PROP_INLINE']):?>
-									<div class="bx_filter_button_box active clearfix">
-										<?/*<span class="btn btn-default"><?=Loc::getMessage("CT_BCSF_SET_FILTER")?></span>*/?>
-										<span data-f="<?=Loc::getMessage('CT_BCSF_SET_FILTER')?>" data-fi="<?=Loc::getMessage('CT_BCSF_SET_FILTER_TI')?>" data-fr="<?=Loc::getMessage('CT_BCSF_SET_FILTER_TR')?>" data-frm="<?=Loc::getMessage('CT_BCSF_SET_FILTER_TRM')?>" class="bx_filter_container_modef"></span>
-									</div>
+								<div class="bx_filter_button_box active clearfix">
+									<?/*<span class="btn btn-default"><?=Loc::getMessage("CT_BCSF_SET_FILTER")?></span>*/?>
+									<span data-f="<?=Loc::getMessage('CT_BCSF_SET_FILTER')?>" data-fi="<?=Loc::getMessage('CT_BCSF_SET_FILTER_TI')?>" data-fr="<?=Loc::getMessage('CT_BCSF_SET_FILTER_TR')?>" data-frm="<?=Loc::getMessage('CT_BCSF_SET_FILTER_TRM')?>" class="bx_filter_container_modef"></span>
+								</div>
 								<?endif;?>
 							</div>
 						</div>

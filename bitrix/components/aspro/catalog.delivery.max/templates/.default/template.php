@@ -7,13 +7,22 @@ Loc::loadMessages(__FILE__);
 $bCanSearch = in_array('LOCATION', $arParams['CHANGEABLE_FIELDS']);
 $bNeedSearch = $bCanSearch && (!$arResult['LOCATION'] || !$arResult['LOCATION']['ID']);
 $bEmptyFieldsBlock = !array_intersect(array('QUANTITY', 'PERSON_TYPE', 'PAY_SYSTEM', 'ADD_BASKET'), $arParams['CHANGEABLE_FIELDS']);
+
+$locationName = $arResult['LOCATION'] && $arResult['LOCATION']['ID'] ? $arResult['LOCATION']['LOCATION_NAME'] : '';
+$locationNameAccusative = Aspro\Max\Morphy::getLocationAccusative($locationName);
 ?>
 <?/* hide main block while template css not loaded */?>
 <div id="catalog-delivery-<?=$arResult['RAND']?>" class="catalog-delivery form <?=($bCanSearch ? 'cansearch' : '')?> <?=($arResult['ERROR'] ? 'haserror' : '')?> <?=($bNeedSearch ? 'search' : '')?>" style="height:0;">
 	<div class="catalog-delivery-title">
 		<h2><?=str_replace(
-			array('#LOCATION_NAME#'),
-			array($arResult['LOCATION'] && $arResult['LOCATION']['ID'] ? '<span class="catalog-delivery-title-city"><span>'.$arResult['LOCATION']['LOCATION_NAME'].'</span><span>'.CMax::showIconSvg('down colored_theme_hover_bg-el', $this->{'__folder'}.'/images/svg/trianglearrow_down.svg', '', '', true, false).'</span></span>' : ''),
+			array(
+				'#LOCATION_NAME#',
+				'#LOCATION_NAME_ACCUSATIVE#',
+			),
+			array(
+				$locationName ? '<span class="catalog-delivery-title-city"><span>'.$locationName.'</span><span>'.CMax::showIconSvg('down colored_theme_hover_bg-el', $this->{'__folder'}.'/images/svg/trianglearrow_down.svg', '', '', true, false).'</span></span>' : '',
+				$locationNameAccusative ? '<span class="catalog-delivery-title-city"><span>'.$locationNameAccusative.'</span><span>'.CMax::showIconSvg('down colored_theme_hover_bg-el', $this->{'__folder'}.'/images/svg/trianglearrow_down.svg', '', '', true, false).'</span></span>' : '',
+			),
 			$arResult['MESSAGES']['DETAIL_TITLE']
 		)?></h2>
 		<?if($arResult['LOCATION'] && !$arResult['ERROR'] && $arParams['SHOW_LOCATION_SOURCE'] === 'Y'):?>

@@ -155,7 +155,8 @@ body a,
   );
   color: var(--fill_dark_light_hover);
 }
-.btn.btn-transparent-border-color:hover {
+.btn.btn-transparent-border-color:hover,
+.btn.btn-transparent-border-color:focus {
   background-color: var(--theme-base-color);
   border-color: var(--theme-base-color);
 }

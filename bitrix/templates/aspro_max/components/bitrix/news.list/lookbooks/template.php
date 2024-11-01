@@ -15,7 +15,7 @@
 		<?if($bFrontPage):?>
 			<div class="maxwidth-theme">
 			<div class="top_block">
-				<h3><?=$arParams['TITLE_BLOCK'];?></h3>
+				<?=Aspro\Functions\CAsproMax::showTitleH($arParams['TITLE_BLOCK']);?>
 				<a href="<?=SITE_DIR.$arParams['ALL_URL'];?>" class="pull-right font_upper muted"><?=$arParams['TITLE_BLOCK_ALL'] ;?></a>
 			</div>
 		<?endif;?>

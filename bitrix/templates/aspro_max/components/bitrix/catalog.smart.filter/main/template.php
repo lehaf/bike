@@ -792,7 +792,7 @@ if($arResult["ITEMS"]){?>
 										<button class="bx_filter_search_reset btn btn-default btn-transparent round-ignore<?=($bActiveFilter && $bActiveFilter[1] != 'clear' ? '' : ' hidden');?> pull-left" type="reset" id="del_filter" name="del_filter" data-href="" title="<?=Loc::getMessage("CT_BCSF_DEL_FILTER")?>">
 											<?=CMax::showIconSvg("reset", SITE_TEMPLATE_PATH.'/images/svg/catalog/cleanfilters_big.svg', '', '', true, false);?>
 										</button>
-										<div class="filter-bnt-wrapper"><button class="bx_filter_search_button btn btn-default btn-transparent round-ignore" type="submit" id="set_filter" name="set_filter" data-href=""><?=Loc::getMessage("CT_BCSF_SET_FILTER")?></button></div>
+										<div class="filter-bnt-wrapper"><button class="bx_filter_search_button btn btn-default round-ignore" type="submit" id="set_filter" name="set_filter" data-href=""><?=Loc::getMessage("CT_BCSF_SET_FILTER")?></button></div>
 									</div>
 								</div>
 							</div>

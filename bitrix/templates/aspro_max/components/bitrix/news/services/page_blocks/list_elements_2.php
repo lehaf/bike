@@ -133,7 +133,6 @@ if($arRegion)
 	"bitrix:news.list",
 	"content-list-blocks",
 	Array(
-		"IMAGE_POSITION" => $arParams["IMAGE_POSITION"],
 		"SHOW_CHILD_SECTIONS" => $arParams["SHOW_CHILD_SECTIONS"],
 		"DEPTH_LEVEL" => 1,
 		"IS_AJAX" => (isset($_GET["AJAX_REQUEST"]) && $_GET["AJAX_REQUEST"] == "Y"),

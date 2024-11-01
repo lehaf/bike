@@ -1,5 +1,0 @@
-[29-Mar-2024 07:50:18 Europe/Minsk] PHP Fatal error:  Allowed memory size of 536870912 bytes exhausted (tried to allocate 494419968 bytes) in /home/bwebcoru/bike.bwebco.ru/local/php_interface/include/functions.php on line 6
-[29-Mar-2024 07:54:33 Europe/Minsk] PHP Fatal error:  Allowed memory size of 536870912 bytes exhausted (tried to allocate 494419968 bytes) in /home/bwebcoru/bike.bwebco.ru/local/php_interface/include/functions.php on line 6
-[29-Mar-2024 07:55:15 Europe/Minsk] PHP Fatal error:  Allowed memory size of 536870912 bytes exhausted (tried to allocate 494419968 bytes) in /home/bwebcoru/bike.bwebco.ru/local/php_interface/include/functions.php on line 6
-[29-Mar-2024 07:56:07 Europe/Minsk] PHP Fatal error:  Allowed memory size of 536870912 bytes exhausted (tried to allocate 494419968 bytes) in /home/bwebcoru/bike.bwebco.ru/local/php_interface/include/functions.php on line 6
-[29-Mar-2024 08:33:54 Europe/Minsk] PHP Fatal error:  Allowed memory size of 536870912 bytes exhausted (tried to allocate 494419968 bytes) in /home/bwebcoru/bike.bwebco.ru/local/php_interface/include/functions.php on line 6

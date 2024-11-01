@@ -54,9 +54,9 @@
 	.item-views.sales.compact .item-wrapper > .item .title {font-size: 14px;line-height: 21px;}
 	.item-views.sales.compact .item .previewtext{display: none;}
 	.item-views.sales.compact .item-wrapper > .item .inner-text{padding-bottom: 3px; margin-top:-6px;}
-	.item-views.sales.compact .view_sale_block.compact .countdown.values > span.item {font-size: 11px;}
+	.item-views.sales.compact .view_sale_block.compact .countdown.values > span.item {font-size: 12px;}
 	.item-views.sales.compact .view_sale_block.compact .countdown, .item-views.sales.compact .view_sale_block.compact .item{height:24px;}
-	.item-views.sales.compact .sale-text{padding: 3px 8px 3px 8px; font-size: 11px;}
+	.item-views.sales.compact .sale-text{padding: 3px 8px 3px 8px; font-size: 12px;}
 	.item-views.sales2.compact .view_sale_block.compact .item{padding-top:4px;}
 	.item-views.sales.compact .view_sale_block.compact .values .item:before{top: 9px;}
 	.item-views.sales.compact .view_sale_block.compact .values .item:after{bottom: 9px;}

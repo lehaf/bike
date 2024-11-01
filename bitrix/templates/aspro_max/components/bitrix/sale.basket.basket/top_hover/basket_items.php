@@ -43,6 +43,7 @@ if ($normalCount > 0):
 				<div class="iblockid" data-iblockid="<?=$arResult["ITEMS_IBLOCK_ID"];?>"></div>
 			<?}?>
 			<div class="items">
+				<?$bAddCssLinkServices = false;?>
 				<?foreach ($arResult["GRID"]["ROWS"] as $k => $arItem):
 
 					$isServices = false;
@@ -173,6 +174,11 @@ if ($normalCount > 0):
 										</div>
 										<?$bLinlServices = isset($arItem["LINK_SERVICES"]) && is_array($arItem["LINK_SERVICES"]) && count($arItem["LINK_SERVICES"]) > 0;?>
 										<?if($bLinlServices):?>
+											<?
+												if(!$bAddCssLinkServices) {
+													$bAddCssLinkServices = true;
+												}
+												?>				
 											<div class="services_top_hover_wrap">
 												<?foreach($arItem["LINK_SERVICES"] as $arService):?>
 													<div class="services_top_hover_item">
@@ -185,7 +191,7 @@ if ($normalCount > 0):
 														</div>
 														<div class="services_top_hover_item_price">
 															<span class="price font-bold"><?=$arService["SUM_FORMATED"]?></span>
-															<?if($showOldPrice && $arService["NEED_SHOW_OLD_SUM"]):?>
+															<?if($showOldPrice && $arService["NEED_SHOW_OLD_SUM"] === 'Y'):?>		
 																<span class="price_discount"><?=$arService["SUM_FULL_PRICE_FORMATED"]?></span>
 															<?endif;?>
 														</div>
@@ -205,9 +211,14 @@ if ($normalCount > 0):
 				<?endforeach;?>
 			</div>
 		</div>
-
-		<?
-		$arTotal = array();
+		<?if($bAddCssLinkServices):?>
+			<?$pathToCssServices = $APPLICATION->oAsset->getFullAssetPath(SITE_TEMPLATE_PATH.'/css/buy_services.min.css')?>;
+			<script>
+				BX.loadCSS(['<?=$pathToCssServices?>']);
+			</script>
+		<?endif;?>
+				
+		<?$arTotal = array();
 		if ($bWeightColumn) { $arTotal["WEIGHT"]["NAME"] = GetMessage("SALE_TOTAL_WEIGHT"); $arTotal["WEIGHT"]["VALUE"] = $arResult["allWeight_FORMATED"];}
 		if ($arParams["PRICE_VAT_SHOW_VALUE"] == "Y")
 		{

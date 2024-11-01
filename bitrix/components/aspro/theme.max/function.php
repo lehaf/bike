@@ -22,7 +22,7 @@
 			ob_end_clean();?>
 			<?if(isset($arOption['IMG']) && $arOption['IMG']):?>
 				<?=$title;?>
-				<div class="img"><img class="lazy <?=($arOption["COLORED_IMG"] ? 'colored_theme_bg' : '')?>" data-src="<?=$arOption['IMG'];?>" src="<?=\Aspro\Functions\CAsproMax::showBlankImg($arOption['IMG']);?>" alt="<?=$arOption['TITLE']?>" title="<?=$arOption['TITLE']?>"/></div>
+				<div class="img"><img class="<?=($arOption["COLORED_IMG"] ? 'colored_theme_bg' : '')?>" data-src="" src="<?=$arOption['IMG'];?>" alt="<?=$arOption['TITLE']?>" title="<?=$arOption['TITLE']?>"/></div>
 				<div class="input"><?=$input;?></div>
 			<?elseif(isset($arOption['GROUP']) && $arOption['GROUP']):?>
 				<span class="inner-table-block"><?=$title;?></span>
@@ -113,7 +113,7 @@
 									<?foreach($arGroup['LIST'] as $variantCode => $arVariant):?>
 										<span data-option-id="<?=$optionCode?>" data-option-value="<?=$variantCode?>" class="link-item animation-boxs <?=$arVariant['CURRENT'] == 'Y' ? 'current' : ''?>">
 											<?if(isset($arVariant['IMG']) && $arVariant['IMG']):?>
-												<span><img class="lazy <?=($arVariant["COLORED_IMG"] ? 'colored_theme_bg' : '')?>" data-src="<?=$arVariant['IMG'];?>" src="<?=\Aspro\Functions\CAsproMax::showBlankImg($arVariant['IMG']);?>" alt="<?=$arVariant['TITLE']?>" title="<?=$arVariant['TITLE']?>"/></span>
+												<span><img class="<?=($arVariant["COLORED_IMG"] ? 'colored_theme_bg' : '')?>" data-src="" src="<?=$arVariant['IMG'];?>" alt="<?=$arVariant['TITLE']?>" title="<?=$arVariant['TITLE']?>"/></span>
 											<?endif;?>
 											<?if(!isset($arVariant['HIDE_TITLE']) || $arVariant['HIDE_TITLE'] != 'Y'):?><span><?=$arVariant['TITLE']?></span><?endif;?>
 										</span>
@@ -140,7 +140,7 @@
 						ob_end_clean();?>
 
 						<?ob_start();?>
-							<span><img class="lazy  <?=($arVariant["COLORED_IMG"] ? 'colored_theme_bg' : '')?>" data-src="<?=$arVariant['IMG'];?>" src="<?=\Aspro\Functions\CAsproMax::showBlankImg($arVariant['IMG']);?>" alt="<?=$arVariant['TITLE']?>" title="<?=$arVariant['TITLE']?>"/></span>
+							<span><img class="<?=($arVariant["COLORED_IMG"] ? 'colored_theme_bg' : '')?>" data-src="" src="<?=$arVariant['IMG'];?>" alt="<?=$arVariant['TITLE']?>" title="<?=$arVariant['TITLE']?>"/></span>
 						<?$img = ob_get_contents();
 						ob_end_clean();?>
 

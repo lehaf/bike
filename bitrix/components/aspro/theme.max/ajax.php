@@ -42,7 +42,7 @@ class ThemeController extends \Bitrix\Main\Engine\Controller {
 
 		$this->checkSession($sessid);
 		$this->checkSite($siteId, $siteDir);
-		$this->checkFront($siteId, $siteDir, $front);
+		$this->checkCanRead($siteId, $siteDir, $front);
 
 		$serverName = self::getServerName();
 
@@ -145,7 +145,7 @@ class ThemeController extends \Bitrix\Main\Engine\Controller {
 
 		$this->checkSession($sessid);
 		$this->checkSite($siteId, $siteDir);
-		$this->checkFront($siteId, $siteDir, $front);
+		$this->checkCanSave($siteId, $siteDir, $front);
 
 		$link = trim($link);
 		if (!strlen($link)) {
@@ -206,7 +206,7 @@ class ThemeController extends \Bitrix\Main\Engine\Controller {
 
 		$this->checkSession($sessid);
 		$this->checkSite($siteId, $siteDir);
-		$this->checkFront($siteId, $siteDir, $front);
+		$this->checkCanSave($siteId, $siteDir, $front);
 
 		try {
 			$arPreset = Json::decode($preset);
@@ -250,7 +250,7 @@ class ThemeController extends \Bitrix\Main\Engine\Controller {
 
 		$this->checkSession($sessid);
 		$this->checkSite($siteId, $siteDir);
-		$this->checkFront($siteId, $siteDir, $front);
+		$this->checkCanSave($siteId, $siteDir, $front);
 
 		$file = $_FILES['file'] ?? false;
 
@@ -356,7 +356,7 @@ class ThemeController extends \Bitrix\Main\Engine\Controller {
 		}
 	}
 
-	protected function checkFront($siteId, $siteDir, $front) {
+	protected function checkCanRead($siteId, $siteDir, $front) {
 		if ($front) {
 			$arFrontParametrs = Solution::GetFrontParametrsValues($siteId, $siteDir, false);
 			if ($arFrontParametrs['THEME_SWITCHER'] !== 'Y') {
@@ -365,10 +365,22 @@ class ThemeController extends \Bitrix\Main\Engine\Controller {
 		}
 		else {
 			$RIGHT = $GLOBALS['APPLICATION']->GetGroupRight(Solution::moduleID);
-			if (
-				$RIGHT < 'R' ||
-				!$GLOBALS['USER']->IsAdmin()
-			) {
+			if ($RIGHT < 'R') {
+				throw new SystemException(Loc::getMessage('TA_C_ERROR_INVALID_ACTION'));
+			}
+		}
+	}
+
+	protected function checkCanSave($siteId, $siteDir, $front) {
+		if ($front) {
+			$arFrontParametrs = Solution::GetFrontParametrsValues($siteId, $siteDir, false);
+			if ($arFrontParametrs['THEME_SWITCHER'] !== 'Y') {
+				throw new SystemException(Loc::getMessage('TA_C_ERROR_SWITCHER_NOT_ACTIVE'));
+			}
+		}
+		else {
+			$RIGHT = $GLOBALS['APPLICATION']->GetGroupRight(Solution::moduleID);
+			if ($RIGHT < 'W') {
 				throw new SystemException(Loc::getMessage('TA_C_ERROR_INVALID_ACTION'));
 			}
 		}

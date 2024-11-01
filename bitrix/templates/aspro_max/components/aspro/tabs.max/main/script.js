@@ -1,6 +1,6 @@
 BX.ready(function(){
-	window.tabsInitOnReady = function() {
-		loadScrollTabs('.tab_slider_wrapp .tabs_wrapper', () => {
+	window.tabsInitOnReady = function(block = '') {
+		loadScrollTabs('.tab_slider_wrapp' + block + ' .tabs_wrapper', () => {
 			$('.tab_slider_wrapp .tabs_wrapper').scrollTab({
 				tabs_wrapper: '.tabs.ajax',
 				arrows_css: {

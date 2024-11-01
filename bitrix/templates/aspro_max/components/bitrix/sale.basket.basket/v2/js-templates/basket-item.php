@@ -80,7 +80,7 @@ if (!empty($arParams['LABEL_PROP_POSITION']))
 						{{/DETAIL_PAGE_URL}}
 
 						<img class="basket-item-image" alt="{{NAME}}"
-							src="{{{IMAGE_URL}}}{{^IMAGE_URL}}<?=$templateFolder?>/images/no_photo.png{{/IMAGE_URL}}" >
+							src="{{{IMAGE_URL}}}{{^IMAGE_URL}}<?=$templateFolder?>/images/no_photo.png{{/IMAGE_URL}}" data-src="">
 
 						{{#SHOW_LABEL}}
 							<div class="basket-item-label-text basket-item-label-big <?=$labelPositionClass?>">
@@ -276,7 +276,7 @@ if (!empty($arParams['LABEL_PROP_POSITION']))
 														{{#VALUE}}
 															<span>
 																<img class="basket-item-custom-block-photo-item"
-																	src="{{{IMAGE_SRC}}}" data-image-index="{{INDEX}}"
+																	src="{{{IMAGE_SRC}}}" data-src="" data-image-index="{{INDEX}}"
 																	data-column-property-code="{{CODE}}">
 															</span>
 														{{/VALUE}}

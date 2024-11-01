@@ -43,7 +43,7 @@ $arParams['SIZE_IN_ROW'] = $arParams['SIZE_IN_ROW'] ?? 4;
 												<?if($sUrl):?>
 													<a href="<?=$sUrl;?>" title="<?=($arItem['PREVIEW_PICTURE']['TITLE']?$arItem['PREVIEW_PICTURE']['TITLE']:$arItem['NAME']);?>">
 												<?endif;?>
-												<span class="lazy<?=$position;?><?=($bType2 ? ' bg-fon-img darken-bg-animate' : '');?>" data-src="<?=$arItem['PREVIEW_PICTURE']['SRC']?>" style="background-image:url(<?=\Aspro\Functions\CAsproMax::showBlankImg($arItem['PREVIEW_PICTURE']['SRC']);?>)"></span>
+												<span class="image__fon lazy<?=$position;?><?=($bType2 ? ' bg-fon-img darken-bg-animate' : '');?>" data-src="<?=$arItem['PREVIEW_PICTURE']['SRC']?>" style="background-image:url(<?=\Aspro\Functions\CAsproMax::showBlankImg($arItem['PREVIEW_PICTURE']['SRC']);?>)"></span>
 												<?if($sUrl):?>
 													</a>
 												<?endif;?>

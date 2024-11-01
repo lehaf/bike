@@ -102,7 +102,7 @@ if (!empty($arResult['ITEMS'])){
 
 		$arSKU = CCatalogSKU::GetInfoByProductIBlock($arParams['IBLOCK_ID']);
 		$boolSKU = !empty($arSKU) && is_array($arSKU);
-		$bUseModuleProps = \Bitrix\Main\Config\Option::get("iblock", "property_features_enabled", "N") === "Y";
+		$bUseModuleProps = \Bitrix\Main\Config\Option::get("iblock", "property_features_enabled", "Y") === "Y";
 
 		if ($bUseModuleProps) {
 			$arParams['OFFERS_CART_PROPERTIES'] = (array)\Bitrix\Catalog\Product\PropertyCatalogFeature::getBasketPropertyCodes($arSKU['IBLOCK_ID'], ['CODE' => 'Y']);

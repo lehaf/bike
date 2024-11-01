@@ -52,7 +52,6 @@
 		"SECTION_URL"	=>	$arResult["FOLDER"].$arResult["URL_TEMPLATES"]["section"],
 		"IBLOCK_URL"	=>	$arResult["FOLDER"].$arResult["URL_TEMPLATES"]["news"],
 		"INCLUDE_SUBSECTIONS" => "Y",
-		"SHOW_DETAIL_LINK" => $arParams["SHOW_DETAIL_LINK"],
 	),
 	$component
 );?>

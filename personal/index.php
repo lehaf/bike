@@ -11,7 +11,7 @@ else{
 	//LocalRedirect(SITE_DIR.'personal/personal-data');?>
 	<?$APPLICATION->IncludeComponent(
 	"bitrix:sale.personal.section", 
-	"main", 
+	"custom", 
 	array(
 		"ACCOUNT_PAYMENT_ELIMINATED_PAY_SYSTEMS" => array(
 			0 => "0",
@@ -34,8 +34,7 @@ else{
 		"CHECK_RIGHTS_PRIVATE" => "N",
 		"COMPATIBLE_LOCATION_MODE_PROFILE" => "N",
 		"CUSTOM_PAGES" => "",
-		"CUSTOM_SELECT_PROPS" => array(
-		),
+		"CUSTOM_SELECT_PROPS" => "",
 		"NAV_TEMPLATE" => "",
 		"ORDER_HISTORIC_STATUSES" => array(
 			0 => "P",
@@ -46,10 +45,8 @@ else{
 		"PATH_TO_CONTACT" => "/contacts",
 		"PATH_TO_PAYMENT" => "/order/payment/",
 		"PER_PAGE" => "20",
-		"PROP_1" => array(
-		),
-		"PROP_2" => array(
-		),
+		"PROP_1" => "",
+		"PROP_2" => "",
 		"SAVE_IN_SESSION" => "Y",
 		"SEF_FOLDER" => "/personal/",
 		"SEF_MODE" => "Y",
@@ -58,15 +55,15 @@ else{
 		"SHOW_ACCOUNT_COMPONENT" => "Y",
 		"SHOW_ACCOUNT_PAGE" => "Y",
 		"SHOW_ACCOUNT_PAY_COMPONENT" => "Y",
-		"SHOW_BASKET_PAGE" => "Y",
+		"SHOW_BASKET_PAGE" => "N",
 		"SHOW_CONTACT_PAGE" => "Y",
-		"SHOW_ORDER_PAGE" => "Y",
+		"SHOW_ORDER_PAGE" => "N",
 		"SHOW_PRIVATE_PAGE" => "Y",
-		"SHOW_PROFILE_PAGE" => "Y",
+		"SHOW_PROFILE_PAGE" => "N",
 		"SHOW_SUBSCRIBE_PAGE" => "Y",
 		"USER_PROPERTY_PRIVATE" => "",
 		"USE_AJAX_LOCATIONS_PROFILE" => "N",
-		"COMPONENT_TEMPLATE" => "main",
+		"COMPONENT_TEMPLATE" => "custom",
 		"ACCOUNT_PAYMENT_SELL_CURRENCY" => "RUB",
 		"COMPOSITE_FRAME_MODE" => "A",
 		"COMPOSITE_FRAME_TYPE" => "AUTO",
@@ -82,6 +79,12 @@ else{
 		"ORDERS_PER_PAGE" => "20",
 		"PROFILES_PER_PAGE" => "20",
 		"MAIN_CHAIN_NAME" => "Мой кабинет",
+		"SHOW_BONUS_PAGE" => "Y",
+		"PATH_TO_BONUS" => SITE_DIR."personal/bonus/",
+		"ORDER_REFRESH_PRICES" => "N",
+		"ORDER_DISALLOW_CANCEL" => "N",
+		"SHOW_ADS_PAGE" => "Y",
+		"PATH_TO_ADS" => SITE_DIR."personal/ads/",
 		"SEF_URL_TEMPLATES" => array(
 			"index" => "index.php",
 			"orders" => "orders/",

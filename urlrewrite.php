@@ -152,7 +152,7 @@ $arUrlRewrite=array (
     'PATH' => '/landings/index.php',
     'SORT' => 100,
   ),
-  24 => 
+  26 => 
   array (
     'CONDITION' => '#^/personal/#',
     'RULE' => '',
@@ -160,7 +160,7 @@ $arUrlRewrite=array (
     'PATH' => '/personal/index.php',
     'SORT' => 100,
   ),
-  15 => 
+  27 => 
   array (
     'CONDITION' => '#^/catalog/#',
     'RULE' => '',

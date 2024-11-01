@@ -244,25 +244,12 @@ if (CModule::IncludeModule("iblock")) {
 				if($arStores)
 				{
 					$arTmpFilter = array();
-					/*foreach($arRegion["LIST_STORES"] as $storeID)
-					{
-						if($storeID !== 'component'){
-							$arTmpFilter[] = array(">CATALOG_STORE_AMOUNT_".$storeID => 0);
-						}
-					}
-					if($arTmpFilter){
-						$arTmpFilter["LOGIC"] = "OR";
-						$arFilter[] = $arTmpFilter;
-					}*/
-
 					if($arResult['CATALOG_ELEMENTS']){
-						$arTmpFilter["LOGIC"] = "OR";
-						$arTmpFilter[] = array('TYPE' => array('2','3'));//complects and offers
-						$arTmpFilter[] = array('!ID' => $arResult['CATALOG_ELEMENTS']);//not catalog items
-						$arTmpFilter[] = array(
-							'STORE_NUMBER' => $arStores,
-							'>STORE_AMOUNT' => 0,
-						);						
+						$arStoresFilter = TSolution\Filter::getAvailableByStores($arStores);
+						if($arStoresFilter){
+							$arTmpFilter = $arStoresFilter;
+							$arTmpFilter[] = array('!ID' => $arResult['CATALOG_ELEMENTS']);//not catalog items
+						}						
 					}
 					if($arTmpFilter){
 						$arFilter[] = $arTmpFilter;

@@ -6,8 +6,9 @@
 	$RightContent = $arTheme['SHOW_RIGHT_SIDE']['DEPENDENT_PARAMS']['RIGHT_CONTENT']['VALUE'];
 	$bRightBanner = $bRightSide && $RightContent == 'BANNER';
 	$bRightBrand = $bRightSide && $RightContent == 'BRANDS';
+	$bShowOverlay = $arTheme["DARK_HOVER_OVERLAY"]["VALUE"] === 'Y' ?: false;
 	?>
-	<div class="menu_top_block catalog_block">
+	<div class="menu_top_block catalog_block <?=$bShowOverlay ? 'dark_overlay' : ''?>">
 		<?$classMenuPosition = $arTheme["MENU_POSITION"]["VALUE"] == 'COMBINED' ? 'm_line' : 'm_' . strtolower($arTheme["MENU_POSITION"]["VALUE"]);?>
 		<ul class="menu dropdown">
 			<?foreach( $arResult as $key => $arItem ){?>

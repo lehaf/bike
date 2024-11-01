@@ -175,14 +175,6 @@ $arTemplateParameters = array_merge($arPageBlocksParams, array(
 		'PARENT' => 'DETAIL_SETTINGS',
 		'DEFAULT' => 'N',
 	),
-	"LIST_VIEW" => array(
-		"NAME" => GetMessage("LIST_VIEW"),
-		"TYPE" => "LIST",
-		"PARENT" => "DETAIL_SETTINGS",
-		"VALUES" => $arListView,
-		"ADDITIONAL_VALUES" => "N",
-		"DEFAULT" => "slider"
-	),
 	'LINKED_ELEMENST_PAGE_COUNT' => array(
 		'SORT' => 704,
 		'NAME' => GetMessage('LINKED_ELEMENST_PAGE_COUNT'),
@@ -543,23 +535,6 @@ $arTemplateParameters = array_merge($arPageBlocksParams, array(
 		"VALUES" => array(5 => 5, 4 => 4, 3 => 3),
 		"DEFAULT" => 4,
 	),
-	"BG_POSITION" => Array(
-		"PARENT" => "LIST_SETTINGS",
-		"NAME" => GetMessage("BG_POSITION_NAME"),
-		"TYPE" => "LIST",
-		"VALUES" => array(
-			"top left" => GetMessage("TOP_LEFT"),
-			"top center" => GetMessage("TOP_CENTER"),
-			"top right" => GetMessage("TOP_RIGHT"),
-			"center left" => GetMessage("CENTER_LEFT"),
-			"center" => GetMessage("CENTER_CENTER"),
-			"center right" => GetMessage("CENTER_RIGHT"),
-			"bottom left" => GetMessage("BOTTOM_LEFT"),
-			"bottom center" => GetMessage("BOTTOM_CENTER"),
-			"bottom right" => GetMessage("BOTTOM_RIGHT")
-		),
-		"DEFAULT" => "",
-	),
 	"ONLY_ELEMENT_DISPLAY_VARIANT" => Array( 
 		"NAME" => GetMessage("ONLY_ELEMENT_DISPLAY_VARIANT"), 
 		"TYPE" => "CHECKBOX", 
@@ -739,18 +714,6 @@ $arTemplateParameters['DEPTH_LEVEL_BRAND'] = array(
 	'TYPE' => 'TEXT',
 	'PARENT' => 'DETAIL_SETTINGS',
 	'DEFAULT' => '2'
-);
-
-$arTemplateParameters['IMAGE_POSITION'] = array(
-	'PARENT' => 'LIST_SETTINGS',
-	'SORT' => 250,
-	'NAME' => GetMessage('IMAGE_POSITION'),
-	'TYPE' => 'LIST',
-	'VALUES' => array(
-		'left' => GetMessage('IMAGE_POSITION_LEFT'),
-		'right' => GetMessage('IMAGE_POSITION_RIGHT'),
-	),
-	'DEFAULT' => 'left',
 );
 
 $arTemplateParameters['DETAIL_BLOCKS_ALL_ORDER'] = array(  

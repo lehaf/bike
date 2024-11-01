@@ -598,6 +598,7 @@ if (typeof window.JItemAction === "undefined") {
 
   BX.addCustomEvent("onAjaxResponesTabs", function (eventdata) {
     JItemAction.actual();
+    setBasketStatusBtn(true);
   });
 
   BX.addCustomEvent("onFinalActionSKUInfo", function (eventdata) {

@@ -391,7 +391,8 @@ function waitResult(id)
 
 function submitComment()
 {
-	//oBlogComLHE.SaveContent();
+   //oBlogComLHE.SaveContent();
+
 	BX('post-button').focus();
 	BX('post-button').disabled = true;
 	obForm = BX('form_comment');
@@ -403,7 +404,9 @@ function submitComment()
 		if(BX('edit_id').value > 0)
 		{
 			val = BX('edit_id').value;
-			BX('blg-comment-'+val).id = 'blg-comment-'+val+'old';
+			if(BX('blg-comment-'+val)){
+				BX('blg-comment-'+val).id = 'blg-comment-'+val+'old';
+			}
 		}
 		else
 			val = BX('parentId').value;
@@ -433,6 +436,7 @@ function prepareFormInfo(obForm, bCommentRequired)
 	let isValid = true;
 
 	var form = $(obForm);
+	isChild = form.closest('.blog-comment').hasClass('child');
 
 	// remove hidden comment field
 	form.find('input[type=hidden][name=comment]').remove();
@@ -452,56 +456,33 @@ function prepareFormInfo(obForm, bCommentRequired)
 	if (ratingVal) {
 		rating.val(ratingVal);
 	}
-
-	const bAnswerComment = parent_id;
-
-	for (let i = 0, c = form.find('input[required]').length; i < c; ++i) {
-		$input = form.find('input[required]').eq(i);
-
-		if ($input[0] === rating[0] && bAnswerComment) {
-			continue;
-		}
-
-		if (!$input.val().length) {
-			isValid = false;
-
-			let $label = $input.closest('.form-group').find('label:not(.error)');
-			let $error = $input.closest('.form-group').find('label.error');
-			if ($label.length && !$error.length) {
-				let error = BX.create({
-					tag: 'label',
-					text: (bAnswerComment ? '<?=GetMessage('NO_COMMENT_TEXT_ANSWER');?>' : BX.message('JS_REQUIRED')),
-					attrs: {
-						class: 'error',
-					},
-				});
-				
-				BX.insertAfter(error, $label[0]);
-			}
-		}
-	}
-
+	
 	let resultCommentText = '';
+
 	if (virtues.val()) {
 		resultCommentText += `<virtues>${virtues.val().replace(/(<([^>]+)>)/gi, "")}</virtues>\n`;
 	}
 	if (limitations.val()) {
 		resultCommentText += `<limitations>${limitations.val().replace(/(<([^>]+)>)/gi, "")}</limitations>\n`;
 	}
-	if (comment.val()) {
+	if (comment.val().length) {
 		resultCommentText += `<comment>${comment.val().replace(/(<([^>]+)>)/gi, "")}</comment>`;
 	} 
 	else if ((!bCommentRequired || edit_id) && !parent_id) {
 		resultCommentText += '<comment></comment>';
 	}
 
-	if ((bCommentRequired || bAnswerComment) && !resultCommentText) {
+	if(isChild && edit_id && !comment.val().length){
+		resultCommentText = '';
+	}
+
+	if ((bCommentRequired || isChild) && !resultCommentText) {
 		const $label = form.find('.form__text-field:visible:first label:not(.error)');
 		const $error = form.find('.comments-error');
 		if (!$error.length) {
 			const error = BX.create({
 				tag: 'label',
-				text: (bAnswerComment ? '<?=GetMessage('NO_COMMENT_TEXT_ANSWER');?>' : '<?=GetMessage('NO_COMMENT_TEXT');?>'),
+				text: (isChild ? '<?=GetMessage('NO_COMMENT_TEXT_ANSWER');?>' : '<?=GetMessage('NO_COMMENT_TEXT');?>'),
 				attrs: {
 					class: 'error comments-error',
 					for: 'virtues'
@@ -511,9 +492,10 @@ function prepareFormInfo(obForm, bCommentRequired)
 		}
 		isValid = false;
 	}
+	
+	isValid = isValid && $(obForm).valid();
 
 	if (!isValid) {
-		scroll_block($('label.error'));
 		return false;
 	}
 
@@ -532,7 +514,6 @@ function prepareFormInfo(obForm, bCommentRequired)
 
 		BX.insertAfter(commentHidden, comment[0]);
 	}
-
 	return isValid;
 }
 

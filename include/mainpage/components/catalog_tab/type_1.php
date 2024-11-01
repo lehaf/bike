@@ -11,7 +11,7 @@
 		"IBLOCK_ID" => "26",
 		"SECTION_ID" => "",
 		"SECTION_CODE" => "",
-		"TABS_CODE" => "HIT",
+		"HIT_PROP" => "HIT",
 		"SECTION_USER_FIELDS" => array(
 			0 => "",
 			1 => "",
@@ -130,6 +130,22 @@
 		"ADD_PROPERTIES_TO_BASKET" => "Y",
 		"PARTIAL_PRODUCT_PROPERTIES" => "N",
 		"ADD_PICT_PROP_OFFER" => "MORE_PHOTO",
+		"AJAX_LOAD" => "Y",
+		"FIELD_CODE" => array(
+			0 => "",
+			1 => "",
+		),
+		"SHOW_TABS" => "Y",
+		"TABS_FILTER" => "PROPERTY",
+		"USER_FIELDS" => array(
+			0 => "",
+			1 => "",
+		),
+		"FIELDS" => array(
+			0 => "",
+			1 => "",
+		),
+		"CUSTOM_FILTER" => "",
 		"ID_FOR_TABS" => "Y",
 	),
 	false

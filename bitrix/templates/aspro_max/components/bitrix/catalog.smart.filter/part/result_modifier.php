@@ -77,6 +77,7 @@ if(!empty($arResult["ITEMS"])) {
     unset($year);
 
     $statusStock = [];
+
     if(!empty($newItems['status']['VALUES'])) {
         foreach ($newItems['status']['VALUES'] as $status) {
             if($status['URL_ID'] === 'stock') {

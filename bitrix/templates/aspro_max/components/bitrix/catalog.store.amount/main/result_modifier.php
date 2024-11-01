@@ -38,8 +38,8 @@ if(!isset($arProperty["NUM_AMOUNT"])){
 			}
 			
 		}
-	}else{
-		$filter = array( "ACTIVE" => "Y", "PRODUCT_ID" => $arParams["ELEMENT_ID"], "+SITE_ID" => SITE_ID, "ISSUING_CENTER" => 'Y' );
+	}else{		
+		$filter = array( "ACTIVE" => "Y", "PRODUCT_ID" => $arParams["ELEMENT_ID"], "+SITE_ID" => SITE_ID, "ISSUING_CENTER" => 'Y',"ID" => (array)$arParams["STORES"]);
 		$rsProps = CCatalogStore::GetList( array('TITLE' => 'ASC', 'ID' => 'ASC'), $filter, false, false, $arSelect );
 		while ($prop = $rsProps->GetNext()){
 			$amount = (is_null($prop["PRODUCT_AMOUNT"])) ? 0 : $prop["PRODUCT_AMOUNT"];

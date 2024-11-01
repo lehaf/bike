@@ -1,4 +1,5 @@
-<?if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) die();
+<?
+if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) die();
 /** @var CBitrixComponentTemplate $this */
 /** @var array $arParams */
 /** @var array $arResult */
@@ -6,24 +7,21 @@
 
 $this->setFrameMode(true);
 
-$class_block="s_".$this->randString();
+$class_block = "s_".$this->randString();
 
 \Aspro\Functions\CAsproMax::replacePropsParams($arParams);
 $arParams["OFFERS_PROPERTY_CODE"] = $arParams['DETAIL_OFFERS_PROPERTY_CODE'];
 
 $arTab=array();
-$arParams["DISPLAY_BOTTOM_PAGER"] = "Y";
-$arParams['SET_TITLE'] = 'N';
 $arTmp = reset($arResult["TABS"]);
 $arParams["FILTER_HIT_PROP"] = $arTmp["CODE"];
-$arParams["COMPATIBLE_MODE"] = "Y";
 
 $signer = new \Bitrix\Main\Component\ParameterSigner();
 $arParamsTmp = $signer->signParameters($this->__component->getName(), array_filter($arParams, fn ($key) => strpos($key, '~') !== 0, ARRAY_FILTER_USE_KEY));
 
 $isAjax = isset($_REQUEST['ajax']) && strtolower($_REQUEST['ajax']) === 'y';
 
-if($arResult["SHOW_SLIDER_PROP"]):?>
+if($arResult['TABS']):?>
 	<?
 	$arTransferParams = array(
 		"SHOW_ABSENT" => $arParams["SHOW_ABSENT"],
@@ -70,25 +68,24 @@ if($arResult["SHOW_SLIDER_PROP"]):?>
 		"ADD_PICT_PROP" => $arParams["ADD_PICT_PROP"],
 		"ADD_DETAIL_TO_SLIDER" => $arParams["ADD_DETAIL_TO_SLIDER"],
 		"DISPLAY_COMPARE" => CMax::GetFrontParametrValue('CATALOG_COMPARE'),
-		"COMPATIBLE_MODE" => "Y",
 	);
 	?>
 	<div class="js_wrapper_items" data-params='<?//=str_replace('\'', '"', CUtil::PhpToJSObject($arTransferParams, false))?>'>
 		<div class="content_wrapper_block <?=$templateName;?>">
 			<div class="maxwidth-theme">
-				<div class="tab_slider_wrapp specials <?=$class_block;?> best_block clearfix" itemscope itemtype="http://schema.org/WebPage">
-					<span class='request-data' data-value='<?=$arParamsTmp?>'></span>
+				<div class="tab_slider_wrapp specials <?=$class_block?> best_block clearfix" itemscope itemtype="http://schema.org/WebPage">
+					<span class="request-data" data-value='<?=$arParamsTmp?>'></span>
 					<div class="top_block">
 						<?if($arParams['TITLE_BLOCK']):?>
-							<h3><?=$arParams['TITLE_BLOCK'];?></h3>
+							<?=Aspro\Functions\CAsproMax::showTitleH($arParams['TITLE_BLOCK']);?>
 						<?endif;?>
 						<div class="right_block_wrapper">
 							<div class="tabs_wrapper <?=$arParams['TITLE_BLOCK_ALL'] && $arParams['ALL_URL'] ? 'with_link' : ''?>">
-								<ul class="tabs ajax">
-									<?$i=1;
-									foreach($arResult["TABS"] as $code => $arTab):?>
-										<li data-code="<?=$code?>" class="font_xs <?=($i==1 ? "cur clicked" : "")?>"><span class="muted777"><?=$arTab["TITLE"];?></span></li>
-										<?$i++;?>
+								<ul class="tabs ajax<?=(count($arResult["TABS"]) == 1 && !strlen($arResult["TABS"][0]['TITLE'] ?? '') ? ' hidden' : '')?>">
+									<?$i = 0;
+									foreach ($arResult["TABS"] as $code => $arTab):?>
+										<li data-code="<?=$code?>" class="font_xs <?=(!$i ? "cur clicked" : "")?>"><span class="muted777"><?=$arTab["TITLE"];?></span></li>
+										<?++$i;?>
 									<?endforeach;?>
 								</ul>
 							</div>
@@ -97,33 +94,55 @@ if($arResult["SHOW_SLIDER_PROP"]):?>
 							<?endif;?>
 						</div>
 					</div>
+
 					<ul class="tabs_content">
-						<?$j=1;?>
-						<?foreach($arResult["TABS"] as $code => $arTab):?>
+						<?$i = 0;?>
+						<?foreach ($arResult["TABS"] as $code => $arTab):?>
 							<?
 							$arTab["FILTER"] = $arTab["FILTER"] ?: [];
 							$signedFilter = $signer->signParameters($this->__component->getName(), $arTab['FILTER']);
 							?>
-							<li class="tab <?=$code?>_wrapp <?=($j == 1 ? "cur opacity1" : "");?>" data-code="<?=$code?>" data-filter="<?= $signedFilter;?>">
+							<li class="tab <?=$code?>_wrapp <?=(!$i ? "cur opacity1" : "");?>" data-code="<?=$code?>" data-filter="<?=$signedFilter?>">
 								<div class="tabs_slider <?=$code?>_slides wr">
-									<?if($isAjax)
-										$APPLICATION->RestartBuffer();?>
-									<?if($j++ == 1)
-									{
-										if($arTab["FILTER"])
+									<?
+									if ($isAjax) {
+										$APPLICATION->RestartBuffer();
+									}
+
+									if (!$i) {
+										if ($arTab["FILTER"]) {
+											// save original global filter & replace by tab filter
+											$oldGlobalFilter = $GLOBALS[$arParams["FILTER_NAME"]];
 											$GLOBALS[$arParams["FILTER_NAME"]] = $arTab["FILTER"];
+										}
 
 										include(str_replace("//", "/", $_SERVER["DOCUMENT_ROOT"].SITE_DIR."include/mainpage/comp_catalog_ajax.php"));
-									}?>
-									<?if($isAjax)
-										CMax::checkRestartBuffer(true, 'catalog_tab');?>
+
+										if ($arTab["FILTER"]) {
+											// restore original global filter
+											$GLOBALS[$arParams["FILTER_NAME"]] = $oldGlobalFilter;
+										}
+									}
+
+									if($isAjax) {
+										die();
+									}
+									?>
 								</div>
 							</li>
+							<?++$i;?>
 						<?endforeach;?>
 					</ul>
 				</div>
 			</div>
 		</div>
 	</div>
-	<script>try{window.tabsInitOnReady();}catch{}</script>
+	<script>BX.ready(function(){
+		try{
+			window.tabsInitOnReady('.<?=$class_block?>');
+		}
+		catch{
+			
+		}
+	});</script>
 <?endif;?>

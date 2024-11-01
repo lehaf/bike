@@ -284,7 +284,7 @@
 			"SHOW_SKU_DESCRIPTION" => $arParams["SHOW_SKU_DESCRIPTION"],
 			"VISIBLE_PROP_WITH_OFFER" => $arParams["VISIBLE_PROP_WITH_OFFER"],
 			"MOBILE_CAROUSEL" => "Y",
-			"SECTION_ID_FOR_BIG_DATA" => $arSection['ID'], 
+			"SECTION_ID_FOR_BIG_DATA" => $arSection['ID'],
 			"BIGDATA_PATH_TEMPLATE" => $this->__folder.'/page_blocks/'.$sViewBigDataExtTemplate.'.php',
 			"BIGDATA_TYPE_VIEW" => $arParams['BIGDATA_TYPE_VIEW'],
 			"BIGDATA_SHOW_FROM_SECTION" => $arParams['BIGDATA_SHOW_FROM_SECTION'],

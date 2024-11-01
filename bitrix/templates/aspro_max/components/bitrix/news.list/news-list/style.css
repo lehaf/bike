@@ -279,6 +279,9 @@ body .list-news1.item-views.image_left .owl-carousel .item > .image + .body-info
 .list-news1 .owl-carousel.owl-theme.owl-bg-nav .owl-stage-outer {
   margin-bottom: 0px;
 }
+.property .darken {
+  word-break: break-word;
+}
 
 /**/
 

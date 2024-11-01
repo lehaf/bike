@@ -4,6 +4,8 @@ if(!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) die();
 use Bitrix\Main\Web\Json;
 CBitrixComponent::includeComponentClass('bitrix:catalog.section'); 
 
+$siteId = '';
+
 if(\Bitrix\Main\Loader::includeModule('iblock'))
 {
 	$arProperty = $arPropertyF = array();
@@ -36,6 +38,8 @@ if(\Bitrix\Main\Loader::includeModule('iblock'))
 	while($arRes = $db_iblock->Fetch()) $arIBlocks[$arRes["ID"]] = $arRes["NAME"]." [".$arRes["CODE"]."]";
 
 	$arTypesEx = CIBlockParameters::GetIBlockTypes(Array("-"=>" "));
+	$request = \Bitrix\Main\Application::getInstance()->getContext()->getRequest();
+	$siteId = $request->get("src_site") ?? $request->get("site");
 }
 
 $arPrice = array();
@@ -127,6 +131,7 @@ $arPageBlocksParams = array();
 if(\Bitrix\Main\Loader::includeModule('aspro.max')){
 	$arPageBlocks = CMax::GetComponentTemplatePageBlocks(__DIR__);
 	$arPageBlocksParams = CMax::GetComponentTemplatePageBlocksParams($arPageBlocks);
+	$arCurrentValues['SECTION_ELEMENTS_TYPE_VIEW'] = $arCurrentValues['SECTION_ELEMENTS_TYPE_VIEW'] === 'FROM_MODULE' ? CMax::GetFrontParametrValue('LANDINGS_PAGE', $siteId) : $arCurrentValues['SECTION_ELEMENTS_TYPE_VIEW'];
 	CMax::AddComponentTemplateModulePageBlocksParams(__DIR__, $arPageBlocksParams); // add option value FROM_MODULE
 }
 
@@ -174,14 +179,6 @@ $arTemplateParameters = array_merge($arPageBlocksParams, array(
 		'TYPE' => 'CHECKBOX',
 		'PARENT' => 'DETAIL_SETTINGS',
 		'DEFAULT' => 'N',
-	),
-	"LIST_VIEW" => array(
-		"NAME" => GetMessage("LIST_VIEW"),
-		"TYPE" => "LIST",
-		"PARENT" => "DETAIL_SETTINGS",
-		"VALUES" => $arListView,
-		"ADDITIONAL_VALUES" => "N",
-		"DEFAULT" => "slider"
 	),
 	'LINKED_ELEMENST_PAGE_COUNT' => array(
 		'SORT' => 704,
@@ -536,30 +533,6 @@ $arTemplateParameters = array_merge($arPageBlocksParams, array(
 		"DEFAULT" => "Y",
 		"PARENT" => "DETAIL_SETTINGS",
 	),
-	"SIZE_IN_ROW" => Array(
-		"PARENT" => "LIST_SETTINGS",
-		"NAME" => GetMessage("SIZE_IN_ROW_NAME"),
-		"TYPE" => "LIST",
-		"VALUES" => array(5 => 5, 4 => 4, 3 => 3),
-		"DEFAULT" => 4,
-	),
-	"BG_POSITION" => Array(
-		"PARENT" => "LIST_SETTINGS",
-		"NAME" => GetMessage("BG_POSITION_NAME"),
-		"TYPE" => "LIST",
-		"VALUES" => array(
-			"top left" => GetMessage("TOP_LEFT"),
-			"top center" => GetMessage("TOP_CENTER"),
-			"top right" => GetMessage("TOP_RIGHT"),
-			"center left" => GetMessage("CENTER_LEFT"),
-			"center" => GetMessage("CENTER_CENTER"),
-			"center right" => GetMessage("CENTER_RIGHT"),
-			"bottom left" => GetMessage("BOTTOM_LEFT"),
-			"bottom center" => GetMessage("BOTTOM_CENTER"),
-			"bottom right" => GetMessage("BOTTOM_RIGHT")
-		),
-		"DEFAULT" => "",
-	),
 	"ONLY_ELEMENT_DISPLAY_VARIANT" => Array( 
 		"NAME" => GetMessage("ONLY_ELEMENT_DISPLAY_VARIANT"), 
 		"TYPE" => "CHECKBOX", 
@@ -622,6 +595,37 @@ if(is_array($arCurrentValues["SORT_BUTTONS"])){
 			"MULTIPLE" => "N",
 		);
 	}
+}
+
+if ((strpos($arCurrentValues['SECTION_ELEMENTS_TYPE_VIEW'], 'list_elements_1') !== false) ||
+	(strpos($arCurrentValues['SECTION_ELEMENTS_TYPE_VIEW'], 'list_elements_2') !== false) ||
+	(strpos($arCurrentValues['SECTION_ELEMENTS_TYPE_VIEW'], 'list_elements_3') !== false) ||
+	(strpos($arCurrentValues['SECTION_ELEMENTS_TYPE_VIEW'], 'list_elements_4') !== false)) {
+	$arTemplateParameters = array_merge($arTemplateParameters, array(
+		"SIZE_IN_ROW" => Array(
+			"PARENT" => "LIST_SETTINGS",
+			"NAME" => GetMessage("SIZE_IN_ROW_NAME"),
+			"TYPE" => "LIST",
+			"VALUES" => array(5 => 5, 4 => 4, 3 => 3),
+			"DEFAULT" => 4,
+		),
+	));
+}
+
+if (strpos($arCurrentValues['SECTION_ELEMENTS_TYPE_VIEW'], 'list_elements_5') !== false) {
+	$arTemplateParameters = array_merge($arTemplateParameters, array(
+		'IMAGE_POSITION' => array(
+			'PARENT' => 'LIST_SETTINGS',
+			'SORT' => 250,
+			'NAME' => GetMessage('IMAGE_POSITION'),
+			'TYPE' => 'LIST',
+			'VALUES' => array(
+				'left' => GetMessage('IMAGE_POSITION_LEFT'),
+				'right' => GetMessage('IMAGE_POSITION_RIGHT'),
+			),
+			'DEFAULT' => 'left',
+		),
+	));
 }
 
 $arTemplateParameters["IBLOCK_CATALOG_TYPE"] = Array(
@@ -738,25 +742,6 @@ $arTemplateParameters['DEPTH_LEVEL_BRAND'] = array(
 	'TYPE' => 'TEXT',
 	'PARENT' => 'DETAIL_SETTINGS',
 	'DEFAULT' => '2'
-);
-
-$arTemplateParameters['IMAGE_POSITION'] = array(
-	'PARENT' => 'LIST_SETTINGS',
-	'SORT' => 250,
-	'NAME' => GetMessage('IMAGE_POSITION'),
-	'TYPE' => 'LIST',
-	'VALUES' => array(
-		'left' => GetMessage('IMAGE_POSITION_LEFT'),
-		'right' => GetMessage('IMAGE_POSITION_RIGHT'),
-	),
-	'DEFAULT' => 'left',
-);
-
-$arTemplateParameters['COUNT_IN_LINE'] = array(
-	'PARENT' => 'LIST_SETTINGS',
-	'NAME' => GetMessage('COUNT_IN_LINE'),
-	'TYPE' => 'STRING',
-	'DEFAULT' => '3',
 );
 
 $arTemplateParameters['DETAIL_BLOCKS_ALL_ORDER'] = array(  

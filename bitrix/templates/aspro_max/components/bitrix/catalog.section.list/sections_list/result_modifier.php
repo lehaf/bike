@@ -66,42 +66,14 @@ if( isset($arParams["ASPRO_COUNT_ELEMENTS"]) && $arParams["ASPRO_COUNT_ELEMENTS"
 
 		if( $arRegion ){			
 			if( $arRegion['LIST_STORES'] && $arParams['HIDE_NOT_AVAILABLE'] === 'Y' ){
-				$arStoresFilter = [];
-
-				if(CMax::checkVersionModule('18.6.200', 'iblock')){
-					$arStoresFilter = [
-						'STORE_NUMBER' => $arParams['STORES'],
-						'>STORE_AMOUNT' => 0,
-					];
-				}else{
-					if(count($arParams['STORES']) > 1){
-						$arStoresFilter = ['LOGIC' => 'OR'];
-
-						foreach($arParams['STORES'] as $storeID){
-							$arStoresFilter[] = [">CATALOG_STORE_AMOUNT_".$storeID => 0];
-						}
-					}else{
-						foreach($arParams['STORES'] as $storeID){
-							$arStoresFilter = [">CATALOG_STORE_AMOUNT_".$storeID => 0];
+				if( $arRegion ){			
+					if( $arRegion['LIST_STORES'] && $arParams['HIDE_NOT_AVAILABLE'] === 'Y' ){
+						$arStoresFilter = TSolution\Filter::getAvailableByStores($arParams['STORES']);
+						if($arStoresFilter){
+							$arFilter[] = $arStoresFilter;
 						}
 					}
 				}
-
-				$arTmpFilter = [ '!TYPE' => ['2', '3'] ];
-				
-				if($arStoresFilter){
-					if(!CMax::checkVersionModule('18.6.200', 'iblock') && count($arStoresFilter) > 1){
-						$arTmpFilter[] = $arStoresFilter;
-					}else{
-						$arTmpFilter = array_merge($arTmpFilter, $arStoresFilter);
-					}
-				}
-
-				$arFilter[] = [
-					'LOGIC' => 'OR',
-					['TYPE' => ['2', '3']],
-					$arTmpFilter,
-				];
 			}
 		}
 

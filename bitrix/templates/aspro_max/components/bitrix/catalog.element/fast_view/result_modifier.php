@@ -161,7 +161,7 @@ if ($arResult['MODULES']['catalog'])
 
 	$arSKU = CCatalogSKU::GetInfoByProductIBlock($arParams['IBLOCK_ID']);
 	$boolSKU = !empty($arSKU) && is_array($arSKU);
-	$bUseModuleProps = \Bitrix\Main\Config\Option::get("iblock", "property_features_enabled", "N") === "Y";
+	$bUseModuleProps = \Bitrix\Main\Config\Option::get("iblock", "property_features_enabled", "Y") === "Y";
 
 	if ($bUseModuleProps) {
 		$arParams['OFFERS_CART_PROPERTIES'] = (array)\Bitrix\Catalog\Product\PropertyCatalogFeature::getBasketPropertyCodes($arSKU['IBLOCK_ID'], ['CODE' => 'Y']);
@@ -829,6 +829,8 @@ if ($arResult['CATALOG'] && isset($arResult['OFFERS']) && !empty($arResult['OFFE
 
 				$arResult['OFFERS'][$keyOffer] = array_merge($arOffer, CMax::formatPriceMatrix($arOffer));
 			}
+			$arOffer['IS_OFFER'] = 'Y';
+			$arOffer['IBLOCK_ID'] = $arResult['IBLOCK_ID'];
 		}
 		$arResult['MIN_PRICE']["MIN_PRICE_ID"]=$minItemPriceID;
 		$arResult['MIN_PRICE']["MIN_ITEM_ID"]=$minItemID;

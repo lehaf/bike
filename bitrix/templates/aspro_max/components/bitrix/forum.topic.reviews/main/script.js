@@ -376,8 +376,30 @@
 
 					if (!this.isAjax)
 						return true;
-
-					this.send();
+					
+					if (this.form.querySelector('.captcha-row') && typeof grecaptcha != "undefined") {
+						if (window.renderRecaptchaById && window.asproRecaptcha && window.asproRecaptcha.key) { 
+							if (window.asproRecaptcha.params.recaptchaSize == "invisible") {
+								grecaptcha.execute($(this.form).find(".g-recaptcha").data("widgetid")).then(
+									() => { 
+										this.send();
+									}
+								);
+							} else if (window.asproRecaptcha.ver === "3") {
+								grecaptcha
+									.execute(window.asproRecaptcha.key, { action: "maxscore" })
+									.then((token) => {
+										const recaptchaResponse = this.form.querySelector(".g-recaptcha-response");
+										if (recaptchaResponse) {
+											recaptchaResponse.value = token;
+										}
+										this.send();
+									});
+							}
+						}
+					} else {
+						this.send();
+					}
 				}
 				return BX.PreventDefault(e);
 			},

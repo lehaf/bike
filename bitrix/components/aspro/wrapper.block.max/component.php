@@ -5,6 +5,10 @@ global $arTheme, $APPLICATION;
 
 $bError = \Bitrix\Main\Loader::includeModule('aspro.max') == false;
 
+if (!include_once($_SERVER['DOCUMENT_ROOT'].SITE_TEMPLATE_PATH.'/vendor/php/solution.php')) {
+	throw new \Exception('Error include solution constants');
+}
+
 /*Prepare params*/
 $arParams["ELEMENT_COUNT"] = (isset($arParams["ELEMENT_COUNT"]) && $arParams["ELEMENT_COUNT"] ? $arParams["ELEMENT_COUNT"] : 5);
 $arParams['FILTER_NAME'] = (isset($arParams['FILTER_NAME']) && $arParams['FILTER_NAME'] ? $arParams['FILTER_NAME'] : 'arFilterWrapper');
