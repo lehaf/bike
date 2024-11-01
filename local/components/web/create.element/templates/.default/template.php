@@ -665,9 +665,10 @@ $notShowLabel = ['PRICE_TYPE'];
                                         <label for="nameText" class="form-group__label">Название<span>*</span></label>
                                         <div class="form-row form-row--rel">
                                         <textarea name="NAME" class="custom-textarea check-block"
-                                                  placeholder="Введите название запчасти" id="nameText"
+                                                  placeholder="Введите название запчасти"
+                                                  id="nameText"
                                                   maxlength="2000"
-                                        ><?= $arResult['ELEMENT_PROPS']['DETAIL_TEXT'] ?></textarea>
+                                        ><?= $arResult['ELEMENT_PROPS']['NAME']?></textarea>
                                             <div class="textarea-info">
                                                 Символов&nbsp;
                                                 <div class="textarea-info__number">
