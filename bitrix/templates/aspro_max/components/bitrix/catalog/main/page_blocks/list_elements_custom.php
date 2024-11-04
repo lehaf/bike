@@ -436,7 +436,8 @@ $secondLevelParent = \Bitrix\Iblock\SectionTable::getList([
             );
             $SMART_FILTER_SORT = $arSort;
             ?>
-            <?php $customClass = (in_array($secondLevelParent['ID'], array_merge(SECTION_TYPE_1, SECTION_TYPE_2, SECTION_TYPE_3, SECTION_TYPE_4))) ? '_custom' : '';?>
+            <?php $customSections = array_merge(SECTION_TYPE_1, SECTION_TYPE_2, SECTION_TYPE_3, SECTION_TYPE_4)?>
+            <?php $customClass = (array_intersect([$arResult["VARIABLES"]["SECTION_ID"], $secondLevelParent['ID']], $customSections)) ? '_custom' : '';?>
             <? $APPLICATION->IncludeComponent(
                 "bitrix:catalog.section",
                 $template . $customClass,
