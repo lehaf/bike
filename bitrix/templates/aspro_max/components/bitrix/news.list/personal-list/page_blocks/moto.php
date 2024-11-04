@@ -9,7 +9,7 @@
             <div class="advert-main">
                 <div class="advert-item__row">
                     <div class="advert-item__photo">
-                        <?php $img = (!empty($arItem['PREVIEW_PICTURE'])) ? $arItem['PREVIEW_PICTURE']['SRC'] : $templateFolder . "/images/empty.png" ?>
+                        <?php $img = (!empty($arItem['PREVIEW_PICTURE'])) ? $arItem['PREVIEW_PICTURE']['SRC'] : SITE_TEMPLATE_PATH . "/images/empty_img_element.png" ?>
                         <img src="<?= $img ?>" alt="img">
                     </div>
                     <div class="advert-item__info">
