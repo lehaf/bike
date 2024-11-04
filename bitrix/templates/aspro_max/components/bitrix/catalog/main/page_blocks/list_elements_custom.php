@@ -177,9 +177,22 @@ if (isset($isAjaxFilter) && $isAjaxFilter == "Y") {
     $isAjax = "N";
 } ?>
 <!--фильтр для мототранспортра-->
-<?php if (in_array($arResult["VARIABLES"]["SECTION_ID"], array_merge(SECTION_TYPE_1, SECTION_TYPE_2))): ?>
+<?php
+$currentSection = \Bitrix\Iblock\SectionTable::getRowById($arResult["VARIABLES"]["SECTION_ID"]);
+$secondLevelParent = \Bitrix\Iblock\SectionTable::getList([
+    'filter' => [
+        '<=LEFT_MARGIN' => $currentSection['LEFT_MARGIN'], // Родитель должен быть слева от текущего раздела
+        '>=RIGHT_MARGIN' => $currentSection['RIGHT_MARGIN'], // И справа от текущего
+        'IBLOCK_ID' => CATALOG_IBLOCK_ID, // Указываем инфоблок
+        'DEPTH_LEVEL' => 2 // Ищем только раздел второго уровня
+    ],
+    'select' => ['ID', 'CODE', 'DEPTH_LEVEL', 'IBLOCK_SECTION_ID'],
+    'limit' => 1
+])->fetch();
+?>
+<?php if (in_array($secondLevelParent['ID'], array_merge(SECTION_TYPE_1, SECTION_TYPE_2))): ?>
     <?php if ($itemsCnt): ?>
-        <?php $filterTemplate = (in_array($arResult['VARIABLES']['SECTION_ID'], SECTION_TYPE_2)) ? 'part' : $arResult["VARIABLES"]["SECTION_CODE"] ?>
+        <?php $filterTemplate = (in_array($secondLevelParent['ID'], SECTION_TYPE_2)) ? 'part' : $secondLevelParent['CODE']?>
         <?php
         $APPLICATION->IncludeComponent(
             "bitrix:catalog.smart.filter",
@@ -340,7 +353,7 @@ if (isset($isAjaxFilter) && $isAjaxFilter == "Y") {
         <? if (!$bSimpleSectionTemplate): ?>
             <? include_once(__DIR__ . "/../sort.php"); ?>
 
-            <?php if (!in_array($arResult["VARIABLES"]["SECTION_ID"], array_merge(SECTION_TYPE_1, SECTION_TYPE_2))): ?>
+            <?php if (!in_array($secondLevelParent['ID'], array_merge(SECTION_TYPE_1, SECTION_TYPE_2))): ?>
                 <? if ($arTheme["FILTER_VIEW"]["VALUE"] == "COMPACT" || $arTheme['LEFT_BLOCK_CATALOG_SECTIONS']['VALUE'] == 'N'): ?>
                     <div class="filter-compact-block swipeignore">
                         <? include(__DIR__ . "/../filter.php") ?>
@@ -423,7 +436,7 @@ if (isset($isAjaxFilter) && $isAjaxFilter == "Y") {
             );
             $SMART_FILTER_SORT = $arSort;
             ?>
-            <?php $customClass = (in_array($arResult["VARIABLES"]["SECTION_ID"], array_merge(SECTION_TYPE_1, SECTION_TYPE_2, SECTION_TYPE_3, SECTION_TYPE_4))) ? '_custom' : '';?>
+            <?php $customClass = (in_array($secondLevelParent['ID'], array_merge(SECTION_TYPE_1, SECTION_TYPE_2, SECTION_TYPE_3, SECTION_TYPE_4))) ? '_custom' : '';?>
             <? $APPLICATION->IncludeComponent(
                 "bitrix:catalog.section",
                 $template . $customClass,
