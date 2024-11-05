@@ -2,6 +2,7 @@
 <? $this->setFrameMode(true); ?>
 <? use \Bitrix\Main\Localization\Loc,
     \Bitrix\Main\Web\Json; ?>
+
 <? if (count($arResult["ITEMS"]) >= 1) { ?>
     <?
     $arTransferParams = array(
@@ -223,7 +224,11 @@
                                     <? if ($bUseSkuProps && $arItem["OFFERS"]): ?>
                                         <? \Aspro\Functions\CAsproMaxItem::showSectionGallery(array('ITEM' => $arItem["OFFERS"][$arItem["OFFERS_SELECTED"]], 'RESIZE' => $arResult['CUSTOM_RESIZE_OPTIONS'])); ?>
                                     <? else: ?>
-                                        <? \Aspro\Functions\CAsproMaxItem::showSectionGallery(array('ITEM' => $arItem, 'RESIZE' => $arResult['CUSTOM_RESIZE_OPTIONS'])); ?>
+                                        <?php if ($arItem['PREVIEW_PICTURE']): ?>
+                                            <? \Aspro\Functions\CAsproMaxItem::showSectionGallery(array('ITEM' => $arItem, 'RESIZE' => $arResult['CUSTOM_RESIZE_OPTIONS'])); ?>
+                                        <?php else: ?>
+                                            <a href="<?=$arItem["DETAIL_PAGE_URL"]?>" class="thumb"><img class="img-responsive " src="<?=SITE_TEMPLATE_PATH?>/images/empty_img_element.png" alt="<?=$arItem["NAME"]?>" title="<?=$arItem["NAME"]?>" /></a>
+                                        <?php endif; ?>
                                     <? endif; ?>
                                 <? else: ?>
                                     <? \Aspro\Functions\CAsproMaxItem::showImg($arParams, $arItem, false); ?>
@@ -241,7 +246,7 @@
                                 <div class="item-title card-list-title">
                                     <a href="<?= $arItem["DETAIL_PAGE_URL"] ?>"
                                        class="dark_link js-notice-block__title"><span><?= $elementName; ?></span></a>
-                                    <?php if (in_array($arParams['SECTION_ID'], SECTION_TYPE_1)): ?>
+                                    <?php if (array_intersect($arResult['LEVEL_PARENTS'], SECTION_TYPE_1)): ?>
                                         <div class="item-data-card">
                                             <?php if (!empty($arItem['PROPERTIES']['year']['VALUE'])): ?>
                                                 <div class="item-data-card__year">
@@ -256,7 +261,7 @@
                                 </div>
 
                                 <!--блок под названием-->
-                                <?php if (in_array($arParams['SECTION_ID'], SECTION_TYPE_1)): ?>
+                                <?php if (array_intersect($arResult['LEVEL_PARENTS'], SECTION_TYPE_1)): ?>
                                     <div class="description__name-product">
                                         <?= $arItem['PROPERTIES']['type_' . $arParams['SECTION_CODE']]['VALUE'] ?>
                                     </div>
@@ -307,7 +312,7 @@
                                             </div>
                                         <? endif; ?>
 
-                                        <?php if (in_array($arParams['SECTION_ID'], SECTION_TYPE_4)): ?>
+                                        <?php if (array_intersect($arResult['LEVEL_PARENTS'], SECTION_TYPE_4)): ?>
                                             <div class="item-stock">
                                                 <span class="icon <?= $arItem['PROPERTIES']['status']['VALUE_XML_ID'] ?>"></span>
                                                 <span class="value font_sxs"><?= $arItem['PROPERTIES']['status']['VALUE'] ?></span>
@@ -317,7 +322,7 @@
                                         <!--                                        --><? // if (isset($arQuantityDataCMP) && $arQuantityDataCMP && $arItem['OFFERS'] && !empty($arItem['OFFERS_PROP'])): ?>
                                         <!--                                            --><?php //= $arQuantityDataCMP["HTML"]; ?>
                                         <!--                                        --><? // endif; ?>
-                                        <?php if (!empty($arItem['PROPERTIES']['article_part']['VALUE'])  && (in_array($arParams['SECTION_ID'], SECTION_TYPE_2) || in_array($arParams['SECTION_ID'], SECTION_TYPE_4))): ?>
+                                        <?php if (!empty($arItem['PROPERTIES']['article_part']['VALUE']) && (array_intersect($arResult['LEVEL_PARENTS'], array_merge(SECTION_TYPE_2, SECTION_TYPE_4)))): ?>
                                             <div class="article_block muted font_sxs">
                                                 <?= Loc::getMessage('ARTICLE_FULL'); ?>
                                                 : <?= $arItem['PROPERTIES']['article_part']['VALUE']; ?>
@@ -327,7 +332,7 @@
                                 <?php endif; ?>
 
                                 <!--свойства мототранспорта-->
-                                <?php if (in_array($arParams['SECTION_ID'], SECTION_TYPE_1)): ?>
+                                <?php if (array_intersect($arResult['LEVEL_PARENTS'], SECTION_TYPE_1)): ?>
                                     <div class="product-description">
                                         <div class="product-description__left">
                                             <div class="product-description__el">
@@ -383,7 +388,7 @@
                                     </div>
                                 <?php endif; ?>
                                 <?php if (!empty($arItem['DETAIL_TEXT'])): ?>
-                                    <?php $class = (!in_array($arParams['SECTION_ID'], SECTION_TYPE_1)) ? 'description-text--l' : '' ?>
+                                    <?php $class = (!array_intersect($arResult['LEVEL_PARENTS'], SECTION_TYPE_1)) ? 'description-text--l' : '' ?>
                                     <div class="description-text <?= $class ?>">
                                         <?= $arItem['DETAIL_TEXT'] ?>
                                     </div>

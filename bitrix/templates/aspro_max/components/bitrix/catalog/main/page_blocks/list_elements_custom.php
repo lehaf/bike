@@ -184,15 +184,18 @@ $secondLevelParent = \Bitrix\Iblock\SectionTable::getList([
         '<=LEFT_MARGIN' => $currentSection['LEFT_MARGIN'], // Родитель должен быть слева от текущего раздела
         '>=RIGHT_MARGIN' => $currentSection['RIGHT_MARGIN'], // И справа от текущего
         'IBLOCK_ID' => CATALOG_IBLOCK_ID, // Указываем инфоблок
-        'DEPTH_LEVEL' => 2 // Ищем только раздел второго уровня
+        '=DEPTH_LEVEL' => [1, 2] // Ищем только раздел второго уровня
     ],
     'select' => ['ID', 'CODE', 'DEPTH_LEVEL', 'IBLOCK_SECTION_ID'],
-    'limit' => 1
-])->fetch();
+    'order' => ['DEPTH_LEVEL' => 'DESC'],
+    'limit' => 2
+])->fetchAll();
+$parentsId = array_column($secondLevelParent, 'ID');
+$parentsId[] = $arResult["VARIABLES"]["SECTION_ID"];
 ?>
-<?php if (in_array($secondLevelParent['ID'], array_merge(SECTION_TYPE_1, SECTION_TYPE_2))): ?>
+<?php if (array_intersect($parentsId, array_merge(SECTION_TYPE_1, SECTION_TYPE_2))): ?>
     <?php if ($itemsCnt): ?>
-        <?php $filterTemplate = (in_array($secondLevelParent['ID'], SECTION_TYPE_2)) ? 'part' : $secondLevelParent['CODE']?>
+        <?php $filterTemplate = (array_intersect($parentsId, SECTION_TYPE_2)) ? 'part' : $secondLevelParent[0]['CODE'] ?>
         <?php
         $APPLICATION->IncludeComponent(
             "bitrix:catalog.smart.filter",
@@ -353,7 +356,7 @@ $secondLevelParent = \Bitrix\Iblock\SectionTable::getList([
         <? if (!$bSimpleSectionTemplate): ?>
             <? include_once(__DIR__ . "/../sort.php"); ?>
 
-            <?php if (!in_array($secondLevelParent['ID'], array_merge(SECTION_TYPE_1, SECTION_TYPE_2))): ?>
+            <?php if (!array_intersect($parentsId, array_merge(SECTION_TYPE_1, SECTION_TYPE_2))): ?>
                 <? if ($arTheme["FILTER_VIEW"]["VALUE"] == "COMPACT" || $arTheme['LEFT_BLOCK_CATALOG_SECTIONS']['VALUE'] == 'N'): ?>
                     <div class="filter-compact-block swipeignore">
                         <? include(__DIR__ . "/../filter.php") ?>
@@ -436,8 +439,10 @@ $secondLevelParent = \Bitrix\Iblock\SectionTable::getList([
             );
             $SMART_FILTER_SORT = $arSort;
             ?>
-            <?php $customSections = array_merge(SECTION_TYPE_1, SECTION_TYPE_2, SECTION_TYPE_3, SECTION_TYPE_4)?>
-            <?php $customClass = (array_intersect([$arResult["VARIABLES"]["SECTION_ID"], $secondLevelParent['ID']], $customSections)) ? '_custom' : '';?>
+            <?php
+            $customSections = array_merge(SECTION_TYPE_1, SECTION_TYPE_2, SECTION_TYPE_3, SECTION_TYPE_4);
+            ?>
+            <?php $customClass = (array_intersect($parentsId, $customSections)) ? '_custom' : ''; ?>
             <? $APPLICATION->IncludeComponent(
                 "bitrix:catalog.section",
                 $template . $customClass,

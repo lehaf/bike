@@ -270,7 +270,11 @@ $bColProps = $arParams['SHOW_PROPS_TABLE'] == 'cols';
                             <? //image-block?>
                             <div class="item-foto">
                                 <div class="item-foto__picture js-notice-block__image">
-                                    <? \Aspro\Functions\CAsproMaxItem::showImg($arParams, $arItem, !$bComplect); ?>
+                                    <?php if ($arItem['PREVIEW_PICTURE']): ?>
+                                        <? \Aspro\Functions\CAsproMaxItem::showImg($arParams, $arItem, !$bComplect); ?>
+                                    <?php else: ?>
+                                        <a href="<?=$arItem["DETAIL_PAGE_URL"]?>" class="thumb"><img class="img-responsive " src="<?=SITE_TEMPLATE_PATH?>/images/empty_img_element.png" alt="<?=$arItem["NAME"]?>" title="<?=$arItem["NAME"]?>" /></a>
+                                    <?php endif; ?>
                                 </div>
                                 <div class="adaptive">
                                     <? \Aspro\Functions\CAsproMaxItem::showDelayCompareBtn(array_merge($arParams, $addParams), $arItem, $arAddToBasketData, $totalCount, $bUseSkuProps, 'block', ($arParams['USE_FAST_VIEW'] != 'N' && !$bComplect), false, '_small'); ?>
@@ -318,7 +322,7 @@ $bColProps = $arParams['SHOW_PROPS_TABLE'] == 'cols';
 
                                     <div class="item-actions flexbox flexbox--row">
                                         <div class="product-description">
-                                            <?php if (in_array($arParams['SECTION_ID'], SECTION_TYPE_1)): ?>
+                                            <?php if (array_intersect($arResult['LEVEL_PARENTS'], SECTION_TYPE_1)): ?>
                                                 <div class="product-description__left">
                                                     <div class="product-description__el">
                                                         <?php if (!empty($arItem['PROPERTIES']['power']['VALUE'])): ?>
@@ -409,14 +413,14 @@ $bColProps = $arParams['SHOW_PROPS_TABLE'] == 'cols';
                                                             </div>
                                                         <? endif; ?>
 
-                                                        <?php if (in_array($arParams['SECTION_ID'], SECTION_TYPE_4)): ?>
+                                                        <?php if (array_intersect($arResult['LEVEL_PARENTS'], SECTION_TYPE_4)): ?>
                                                             <div class="item-stock">
                                                                 <span class="icon <?= $arItem['PROPERTIES']['status']['VALUE_XML_ID'] ?>"></span>
                                                                 <span class="value font_sxs"><?= $arItem['PROPERTIES']['status']['VALUE'] ?></span>
                                                             </div>
                                                         <?php endif; ?>
 
-                                                        <?php if (!empty($arItem['PROPERTIES']['article_part']['VALUE']) && (in_array($arParams['SECTION_ID'], SECTION_TYPE_2) || in_array($arParams['SECTION_ID'], SECTION_TYPE_4))): ?>
+                                                        <?php if (!empty($arItem['PROPERTIES']['article_part']['VALUE']) && (array_intersect($arResult['LEVEL_PARENTS'], array_merge(SECTION_TYPE_2, SECTION_TYPE_4)))): ?>
                                                             <div class="article_block">
                                                                 <div class="muted"><?= Loc::getMessage('ARTICLE_FULL'); ?>
                                                                     : <?= $arItem['PROPERTIES']['article_part']['VALUE']; ?>
@@ -425,7 +429,7 @@ $bColProps = $arParams['SHOW_PROPS_TABLE'] == 'cols';
                                                         <?php endif; ?>
                                                     </div>
                                                     <?php if (!empty($arItem['DETAIL_TEXT'])): ?>
-                                                        <?php $class = (in_array($arParams['SECTION_ID'], SECTION_TYPE_3)) ? 'description-text--m' : '' ?>
+                                                        <?php $class = (array_intersect($arResult['LEVEL_PARENTS'], SECTION_TYPE_3)) ? 'description-text--m' : '' ?>
                                                         <div class="description-text description-text--slim <?= $class ?>">
                                                             <?= $arItem['DETAIL_TEXT'] ?>
                                                         </div>
@@ -435,7 +439,7 @@ $bColProps = $arParams['SHOW_PROPS_TABLE'] == 'cols';
                                         </div>
                                         <? //prices-block?>
                                         <div class="info-data-price">
-                                            <?php if (in_array($arParams['SECTION_ID'], SECTION_TYPE_1)): ?>
+                                            <?php if (array_intersect($arResult['LEVEL_PARENTS'], SECTION_TYPE_1)): ?>
                                                 <div class="item-data-card">
                                                     <?php if (!empty($arItem['PROPERTIES']['year']['VALUE'])): ?>
                                                         <div class="item-data-card__year">

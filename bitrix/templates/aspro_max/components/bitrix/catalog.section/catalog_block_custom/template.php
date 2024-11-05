@@ -331,7 +331,7 @@
 
 
                     <? ob_start(); ?>
-                    <?php if (in_array($arParams['SECTION_ID'], SECTION_TYPE_1)): ?>
+                    <?php if (array_intersect($arResult['LEVEL_PARENTS'], SECTION_TYPE_1)): ?>
                         <div class="item_info_product">
                             <?= (!empty($arItem['PROPERTIES']['year']['VALUE'])) ? $arItem['PROPERTIES']['year']['VALUE'] . ', ' : '' ?> <?= $arItem['PROPERTIES']['race']['VALUE'] ?> <?= $arItem['PROPERTIES']['race_unit']['VALUE_ENUM'] ?>
                         </div>
@@ -339,13 +339,13 @@
                         <div class="sa_block " data-fields='<?= Json::encode($arParams["FIELDS"]) ?>'
                              data-stores='<?= Json::encode($arParams["STORES"]) ?>'
                              data-user-fields='<?= Json::encode($arParams["USER_FIELDS"]) ?>'>
-                            <?php if (in_array($arParams['SECTION_ID'], SECTION_TYPE_4)): ?>
+                            <?php if (array_intersect($arResult['LEVEL_PARENTS'], SECTION_TYPE_4)): ?>
                                 <div class="item-stock">
                                     <span class="icon <?= $arItem['PROPERTIES']['status']['VALUE_XML_ID'] ?>"></span>
                                     <span class="value font_sxs"><?= $arItem['PROPERTIES']['status']['VALUE'] ?></span>
                                 </div>
                             <?php endif; ?>
-                            <?php if (!empty($arItem['PROPERTIES']['article_part']['VALUE']) && (in_array($arParams['SECTION_ID'], SECTION_TYPE_2) || in_array($arParams['SECTION_ID'], SECTION_TYPE_4))): ?>
+                            <?php if (!empty($arItem['PROPERTIES']['article_part']['VALUE']) && (array_intersect($arResult['LEVEL_PARENTS'], array_merge(SECTION_TYPE_2, SECTION_TYPE_4)))): ?>
                                 <div class="article_block">
                                     <div class="muted font_sxs"><?= Loc::getMessage('ARTICLE_FULL'); ?>
                                         : <?= $arItem['PROPERTIES']['article_part']['VALUE']; ?>
@@ -630,7 +630,11 @@
                                             <? if ($bUseSkuProps && $arItem["OFFERS"]): ?>
                                                 <? \Aspro\Functions\CAsproMaxItem::showSectionGallery(array('ITEM' => $arItem["OFFERS"][$arItem["OFFERS_SELECTED"]], 'RESIZE' => $arResult['CUSTOM_RESIZE_OPTIONS'])); ?>
                                             <? else: ?>
-                                                <? \Aspro\Functions\CAsproMaxItem::showSectionGallery(array('ITEM' => $arItem, 'RESIZE' => $arResult['CUSTOM_RESIZE_OPTIONS'])); ?>
+                                                <?php if ($arItem['PREVIEW_PICTURE']): ?>
+                                                    <? \Aspro\Functions\CAsproMaxItem::showSectionGallery(array('ITEM' => $arItem, 'RESIZE' => $arResult['CUSTOM_RESIZE_OPTIONS'])); ?>
+                                                <?php else: ?>
+                                                    <a href="<?=$arItem["DETAIL_PAGE_URL"]?>" class="thumb"><img class="img-responsive " src="<?=SITE_TEMPLATE_PATH?>/images/empty_img_element.png" alt="<?=$arItem["NAME"]?>" title="<?=$arItem["NAME"]?>" /></a>
+                                                <?php endif; ?>
                                             <? endif; ?>
                                         <? else: ?>
                                             <? \Aspro\Functions\CAsproMaxItem::showImg($arParams, $arItem, false); ?>

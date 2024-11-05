@@ -214,7 +214,21 @@ if (!empty($arResult['ITEMS'])){
 	}
 
 	$arOfferProps = implode(';', $arParams['OFFERS_CART_PROPERTIES']);
-    $allPrices = getItemPrices($arResult);
+    $allPrices = getItemPrices(array_column($arResult['ITEMS'], 'ID'));
+
+    $currentSection = \Bitrix\Iblock\SectionTable::getRowById($arResult["IBLOCK_SECTION_ID"] ?? $arParams['SECTION_ID']);
+    $secondLevelParent = \Bitrix\Iblock\SectionTable::getList([
+        'filter' => [
+            '<=LEFT_MARGIN' => $currentSection['LEFT_MARGIN'], // Родитель должен быть слева от текущего раздела
+            '>=RIGHT_MARGIN' => $currentSection['RIGHT_MARGIN'], // И справа от текущего
+            '=IBLOCK_ID' => $arResult['IBLOCK_ID'], // Указываем инфоблок
+            '=DEPTH_LEVEL' => [1, 2] // Ищем только раздел второго уровня
+        ],
+        'select' => ['ID', 'CODE'],
+        'limit' => 2
+    ])->fetchAll();
+    $arResult['LEVEL_PARENTS'] = array_column($secondLevelParent, 'ID');
+    $arResult['LEVEL_PARENTS'][] = $arParams['SECTION_ID'];
 
 	$arNewItemsList = array();
 	foreach ($arResult['ITEMS'] as $key => $arItem)
