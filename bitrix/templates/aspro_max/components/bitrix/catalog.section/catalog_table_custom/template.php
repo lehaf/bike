@@ -450,7 +450,7 @@ $bColProps = $arParams['SHOW_PROPS_TABLE'] == 'cols';
                                                 </div>
                                             <?php endif; ?>
                                             <?php if (!empty($arItem['PRICES_CUST'])): ?>
-                                                <?php $isPriceContract = (is_array($arItem['PROPERTIES']['PRICE_TYPE']['VALUE_XML_ID']) && in_array('contract-price', $arItem['PROPERTIES']['PRICE_TYPE']['VALUE_XML_ID'])); ?>
+                                                <?php $isPriceContract = (!empty($arItem['PROPERTIES']['contract_price']['VALUE'])); ?>
                                                 <div class="item-price">
                                                     <div class="cost prices clearfix">
                                                         <div class="price_matrix_wrapper ">

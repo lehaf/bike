@@ -377,7 +377,7 @@
                     <? $itemSubTitle = ob_get_clean(); ?>
 
                     <? ob_start(); ?>
-                    <?php $isPriceContract = (is_array($arItem['PROPERTIES']['PRICE_TYPE']['VALUE_XML_ID']) && in_array('contract-price', $arItem['PROPERTIES']['PRICE_TYPE']['VALUE_XML_ID'])); ?>
+                    <?php $isPriceContract = (!empty($arItem['PROPERTIES']['contract_price']['VALUE'])); ?>
                     <?php if (!empty($arItem['PRICES_CUST'])): ?>
                         <div class="cost prices clearfix<?= $arParams['TYPE_VIEW_BASKET_BTN'] === 'TYPE_2' && !$bBigBlock ? ' prices--with_icons_block' : '' ?>">
                             <div class="price_matrix_wrapper prices-row">
