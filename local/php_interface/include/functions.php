@@ -227,9 +227,8 @@ function convertDate(string $date, bool $withTime = false): string
     return ($withTime) ? ($dayMonth . ' в ' . $time) : ($dayMonth);
 }
 
-function getItemPrices(array $arResult)
+function getItemPrices(array $itemsId)
 {
-    $itemsId = array_column($arResult['ITEMS'], 'ID');
     $baseCurrency = \Bitrix\Currency\CurrencyManager::getBaseCurrency();
     $currencies = \Bitrix\Currency\CurrencyTable::getList([
         'select' => ['CURRENCY'],
@@ -257,6 +256,20 @@ function getItemPrices(array $arResult)
     return ["desired" => $desiredCurrencies, "base" => $baseCurrency, "prices" => $pricesByProductId];
 }
 
+function getElementCity(int $propertyId) : string
+{
+    return \Bitrix\Sale\Location\LocationTable::getList([
+        'filter' => [
+            "=TYPE.CODE" => "CITY",
+            '=ID' => $propertyId,
+            '=NAME.LANGUAGE_ID' => 'ru',
+            '=TYPE.NAME.LANGUAGE_ID' => 'ru',
+        ],
+        'select' => [
+            'NAME_RU' => 'NAME.NAME',
+        ],
+    ])->fetch()['NAME_RU'] ?? '';
+}
 function convertPrice(array $itemPrices, array $desiredCurrencies, string $baseCurrency): array
 {
     $basePrice = $itemPrices['PRICE'];
