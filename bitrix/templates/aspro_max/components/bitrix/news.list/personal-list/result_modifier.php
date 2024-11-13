@@ -53,7 +53,7 @@ $arResult['SECTIONS'] = $filteredItems;
 
 if (!empty($arResult['ITEMS'])) {
     //получение доступных валют и цен
-    $allPrices = getItemPrices($arResult);
+    $allPrices = getItemPrices(array_column($arResult['ITEMS'], 'ID'));
 
     foreach ($arResult['ITEMS'] as &$item) {
         //получение ссылки на детальную страницу
