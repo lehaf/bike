@@ -662,10 +662,10 @@ $notShowLabel = ['PRICE_TYPE'];
 
                                 <?php if ($key === 'NAME'): ?>
                                     <div class="form-group">
-                                        <label for="nameText" class="form-group__label">Название<span>*</span></label>
+                                        <label for="nameText" class="form-group__label">Название товара/услуги<span>*</span></label>
                                         <div class="form-row form-row--rel">
                                         <textarea name="NAME" class="custom-textarea check-block"
-                                                  placeholder="Введите название запчасти"
+                                                  placeholder="Введите название товара/услуги"
                                                   id="nameText"
                                                   maxlength="2000"
                                         ><?= $arResult['ELEMENT_PROPS']['NAME']?></textarea>
@@ -679,7 +679,7 @@ $notShowLabel = ['PRICE_TYPE'];
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="error-form">Необходимо заполнить «Название»</div>
+                                        <div class="error-form">Необходимо заполнить «Название товара/услуги»</div>
                                     </div>
                                 <?php endif; ?>
 
@@ -712,10 +712,10 @@ $notShowLabel = ['PRICE_TYPE'];
                                     >
                                     </div>
                                     <div class="form-group">
-                                        <label for="nameText" class="form-group__label">Название<span>*</span></label>
+                                        <label for="nameText" class="form-group__label">Название товара/услуги<span>*</span></label>
                                         <div class="form-row form-row--rel">
                                         <textarea name="NAME" class="custom-textarea check-block"
-                                                  placeholder="Введите название запчасти" id="nameText"
+                                                  placeholder="Введите название товара/услуги" id="nameText"
                                                   maxlength="2000"><?= $arResult['ELEMENT_PROPS']['NAME'] ?></textarea>
                                             <div class="textarea-info">
                                                 Символов&nbsp;
@@ -727,7 +727,7 @@ $notShowLabel = ['PRICE_TYPE'];
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="error-form">Необходимо заполнить «Название»</div>
+                                        <div class="error-form">Необходимо заполнить «Название товара/услуги»</div>
                                     </div>
                                 <?php endif; ?>
 
