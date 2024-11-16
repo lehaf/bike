@@ -406,7 +406,7 @@ $notShowLabel = ['PRICE_TYPE'];
                                                                 <div class="form-group <?= (in_array($field['ID'], $arResult['CUSTOM_CHECK'] ?? [])) ? '' : 'form-group--radio-mini' ?> <?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? 'form-checked check-block' : '' ?>">
                                                                     <label class="form-group__label"><?= $field['NAME'] ?><?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? '<span>*</span>' : '' ?></label>
                                                                     <div class="form-row <?= (in_array($field['ID'], $arResult['CUSTOM_CHECK'] ?? [])) ? 'form-row-radio-block' : 'form-row-radio-mini' ?>">
-                                                                        <?php foreach ($field['PROPERTY_LIST'] as $key => $item): ?>
+                                                                        <?php foreach ($field['PROPERTY_LIST'] as $item): ?>
                                                                             <div class="form-col">
                                                                                 <input type="radio" class="radio-block"
                                                                                        name="<?= $field['CODE'] ?>"
