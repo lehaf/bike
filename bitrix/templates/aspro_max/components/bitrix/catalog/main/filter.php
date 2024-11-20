@@ -1,8 +1,13 @@
+<?php use classes\Filter;?>
 <?if('Y' == $arParams['USE_FILTER']):?>
 	<?
 	if($arTheme["FILTER_VIEW"]["VALUE"] == 'COMPACT'){
 		if($arParams["AJAX_FILTER_CATALOG"]=="Y"){
-			$template_filter = 'main_compact_ajax';
+			if(array_intersect($parentsId, SECTIONS_WITH_LOCATION)) {
+				$template_filter = 'main_compact_ajax_custom';
+			} else {
+				$template_filter = 'main_compact_ajax';
+			}
 		}
 		else{
 			$template_filter = 'main_compact';
@@ -16,6 +21,18 @@
 	}
 	?>
 	<?
+	global $smartPreFilter;
+	$smartPreFilter = [];
+	$FILTER_NAME = (string)$arParams["FILTER_NAME"];
+
+	if($ajax || $_GET[$FILTER_NAME . '_country']) {
+		\Bitrix\Main\Diag\Debug::dumpToFile($_GET);
+		$cities = Filter::getCitiesFilterId($_GET, $FILTER_NAME);
+		if (!empty($cities)) {
+			$smartPreFilter['=PROPERTY_' . Filter::getPropertyId($arParams['IBLOCK_ID'], 'country')] = $cities;
+		}
+	}
+
 	$TOP_VERTICAL_FILTER_PANEL = $arTheme["LEFT_BLOCK_CATALOG_SECTIONS"]['VALUE'] == 'Y' ? $arTheme["FILTER_VIEW"]['DEPENDENT_PARAMS']['TOP_VERTICAL_FILTER_PANEL']['VALUE'] : 'N';
 	$APPLICATION->IncludeComponent(
 		"bitrix:catalog.smart.filter",
@@ -26,6 +43,7 @@
 			"AJAX_FILTER_FLAG" => ( isset($isAjaxFilter) ? $isAjaxFilter : '' ),
 			"SECTION_ID" => (isset($arSection["ID"]) ? $arSection["ID"] : ''),
 			"FILTER_NAME" => $arParams["FILTER_NAME"],
+			"PREFILTER_NAME" => 'smartPreFilter',
 			"PRICE_CODE" => ($arParams["USE_FILTER_PRICE"] == 'Y' ? $arParams["FILTER_PRICE_CODE"] : $arParams["PRICE_CODE"]),
 			"CACHE_TYPE" => $arParams["CACHE_TYPE"],
 			"CACHE_TIME" => $arParams["CACHE_TIME"],
