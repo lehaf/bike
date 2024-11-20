@@ -385,7 +385,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (isShowModels && modelEl) {
         let sectId = isShowModels.getAttribute('data-id');
-        getCategories('getMarks', 'categories', sectId);
+        getCategories('getMarks', 'categoryWithPopular', sectId);
     }
 
     function getCategories(flag, action, sectId) {
@@ -399,9 +399,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }).then(data => {
             if (data.length !== 0) {
                 if (flag === 'getMarks') {
-                    let listMarksFull = data;
-                    let listMarks = listMarksFull.slice(0, 27);
-                    let flag = (listMarks.length >= 27);
+                    let listMarksFull = data['fullCategories'];
+                    let listMarks = (data['popularCategories'].length !== 0) ? data['popularCategories'] : listMarksFull.slice(0, 27);
+                    let flag = (listMarksFull.length >= 27);
                     objContent(listMarks, flag);
                     inputBrand(listMarksFull);
                     clickbrandBlock(listMarksFull);

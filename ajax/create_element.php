@@ -8,7 +8,7 @@ if (isset($_POST['action'])) {
     if ($_POST['action'] === 'categories') {
         $sectId = (int)$_POST['sectId'];
         $categories = [];
-        if($sectId) {
+        if ($sectId) {
             $categories = getSections([
                 '=IBLOCK_ID' => CATALOG_IBLOCK_ID,
                 '=IBLOCK_SECTION_ID' => $sectId,
@@ -43,10 +43,24 @@ if (isset($_POST['action'])) {
 
         echo json_encode($categories);
         die();
-    }
+    } elseif ($_POST['action'] === 'categoryWithPopular') {
+        $sectId = (int)$_POST['sectId'];
+        $categories = [];
+        $popularSections = [];
+        if ($sectId) {
+            $categories = getSections([
+                '=IBLOCK_SECTION_ID' => $sectId,
+            ]);
+            $popularSections = getSections([
+                '=ACTIVE' => 'Y',
+                '!UF_POPULAR' => false,
+                '=IBLOCK_SECTION_ID' => $sectId
+            ]);
+        }
 
-    //получение областей
-    if ($_POST['action'] === 'location') {
+        echo json_encode(['fullCategories' => $categories, 'popularCategories' => $popularSections]);
+        die();
+    } elseif ($_POST['action'] === 'location') { //получение областей
         $id = (int)$_POST['id'] ?? 0;
         $type = ($_POST['flag'] === 'getRegions') ? 'REGION' : 'CITY';
 
