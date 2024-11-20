@@ -36,6 +36,7 @@ if ($_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {
 }
 $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO', 'OTHER_FIELDS'];
 $notShowLabel = ['PRICE_TYPE'];
+
 ?>
     <div class="steps-content" data-iblock="<?= $arParams['IBLOCK_ID'] ?>" <?= $showCategories ?> >
         <?php if (isset($_GET['type'])): ?>
@@ -347,12 +348,12 @@ $notShowLabel = ['PRICE_TYPE'];
                                                     case "L": ?>
                                                         <?php if ($field["LIST_TYPE"] === 'L' && !empty($field['PROPERTY_LIST'])): ?>
                                                             <?php $isSearch = (strpos($field['CODE'], 'search') !== false) ? ['select-search', 'selectSearch'] : '' ?>
-                                                            <div class="form-group custom-select-inner form-group-custom-select <?= $isSearch[0] ?>">
+                                                            <div class="form-group custom-select-inner form-group-custom-select select-search">
                                                                 <label for="<?= $field['CODE'] ?>"
                                                                        class="form-group__label"><?= $field['NAME'] ?><?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? '<span>*</span>' : '' ?></label>
                                                                 <div class="form-row">
                                                                     <select name="<?= $field['CODE'] ?>"
-                                                                            class="select-type custom-select <?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? 'check-block' : '' ?> <?= $isSearch[1] ?>"
+                                                                            class="select-type custom-select <?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? 'check-block' : '' ?> selectSearch"
                                                                             id="<?= $field['CODE'] ?>">
                                                                         <option value="" selected>
                                                                             <?= $field['NAME'] ?>
@@ -430,7 +431,7 @@ $notShowLabel = ['PRICE_TYPE'];
                                                     <?php case "S": ?>
                                                     <?php if ($field['USER_TYPE'] === 'SAsproMaxRegionLocation'): ?>
                                                         <?php if (!empty($arResult['COUNTRIES'])): ?>
-                                                            <div class="form-group custom-select-inner form-group-custom-select country">
+                                                            <div class="form-group custom-select-inner form-group-custom-select country select-search">
                                                                 <label for="country"
                                                                        class="form-group__label">Страна<?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? '<span>*</span>' : '' ?></label>
                                                                 <div class="form-row">
@@ -455,7 +456,7 @@ $notShowLabel = ['PRICE_TYPE'];
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="form-group custom-select-inner form-group-custom-select">
+                                                            <div class="form-group custom-select-inner form-group-custom-select select-search">
                                                                 <label for="region"
                                                                        class="form-group__label">Область<?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? '<span>*</span>' : '' ?></label>
                                                                 <div class="form-row">
@@ -474,7 +475,7 @@ $notShowLabel = ['PRICE_TYPE'];
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="form-group custom-select-inner form-group-custom-select">
+                                                            <div class="form-group custom-select-inner form-group-custom-select select-search">
                                                                 <label for="city"
                                                                        class="form-group__label">Город<?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? '<span>*</span>' : '' ?></label>
                                                                 <div class="form-row">

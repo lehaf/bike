@@ -24,25 +24,43 @@ document.addEventListener("DOMContentLoaded", () => {
     let selectCategory = '';
     let subSelect = '';
 
-    console.log('select');
     setSelect(selectList);
 
     function setSelect(selectList) {
         selectList.forEach((el) => {
             if (el.classList.contains("selectSearch")) {
                 let text = el.getAttribute("data-text")
+                const options = Array.from(el.options)
+                    // .filter((option) => (option.value !== 'reset' && option.value !== ''))
+                    .map((option) => ({
+                    value: option.value,
+                    label: option.text, // Берем текст из <option>
+                }));
+
                 const selectSearch = new Choices(el, {
                     searchEnabled: true,
                     shouldSort: false,
                     searchPlaceholderValue: text,
+                    placeholder: true,
+                    placeholderValue: "hello",
+                    removeItems: true,
                     position: 'bottom',
                     noResultsText: 'Ничего не найдено',
+                    searchFields: ['label'],
+                    fuseOptions: {
+                        keys: ['label'], // Поиск только по полю label
+                        threshold: 0.1, // Чем меньше значение, тем точнее поиск
+                        caseSensitive: false, // Игнорировать регистр
+                        distance: 100, // Максимальное расстояние от начала совпадения
+                    },
                 })
+                selectSearch.setChoices(options, 'value', 'label', true);
+
                 if (el.id === 'categorySelect') {
                     selectCategory = selectSearch;
                 }
 
-                listenerSelect(el, selectSearch)
+                listenerSelect(el, selectSearch);
             } else {
                 const selectType = new Choices(el, {
                     searchEnabled: false,
@@ -53,8 +71,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 selectTypes.push(selectType);//new
             }
         })
-
         $('.custom-select-inner .choices__item--choice[data-id=1]').hide();
+
     }
 
     function listenerSelect(el, select) {
@@ -140,9 +158,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
             let elementId = el.getAttribute('data-el');
-            console.log(el);
+
             if (elementId) {
-                console.log(elementId);
                 elChoices.setChoiceByValue(elementId);
                 elChoices.enable();
             }
@@ -174,22 +191,58 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (countryEl && regionEl && cityEl) {
+        const countries = Array.from(countryEl.options)
+            // .filter((option) => (option.value !== 'reset' && option.value !== ''))
+            .map((option) => ({
+                value: option.value,
+                label: option.text, // Берем текст из <option>
+            }));
+
         const countrySelect = new Choices(countryEl, {
-            searchEnabled: false,
+            searchEnabled: true,
             shouldSort: false,
-            position: 'bottom'
+            removeItems: true,
+            position: 'bottom',
+            noResultsText: 'Ничего не найдено',
+            searchFields: ['label'],
+            fuseOptions: {
+                keys: ['label'], // Поиск только по полю label
+                threshold: 0.1, // Чем меньше значение, тем точнее поиск
+                caseSensitive: false, // Игнорировать регистр
+                distance: 100, // Максимальное расстояние от начала совпадения
+            },
         })
 
+        countrySelect.setChoices(countries, 'value', 'label', true);
+
         const regionSelect = new Choices(regionEl, {
-            searchEnabled: false,
+            searchEnabled: true,
             shouldSort: false,
-            position: 'bottom'
+            removeItems: true,
+            position: 'bottom',
+            noResultsText: 'Ничего не найдено',
+            searchFields: ['label'],
+            fuseOptions: {
+                keys: ['label'], // Поиск только по полю label
+                threshold: 0.1, // Чем меньше значение, тем точнее поиск
+                caseSensitive: false, // Игнорировать регистр
+                distance: 100, // Максимальное расстояние от начала совпадения
+            },
         })
 
         const citySelect = new Choices(cityEl, {
-            searchEnabled: false,
+            searchEnabled: true,
             shouldSort: false,
-            position: 'bottom'
+            removeItems: true,
+            position: 'bottom',
+            noResultsText: 'Ничего не найдено',
+            searchFields: ['label'],
+            fuseOptions: {
+                keys: ['label'], // Поиск только по полю label
+                threshold: 0.1, // Чем меньше значение, тем точнее поиск
+                caseSensitive: false, // Игнорировать регистр
+                distance: 100, // Максимальное расстояние от начала совпадения
+            },
         })
 
         addListener(countryEl, countrySelect, regionSelect, citySelect)
@@ -312,7 +365,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 $(".fields .step-form__btn:not(.step-form__btn-submit)").on("click", stepBtn);
             }
 
-            const selectList = document.querySelectorAll(".custom-select");
+            const selectList = document.querySelectorAll(".fields .custom-select");
             setSelect(selectList);
             setColor();
             $('#stepForm').removeClass('blur');
