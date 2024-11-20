@@ -468,7 +468,7 @@ document.addEventListener("DOMContentLoaded", () => {
         function objContent(obj, flag) {
             brandBlock.innerHTML = "";
             for (let el in obj) {
-                if(!obj[el].PICTURE) obj[el].PICTURE = '/bitrix/templates/aspro_max/images/empty_img_element.png';
+                if(!obj[el].PICTURE) obj[el].PICTURE = '/bitrix/templates/aspro_max/images/empty_brand_img.svg';
                 let itemBrand = templateBrandsItem(obj[el].ID, obj[el].PICTURE, obj[el].NAME);
 
                 brandBlock.innerHTML = brandBlock.innerHTML + itemBrand;
