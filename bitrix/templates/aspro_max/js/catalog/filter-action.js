@@ -1,58 +1,71 @@
 let isBlockMoved = false;
+//перемещение фильтра за пределы блока с объявлениями
 $(document).on('ajaxSuccess', function (event, xhr, settings) {
     if (settings.url.includes('catalog') && isBlockMoved) {
         document.querySelector('.js-load-wrapper #filter').remove();
     }
 })
+//загрузка страницы (прелоудер)
+let container = document.querySelector('.container');
+if (container) container.classList.add('loading-state');
 
 document.addEventListener('DOMContentLoaded', () => {
     let form = document.querySelector('#filter');
-    //отправка формы
     if (form) {
         let filter = new AjaxFilter(form);
-        let container = document.querySelector('.container');
-        if(container) container.classList.add('loading-state');
-        filter.getElementsCount();
+
         isBlockMoved = filter.replaceFilterBlock();
 
-        let checkboxes = form.querySelectorAll('input[type="checkbox"], input[type="radio"]');
+        let checkboxes = form.querySelectorAll('input[type="checkbox"]:not([name="emailMes"]), input[type="radio"]');
         let inputs = form.querySelectorAll('input[type="text"]');
         let selects = form.querySelectorAll('select');
+        let resetInputBtns = form.querySelectorAll(".reset-input");
 
-        history.replaceState(null, null, filter.generateUrl());
+        let url = filter.generateUrl();
+        for (let key in filter.params) {
+            if (key.includes(filter.filterName + '_mark')) url += "&" + key + "=" + filter.params[key];
+        }
 
-        if (inputs.length !== 0) {
-            inputs.forEach(input => {
-                let inputVal = '';
-                input.addEventListener('keyup', (e) => {
-                    e.target.value = e.target.value.replace(/[^\d]/g, '');
-                    filter.inputParams(e.target);
-                });
+        history.replaceState(null, null, url);
+        filter.getElementsCount(url);
 
-                input.addEventListener('focus', (e) => {
-                    inputVal = e.target.value;
-                });
+        inputs.forEach(input => {
+            let inputVal = '';
 
-                input.addEventListener('blur', (e) => {
-                    if (inputVal !== e.target.value) {
-                        filter.getElementsCount();
-                    }
-                });
+            input.addEventListener('focus', (e) => {
+                inputVal = e.target.value;
             });
-        }
 
-        if (selects.length !== 0) {
-            selects.forEach(select => {
-                select.addEventListener('change', (e) => {
-                    filter.changeSelect(select);
-                })
+            input.addEventListener('blur', (e) => {
+                if (inputVal !== e.target.value) {
+                    filter.getElementsCount();
+                }
+            });
+        });
+
+        resetInputBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filter.getElementsCount();
             })
-        }
+        })
+
+        //изменение select
+        selects.forEach(select => {
+            select.addEventListener('change', (e) => {
+                filter.changeSelect(select);
+            })
+
+            if (select.multiple) {
+                select.addEventListener('removeItem', (event) => {
+                    filter.getElementsCount();
+                })
+            }
+        })
 
         document.body.addEventListener('click', (event) => {
             if (event.target.closest(".add-select")) {
                 let flexRows = document.querySelectorAll('.flex-row--new');
-                if(flexRows.length !== 0) {
+                if (flexRows.length !== 0) {
                     let flexLastRow = flexRows[flexRows.length - 1];
                     let selects = flexLastRow.querySelectorAll('select');
                     selects.forEach(select => {
@@ -66,6 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         })
 
+        //получение количества элементов на checkboxes
         if (checkboxes.length !== 0) {
             checkboxes.forEach((check) => {
                 check.addEventListener('click', (e) => {
@@ -74,6 +88,40 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
+        //сброс формы
+        form.addEventListener('reset', (event) => {
+            event.preventDefault();
+            inputs.forEach(input => {
+                input.value = '';
+            });
+
+            checkboxes.forEach(check => {
+                check.checked = false;
+                if (check.classList.contains('radio-block') && check.value === '') {
+                    check.checked = true;
+                }
+            });
+
+            selects.forEach(select => {
+                Array.from(select.options).forEach(option => {
+                    option.selected = false;
+                });
+            })
+
+            let activeBlocks = document.querySelectorAll('.is-active');
+            let countBlock = document.querySelector('.cnt-parameters');
+
+            activeBlocks.forEach(block => {
+                block.classList.remove('is-active')
+            })
+            countBlock.textContent = "0";
+            countBlock.style.visibility = "hidden";
+
+            history.replaceState(null, null, filter.emptyUrl);
+            filter.getElementsCount();
+        })
+
+        //отправка формы
         form.addEventListener('submit', (e) => {
             e.preventDefault();
             filter.submit();
@@ -83,10 +131,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function AjaxFilter(form) {
     this.url = window.location.pathname;
+    this.emptyUrl = window.location.pathname + "?set_filter=Y";
     this.paramsUrl = "";
     this.params = this.getParams();
     this.form = form;
-    this.filterName = this.form.getAttribute('data-filter') || "arFilter"
+    this.filterName = this.form.getAttribute('data-filter') || "arFilter";
+    this.sectionId = this.form.getAttribute('data-sect') || "0";
 }
 
 AjaxFilter.prototype.getParams = function () {
@@ -119,28 +169,11 @@ AjaxFilter.prototype.replaceFilterBlock = function () {
     return isBlockMoved;
 }
 
-AjaxFilter.prototype.generateSort = function () {
-    let sortBlock = document.querySelector('.sort');
-    let options = sortBlock.querySelectorAll('option');
-    let sort = sortBlock.querySelector('option:checked').value;
-
-    sortBlock.addEventListener('click', e => {
-        if (!e.target.classList.contains('sel')) return;
-        options.forEach(option => {
-            if (option.text == e.target.innerText.trim()) sort = option.value;
-        })
-    })
-
-    return sort;
-}
-
 AjaxFilter.prototype.generateUrl = function () {
     let symbol = (this.params.hasOwnProperty("") && this.params[""] === undefined) ? "&" : "?";
-
     this.paramsUrl = symbol + "set_filter=Y";
     const filterData = {};
     let formData = new FormData(this.form);
-
     //преобразование марок и моделей
     let delParams = [];
     formData.forEach((value, key) => {
@@ -169,7 +202,6 @@ AjaxFilter.prototype.generateUrl = function () {
     for (const el in filterData) {
         formData.append("arFilter_mark[" + el + "]", filterData[el])
     }
-    console.log(formData);
     //фильтрация множественных селектов
     let multipleSelects = document.querySelectorAll('select[multiple]');
     multipleSelects.forEach(selectElement => {
@@ -181,8 +213,6 @@ AjaxFilter.prototype.generateUrl = function () {
             formData.delete(selectElement.name);
         }
     });
-
-    // console.log(formData);
 
     for (let pair of formData.entries()) {
         if (pair[1].length !== 0) {
@@ -200,12 +230,22 @@ AjaxFilter.prototype.generateUrl = function () {
     return this.url + this.paramsUrl;
 }
 
-AjaxFilter.prototype.getElementsCount = function () {
-    this.generateUrl();
-    console.log(this.generateUrl());
-    fetch(this.url + this.paramsUrl, {
+AjaxFilter.prototype.getElementsCount = function (url = '') {
+    if (url === "") {
+        this.generateUrl();
+    } else {
+        this.paramsUrl = url.split('?')[1];
+    }
+
+    document.querySelector('.result-block').classList.add('loading-state');
+    fetch('/ajax/elements_filter.php', {
             method: 'POST',
-            body: new URLSearchParams({'ajaxCount': "y"}),
+            body: new URLSearchParams({
+                action: "ajaxCount",
+                url: this.paramsUrl,
+                filterName: this.filterName,
+                sectId: this.sectionId
+            }),
             headers: {
                 'X-Requested-With': 'XMLHttpRequest'
             }
@@ -221,12 +261,9 @@ AjaxFilter.prototype.getElementsCount = function () {
                 result.innerHTML = this.templateCountEmpty();
             }
         }
-        let blurBlocks = document.querySelectorAll('.loading-state');
-        if(blurBlocks.length !== 0) {
-            blurBlocks.forEach(block => {
-                block.classList.remove('loading-state');
-            })
-        }
+        document.querySelector('.result-block').classList.remove('loading-state');
+        document.querySelector('.container').classList.remove('loading-state');
+
         // document.querySelector('.num_el').innerHTML = "(" + data + ")";
     }).catch((error) => console.log(error));
 }
@@ -238,10 +275,19 @@ AjaxFilter.prototype.changeSelect = function (select) {
             option.selected = false;
         });
     }
+    document.querySelector('.result-block').classList.add('loading-state');
     this.getElementsCount();
 }
 
 AjaxFilter.prototype.submit = function () {
+    //убираем все параметры кроме фильтра
+    this.params = Object.keys(this.params)
+        .filter(key => key.includes(this.filterName) || key === 'set_filter')
+        .reduce((result, key) => {
+            result[key] = this.params[key];
+            return result;
+        }, {});
+
     let url = this.generateUrl();
     let catalog = document.querySelector('.inner_wrapper');
     catalog.classList.add('loading-state');
