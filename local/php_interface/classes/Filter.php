@@ -214,6 +214,10 @@ class Filter
                 $arrParams['!PROPERTY_' . self::getPropertyId($iblockId, 'VIDEO_YOUTUBE')] = false;
             }
 
+            if ($searchParams[$filterName . '_article']) {
+                $arrParams['=PROPERTY_' . self::getPropertyId($iblockId, 'article_part')] = $searchParams[$filterName . '_article'];
+            }
+
             $arrParams['IBLOCK_ID'] = $iblockId;
             $arrParams['SECTION_ID'] = $sectId; //подставить значение раздела, в котором находится фильтр
             $arrParams['INCLUDE_SUBSECTIONS'] = "Y";
