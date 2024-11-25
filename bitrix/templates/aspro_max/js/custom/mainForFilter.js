@@ -218,9 +218,11 @@ document.addEventListener("DOMContentLoaded", () => {
             selectTypes.forEach(selectType => {
                 selectType.setChoiceByValue('');
             });
-            regionSelect.setChoiceByValue('1');
+            countrySelect.setChoiceByValue('');
+
+            regionSelect.setChoiceByValue('');
             regionSelect.disable()
-            citySelect.setChoiceByValue('1');
+            citySelect.setChoiceByValue('');
             citySelect.disable()
 
             setTimeout(()=>{

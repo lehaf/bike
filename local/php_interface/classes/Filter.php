@@ -126,7 +126,7 @@ class Filter
         $searchParams = [];
         $arrParams = [];
         parse_str($url, $searchParams);
-        $skipParams = ['year', 'video', 'photo', 'mark', 'country', 'region', 'city'];
+        $skipParams = ['year', 'video', 'photo', 'mark', 'country', 'region', 'city', 'currency'];
 
         if (!empty($searchParams)) {
 
@@ -162,6 +162,29 @@ class Filter
                                 }
                             }
                         }
+                    }
+                }
+            }
+
+            $filterCurrency = $searchParams[$filterName . '_currency'];
+            if($filterCurrency && ($arrParams[">=CATALOG_PRICE_1"] || $arrParams["<=CATALOG_PRICE_1"])) {
+                $baseCurrency = \Bitrix\Currency\CurrencyManager::getBaseCurrency();
+                $currencies = \Bitrix\Currency\CurrencyTable::getList([
+                    'select' => ['CURRENCY'],
+                    'cache' => [
+                        'ttl' => 36000000,
+                        'cache_joins' => true
+                    ],
+                ])->fetchAll();
+                $desiredCurrencies = array_column($currencies, 'CURRENCY');
+
+                if ($filterCurrency !== $baseCurrency && in_array($searchParams[$filterName . '_currency'], $desiredCurrencies)) {
+                   if ($arrParams[">=CATALOG_PRICE_1"]) {
+                       $arrParams[">=CATALOG_PRICE_1"] = \CCurrencyRates::ConvertCurrency($arrParams[">=CATALOG_PRICE_1"], $filterCurrency, $baseCurrency );
+                   }
+
+                    if ($arrParams["<=CATALOG_PRICE_1"]) {
+                        $arrParams["<=CATALOG_PRICE_1"] = \CCurrencyRates::ConvertCurrency($arrParams["<=CATALOG_PRICE_1"], $filterCurrency, $baseCurrency );
                     }
                 }
             }
