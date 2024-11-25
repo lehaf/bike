@@ -572,14 +572,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
         $(".save-search").removeClass("active");
         if ($(this).is(':checked')) {
-            if(cntParamСontent.textContent == 0) {
-                cntParamСontent.style.visibility = 'visible';
+            if(cntParamСontent) {
+                if(cntParamСontent.textContent == 0) {
+                    cntParamСontent.style.visibility = 'visible';
+                }
+                cntParamСontent.textContent = +cntParamСontent.textContent + 1;
             }
-            cntParamСontent.textContent = +cntParamСontent.textContent + 1;
         } else {
-            cntParamСontent.textContent = +cntParamСontent.textContent - 1;
-            if(cntParamСontent.textContent == 0) {
-                cntParamСontent.style.visibility = 'hidden';
+            if(cntParamСontent) {
+                cntParamСontent.textContent = +cntParamСontent.textContent - 1;
+                if(cntParamСontent.textContent == 0) {
+                    cntParamСontent.style.visibility = 'hidden';
+                }
             }
         }
     });
@@ -594,7 +598,7 @@ document.addEventListener("DOMContentLoaded", () => {
     //подсчет активных параметров
     let activeElements = document.querySelectorAll('.is-active, input[type="checkbox"]:checked, input[type="radio"]:checked');
     activeElements.forEach(elem => {
-        if(elem.closest('.inner-more-form') && elem.value !== "") {
+        if(cntParamСontent && elem.closest('.inner-more-form') && elem.value !== "") {
             cntParamСontent.textContent++;
             cntParamСontent.style.visibility = 'visible';
         }
@@ -1076,16 +1080,18 @@ function selectableItems() {
 
 function cntParam(num, el) {
     $(".save-search").removeClass("active");
-    if(!el.classList.contains("is-active") && el.closest(".inner-more-form")){
-        cntParamСontent.textContent = +cntParamСontent.textContent + num;
-    }else if(num < 0 && el.closest(".inner-more-form")){
-        cntParamСontent.textContent = +cntParamСontent.textContent + num;
-    }
+    if(cntParamСontent) {
+        if(!el.classList.contains("is-active") && el.closest(".inner-more-form")){
+            cntParamСontent.textContent = +cntParamСontent.textContent + num;
+        }else if(num < 0 && el.closest(".inner-more-form")){
+            cntParamСontent.textContent = +cntParamСontent.textContent + num;
+        }
 
-    if (cntParamСontent.textContent > 0) {
-        cntParamСontent.style.visibility = 'visible';
-    } else {
-        cntParamСontent.style.visibility = 'hidden';
+        if (cntParamСontent.textContent > 0) {
+            cntParamСontent.style.visibility = 'visible';
+        } else {
+            cntParamСontent.style.visibility = 'hidden';
+        }
     }
 }
 
