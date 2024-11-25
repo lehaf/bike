@@ -121,31 +121,19 @@ class Filter
         return array_column($allRegions, 'ID');
     }
 
-    public function init(): void
+    public static function getFilterParams(string $url, string $filterName, int $iblockId, int $sectId) : array
     {
-        global $APPLICATION;
-
-        $entityUsersSearch = getHlblock("b_users_search");
-        $resUsersSearch = $entityUsersSearch::getList(["select" => ["*"]])->fetchAll();
-        $filterName = strstr($resUsersSearch[0]['UF_SEARCH_QUERY'], '_', true);
-        // Проверяем, есть ли результаты
-        if (empty($resUsersSearch)) {
-            return; // Если нет результатов, выход из метода
-        }
-
-        // Разбиваем параметры
         $searchParams = [];
-        parse_str($resUsersSearch[0]['UF_SEARCH_QUERY'], $searchParams);
+        $arrParams = [];
+        parse_str($url, $searchParams);
         $skipParams = ['year', 'video', 'photo', 'mark', 'country', 'region', 'city'];
-//        pr($searchParams);
 
         if (!empty($searchParams)) {
-            $arrParams = [];
+
             $propertyCache = []; // Кэш для свойств, чтобы не делать лишние запросы
 
             foreach ($searchParams as $key => $param) {
                 $paramParts = explode('_', str_replace($filterName . '_', '', $key));
-//                pr($paramParts);
                 if (!in_array($paramParts[0], $skipParams)) {
                     if (count($paramParts) === 2 || count($paramParts) === 1) {
                         $propertyId = $paramParts[0];
@@ -177,8 +165,85 @@ class Filter
                     }
                 }
             }
-            pr($searchParams);
-//            \Bitrix\Main\Diag\Debug::dumpToFile($arrParams);
+
+            if ($searchParams[$filterName . '_year_MIN'] || $searchParams[$filterName . '_year_MAX']) {
+                $yearFrom = $searchParams[$filterName . '_year_MIN'] ?? 1900;
+                $yearTo = $searchParams[$filterName . '_year_MAX'] ?? date('Y');
+                $arrParams['=PROPERTY_' . self::getPropertyId($iblockId, 'year')] = self::getYearsFilterId($yearFrom, $yearTo);
+            }
+
+            if ($searchParams[$filterName . '_mark']) {
+                $sections = self::getMarksFilterId($iblockId, $searchParams[$filterName . '_mark']);
+                if (!empty($sections)) $arrParams['IBLOCK_SECTION_ID'] = $sections;
+            }
+
+            $cities = self::getCitiesFilterId($searchParams, $filterName);
+
+            if(!empty($cities)) {
+                $arrParams['=PROPERTY_' . self::getPropertyId($iblockId, 'country')] = $cities;
+            }
+
+            $arrParams['IBLOCK_ID'] = $iblockId;
+            $arrParams['SECTION_ID'] = $sectId; //подставить значение раздела, в котором находится фильтр
+            $arrParams['INCLUDE_SUBSECTIONS'] = "Y";
+            $arrParams['ACTIVE'] = 'Y';
+        }
+        return $arrParams;
+    }
+    public function init() : void
+    {
+        global $APPLICATION;
+
+        $entityUsersSearch = getHlblock("b_users_search");
+        $resUsersSearch = $entityUsersSearch::getList(["select" => ["*"]])->fetchAll();
+        $filterName = strstr($resUsersSearch[0]['UF_SEARCH_QUERY'], '_', true);
+        // Проверяем, есть ли результаты
+        if (empty($resUsersSearch)) {
+            return; // Если нет результатов, выход из метода
+        }
+
+        // Разбиваем параметры
+        $searchParams = [];
+        parse_str($resUsersSearch[0]['UF_SEARCH_QUERY'], $searchParams);
+        $skipParams = ['year', 'video', 'photo', 'mark', 'country', 'region', 'city'];
+
+        if (!empty($searchParams)) {
+            $arrParams = [];
+            $propertyCache = []; // Кэш для свойств, чтобы не делать лишние запросы
+
+            foreach ($searchParams as $key => $param) {
+                $paramParts = explode('_', str_replace($filterName . '_', '', $key));
+                if (!in_array($paramParts[0], $skipParams)) {
+                    if (count($paramParts) === 2 || count($paramParts) === 1) {
+                        $propertyId = $paramParts[0];
+                        $hashValue = $paramParts[1] ?? $param;
+                        $isNumber = ($paramParts[1] === 'MIN' || $paramParts[1] === 'MAX');
+                        $propertyKey = ($paramParts[0] === 'P1') ? "CATALOG_PRICE_1" : "PROPERTY_" . $propertyId;
+
+                        if ($isNumber) {
+                            $operator = ($paramParts[1] === 'MIN') ? ">=" : "<=";
+                            $arrParams[$operator . $propertyKey] = $param;
+                        } else {
+                            // Проверяем, есть ли кэш для данного свойства
+                            if (!isset($propertyCache[$propertyId])) {
+                                $propertyCache[$propertyId] = PropertyEnumerationTable::getList([
+                                    "filter" => ["=PROPERTY_ID" => $propertyId],
+                                    "select" => ["ID"]
+                                ])->fetchAll();
+                            }
+
+                            // Проверяем и добавляем значение, если оно совпадает с хэшем
+                            if (!empty($propertyCache[$propertyId])) {
+                                foreach ($propertyCache[$propertyId] as $prop) {
+                                    if (abs(crc32($prop["ID"])) == $hashValue) {
+                                        $arrParams['=' . $propertyKey][] = $prop['ID'];
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
 
             if ($searchParams[$filterName . '_year_MIN'] || $searchParams[$filterName . '_year_MAX']) {
                 $yearFrom = $searchParams[$filterName . '_year_MIN'] ?? 1900;

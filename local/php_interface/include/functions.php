@@ -72,6 +72,34 @@ function getSections(array $filter): array
     return $sections;
 }
 
+function getPopularAndFullCategories(int $sectId): array
+{
+    $entity = \Bitrix\Iblock\Model\Section::compileEntityByIblock(CATALOG_IBLOCK_ID);
+
+    $categories = $entity::getList([
+        "select" => ['ID', 'CODE', 'NAME'],
+        "filter" => ['=IBLOCK_SECTION_ID' => $sectId, '=ACTIVE' => 'Y'],
+        "order" => ['SORT' => 'ASC'],
+        'cache' => [
+            'ttl' => 36000000,
+            'cache_joins' => true
+        ],
+    ])->fetchAll();
+    $popularSections = $entity::getList([
+        "select" => ['ID', 'CODE', 'NAME', 'UF_POPULAR'],
+        "filter" => ['=ACTIVE' => 'Y', '!UF_POPULAR' => false, '=IBLOCK_SECTION_ID' => $sectId],
+        "order" => ['SORT' => 'ASC'],
+        'cache' => [
+            'ttl' => 36000000,
+            'cache_joins' => true
+        ],
+    ])->fetchAll();
+
+    if(empty($popularSections)) $popularSections = $categories;
+
+    return ['fullCategories' => $categories ?? [], 'popularCategories' => $popularSections ?? []];
+}
+
 function getHlblock(string $name): string
 {
     $hlblock = \Bitrix\Highloadblock\HighloadBlockTable::getList([
@@ -256,7 +284,7 @@ function getItemPrices(array $itemsId)
     return ["desired" => $desiredCurrencies, "base" => $baseCurrency, "prices" => $pricesByProductId];
 }
 
-function getElementCity(int $propertyId) : string
+function getElementCity(int $propertyId): string
 {
     return \Bitrix\Sale\Location\LocationTable::getList([
         'filter' => [
@@ -270,6 +298,7 @@ function getElementCity(int $propertyId) : string
         ],
     ])->fetch()['NAME_RU'] ?? '';
 }
+
 function convertPrice(array $itemPrices, array $desiredCurrencies, string $baseCurrency): array
 {
     $basePrice = $itemPrices['PRICE'];

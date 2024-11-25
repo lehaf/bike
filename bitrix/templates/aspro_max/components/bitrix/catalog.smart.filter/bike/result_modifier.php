@@ -30,7 +30,7 @@ if (!empty($arResult["ITEMS"])) {
         }
     }
 
-    $currentSection = \Bitrix\Iblock\SectionTable::getRowById($arParams['START_SECTION_ID']);
+    $currentSection = \Bitrix\Iblock\SectionTable::getRowById($arParams['START_SECTION_ID'] ?? $arParams['SECTION_ID']);
     if ((int)$currentSection['DEPTH_LEVEL'] === 3) {
         $newItems['MARK'] = $currentSection['ID'];
     } elseif ((int)$currentSection["DEPTH_LEVEL"] === 4) {
