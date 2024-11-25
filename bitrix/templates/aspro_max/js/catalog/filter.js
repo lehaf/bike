@@ -112,7 +112,7 @@ if (foundBrandBlock) {
         return res.json();
     }).then(data => {
         fullDataFoundBrand = data['fullCategories'];
-        popularDataFoundBrand = data['popularCategories'];
+        popularDataFoundBrand = (data['popularCategories'].length !== 0) ? data['popularCategories'] : data['fullCategories'];
         previewFoundBrand();
     }).catch((error) => console.log(error));
 }

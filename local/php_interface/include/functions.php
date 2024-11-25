@@ -95,8 +95,6 @@ function getPopularAndFullCategories(int $sectId): array
         ],
     ])->fetchAll();
 
-    if(empty($popularSections)) $popularSections = $categories;
-
     return ['fullCategories' => $categories ?? [], 'popularCategories' => $popularSections ?? []];
 }
 
