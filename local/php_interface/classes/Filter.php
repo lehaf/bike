@@ -206,6 +206,14 @@ class Filter
                 $arrParams['=PROPERTY_' . self::getPropertyId($iblockId, 'country')] = $cities;
             }
 
+            if ($searchParams[$filterName . '_photo']) {
+                $arrParams['!PREVIEW_PICTURE'] = false;
+            }
+
+            if ($searchParams[$filterName . '_video']) {
+                $arrParams['!PROPERTY_' . self::getPropertyId($iblockId, 'VIDEO_YOUTUBE')] = false;
+            }
+
             $arrParams['IBLOCK_ID'] = $iblockId;
             $arrParams['SECTION_ID'] = $sectId; //подставить значение раздела, в котором находится фильтр
             $arrParams['INCLUDE_SUBSECTIONS'] = "Y";
