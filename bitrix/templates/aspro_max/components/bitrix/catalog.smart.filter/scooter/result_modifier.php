@@ -6,17 +6,26 @@ $arResult['SECTION']['CODE'] = \Bitrix\Iblock\SectionTable::getList([
 ])->fetch()['CODE'];
 
 if(!empty($arResult["ITEMS"])) {
-//    $categories = getSections([
-//        '=IBLOCK_ID' => CATALOG_IBLOCK_ID,
-//        '=IBLOCK_SECTION_ID' => $arResult['SECTION']['ID'],
-//    ]);
-//    $arResult['MARKS'] = $categories;
-
     $newItems = [];
 
     foreach($arResult["ITEMS"] as $arItem) {
         $newItems[$arItem['CODE']] = $arItem;
+        $checkedValues = array_filter(array_column($arItem['VALUES'], 'CHECKED'));
+        if (!empty($checkedValues)) {
+            $newItems[$arItem['CODE']]['HAS_CHECKED'] = true;
+        }
     }
+
+    $currentSection = \Bitrix\Iblock\SectionTable::getRowById($arParams['START_SECTION_ID'] ?? $arParams['SECTION_ID']);
+    if ((int)$currentSection['DEPTH_LEVEL'] === 3) {
+        $newItems['MARK'] = $currentSection['ID'];
+    } elseif ((int)$currentSection["DEPTH_LEVEL"] === 4) {
+        $newItems['MARK'] = $currentSection['IBLOCK_SECTION_ID'];
+        $newItems['MODEL'] = $currentSection['ID'];
+    }
+
+    $arResult['FILTER_MARKS'] = array_keys($_GET[$arParams['FILTER_NAME'] . "_mark"] ?? []);
+    $arResult['FILTER_MODELS'] = $_GET[$arParams['FILTER_NAME'] . '_mark'] ?? [];
 
     $countries = \Bitrix\Sale\Location\LocationTable::getList([
         'filter' => [
@@ -29,49 +38,38 @@ if(!empty($arResult["ITEMS"])) {
             'NAME_RU' => 'NAME.NAME',
             'TYPE_CODE' => 'TYPE.CODE',
             'CODE'
-        ]
+        ],
+        'order' => [
+            'SORT' => 'ASC'
+        ],
+        'cache' => [
+            'ttl' => 36000000,
+            'cache_joins' => true
+        ],
     ])->fetchAll();
     $arResult['COUNTRIES'] = $countries;
 
-    $locationTree = [];
-    foreach ($newItems['country']['VALUES'] as $cityId => $city) {
-        $cityInfo = getLocation($cityId, 'CITY');
-        $regions = getLocation($cityInfo['PARENT_ID'], 'REGION');
-        $countriesInfo =  getLocation($regions['PARENT_ID'], 'COUNTRY');
-
-        if (!isset($locationTree[$countriesInfo['ID']])) {
-            $locationTree[$countriesInfo['ID']] = [
-                'ID' => $countriesInfo['ID'],
-                'NAME' => $countriesInfo['NAME_RU'],
-                'REGIONS' => []
-            ];
-        }
-
-        // Проверяем, существует ли уже регион в дереве страны
-        if (!isset($locationTree[$countriesInfo['ID']]['REGIONS'][$regions['ID']])) {
-            $locationTree[$countriesInfo['ID']]['REGIONS'][$regions['ID']] = [
-                'ID' => $regions['ID'],
-                'NAME' => $regions['NAME_RU'],
-                'CITIES' => []
-            ];
-        }
-
-        // Добавляем город в список городов региона
-        $locationTree[$countriesInfo['ID']]['REGIONS'][$regions['ID']]['CITIES'][] = [
-            'ID' => $cityId,
-            'NAME' => $cityInfo['NAME_RU'] // Имя города из массива $city
-        ];
+    if($_GET[$arParams['FILTER_NAME'] . '_country']) {
+        $id = $_GET[$arParams['FILTER_NAME'] . '_country'];
+        $type = 'REGION';
+        $arResult['REGIONS'] = getLocations($type, $id);
     }
-    $arResult['LOCATIONS'] = $locationTree;
 
-//    pr($locationTree);
+    if($_GET[$arParams['FILTER_NAME'] . '_region']) {
+        $id = $_GET[$arParams['FILTER_NAME'] . '_region'];
+        $type = 'CITY';
+        $arResult['CITIES'] = getLocations($type, $id);
+    }
+
 
     foreach ($newItems['year']['VALUES'] as &$year) {
-        if($_GET['year_MIN'] === $year['VALUE']) {
+        if ($_GET[$arParams['FILTER_NAME'] . '_year_MIN'] === $year['VALUE']) {
+            $newItems['year']['HAS_CHECKED_FOR_MIN'] = true;
             $year['CHECKED_FOR'] = 'MIN';
         }
 
-        if($_GET['year_MAX'] === $year['VALUE']) {
+        if ($_GET[$arParams['FILTER_NAME'] . '_year_MAX'] === $year['VALUE']) {
+            $newItems['year']['HAS_CHECKED_FOR_MAX'] = true;
             $year['CHECKED_FOR'] = 'MAX';
         }
     }
@@ -96,31 +94,3 @@ if(!empty($arResult["ITEMS"])) {
     $arResult['ITEMS'] = $newItems;
 }
 
-function getLocation(int $locationId, string $locationType) : array
-{
-    while ($locationId) {
-        // Получаем информацию о местоположении
-        $location = \Bitrix\Sale\Location\LocationTable::getList([
-            'filter' => [
-                '=ID' => $locationId,
-                '=NAME.LANGUAGE_ID' => 'ru',
-                '=TYPE.NAME.LANGUAGE_ID' => 'ru',],
-            'select' => ['ID', 'PARENT_ID', 'TYPE.CODE', 'NAME_RU' => 'NAME.NAME']
-        ])->fetch();
-//            pr($location);
-
-        if ($location) {
-            // Проверяем, является ли это местоположение регионом
-            if ($location['SALE_LOCATION_LOCATION_TYPE_CODE'] === $locationType) {
-                return $location;
-            }
-
-            // Переходим к следующему родителю
-            $locationId = $location['PARENT_ID'];
-        } else {
-            // Если местоположение не найдено, выходим
-            break;
-        }
-    }
-    return [];
-}

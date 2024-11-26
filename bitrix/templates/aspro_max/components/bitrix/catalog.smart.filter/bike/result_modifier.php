@@ -6,20 +6,6 @@ $arResult['SECTION']['CODE'] = \Bitrix\Iblock\SectionTable::getList([
 ])->fetch()['CODE'];
 
 if (!empty($arResult["ITEMS"])) {
-
-//    $secondLevelParent = \Bitrix\Iblock\SectionTable::getList([
-//        'filter' => [
-//            '<=LEFT_MARGIN' => $currentSection['LEFT_MARGIN'], // Родитель должен быть слева от текущего раздела
-//            '>=RIGHT_MARGIN' => $currentSection['RIGHT_MARGIN'], // И справа от текущего
-//            '=IBLOCK_ID' => $arResult['SECTION']['IBLOCK_ID'], // Указываем инфоблок
-//            '=DEPTH_LEVEL' => 2 // Ищем только раздел второго уровня
-//        ],
-//        'select' => ['ID'],
-//        'limit' => 1
-//    ])->fetch();
-//    pr($secondLevelParent);
-//    $arResult['SECTION']['MAIN_PARENT'] = $secondLevelParent['ID'];
-
     $newItems = [];
 
     foreach ($arResult["ITEMS"] as $arItem) {
@@ -147,42 +133,4 @@ if (!empty($arResult["ITEMS"])) {
     });
 
     $arResult['FOUND_BRANDS'] = $sections;
-}
-
-function getLocations(string $type, int $id) : array
-{
-    $filter = [
-        '=TYPE.CODE' => $type,
-        '=NAME.LANGUAGE_ID' => 'ru',
-        '=TYPE.NAME.LANGUAGE_ID' => 'ru',
-    ];
-    $select = [
-        'ID',
-        'NAME_RU' => 'NAME.NAME',
-        'CODE'
-    ];
-    $order = ['NAME_RU' => 'ASC'];
-
-    $directRegions = \Bitrix\Sale\Location\LocationTable::getList([
-        'filter' => $filter + ['=PARENT_ID' => $id],
-        'select' => $select,
-        'order' => $order
-    ])->fetchAll();
-
-
-    $indirectRegions = \Bitrix\Sale\Location\LocationTable::getList([
-        'filter' => $filter + ['=PARENT.PARENT_ID' => $id],
-        'select' => $select,
-        'order' => $order
-    ])->fetchAll();
-
-    $allRegions = array_merge($directRegions ?? [], $indirectRegions ?? []);
-
-    $newAllRegions = array_map(function ($region) {
-        $region['NAME'] = $region['NAME_RU']; // Переименование ключа
-        unset($region['NAME_RU']); // Удаление старого ключа
-        return $region;
-    }, $allRegions);
-
-    return $newAllRegions;
 }

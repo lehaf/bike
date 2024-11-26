@@ -317,3 +317,41 @@ function convertPrice(array $itemPrices, array $desiredCurrencies, string $baseC
 
     return $pricesInCurrencies ?? [];
 }
+
+function getLocations(string $type, int $id) : array
+{
+    $filter = [
+        '=TYPE.CODE' => $type,
+        '=NAME.LANGUAGE_ID' => 'ru',
+        '=TYPE.NAME.LANGUAGE_ID' => 'ru',
+    ];
+    $select = [
+        'ID',
+        'NAME_RU' => 'NAME.NAME',
+        'CODE'
+    ];
+    $order = ['NAME_RU' => 'ASC'];
+
+    $directRegions = \Bitrix\Sale\Location\LocationTable::getList([
+        'filter' => $filter + ['=PARENT_ID' => $id],
+        'select' => $select,
+        'order' => $order
+    ])->fetchAll();
+
+
+    $indirectRegions = \Bitrix\Sale\Location\LocationTable::getList([
+        'filter' => $filter + ['=PARENT.PARENT_ID' => $id],
+        'select' => $select,
+        'order' => $order
+    ])->fetchAll();
+
+    $allRegions = array_merge($directRegions ?? [], $indirectRegions ?? []);
+
+    $newAllRegions = array_map(function ($region) {
+        $region['NAME'] = $region['NAME_RU']; // Переименование ключа
+        unset($region['NAME_RU']); // Удаление старого ключа
+        return $region;
+    }, $allRegions);
+
+    return $newAllRegions;
+}
