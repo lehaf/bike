@@ -159,17 +159,37 @@ class CreateElement extends \CBitrixComponent
         $element->set("CODE", \CUtil::translit($data["NAME"]["VALUE"], "ru", $arTransParams));
 
         if (!empty($data)) {
-            foreach ($data as $prop => $item) {
-                if ($item["MULTIPLE"] && is_array($item["VALUE"])) {
-                    $propertyValues = $element->get($prop);
-                    foreach ($propertyValues as $value) {
-                        $propertyValues->remove($value);
-                    }
-                    foreach ($item["VALUE"] as $value) {
-                        $element->addTo($prop, new PropertyValue($value));
+            foreach ($this->userProps as $prop => $propData) {
+                if (array_key_exists($prop, $data)) {
+                    $item = $data[$prop];
+
+                    if ($propData['MULTIPLE'] === 'Y' && is_array($item['VALUE'])) {
+                        $propertyValues = $element->get($prop);
+                        // Удаляем все существующие значения
+                        foreach ($propertyValues as $value) {
+                            $propertyValues->remove($value);
+                        }
+
+                        // Добавляем новые значения
+                        foreach ($item['VALUE'] as $value) {
+                            $element->addTo($prop, new PropertyValue($value));
+                        }
+                    } else {
+                        // Устанавливаем значение для одиночных свойств
+                        $element->set($prop, $item['VALUE']);
                     }
                 } else {
-                    $element->set($prop, $item["VALUE"]);
+                    if ($propData['PROPERTY_TYPE'] === 'L') {
+                        if($propData['MULTIPLE'] === 'Y') {
+                            $element->fill($prop);
+                            $propertyValues = $element->get($prop);
+                            foreach ($propertyValues as $value) {
+                                $propertyValues->remove($value);
+                            }
+                        } else {
+                            $element->set($prop, null);
+                        }
+                    }
                 }
             }
         }

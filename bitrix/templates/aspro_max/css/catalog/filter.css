@@ -547,6 +547,12 @@ input[type="radio"] {
     color: #ed1c24;
 }
 
+#brand,
+#brandModel {
+    background: #fafafa url("../../images/svg/custom/search.svg") no-repeat 17px center;
+    padding-left: 43px;
+}
+
 .brand-list {
     display: none;
     flex-wrap: wrap;
@@ -2489,4 +2495,8 @@ body.no-scroll{
     body.no-scroll{
         padding-right: 0;
     }
+}
+
+.flex-next .svg {
+    top: 35%;
 }

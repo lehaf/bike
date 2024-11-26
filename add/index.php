@@ -24,7 +24,7 @@ if(isset($_GET['type'])) {
 		"IBLOCK_ID" => "26",
 		"SECTION_ID" => $sectionId,
 		"AUTH_LINK" => '/auth',
-		"SUCCESS_LINK" => '/personal/ads',
+		"SUCCESS_LINK" => '/personal/ads/?section=' . $sectionId,
 	),
 	false
 );?>
