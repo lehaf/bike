@@ -17,12 +17,26 @@ if (\Bitrix\Main\Loader::includeModule("aspro.max")) {
 }
 
 if($type === 'call-form') {
-    include('call-form-custom.php');
+    $entity = \Bitrix\Iblock\Iblock::wakeUp(CATALOG_IBLOCK_ID)->getEntityDataClass();
+    $properties = $entity::getList([
+        'select' => ['phone_' => 'phone.VALUE', 'contact_person_' => 'contact_person.VALUE'],
+        'filter' => ['ID' => $request['elementId']]
+    ])->fetchAll();
+    $name = "";
+    $phones = [];
+    if(!empty($properties)) {
+        foreach ($properties as $property) {
+            $name = $property['contact_person_'];
+            $phones[] = $property['phone_'];
+        }
+    }
+    include('call_form_custom.php');
 } elseif ($type === 'claim-form') {
     $APPLICATION->IncludeComponent(
         "bitrix:form",
         "popup_custom",
         Array(
+            "ELEMENT_ID" => $request['elementId'],
             "AJAX_MODE" => "Y",
             "SEF_MODE" => "N",
             "WEB_FORM_ID" => $form_id,
@@ -55,5 +69,7 @@ if($type === 'call-form') {
             )
         )
     );
+} elseif ($type === 'delete') {
+    include('delete_agree.php');
 }
 ?>

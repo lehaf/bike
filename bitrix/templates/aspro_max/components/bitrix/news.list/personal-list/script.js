@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 getAds(url.href);
             }
 
-            if(!document.querySelector('.advert-tabs__item[data-sect="' + section +'"]')) {
+            if (!document.querySelector('.advert-tabs__item[data-sect="' + section + '"]')) {
                 let container = document.querySelector('.container');
                 container.style.filter = "blur(5px)";
                 searchParams.set('section', tabs[0].getAttribute('data-sect'));
@@ -80,7 +80,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 let elements = document.querySelectorAll('input.product-check:checked');
                 let elementsId = elements.length !== 0 ? Array.from(elements).map(element => element.value) : [];
 
-                if (action.length !== 0 && elementsId.length !== 0) {
+                if(action === 'delete') {
+                    showDeletePopupAjax(elements);
+                } else {
                     ajaxAction(action, elements);
                 }
             })
@@ -125,11 +127,46 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (target.classList.contains('advert-edit__del')) {
                     event.preventDefault();
-                    ajaxAction('delete', [target]);
+                    showDeletePopupAjax([target]);
                 }
             })
         })
+    }
 
+    function showDeletePopupAjax(elements) {
+        fetch('/ajax/form_custom.php', {
+            method: 'POST',
+            body: new URLSearchParams({type: 'delete'}),
+            headers: {'X-Requested-With': 'XMLHttpRequest'}
+        }).then(res => {
+            return res.text();
+        }).then(data => {
+            let form = document.createElement('div');
+            form.innerHTML = data;
+            document.querySelector('#popup_iframe_wrapper').prepend(form.querySelector('.jqmOverlay'));
+            document.querySelector('#popup_iframe_wrapper').appendChild(form.querySelector('.delete_frame'));
+            $('.delete_frame ').addClass('show');
+
+            document.querySelector('#popup_iframe_wrapper').style.zIndex = "3000";
+            document.querySelector('#popup_iframe_wrapper').style.display = "flex";
+
+            $(document).on('click', '.jqmClose', function(e){
+                e.preventDefault();
+                $(this).closest('#popup_iframe_wrapper').removeAttr('style');
+                $(this).closest('.delete_frame').remove();
+                $('.jqmOverlay').remove();
+            })
+
+            $(".jqmOverlay").on("click", function () {
+                $("#popup_iframe_wrapper").css("display", "none");
+                $(".delete_frame").remove();
+            });
+
+            let delAgree = document.querySelector('#popup_iframe_wrapper .btn-del');
+            delAgree.addEventListener('click', () => {
+                ajaxAction('delete', elements);
+            })
+        }).catch((error) => console.log(error));
     }
 
     function ajaxAction(action, elements) {

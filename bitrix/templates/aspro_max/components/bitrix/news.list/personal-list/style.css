@@ -1228,6 +1228,10 @@ ul.menu li.menu-item {
     transition: .3s;
 }
 
+.product-update-btn:hover {
+    color: #fff;
+}
+
 .product-update{
     display: flex;
     align-items: center;
@@ -1366,6 +1370,17 @@ ul.menu li.menu-item {
     font-size: 14px;
     color: #666;
     padding-left: 14px;
+}
+
+#popup_iframe_wrapper .delete_frame {
+    width: max-content;
+}
+#popup_iframe_wrapper .delete_frame .form_result {
+    padding-bottom: 55px;
+}
+
+#popup_iframe_wrapper .delete_frame .btn-del{
+    margin-right: 15px;
 }
 
 @media (max-width: 1379px) {
