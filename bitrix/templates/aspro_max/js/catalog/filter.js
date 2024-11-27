@@ -38,7 +38,7 @@ let numberIdSelect = 1; //new
 const brandChoices = new Choices(brandSelect, {
     placeholder: true,
     searchPlaceholderValue: 'Марка',
-    duplicateItemsAllowed: true,
+    duplicateItemsAllowed: false,
     choices: brandOptions,
     shouldSort: false,
     shouldSortItems: false,
@@ -55,6 +55,28 @@ const brandChoices = new Choices(brandSelect, {
     },
 });
 
+const originalSearch = brandChoices._handleSearch;
+brandChoices._handleSearch = function (value) {
+    originalSearch.call(this, value);
+    hideDuplicateChoices(this.dropdown.element);
+};
+//удаление дубликатов при поиске в select
+function hideDuplicateChoices(dropdown) {
+    const uniqueLabels = new Set();
+    const choices = dropdown.querySelectorAll('.choices__item--choice');
+
+    choices.forEach(choice => {
+        const label = choice.innerText.trim();
+        if (uniqueLabels.has(label)) {
+            choice.classList.add('hidden');
+        } else {
+            uniqueLabels.add(label);
+            choice.classList.remove('hidden');
+        }
+    });
+}
+
+//
 const modelChoices = new Choices(modelSelect, {
     placeholder: true,
     searchPlaceholderValue: 'Модель',
@@ -687,6 +709,10 @@ function addSelectBrandMark(id) {
             distance: 100, // Максимальное расстояние от начала совпадения
         },
     });
+    brandChoices._handleSearch = function (value) {
+        originalSearch.call(this, value);
+        hideDuplicateChoices(this.dropdown.element);
+    };
     allBrandChoices.push(brandChoices);
 
     const modelChoices = new Choices(selectList[`modelSelect${id}`], {
