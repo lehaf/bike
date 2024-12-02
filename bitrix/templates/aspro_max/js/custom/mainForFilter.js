@@ -2,6 +2,7 @@ let selectTypes = [];//new
 const selectList = document.querySelectorAll(".custom-select");
 let selectCategory = '';
 
+console.log(selectList);
 setSelect(selectList);
 
 function setSelect(selectList) {
@@ -28,9 +29,9 @@ function setSelect(selectList) {
                 shouldSort: false,
                 position: 'bottom'
             })
-            if(el.closest(".save-search-popup")){ //new
-                selectType.disable()
-            }
+            // if(el.closest(".save-search-popup") || el.closest(".save-list")){ //new
+            //     selectType.disable()
+            // }
             listenerSelect(el, selectType)
             selectTypes.push(selectType);//new
         }
@@ -106,15 +107,26 @@ document.addEventListener("DOMContentLoaded", () => {
         );
     let filterName = document.querySelector('#filter').getAttribute('data-filter') || 'arFilter';
 
-    $(".dependent-checkbox").on("change", function (){ //new
-        let select = selectTypes.find((el) =>  el.containerInner.element.closest(".no-save"))
-        if(this.checked){
-            select.enable()
-        }else{
-            select.disable()
-            select.containerInner.element.classList.remove("is-active")
-        }
-    })
+    // $(".dependent-checkbox").on("change", function (){ //new
+    //     let checkId = this.getAttribute('data-id');
+    //     let select = selectTypes.find((el) =>  el.passedElement.element.id === "notify-select-" + checkId);
+    //
+    //     selectTypes.forEach(select => {
+    //         console.log(select.passedElement.element.id);
+    //     })
+    //
+    //     if(this.checked){
+    //         select.enable();
+    //     }else{
+    //         select.disable()
+    //         select.containerInner.element.classList.remove("is-active")
+    //     }
+    //
+    //     // let checkTest = document.querySelectorAll(`.dependent-checkbox[data-id="${checkId}"]`);
+    //     // checkTest.forEach(check => {
+    //     //     check.checked = this.checked;
+    //     // })
+    // })
 
     $(".custom-input.number").on('input', function () {
         this.value = this.value.replace(/[^0-9]/g, '');
@@ -340,11 +352,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // let selectedLocation = document.querySelectorAll('.select-loc.is-active');
-    // selectedLocation.forEach(loc => {
-    //     // loc.querySelector('.choices').classList.add('is-active');
-    //     loc.querySelector('.choices__inner').classList.add('is-active');
-    // })
     setColor();
 
     function setColor() {
@@ -397,53 +404,4 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
     })
-
-
-    $(".size-input").on("change", function () {
-        if ($(this).hasClass("size-input--square")) {
-            let result = squareProduct($("#length"), $("#width"))
-            if (result !== undefined) {
-                $("#square").val(result + ", м2")
-            }
-        }
-    })
-
-    if (params['element']) {
-        getLocationPromise('getRegions', 'location', countryEl.getAttribute('data-el'))
-            .then(() => {
-                return getLocationPromise('getCities', 'location', regionEl.getAttribute('data-el'));
-            })
-            .then(() => {
-                console.log('Все запросы завершены.');
-            })
-            .catch((error) => {
-                console.error('Ошибка:', error);
-            });
-        // getLocation('getRegions', 'location', countryEl.getAttribute('data-el'));
-        // getLocation('getCities', 'location', regionEl.getAttribute('data-el'));
-
-        if (brandInput) {
-            getCategories('getModels', 'categories', brandInput.getAttribute('data-el'));
-        }
-
-        if (categoryEl) {
-            getCategories('getSubCategories', 'categories', categoryEl.getAttribute('data-el'));
-        }
-    }
-
-    function getLocationPromise(flag, action, id) {
-        return new Promise((resolve, reject) => {
-            getLocation(flag, action, id); // Вызов оригинальной функции
-
-            // Установить таймер для ожидания завершения асинхронной операции
-            const checkCompletion = setInterval(() => {
-                // Проверяем, завершился ли процесс
-                if (!$('#stepForm').hasClass('blur')) {
-                    clearInterval(checkCompletion); // Остановить проверку
-                    resolve(); // Разрешить промис
-                }
-            }, 100); // Проверять каждые 100 мс
-        });
-    }
-
 })

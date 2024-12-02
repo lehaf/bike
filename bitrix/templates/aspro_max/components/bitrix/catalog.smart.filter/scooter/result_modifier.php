@@ -94,3 +94,54 @@ if(!empty($arResult["ITEMS"])) {
     $arResult['ITEMS'] = $newItems;
 }
 
+if(\Bitrix\Main\Engine\CurrentUser::get()->getId()) {
+    $entityUsersSearch = getHlblock("b_user_search");
+    $result = $entityUsersSearch::getList([
+        "select" => ["*"],
+        "order" => ["ID"=>"DESC"],
+        "filter" => ["UF_USER_ID" => \Bitrix\Main\Engine\CurrentUser::get()->getId()],
+    ])->fetchAll();
+    if(!empty($result)) {
+        foreach ($result as &$item) {
+            $res = \CIBlockSection::GetByID($item['UF_SECTION']);
+            if ($section = $res->GetNext()) {
+                $item['FILTER_SECTION_URL'] = $section['SECTION_PAGE_URL'];
+            }
+        }
+        unset($item);
+    }
+    $arResult['SEARCHES'] = $result;
+
+    $filterUrl = [];
+    foreach ($_GET as $key => $value) {
+        if($key === "set_filter" || str_contains($key, $arParams['FILTER_NAME'])) {
+            if($key === $arParams['FILTER_NAME'] . '_mark') {
+                foreach ($value as $markId => $markValue) {
+                    $filterUrl[] = $key . '[' . $markId . ']=' . $markValue;
+                }
+            } else {
+                $filterUrl[] = $key . "=" . $value;
+            }
+        }
+    }
+    $filterUrl = "?" . implode("&", $filterUrl);
+
+    $arFilter = [
+        "=UF_FILTER_QUERY" => $filterUrl,
+        "=UF_USER_ID" => \Bitrix\Main\Engine\CurrentUser::get()->getId(),
+    ];
+    $arSelect = [
+        'ID',
+        'UF_TITLE',
+        'UF_DESCRIPTION',
+        'UF_FILTER_QUERY',
+        'UF_NOTIFY_INTERVAL',
+    ];
+
+    $result = $entityUsersSearch::getList([
+        'select' => $arSelect,
+        'filter' => $arFilter,
+    ])->fetch();
+
+    $arResult['EXIST_SEARCH'] = $result;
+}

@@ -229,7 +229,7 @@ class Filter
     {
         global $APPLICATION;
 
-        $entityUsersSearch = getHlblock("b_users_search");
+        $entityUsersSearch = getHlblock("b_user_search");
         $resUsersSearch = $entityUsersSearch::getList(["select" => ["*"]])->fetchAll();
         $filterName = strstr($resUsersSearch[0]['UF_SEARCH_QUERY'], '_', true);
         // Проверяем, есть ли результаты

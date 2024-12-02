@@ -34,7 +34,7 @@ $price = $arResult['ITEMS']['BASE'];
       data-filter="<?= $arParams['FILTER_NAME'] ?>">
     <div class="form-header">
         <div class="save-inner">
-            <div class="save-list-container">
+            <div class="save-list-container <?=(empty($arResult['SEARCHES'])) ? 'hidden' : ''?>">
                 <div class="save-list-btn">
                     <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M20.0395 19.2896L14.9456 14.1919C16.3926 12.5504 17.144 10.4105 17.0406 8.22499C16.9372 6.03949 15.9873 3.97997 14.3918 2.48236C12.7963 0.98475 10.6805 0.166586 8.49231 0.201046C6.30408 0.235506 4.21513 1.11989 2.66763 2.66699C1.12012 4.2141 0.235516 6.30251 0.201046 8.49018C0.166577 10.6778 0.984951 12.7931 2.48295 14.3881C3.98094 15.9832 6.04099 16.9329 8.22705 17.0363C10.4131 17.1396 12.5536 16.3885 14.1955 14.9419L19.2945 20.0449C19.3433 20.094 19.4013 20.133 19.4653 20.1597C19.5292 20.1863 19.5977 20.2 19.667 20.2C19.7362 20.2 19.8048 20.1863 19.8687 20.1597C19.9327 20.133 19.9907 20.094 20.0395 20.0449C20.0902 19.9959 20.1306 19.9373 20.1582 19.8724C20.1858 19.8075 20.2 19.7378 20.2 19.6673C20.2 19.5968 20.1858 19.527 20.1582 19.4621C20.1306 19.3972 20.0902 19.3386 20.0395 19.2896ZM8.6505 15.9908C7.19793 15.9908 5.77797 15.5602 4.57021 14.7534C3.36244 13.9466 2.42109 12.7998 1.86522 11.4582C1.30934 10.1165 1.1639 8.64019 1.44728 7.21589C1.73067 5.7916 2.43015 4.4833 3.45727 3.45644C4.48439 2.42958 5.79303 1.73027 7.21769 1.44696C8.64235 1.16365 10.1191 1.30906 11.4611 1.86479C12.8031 2.42052 13.9501 3.36162 14.7571 4.56908C15.5641 5.77654 15.9948 7.19613 15.9948 8.64833C15.9948 10.5957 15.2211 12.4633 13.8437 13.8402C12.4664 15.2172 10.5983 15.9908 8.6505 15.9908Z"
@@ -45,10 +45,58 @@ $price = $arResult['ITEMS']['BASE'];
                     </svg>
                     Поиски
                 </div>
-                <div class="save-list"></div>
+                <div class="save-list">
+                    <?php if(!empty($arResult['SEARCHES'])):?>
+                        <?php foreach ($arResult['SEARCHES'] as $search):?>
+                            <div class="save-list__item" data-id="<?=$search['ID']?>">
+                                <a href="<?=$search['FILTER_SECTION_URL'] . $search['UF_FILTER_QUERY']?>" class="search-popup__mark"><?=$search['UF_TITLE']?></a>
+                                <a href="<?=$search['FILTER_SECTION_URL'] . $search['UF_FILTER_QUERY']?>" class="search-popup__parameters"><?=$search['UF_DESCRIPTION']?></a>
+                                <div class="form-row form-row-checkbox form-row-checkbox--selection no-save">
+                                    <input type="checkbox"
+                                           class="no-send input-checkbox dependent-checkbox"
+                                           data-id="<?=$search['ID']?>"
+                                           id="emailMes-<?=$search['ID']?>"
+                                        <?=((int)$search['UF_NOTIFY_INTERVAL'] !== 0) ? 'checked' : ''?>
+                                    >
+                                    <label for="emailMes-<?=$search['ID']?>" class="checkbox-label">Уведомления на электронную почту</label>
+                                </div>
+
+                                <div class="form-group custom-select-inner form-group-custom-select color-select no-save no-send <?=((int)$search['UF_NOTIFY_INTERVAL'] !== 0) ? 'is-active' : ''?>">
+                                    <select class="select-type right-select notify-select no-send" id="notify-select-<?=$search['ID']?>">
+                                        <option value="">
+                                            Получать письма
+                                        </option>
+                                        <option value="reset">
+                                            Сбросить
+                                        </option>
+                                        <option value="4" <?=((int)$search['UF_NOTIFY_INTERVAL'] === 4) ? 'selected' : ''?>>
+                                            Получать письма каждые 4 часа
+                                        </option>
+                                        <option value="8" <?=((int)$search['UF_NOTIFY_INTERVAL'] === 8) ? 'selected' : ''?>>
+                                            Получать письма каждые 8 часа
+                                        </option>
+                                        <option value="24" <?=((int)$search['UF_NOTIFY_INTERVAL'] === 24) ? 'selected' : ''?>>
+                                            Получать письма каждые 24 часа
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="remove-save-item">
+                                    <svg width="14" height="16" viewBox="0 0 14 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M10.2853 15.9999H3.42815C2.48284 15.9999 1.71387 15.2309 1.71387 14.2856V5.14272C1.71387 4.82717 1.96975 4.57129 2.2853 4.57129H11.4282C11.7437 4.57129 11.9996 4.82717 11.9996 5.14272V14.2856C11.9996 15.2309 11.2306 15.9999 10.2853 15.9999ZM2.85672 5.71415V14.2856C2.85672 14.6006 3.11312 14.857 3.42815 14.857H10.2853C10.6003 14.857 10.8567 14.6006 10.8567 14.2856V5.71415H2.85672Z" fill="#ED1C24"/>
+                                        <path d="M12 5.71446H1.71429C0.768972 5.71446 0 4.94549 0 4.00017C0 3.05486 0.768972 2.28589 1.71429 2.28589H12C12.9453 2.28589 13.7143 3.05486 13.7143 4.00017C13.7143 4.94549 12.9453 5.71446 12 5.71446ZM1.71429 3.42875C1.39926 3.42875 1.14286 3.68515 1.14286 4.00017C1.14286 4.3152 1.39926 4.5716 1.71429 4.5716H12C12.315 4.5716 12.5714 4.3152 12.5714 4.00017C12.5714 3.68515 12.315 3.42875 12 3.42875H1.71429Z" fill="#ED1C24"/>
+                                        <path d="M9.14286 3.42857H4.57143C4.25589 3.42857 4 3.17269 4 2.85714V0.571429C4 0.255886 4.25589 0 4.57143 0H9.14286C9.4584 0 9.71429 0.255886 9.71429 0.571429V2.85714C9.71429 3.17269 9.4584 3.42857 9.14286 3.42857ZM5.14286 2.28571H8.57143V1.14286H5.14286V2.28571Z" fill="#ED1C24"/>
+                                        <path d="M5.14272 13.7138C4.82717 13.7138 4.57129 13.4579 4.57129 13.1424V7.42812C4.57129 7.11258 4.82717 6.85669 5.14272 6.85669C5.45826 6.85669 5.71415 7.11258 5.71415 7.42812V13.1424C5.71415 13.4579 5.45826 13.7138 5.14272 13.7138Z" fill="#ED1C24"/>
+                                        <path d="M8.57094 13.7143C8.2554 13.7143 7.99951 13.4584 7.99951 13.1429V7.42861C7.99951 7.11306 8.2554 6.85718 8.57094 6.85718C8.88648 6.85718 9.14237 7.11306 9.14237 7.42861V13.1429C9.14237 13.4584 8.88648 13.7143 8.57094 13.7143Z" fill="#ED1C24"/>
+                                    </svg>
+                                    Удалить поиск
+                                </div>
+                            </div>
+                        <?php endforeach;?>
+                    <?php endif;?>
+                </div>
             </div>
-            <div class="save-search">
-                <span class="save-search__prev">
+            <div class="save-search <?=($arResult['EXIST_SEARCH']) ? 'active' : ''?>">
+                <span class="save-search__prev" data-auth="<?=(\Bitrix\Main\Engine\CurrentUser::get()->getId()) ? 'Y' : 'N'?>">
                     <svg width="21" height="21" viewBox="0 0 21 21" fill="none"
                          xmlns="http://www.w3.org/2000/svg">
                         <path d="M11.1842 5.2236C10.7774 5.01676 10.3175 4.93811 9.86512 4.99804C9.41274 5.05796 8.98917 5.25365 8.65036 5.55926C8.31154 5.25365 7.88798 5.05796 7.4356 4.99804C6.98322 4.93811 6.5233 5.01676 6.11656 5.2236C5.29819 5.66415 4.54278 6.79698 5.24049 8.56966C5.83328 10.143 8.04183 12.3196 8.65036 12.3196C9.25889 12.3196 11.4674 10.1378 12.0602 8.56966C12.7317 6.79698 12.0025 5.66415 11.1842 5.2236ZM11.0792 8.19729C10.6281 9.39831 9.21167 10.7462 8.65036 11.1762C8.08904 10.7357 6.67263 9.39831 6.22148 8.19729C5.77033 6.99628 6.14279 6.39839 6.60968 6.1519C6.77186 6.06833 6.95183 6.02515 7.13428 6.02603C7.35252 6.03112 7.56616 6.08975 7.75643 6.19674C7.94669 6.30374 8.10775 6.45583 8.22544 6.63965C8.27378 6.70889 8.33814 6.76544 8.41303 6.80449C8.48792 6.84353 8.57114 6.86392 8.6556 6.86392C8.74007 6.86392 8.82329 6.84353 8.89818 6.80449C8.97307 6.76544 9.03743 6.70889 9.08577 6.63965C9.24675 6.37404 9.50025 6.1773 9.79755 6.08727C10.0948 5.99723 10.4149 6.02025 10.6963 6.1519C11.1579 6.39839 11.5094 7.07495 11.0792 8.19729Z"
@@ -81,37 +129,42 @@ $price = $arResult['ITEMS']['BASE'];
                 </span>
             </div>
         </div>
-        <div class="save-search-popup">
+        <div class="save-search-popup" data-id="<?=($arResult['EXIST_SEARCH']["ID"]) ?: ''?>">
             <div class="search-popup__mark">
-                BMW
+                <?=($arResult['EXIST_SEARCH']["UF_TITLE"]) ?: ''?>
             </div>
             <div class="search-popup__parameters">
-                4 передачи, 5 передач, 2 передачи, 3 передачи, Кардан, Ремень, Бензин турбонаддув + 1
+                <?=($arResult['EXIST_SEARCH']["UF_DESCRIPTION"]) ?: ''?>
             </div>
             <div class="form-row form-row-checkbox form-row-checkbox--selection no-save">
-                <input type="checkbox" class="input-checkbox dependent-checkbox" name="emailMes" id="emailMes">
+                <input type="checkbox"
+                       class="no-send input-checkbox dependent-checkbox"
+                       id="emailMes"
+                       data-id="0"
+                    <?=((int)$arResult['EXIST_SEARCH']["UF_NOTIFY_INTERVAL"] !== 0) ? 'checked' : ''?>
+                >
                 <label for="emailMes" class="checkbox-label">Уведомления на электронную почту</label>
             </div>
-            <div class="form-group custom-select-inner form-group-custom-select color-select no-save">
-                <select name="type-moto" class="select-type custom-select right-select">
+            <div class="form-group custom-select-inner form-group-custom-select color-select no-save no-send <?=((int)$arResult['EXIST_SEARCH']["UF_NOTIFY_INTERVAL"] !== 0) ? 'is-active' : ''?>">
+                <select id="notify-select-0" class="select-type notify-select right-select no-send">
                     <option value="" selected>
                         Получать письма
                     </option>
                     <option value="reset">
                         Сбросить
                     </option>
-                    <option value="2001">
+                    <option value="4" <?=((int)$arResult['EXIST_SEARCH']["UF_NOTIFY_INTERVAL"] === 4) ? 'selected' : ''?>>
                         Получать письма каждые 4 часа
                     </option>
-                    <option value="2002">
+                    <option value="8" <?=((int)$arResult['EXIST_SEARCH']["UF_NOTIFY_INTERVAL"] === 8) ? 'selected' : ''?>>
                         Получать письма каждые 8 часа
                     </option>
-                    <option value="2003">
+                    <option value="24" <?=((int)$arResult['EXIST_SEARCH']["UF_NOTIFY_INTERVAL"] === 24) ? 'selected' : ''?>>
                         Получать письма каждые 24 часа
                     </option>
                 </select>
             </div>
-            <div class="search-popup__btn">
+            <div class="remove-save-item">
                 <svg width="14" height="16" viewBox="0 0 14 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M10.2853 15.9999H3.42815C2.48284 15.9999 1.71387 15.2309 1.71387 14.2856V5.14272C1.71387 4.82717 1.96975 4.57129 2.2853 4.57129H11.4282C11.7437 4.57129 11.9996 4.82717 11.9996 5.14272V14.2856C11.9996 15.2309 11.2306 15.9999 10.2853 15.9999ZM2.85672 5.71415V14.2856C2.85672 14.6006 3.11312 14.857 3.42815 14.857H10.2853C10.6003 14.857 10.8567 14.6006 10.8567 14.2856V5.71415H2.85672Z"
                           fill="#ED1C24"/>
@@ -278,9 +331,8 @@ $price = $arResult['ITEMS']['BASE'];
 
         <!--    тип транспорта-->
         <?php if (!empty($arResult['ITEMS']['type_' . $sectCode]['VALUES'])): ?>
-            <div class="form-row__col">
-                <div class="custom-select-inner form-group-custom-select">
-                    <div class="custom-select--multiple">
+            <div class="form-row__col <?= ($arResult['ITEMS']['type_' . $sectCode]['HAS_CHECKED']) ? 'store-active' : '' ?>">
+                <div class="form-group custom-select-inner form-group-custom-select color-select">
                         <select name="<?= current($arResult['ITEMS']['type_' . $sectCode]['VALUES'])['CONTROL_NAME_ALT'] ?>"
                                 class="select-type custom-select">
                             <option value="" selected>
@@ -300,7 +352,6 @@ $price = $arResult['ITEMS']['BASE'];
                                 </option>
                             <?php endforeach; ?>
                         </select>
-                    </div>
                 </div>
             </div>
         <?php endif; ?>

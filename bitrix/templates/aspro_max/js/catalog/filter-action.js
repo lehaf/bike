@@ -8,7 +8,6 @@ $(document).on('ajaxSuccess', function (event, xhr, settings) {
 //загрузка страницы (прелоудер)
 let container = document.querySelector('.container');
 if (container) container.classList.add('loading-state');
-
 document.addEventListener('DOMContentLoaded', () => {
     let form = document.querySelector('#filter');
     if (form) {
@@ -16,18 +15,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         isBlockMoved = filter.replaceFilterBlock();
 
-        let checkboxes = form.querySelectorAll('input[type="checkbox"]:not([name="emailMes"]), input[type="radio"]');
+        let checkboxes = form.querySelectorAll('input[type="checkbox"]:not(.no-send), input[type="radio"]');
         let inputs = form.querySelectorAll('input[type="text"]');
-        let selects = form.querySelectorAll('select');
+        let selects = form.querySelectorAll('select:not(.no-send)');
         let resetInputBtns = form.querySelectorAll(".reset-input");
+        let saveSearchBtn = document.querySelector('.save-search__prev');
+        let notifyCheckboxes = document.querySelectorAll('.dependent-checkbox');
+        let notifySelects = document.querySelectorAll('.notify-select');
 
-        let url = filter.generateUrl();
-        for (let key in filter.params) {
-            if (key.includes(filter.filterName + '_mark')) url += "&" + key + "=" + filter.params[key];
-        }
-
-        history.replaceState(null, null, url);
-        filter.getElementsCount(url);
+        history.replaceState(null, null, filter.generateUrl(true));
+        filter.getElementsCount(true);
 
         inputs.forEach(input => {
             let inputVal = '';
@@ -39,6 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
             input.addEventListener('blur', (e) => {
                 if (inputVal !== e.target.value) {
                     filter.getElementsCount();
+                    filter.checkExistSearch(filter.generateFilterUrl());
                 }
             });
         });
@@ -46,18 +44,23 @@ document.addEventListener('DOMContentLoaded', () => {
         resetInputBtns.forEach(btn => {
             btn.addEventListener('click', () => {
                 filter.getElementsCount();
+                filter.checkExistSearch(filter.generateFilterUrl());
             })
         })
 
+
         //изменение select
+        console.log(selects);
         selects.forEach(select => {
             select.addEventListener('change', (e) => {
                 filter.changeSelect(select);
+                filter.checkExistSearch(filter.generateFilterUrl());
             })
 
             if (select.multiple) {
                 select.addEventListener('removeItem', (event) => {
                     filter.getElementsCount();
+                    filter.checkExistSearch(filter.generateFilterUrl());
                 })
             }
         })
@@ -71,11 +74,24 @@ document.addEventListener('DOMContentLoaded', () => {
                     selects.forEach(select => {
                         select.addEventListener('change', (e) => {
                             filter.changeSelect(select);
+                            filter.checkExistSearch(filter.generateFilterUrl());
                         })
+
+                        if (select.multiple) {
+                            select.addEventListener('removeItem', (event) => {
+                                filter.getElementsCount();
+                                filter.checkExistSearch(filter.generateFilterUrl());
+                            })
+                        }
                     })
                 }
-            } else if (event.target.closest(".remove-select")) {
+            } else if (event.target.closest(".remove-select")) { //удаление строки марки и модели
                 filter.getElementsCount();
+                filter.checkExistSearch(filter.generateFilterUrl());
+            } else if (event.target.closest(".remove-save-item")) { //удаление поиска
+                let btn = event.target.closest(".remove-save-item");
+                let searchBlock = btn.closest('.save-list__item') || btn.closest('.save-search-popup');
+                filter.deleteSearch(searchBlock);
             }
         })
 
@@ -84,8 +100,47 @@ document.addEventListener('DOMContentLoaded', () => {
             checkboxes.forEach((check) => {
                 check.addEventListener('click', (e) => {
                     filter.getElementsCount();
+                    filter.checkExistSearch(filter.generateFilterUrl());
                 });
             });
+        }
+
+        //индентификации select интервала отправки писем
+        notifySelects.forEach(notifySelect => {
+            let parentPopup = notifySelect.closest('.save-search-popup') || notifySelect.closest('.save-list__item');
+
+            let dependentChecbox = parentPopup.querySelector('.dependent-checkbox');
+            let notifyChoice = new Choices(notifySelect, {
+                searchEnabled: false,
+                shouldSort: false,
+                position: 'bottom'
+            })
+            notifyChoice.disable();
+            if (dependentChecbox.checked) {
+                notifyChoice.enable();
+            }
+
+            filter.notifyChoices.push(notifyChoice);
+            filter.listenerChoice(notifySelect, notifyChoice);
+        })
+
+        notifyCheckboxes.forEach(notifyCheck => {
+            notifyCheck.addEventListener('change', function () {
+                filter.activeNotify(notifyCheck);
+            })
+        })
+        //конец индентификации
+
+        //сохранение поиска
+        if (saveSearchBtn) {
+            if (saveSearchBtn.getAttribute('data-auth') === 'Y') {
+                saveSearchBtn.addEventListener('click', () => {
+                    let searchBlock = document.querySelector('.save-search-popup');
+                    if (searchBlock) {
+                        filter.addSearch(searchBlock);
+                    }
+                })
+            }
         }
 
         //сброс формы
@@ -119,6 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             history.replaceState(null, null, filter.emptyUrl);
             filter.getElementsCount();
+            filter.checkExistSearch(filter.generateFilterUrl());
         })
 
         //отправка формы
@@ -132,11 +188,13 @@ document.addEventListener('DOMContentLoaded', () => {
 function AjaxFilter(form) {
     this.url = window.location.pathname;
     this.emptyUrl = window.location.pathname + "?set_filter=Y";
-    this.paramsUrl = "";
+    this.filterParamsUrl = "";
+    this.otherParams = "";
     this.params = this.getParams();
     this.form = form;
     this.filterName = this.form.getAttribute('data-filter') || "arFilter";
     this.sectionId = this.form.getAttribute('data-sect') || "0";
+    this.notifyChoices = [];
 }
 
 AjaxFilter.prototype.getParams = function () {
@@ -169,19 +227,23 @@ AjaxFilter.prototype.replaceFilterBlock = function () {
     return isBlockMoved;
 }
 
-AjaxFilter.prototype.generateUrl = function () {
+AjaxFilter.prototype.generateFilterUrl = function (isPageLoad = false) {
     let symbol = (this.params.hasOwnProperty("") && this.params[""] === undefined) ? "&" : "?";
-    this.paramsUrl = symbol + "set_filter=Y";
+    this.filterParamsUrl = symbol + "set_filter=Y";
     const filterData = {};
     let formData = new FormData(this.form);
     //преобразование марок и моделей
     let delParams = [];
+    let marks = [];
     formData.forEach((value, key) => {
+        if (!key.includes(this.filterName) || value === "0") delParams.push((key));
+
         const matchMark = key.match(/^arFilter_mark(_\d+)?$/); // поиск постфикса
         const matchModel = key.match(/^arFilter_model(_\d+)?$/);
         if (matchMark && value.length !== 0) {
             const postfix = matchMark[1] || '';
             filterData[value] = []; // Создаем массив для моделей с ключом mark (value)
+            marks.push(value);
             delParams.push(matchMark[0]);
         } else if (matchModel) {
             delParams.push(matchModel[0]);
@@ -195,18 +257,24 @@ AjaxFilter.prototype.generateUrl = function () {
 
     //очищение от ненужных параметров марок и моделей
     delParams = [...new Set(delParams)];
+
     delParams.forEach(param => {
         formData.delete(param);
     })
 
-    for (const el in filterData) {
+    for (let el in filterData) {
+        filterData[el] = filterData[el].sort();
         formData.append("arFilter_mark[" + el + "]", filterData[el])
     }
     //фильтрация множественных селектов
     let multipleSelects = document.querySelectorAll('select[multiple]');
     multipleSelects.forEach(selectElement => {
         if (!selectElement.id.includes("model-select")) {
-            Array.from(selectElement.selectedOptions).forEach(option => {
+            const sortedOptions = Array.from(selectElement.selectedOptions).sort((a, b) =>
+                a.textContent.localeCompare(b.textContent)
+            );
+
+            sortedOptions.forEach(option => {
                 let key = selectElement.name + "_" + option.value;
                 formData.append(key, "Y");
             });
@@ -216,33 +284,42 @@ AjaxFilter.prototype.generateUrl = function () {
 
     for (let pair of formData.entries()) {
         if (pair[1].length !== 0) {
-            this.paramsUrl += "&" + pair[0] + "=" + pair[1];
+            this.filterParamsUrl += "&" + pair[0] + "=" + pair[1];
         }
         if (pair[0].includes(this.filterName + '_mark[') && pair[1].length === 0) {
-            this.paramsUrl += "&" + pair[0] + "=" + 'Y';
+            this.filterParamsUrl += "&" + pair[0] + "=" + 'Y';
         }
     }
 
+    marks = marks.map(item => this.filterName + '_mark[' + item + ']');
     for (let key in this.params) {
-        if (!this.paramsUrl.includes(key) && !key.includes(this.filterName)) this.paramsUrl += "&" + key + "=" + this.params[key];
+        if (key.includes(this.filterName + '_mark') && !marks.includes(key) && isPageLoad) this.filterParamsUrl += "&" + key + "=" + this.params[key];
     }
 
-    return this.url + this.paramsUrl;
+
+    return this.filterParamsUrl;
 }
 
-AjaxFilter.prototype.getElementsCount = function (url = '') {
-    if (url === "") {
-        this.generateUrl();
-    } else {
-        this.paramsUrl = url.split('?')[1];
+AjaxFilter.prototype.generateUrl = function (isPageLoad = false) {
+    this.generateFilterUrl(isPageLoad);
+    this.otherParams = "";
+    for (let key in this.params) {
+        if (!this.filterParamsUrl.includes(key) && !key.includes(this.filterName)) this.otherParams += "&" + key + "=" + this.params[key];
     }
+
+    return this.url + this.filterParamsUrl + this.otherParams;
+}
+
+AjaxFilter.prototype.getElementsCount = function (isPageLoad = false) {
+
+    this.generateUrl(isPageLoad);
 
     document.querySelector('.result-block').classList.add('loading-state');
     fetch('/ajax/elements_filter.php', {
             method: 'POST',
             body: new URLSearchParams({
                 action: "ajaxCount",
-                url: this.paramsUrl,
+                url: this.filterParamsUrl,
                 filterName: this.filterName,
                 sectId: this.sectionId
             }),
@@ -308,7 +385,7 @@ AjaxFilter.prototype.submit = function () {
         displayBtns.forEach(btn => {
             let queryString = btn.href.split('?')[1];
             let params = new URLSearchParams(queryString);
-            let modifiedParamsUrl = "?display=" + params.get('display') + '&' + this.paramsUrl.substring(1);
+            let modifiedParamsUrl = "?display=" + params.get('display') + '&' + this.filterParamsUrl.substring(1) + this.otherParams;
             btn.setAttribute('data-url', this.url + modifiedParamsUrl);
             btn.href = this.url + modifiedParamsUrl;
         })
@@ -345,6 +422,268 @@ AjaxFilter.prototype.templateCountEmpty = function () {
         </div>`;
 }
 
+AjaxFilter.prototype.activeNotify = function (notifyCheck) {
+    let checkId = notifyCheck.getAttribute('data-id');
+    let select = this.notifyChoices.find((el) => el.passedElement.element.id === "notify-select-" + checkId);
+
+    if (notifyCheck.checked) {
+        select.enable();
+    } else {
+        select.disable()
+        select.containerInner.element.classList.remove("is-active");
+        select.containerInner.element.closest('.form-group').classList.remove('is-active');
+    }
+
+    let parentPopup = notifyCheck.closest('.save-search-popup') || notifyCheck.closest('.save-list__item');
+    this.editSearch(parentPopup);
+}
+
+AjaxFilter.prototype.addSearch = function (searchBlock) {
+    this.generateFilterUrl();
+    console.log(searchBlock.querySelector('.search-popup__parameters'));
+    let ajaxParams = {
+        action: "addSearch",
+        title: searchBlock.querySelector('.search-popup__mark').innerText || '',
+        description: searchBlock.querySelector('.search-popup__parameters').innerText || '',
+        isNotify: searchBlock.querySelector('#emailMes').checked,
+        notifyInterval: searchBlock.querySelector('#notify-select-0').value,
+        searchQuery: this.filterParamsUrl,
+        sectionId: this.sectionId
+    };
+    fetch('/ajax/filter_search.php', {
+            method: 'POST',
+            body: new URLSearchParams(ajaxParams),
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        }
+    ).then(res => {
+        return res.json();
+    }).then(data => {
+        if (data['success']) {
+            let search = data['success'];
+
+            document.querySelector('.save-search-popup').setAttribute('data-id', search['searchId']);
+            $(".save-list").prepend(this.templateItemListSave(search['searchId'], search['title'], search['description'], '', this.filterParamsUrl));
+
+            let select = document.querySelector(`#notify-select-${search['searchId']}`);
+
+            const selectHistory = new Choices(select, {
+                searchEnabled: false,
+                shouldSort: false,
+                duplicateItemsAllowed: false
+            })
+            selectHistory.disable();
+
+            this.listenerChoice(select, selectHistory);
+            this.notifyChoices.push(selectHistory);
+
+            let notifyCheckbox = document.querySelector(`.dependent-checkbox[data-id="${search['searchId']}"]`);
+            if (notifyCheckbox) {
+                notifyCheckbox.addEventListener('change', () => this.activeNotify(notifyCheckbox))
+            }
+        }
+    }).catch((error) => console.log(error));
+}
+
+AjaxFilter.prototype.editSearch = function (searchBlock) {
+    let searchId = searchBlock.getAttribute('data-id');
+    let isNotify = searchBlock.querySelector('input[type="checkbox"].dependent-checkbox').checked;
+    let interval = searchBlock.querySelector('select.notify-select').value;
+
+    let ajaxParams = {
+        action: "editSearch",
+        searchId: searchId,
+        isNotify: isNotify,
+        notifyInterval: interval,
+    };
+    fetch('/ajax/filter_search.php', {
+            method: 'POST',
+            body: new URLSearchParams(ajaxParams),
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        }
+    ).then(res => {
+        return res.json();
+    }).then(data => {
+        if(data['success']) {
+            let blocks = document.querySelectorAll(`.save-list__item[data-id="${searchId}"], .save-search-popup[data-id="${searchId}"]`);
+            let selectInSaveList = this.notifyChoices.find((el) => el.passedElement.element.id === "notify-select-" + searchId);
+            let selectInSave = this.notifyChoices.find((el) => el.passedElement.element.id === "notify-select-0");
+            let selects = [selectInSave, selectInSaveList];
+
+            blocks.forEach(block => {
+                block.querySelector('.dependent-checkbox').checked = isNotify;
+            })
+
+            selects.forEach(select => {
+                select.setChoiceByValue(interval)
+                if(isNotify) {
+                    select.enable();
+                    if (select.passedElement.element.value !== '' && select.passedElement.element.value !== 'reset') {
+                        select.containerInner.element.classList.add("is-active");
+                    }
+                } else {
+                    select.disable();
+                    select.containerInner.element.classList.remove("is-active");
+                    select.containerInner.element.closest('.form-group').classList.remove('is-active');
+                }
+            })
+        }
+    }).catch((error) => console.log(error));
+}
+
+AjaxFilter.prototype.deleteSearch = function (searchBlock) {
+    let searchId = searchBlock.getAttribute('data-id');
+    let ajaxParams = {
+        action: "deleteSearch",
+        searchId: searchId,
+    };
+    fetch('/ajax/filter_search.php', {
+            method: 'POST',
+            body: new URLSearchParams(ajaxParams),
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        }
+    ).then(res => {
+        return res.json();
+    }).then(data => {
+       if(data['success']) {
+           if(searchBlock.classList.contains('save-list__item')) {
+               let saveSearchPopup = document.querySelector('.save-search-popup');
+               searchBlock.remove();
+
+               if(saveSearchPopup.getAttribute('data-id') === searchId) {
+                   saveSearchPopup.classList.remove('active');
+                   document.querySelector('.save-search').classList.remove('active');
+               }
+           } else if (searchBlock.classList.contains('save-search-popup')) {
+               searchBlock.classList.remove('active');
+               document.querySelector('.save-search').classList.remove('active');
+
+               let listSaveSearchItem = document.querySelector(`.save-list__item[data-id="${searchId}"]`);
+               if(listSaveSearchItem) {
+                   listSaveSearchItem.remove();
+               }
+           }
+
+           let saveItems = document.querySelectorAll('.save-list__item');
+           if(saveItems.length === 0) {
+               document.querySelector('.save-list-container').classList.add('hidden');
+           }
+       }
+    }).catch((error) => console.log(error));
+}
+
+AjaxFilter.prototype.checkExistSearch = function (filterUrl) {
+    fetch('/ajax/filter_search.php', {
+            method: 'POST',
+            body: new URLSearchParams({
+                action : 'existSearch',
+                url : filterUrl,
+                sectionId: this.sectionId
+            }),
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        }
+    ).then(res => {
+        return res.json();
+    }).then(data => {
+       if(data['success']) {
+           document.querySelector('.save-search__prev').parentElement.classList.add("active");
+           let popup = document.querySelector('.save-search-popup');
+           let select = this.notifyChoices.find((el) => el.passedElement.element.id === "notify-select-" + data['success']['id']);
+
+           popup.setAttribute('data-id', data['success']['id']);
+           popup.querySelector('.search-popup__mark').innerText = data['success']['title'];
+           popup.querySelector('.search-popup__parameters').innerText = data['success']['description'];
+
+           if(data['success']['interval'] !== "0") {
+               popup.querySelector('.dependent-checkbox').checked = true;
+               select.setChoiceByValue(data['success']['interval']);
+               select.enable();
+           }
+       } else {
+           document.querySelector('.save-search__prev').parentElement.classList.remove("active");
+           let popup = document.querySelector('.save-search-popup');
+           let select = this.notifyChoices.find((el) => el.passedElement.element.id === "notify-select-0");
+
+           popup.querySelector('.dependent-checkbox').checked = false;
+           select.setChoiceByValue('');
+           select.containerInner.element.classList.remove('is-active');
+           select.containerInner.element.closest('.form-group').classList.remove('is-active');
+           select.disable();
+       }
+    }).catch((error) => console.log(error));
+}
+
+AjaxFilter.prototype.listenerChoice = function (el, select) {
+    el.addEventListener('change', (event) => {
+            let textContent = event.target.textContent.replace(/\s+/g, '')
+            if (textContent === "Сбросить" || textContent === "Любая" || textContent === "Любой") {
+                select.setChoiceByValue('');
+                setTimeout(() => {
+                    select.containerInner.element.classList.remove("is-active");
+                    el.closest('.form-group').classList.remove("is-active");
+                }, 0)
+            }
+
+            setTimeout(() => {
+                $('.custom-select-inner .choices__item--choice[data-id=1]').hide();
+                select.containerInner.element.classList.add("is-active");
+                el.closest('.form-group').classList.add("is-active");
+            }, 0)
+
+            let parentPopup = el.closest('.save-search-popup') || el.closest('.save-list__item');
+            this.editSearch(parentPopup);
+        },
+        false,
+    );
+}
+
+AjaxFilter.prototype.templateItemListSave = function (id, title, desc, checked, url) {
+    return `<div class="save-list__item" data-id="${id}">
+                <a href="${url}" class="search-popup__mark">${title}</a>
+                <a href="${url}" class="search-popup__parameters">${desc}</a>
+                <div class="form-row form-row-checkbox form-row-checkbox--selection no-save">
+                    <input type="checkbox" class="no-send input-checkbox dependent-checkbox" name="emailMes" id="emailMes-${id}" ${checked} data-id="${id}">
+                    <label for="emailMes-${id}" class="checkbox-label">Уведомления на электронную почту</label>
+                </div>
+                                
+                <div class="form-group custom-select-inner form-group-custom-select color-select no-save no-send">
+                    <select class="select-type notify-select right-select no-send" id="notify-select-${id}">
+                        <option value="">
+                            Получать письма
+                        </option>
+                        <option value="reset">
+                            Сбросить
+                        </option>
+                        <option value="4">
+                            Получать письма каждые 4 часа
+                        </option>
+                        <option value="8">
+                            Получать письма каждые 8 часа
+                        </option>
+                        <option value="24">
+                            Получать письма каждые 24 часа
+                        </option>
+                    </select>
+                </div>
+                <div class="remove-save-item">
+                                <svg width="14" height="16" viewBox="0 0 14 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M10.2853 15.9999H3.42815C2.48284 15.9999 1.71387 15.2309 1.71387 14.2856V5.14272C1.71387 4.82717 1.96975 4.57129 2.2853 4.57129H11.4282C11.7437 4.57129 11.9996 4.82717 11.9996 5.14272V14.2856C11.9996 15.2309 11.2306 15.9999 10.2853 15.9999ZM2.85672 5.71415V14.2856C2.85672 14.6006 3.11312 14.857 3.42815 14.857H10.2853C10.6003 14.857 10.8567 14.6006 10.8567 14.2856V5.71415H2.85672Z" fill="#ED1C24"/>
+                                    <path d="M12 5.71446H1.71429C0.768972 5.71446 0 4.94549 0 4.00017C0 3.05486 0.768972 2.28589 1.71429 2.28589H12C12.9453 2.28589 13.7143 3.05486 13.7143 4.00017C13.7143 4.94549 12.9453 5.71446 12 5.71446ZM1.71429 3.42875C1.39926 3.42875 1.14286 3.68515 1.14286 4.00017C1.14286 4.3152 1.39926 4.5716 1.71429 4.5716H12C12.315 4.5716 12.5714 4.3152 12.5714 4.00017C12.5714 3.68515 12.315 3.42875 12 3.42875H1.71429Z" fill="#ED1C24"/>
+                                    <path d="M9.14286 3.42857H4.57143C4.25589 3.42857 4 3.17269 4 2.85714V0.571429C4 0.255886 4.25589 0 4.57143 0H9.14286C9.4584 0 9.71429 0.255886 9.71429 0.571429V2.85714C9.71429 3.17269 9.4584 3.42857 9.14286 3.42857ZM5.14286 2.28571H8.57143V1.14286H5.14286V2.28571Z" fill="#ED1C24"/>
+                                    <path d="M5.14272 13.7138C4.82717 13.7138 4.57129 13.4579 4.57129 13.1424V7.42812C4.57129 7.11258 4.82717 6.85669 5.14272 6.85669C5.45826 6.85669 5.71415 7.11258 5.71415 7.42812V13.1424C5.71415 13.4579 5.45826 13.7138 5.14272 13.7138Z" fill="#ED1C24"/>
+                                    <path d="M8.57094 13.7143C8.2554 13.7143 7.99951 13.4584 7.99951 13.1429V7.42861C7.99951 7.11306 8.2554 6.85718 8.57094 6.85718C8.88648 6.85718 9.14237 7.11306 9.14237 7.42861V13.1429C9.14237 13.4584 8.88648 13.7143 8.57094 13.7143Z" fill="#ED1C24"/>
+                                </svg>
+                                Удалить поиск
+                            </div>
+        </div>`
+}
 
 
 
