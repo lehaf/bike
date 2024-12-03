@@ -7,6 +7,7 @@ use Bitrix\Catalog\SmartFilter;
 use Bitrix\Iblock\PropertyTable;
 use Bitrix\Iblock\PropertyEnumerationTable;
 use Bitrix\Sale\Location\LocationTable;
+use Bitrix\Main;
 
 Loader::includeModule('location');
 Loader::includeModule('highloadblock');
@@ -121,7 +122,7 @@ class Filter
         return array_column($allRegions, 'ID');
     }
 
-    public static function getFilterParams(string $url, string $filterName, int $iblockId, int $sectId) : array
+    public static function getFilterParams(string $url, string $filterName, int $iblockId, int $sectId): array
     {
         $searchParams = [];
         $arrParams = [];
@@ -167,7 +168,7 @@ class Filter
             }
 
             $filterCurrency = $searchParams[$filterName . '_currency'];
-            if($filterCurrency && ($arrParams[">=CATALOG_PRICE_1"] || $arrParams["<=CATALOG_PRICE_1"])) {
+            if ($filterCurrency && ($arrParams[">=CATALOG_PRICE_1"] || $arrParams["<=CATALOG_PRICE_1"])) {
                 $baseCurrency = \Bitrix\Currency\CurrencyManager::getBaseCurrency();
                 $currencies = \Bitrix\Currency\CurrencyTable::getList([
                     'select' => ['CURRENCY'],
@@ -179,12 +180,12 @@ class Filter
                 $desiredCurrencies = array_column($currencies, 'CURRENCY');
 
                 if ($filterCurrency !== $baseCurrency && in_array($searchParams[$filterName . '_currency'], $desiredCurrencies)) {
-                   if ($arrParams[">=CATALOG_PRICE_1"]) {
-                       $arrParams[">=CATALOG_PRICE_1"] = \CCurrencyRates::ConvertCurrency($arrParams[">=CATALOG_PRICE_1"], $filterCurrency, $baseCurrency );
-                   }
+                    if ($arrParams[">=CATALOG_PRICE_1"]) {
+                        $arrParams[">=CATALOG_PRICE_1"] = \CCurrencyRates::ConvertCurrency($arrParams[">=CATALOG_PRICE_1"], $filterCurrency, $baseCurrency);
+                    }
 
                     if ($arrParams["<=CATALOG_PRICE_1"]) {
-                        $arrParams["<=CATALOG_PRICE_1"] = \CCurrencyRates::ConvertCurrency($arrParams["<=CATALOG_PRICE_1"], $filterCurrency, $baseCurrency );
+                        $arrParams["<=CATALOG_PRICE_1"] = \CCurrencyRates::ConvertCurrency($arrParams["<=CATALOG_PRICE_1"], $filterCurrency, $baseCurrency);
                     }
                 }
             }
@@ -202,7 +203,7 @@ class Filter
 
             $cities = self::getCitiesFilterId($searchParams, $filterName);
 
-            if(!empty($cities)) {
+            if (!empty($cities)) {
                 $arrParams['=PROPERTY_' . self::getPropertyId($iblockId, 'country')] = $cities;
             }
 
@@ -225,99 +226,101 @@ class Filter
         }
         return $arrParams;
     }
-    public function init() : void
+
+    public function init(): void
     {
         global $APPLICATION;
 
         $entityUsersSearch = getHlblock("b_user_search");
-        $resUsersSearch = $entityUsersSearch::getList(["select" => ["*"]])->fetchAll();
-        $filterName = strstr($resUsersSearch[0]['UF_SEARCH_QUERY'], '_', true);
+        $resUsersSearch = $entityUsersSearch::getList([
+            "select" => ["*"],
+            "filter" => [">UF_NOTIFY_INTERVAL" => 0]
+        ])->fetchAll();
+        $filterName = 'arFilter';
         // Проверяем, есть ли результаты
         if (empty($resUsersSearch)) {
-            return; // Если нет результатов, выход из метода
+            return;
+        }
+
+        $searches = [];
+        foreach ($resUsersSearch as $search) {
+            $sectionUrl = "";
+            $arrParams = self::getFilterParams($search['UF_FILTER_QUERY'], $filterName, CATALOG_IBLOCK_ID, $search['UF_SECTION']);
+
+            //добавление поска в интервале времени (между последней отправкой и заданным интервалом);
+            $currentDate = new \DateTime();
+            $currentDate->add(\DateInterval::createFromDateString("+4 hours"));
+            $startDate = \DateTime::createFromFormat("d.m.Y H:i:s", $search['UF_LAST_SENT']);
+            $endDate = clone $startDate;
+            $endDate->add(\DateInterval::createFromDateString("+" . $search['UF_NOTIFY_INTERVAL'] . "hours"));
+            $arrParams['>=TIMESTAMP_X'] = $startDate->format('d.m.Y H:i:s');
+            $arrParams['<=TIMESTAMP_X'] = $endDate->format('d.m.Y H:i:s');
+
+            $elementsCount = \CIBlockElement::GetList([], $arrParams, [], false);
+
+            if($currentDate >= $endDate && (int)$elementsCount > 0) {
+                $res = \CIBlockSection::GetByID($search['UF_SECTION']);
+                if ($section = $res->GetNext()) {
+                    $sectionUrl = $section['SECTION_PAGE_URL'];
+                }
+
+                $userEmail = \Bitrix\Main\Engine\CurrentUser::get()->getEmail();
+                $title = $search['UF_TITLE'];
+                if(!empty($search['UF_DESCRIPTION'])){
+                    $title .= ', ' . $search['UF_DESCRIPTION'];
+                }
+
+                $searches[$userEmail][] = [
+                    'TITLE' => $title,
+                    'COUNT' => $elementsCount,
+                    'FILTER_URL' => $sectionUrl . $search['UF_FILTER_QUERY'],
+                ];
+
+                $result = \CIBlockElement::GetList([], $arrParams, false, ['nTopCount' => 8], ["ID", "NAME", "DETAIL_PAGE_URL", "PROPERTY_PRICE", "PROPERTY_COUNTRY"]);
+//                while($item = $result->GetNext()) {
+//                    $priceResult = \CPrice::GetList(
+//                        [],
+//                        ['PRODUCT_ID' => $item['ID']]
+//                    );
+//                    $price = null;
+//                    if ($priceArray = $priceResult->Fetch()) {
+//                        $price = $priceArray['PRICE'];
+//                    }
+//                    pr($price);
+//
+//                    if (!empty($item['PROPERTY_COUNTRY_VALUE'])) {
+//                        $location =  \Bitrix\Sale\Location\LocationTable::getList([
+//                            'filter' => ['=ID' => $item['PROPERTY_COUNTRY_VALUE'], '=NAME.LANGUAGE_ID' => 'ru',],
+//                            'select' => ['NAME_RU' => 'NAME.NAME'] // Название на русском
+//                        ])->fetch();
+//                        $countryName = $location['NAME_RU'];
+//                    }
+//                }
+
+                $arEventFields = array(
+                    "EMAIL" => $userEmail,
+                    "ELEMENTS_COUNT" => $elementsCount,
+                    "FILTER_TITLE" => $title,
+                    "FILTER_URL" => $sectionUrl . $search['UF_FILTER_QUERY']
+                );
+
+                CEvent::Send("USER_SEARCH", SITE_ID, $arEventFields);
+
+//                pr(SITE_ID);
+//                $result = $entityUsersSearch::update($search['ID'], ['UF_LAST_SENT' => $currentDate->format('d.m.Y H:i:s')]);
+//                if ($result->isSuccess()) {
+//                    echo "Письмо по фильтру " . $title . " отправлено" ;
+//                } else {
+//                    echo "Ошибка для " . $title . ": " . $result->getErrorMessages();
+//                }
+
+
+                //добавить код обновление времени последней отправки, получение 8 новых элементов
+            }
         }
 
         // Разбиваем параметры
-        $searchParams = [];
-        parse_str($resUsersSearch[0]['UF_SEARCH_QUERY'], $searchParams);
-        $skipParams = ['year', 'video', 'photo', 'mark', 'country', 'region', 'city'];
-
-        if (!empty($searchParams)) {
-            $arrParams = [];
-            $propertyCache = []; // Кэш для свойств, чтобы не делать лишние запросы
-
-            foreach ($searchParams as $key => $param) {
-                $paramParts = explode('_', str_replace($filterName . '_', '', $key));
-                if (!in_array($paramParts[0], $skipParams)) {
-                    if (count($paramParts) === 2 || count($paramParts) === 1) {
-                        $propertyId = $paramParts[0];
-                        $hashValue = $paramParts[1] ?? $param;
-                        $isNumber = ($paramParts[1] === 'MIN' || $paramParts[1] === 'MAX');
-                        $propertyKey = ($paramParts[0] === 'P1') ? "CATALOG_PRICE_1" : "PROPERTY_" . $propertyId;
-
-                        if ($isNumber) {
-                            $operator = ($paramParts[1] === 'MIN') ? ">=" : "<=";
-                            $arrParams[$operator . $propertyKey] = $param;
-                        } else {
-                            // Проверяем, есть ли кэш для данного свойства
-                            if (!isset($propertyCache[$propertyId])) {
-                                $propertyCache[$propertyId] = PropertyEnumerationTable::getList([
-                                    "filter" => ["=PROPERTY_ID" => $propertyId],
-                                    "select" => ["ID"]
-                                ])->fetchAll();
-                            }
-
-                            // Проверяем и добавляем значение, если оно совпадает с хэшем
-                            if (!empty($propertyCache[$propertyId])) {
-                                foreach ($propertyCache[$propertyId] as $prop) {
-                                    if (abs(crc32($prop["ID"])) == $hashValue) {
-                                        $arrParams['=' . $propertyKey][] = $prop['ID'];
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            if ($searchParams[$filterName . '_year_MIN'] || $searchParams[$filterName . '_year_MAX']) {
-                $yearFrom = $searchParams[$filterName . '_year_MIN'] ?? 1900;
-                $yearTo = $searchParams[$filterName . '_year_MAX'] ?? date('Y');
-                $arrParams['=PROPERTY_' . self::getPropertyId(CATALOG_IBLOCK_ID, 'year')] = self::getYearsFilterId($yearFrom, $yearTo);
-            }
-
-            if ($searchParams[$filterName . '_mark']) {
-                $sections = self::getMarksFilterId(CATALOG_IBLOCK_ID, $searchParams[$filterName . '_mark']);
-                if (!empty($sections)) $arrParams['IBLOCK_SECTION_ID'] = $sections;
-            }
-
-            $cities = self::getCitiesFilterId($searchParams, $filterName);
-
-            if(!empty($cities)) {
-                $arrParams['=PROPERTY_' . self::getPropertyId(CATALOG_IBLOCK_ID, 'country')] = $cities;
-            }
-
-            $arrParams['IBLOCK_ID'] = CATALOG_IBLOCK_ID;
-            $arrParams['SECTION_ID'] = 7540; //подставить значение раздела, в котором находится фильтр
-            $arrParams['INCLUDE_SUBSECTIONS'] = "Y";
-            $arrParams['ACTIVE'] = 'Y';
-
-
-            pr($arrParams);
-
-//            $citiesData = LocationTable::getList([
-//                'filter' => ['=TYPE.CODE' => 'CITY'], // Фильтруем по типу 'CITY'
-//                'select' => ['ID'], // Выбираем нужные поля
-//            ])->fetchAll();
-//            foreach ($citiesData as $city) {
-//                $this->cities[$city['ID']] = $city['NAME'];
-//            }
-//            $this->locationTree = self::getLocationTree($this->cities);
-
-
-
-            pr(\CIBlockElement::GetList(array(), $arrParams, array(), false));
-        }
+        pr($searches);
     }
 }
 
