@@ -12,10 +12,11 @@ $mid = 'web.doc';
 if (!$USER->IsAdmin() || !Loader::includeModule($mid)) return;
 $APPLICATION->SetAdditionalCSS("/bitrix/css/" . $mid . "/style.css");
 ?>
-<h2>Структура</h2>
+<h2>Страница добавления</h2>
 <div class="point">
 
 </div>
+
 <p>Для отображения свойств необходимо добавить их к разделу и к необходимой “секции” на странице.</p>
 <h3>Добавление к разделу</h3>
 <div class="point">

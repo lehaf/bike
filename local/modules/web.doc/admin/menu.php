@@ -19,10 +19,17 @@ function OnBuildGlobalMenuHandler(&$aGlobalMenu, &$aModuleMenu) : array
             "help_section" => $moduleId,
             "items" => [
                 [
-                    "text" => 'Документация',
-                    "title" => 'Документация',
+                    "text" => 'Структура файлов',
+                    "title" => 'Структура файлов',
                     'icon' => 'sys_menu_icon',
-                    "url" => "/bitrix/admin/documentation.php?lang=" . LANGUAGE_ID,
+                    "url" => "/bitrix/admin/structure.php?lang=" . LANGUAGE_ID,
+                    'items_id' => 'cp',
+                ],
+                [
+                    "text" => 'Страница добавления',
+                    "title" => 'Страница добавления',
+                    'icon' => 'sys_menu_icon',
+                    "url" => "/bitrix/admin/addPage.php?lang=" . LANGUAGE_ID,
                     'items_id' => 'cp',
                 ]
             ]
