@@ -227,6 +227,7 @@ class Filter
         return $arrParams;
     }
 
+
     public function init(): void
     {
         global $APPLICATION;
@@ -258,15 +259,17 @@ class Filter
 
             $elementsCount = \CIBlockElement::GetList([], $arrParams, [], false);
 
-            if($currentDate >= $endDate && (int)$elementsCount > 0) {
+            if ($currentDate >= $endDate && (int)$elementsCount > 0) {
                 $res = \CIBlockSection::GetByID($search['UF_SECTION']);
+                $sectionCode = '';
                 if ($section = $res->GetNext()) {
                     $sectionUrl = $section['SECTION_PAGE_URL'];
+                    $sectionCode = strtoupper($section['CODE']);
                 }
 
                 $userEmail = \Bitrix\Main\Engine\CurrentUser::get()->getEmail();
                 $title = $search['UF_TITLE'];
-                if(!empty($search['UF_DESCRIPTION'])){
+                if (!empty($search['UF_DESCRIPTION'])) {
                     $title .= ', ' . $search['UF_DESCRIPTION'];
                 }
 
@@ -276,35 +279,91 @@ class Filter
                     'FILTER_URL' => $sectionUrl . $search['UF_FILTER_QUERY'],
                 ];
 
-                $result = \CIBlockElement::GetList([], $arrParams, false, ['nTopCount' => 8], ["ID", "NAME", "DETAIL_PAGE_URL", "PROPERTY_PRICE", "PROPERTY_COUNTRY"]);
-//                while($item = $result->GetNext()) {
-//                    $priceResult = \CPrice::GetList(
-//                        [],
-//                        ['PRODUCT_ID' => $item['ID']]
-//                    );
-//                    $price = null;
-//                    if ($priceArray = $priceResult->Fetch()) {
-//                        $price = $priceArray['PRICE'];
-//                    }
-//                    pr($price);
-//
-//                    if (!empty($item['PROPERTY_COUNTRY_VALUE'])) {
-//                        $location =  \Bitrix\Sale\Location\LocationTable::getList([
-//                            'filter' => ['=ID' => $item['PROPERTY_COUNTRY_VALUE'], '=NAME.LANGUAGE_ID' => 'ru',],
-//                            'select' => ['NAME_RU' => 'NAME.NAME'] // Название на русском
-//                        ])->fetch();
-//                        $countryName = $location['NAME_RU'];
-//                    }
-//                }
+                $elements = [];
+                $arSelect = (in_array($search['UF_SECTION'], SECTION_TYPE_2)) ? [
+                    "ID",
+                    "NAME",
+                    "PREVIEW_PICTURE",
+                    "DETAIL_PAGE_URL",
+                    "PROPERTY_COUNTRY"
+                ] : [
+                    "ID",
+                    "NAME",
+                    "PREVIEW_PICTURE",
+                    "DETAIL_PAGE_URL",
+                    "PROPERTY_YEAR",
+                    "PROPERTY_RACE",
+                    "PROPERTY_RACE_UNIT",
+                    "PROPERTY_POWER",
+                    "PROPERTY_TYPE_" . $sectionCode,
+                    "PROPERTY_TRANSMISSION",
+                    "PROPERTY_COUNTRY"
+                ];
+
+
+                $result = \CIBlockElement::GetList([], $arrParams, false, ['nTopCount' => 8], $arSelect);
+                $resultTemplate = "";
+                while ($item = $result->GetNext()) {
+
+                    if (!empty($item['PROPERTY_COUNTRY_VALUE'])) {
+                        $location = \Bitrix\Sale\Location\LocationTable::getList([
+                            'filter' => ['=ID' => $item['PROPERTY_COUNTRY_VALUE'], '=NAME.LANGUAGE_ID' => 'ru',],
+                            'select' => ['NAME_RU' => 'NAME.NAME'] // Название на русском
+                        ])->fetch();
+                        $countryName = $location['NAME_RU'];
+                    }
+                    $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+                    $sitePath = $protocol . $_SERVER['HTTP_HOST'];
+                    $imgPath = (!empty($item['PREVIEW_PICTURE'])) ? \CFile::GetPath($item['PREVIEW_PICTURE']) : SITE_TEMPLATE_PATH . '/bitrix/images/empty_img_element.png';
+
+                    $allPrices = getItemPrices([$item['ID']]);
+                    $itemPrices = $allPrices['prices'][$item['ID']];
+                    $prices = [];
+                    if ($itemPrices) {
+                        $prices = convertPrice($itemPrices, $allPrices['desired'], $allPrices['base']);
+                    }
+
+                    $propsString = "";
+                    $props = (in_array($search['UF_SECTION'], SECTION_TYPE_2)) ? [] : [
+                        'year' => (!empty($item['PROPERTY_YEAR_VALUE'])) ? $item['PROPERTY_YEAR_VALUE'] . ' г.' : '',
+                        'race' => (!empty($item['PROPERTY_RACE_VALUE'])) ? $item['PROPERTY_RACE_VALUE'] . ' ' . $item['PROPERTY_RACE_UNIT_VALUE'] : '',
+                        'power' => (!empty($item['PROPERTY_POWER_VALUE'])) ? $item['PROPERTY_POWER_VALUE'] . ' л.с.' : '',
+                        'motor_type' => (!empty($item['PROPERTY_TYPE_' . $sectionCode . '_VALUE'])) ? $item['PROPERTY_TYPE_' . $sectionCode . '_VALUE'] : '',
+                        'transmission' => (!empty($item['PROPERTY_TRANSMISSION_VALUE'])) ? $item['PROPERTY_TRANSMISSION_VALUE'] : '',
+                    ];
+                    if(!empty($props)) {
+                        foreach ($props as $prop) {
+                            $propsString .= $prop . ' / ';
+                        }
+                        $propsString = rtrim($propsString, ' / ');
+                    }
+
+
+                    $element = [
+                        'id' => $item['ID'],
+                        'name' => $item['NAME'],
+                        'img' => $sitePath . $imgPath,
+                        'url' => $sitePath . $item['DETAIL_PAGE_URL'],
+                        'price' => ["BYN" => $prices["BASE"], "USD" => $prices["CONVERT"]["USD"]],
+                        'props' => $propsString,
+                        'city' => $countryName ?? ''
+                    ];
+
+                    $resultTemplate .=   include $_SERVER['DOCUMENT_ROOT'] . '/local/php_interface/include/searchMailResultRaw.php';
+                }
+
+
 
                 $arEventFields = array(
                     "EMAIL" => $userEmail,
-                    "ELEMENTS_COUNT" => $elementsCount,
+                    "ELEMENTS_COUNT" => $elementsCount . ' ' . getPluralForm($elementsCount, ['объявлние', 'объявления', 'объявлений']),
                     "FILTER_TITLE" => $title,
-                    "FILTER_URL" => $sectionUrl . $search['UF_FILTER_QUERY']
+                    "FILTER_URL" => $sitePath . $sectionUrl . $search['UF_FILTER_QUERY'],
+                    "RESULT" => $resultTemplate
                 );
+                pr($arEventFields);
 
-                CEvent::Send("USER_SEARCH", SITE_ID, $arEventFields);
+//                \CEvent::Send("USER_SEARCH", SITE_ID, $arEventFields);
 
 //                pr(SITE_ID);
 //                $result = $entityUsersSearch::update($search['ID'], ['UF_LAST_SENT' => $currentDate->format('d.m.Y H:i:s')]);
