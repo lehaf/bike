@@ -367,7 +367,7 @@ class Filter
                 );
                 pr($arEventFields);
 
-//                \CEvent::Send("USER_SEARCH", SITE_ID, $arEventFields);
+                \CEvent::Send("USER_SEARCH", SITE_ID, $arEventFields);
 
 //                $result = $entityUsersSearch::update($search['ID'], ['UF_LAST_SENT' => $currentDate->format('d.m.Y H:i:s')]);
 //                if ($result->isSuccess()) {

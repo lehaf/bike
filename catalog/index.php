@@ -127,8 +127,8 @@ $APPLICATION->IncludeComponent(
 		"SHOW_SECTION_LIST_PICTURES" => "Y",
 		"PAGE_ELEMENT_COUNT" => "20",
 		"LINE_ELEMENT_COUNT" => "4",
-		"ELEMENT_SORT_FIELD" => "SHOWS",
-		"ELEMENT_SORT_ORDER" => "asc",
+		"ELEMENT_SORT_FIELD" => "DATE_CREATE",
+		"ELEMENT_SORT_ORDER" => "desc",
 		"ELEMENT_SORT_FIELD2" => "sort",
 		"ELEMENT_SORT_ORDER2" => "asc",
 		"LIST_PROPERTY_CODE" => array(
@@ -280,6 +280,7 @@ $APPLICATION->IncludeComponent(
 			0 => "POPULARITY",
 			1 => "NAME",
 			2 => "PRICE",
+			3 => "CUSTOM",
 		),
 		"SORT_PRICES" => "REGION_PRICE",
 		"DEFAULT_LIST_TEMPLATE" => "block",
