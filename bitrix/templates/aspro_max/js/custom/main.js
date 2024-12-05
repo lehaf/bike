@@ -14,6 +14,14 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
     $(".step-form__btn:not(.step-form__btn-submit)").on("click", stepBtn);
+    $(".custom-input").on('input', function () {
+        this.classList.remove("error");
+        let parent = this.closest('.form-group');
+        if(this.id === 'power') {
+            parent = this.closest('.form-col');
+        }
+        parent.querySelector('.error-form').classList.remove('show');
+    });
     $(".custom-input.number").on('input', function () {
         this.value = this.value.replace(/[^0-9]/g, '');
     });
@@ -77,6 +85,9 @@ document.addEventListener("DOMContentLoaded", () => {
         el.addEventListener(
             'change',
             function (event) {
+                this.closest('.form-row').querySelector('.error-form').classList.remove('show');
+                this.closest('.choices__inner').classList.remove('error');
+
                 let textContent = event.target.textContent.replace(/\s+/g, '')
                 if (textContent === "Сбросить" || textContent === "Любая" || textContent === "Любой") {
                     select.setChoiceByValue('');
@@ -533,6 +544,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         function inputBrand(objBrandsFull) {
             brandInput.addEventListener("input", function (event) {
+                console.log(this.value);
                 let value = this.value;
                 brandBlock.innerHTML = ""
                 for (let el in objBrandsFull) {
@@ -543,7 +555,11 @@ document.addEventListener("DOMContentLoaded", () => {
                         brandBlock.innerHTML = brandBlock.innerHTML + itemBrand;
                     }
                 }
-                brandBlock.innerHTML = brandBlock.innerHTML + templateNotBrands("Нет моей марки")
+                brandBlock.innerHTML = brandBlock.innerHTML + templateNotBrands("Нет моей марки");
+                brandModalInput.setAttribute("disabled", true);
+                $('#modelBlock').removeClass('active');
+                modelBlock.innerHTML = "";
+                brandModalInput.value = "";
             })
         }
 
@@ -562,6 +578,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     brandModalInput.removeAttribute("disabled");
                     brandModalInput.value = "";
                     getCategories('getModels', 'categories', content.getAttribute('data-id'));
+                    brandInput.classList.remove('error');
+                    brandBlock.closest('.form-row').querySelector('.error-form').classList.remove('show');
                 } else if (noMark) {
                     brandInput.value = "Нет моей марки"
                     // $("#brandBlock").removeClass("active");
@@ -607,7 +625,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         modelBlock.innerHTML = modelBlock.innerHTML + itemBrand;
                     }
                 }
-                modelBlock.innerHTML = modelBlock.innerHTML + templateNotBrands("Нет моей марки")
+                modelBlock.innerHTML = modelBlock.innerHTML + templateNotBrands("Нет моей марки");
             })
         }
 
@@ -627,6 +645,8 @@ document.addEventListener("DOMContentLoaded", () => {
                         firstRadio.checked = true;
                     }
                     $("#modelBlock").removeClass("active");
+                    brandModalInput.classList.remove('error');
+                    modelBlock.closest('.form-row').querySelector('.error-form').classList.remove('show');
                     // brandModification.removeAttribute("disabled")
                 } else if (noMark) {
                     brandModalInput.value = "Нет моей модели"
@@ -1108,6 +1128,15 @@ document.addEventListener("DOMContentLoaded", () => {
             getCategories('getSubCategories', 'categories', categoryEl.getAttribute('data-el'));
         }
     }
+
+    let allCheck = document.querySelectorAll('input[type=radio], input[type=checkbox]');
+    allCheck.forEach(check => {
+        check.addEventListener('change', () => {
+            if(check.checked) {
+                check.closest('.form-group').querySelector('.error-form').classList.remove('show');
+            }
+        })
+    })
 
     const maskPhone = () => {
         $(".dataUserTel").mask("+375 (99) 999-99-99");

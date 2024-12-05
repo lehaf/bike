@@ -136,7 +136,7 @@ class CreateElement extends \CBitrixComponent
         $element = $iblockClass::getByPrimary($this->elementId, ['select' => array_keys($data)])->fetchObject();
         $elementPhotos = $iblockClass::getByPrimary($this->elementId, ['select' => ['MORE_PHOTO', 'PREVIEW_PICTURE']])->fetchObject();
         $delPhotos = [];
-        if(!empty($elementPhotos)) {
+        if (!empty($elementPhotos)) {
             foreach ($elementPhotos->getMorePhoto()->getAll() as $photo) {
                 $delPhotos[] = $photo->getValue();
             }
@@ -158,18 +158,36 @@ class CreateElement extends \CBitrixComponent
         );
         $element->set("CODE", \CUtil::translit($data["NAME"]["VALUE"], "ru", $arTransParams));
 
+        $currentDate = new \DateTime();
+        $element->set("TIMESTAMP_X", $currentDate->format('d.m.Y H:i:s'));
+
         if (!empty($data)) {
+            foreach ($this->staticProps as $prop) {
+                if ($data[$prop]) {
+                    if ($data[$prop]['MULTIPLE']) {
+                        $propertyValues = $element->get($prop);
+                        // Удаляем все существующие значения
+                        foreach ($propertyValues as $value) {
+                            $propertyValues->remove($value);
+                        }
+                        // Добавляем новые значения
+                        foreach ($data[$prop]['VALUE'] as $value) {
+                            $element->addTo($prop, new PropertyValue($value));
+                        }
+                    } else {
+                        $element->set($prop, $data[$prop]['VALUE']);
+                    }
+                }
+            }
             foreach ($this->userProps as $prop => $propData) {
                 if (array_key_exists($prop, $data)) {
                     $item = $data[$prop];
-
                     if ($propData['MULTIPLE'] === 'Y' && is_array($item['VALUE'])) {
                         $propertyValues = $element->get($prop);
                         // Удаляем все существующие значения
                         foreach ($propertyValues as $value) {
                             $propertyValues->remove($value);
                         }
-
                         // Добавляем новые значения
                         foreach ($item['VALUE'] as $value) {
                             $element->addTo($prop, new PropertyValue($value));
@@ -180,7 +198,7 @@ class CreateElement extends \CBitrixComponent
                     }
                 } else {
                     if ($propData['PROPERTY_TYPE'] === 'L') {
-                        if($propData['MULTIPLE'] === 'Y') {
+                        if ($propData['MULTIPLE'] === 'Y') {
                             $element->fill($prop);
                             $propertyValues = $element->get($prop);
                             foreach ($propertyValues as $value) {
@@ -381,11 +399,11 @@ class CreateElement extends \CBitrixComponent
         return $requiredFieldsId;
     }
 
-    private function convertRace (int $race, string $unit ) : float
+    private function convertRace(int $race, string $unit): float
     {
         $motoHours = 1.2;
         $mile = 0.621371;
-        if($unit === "moto-hours") {
+        if ($unit === "moto-hours") {
             $race = round($race / $motoHours, 2);
         } elseif ($unit === "mile") {
             $race = round($race / $mile, 2);
@@ -393,6 +411,7 @@ class CreateElement extends \CBitrixComponent
 
         return $race;
     }
+
     private function ajaxPost(array $data): void
     {
         ob_end_clean();
@@ -402,7 +421,10 @@ class CreateElement extends \CBitrixComponent
             }
 
             //раздел элемента
-            $data["POST"]["IBLOCK_SECTION_ID"] = $data["POST"]["IBLOCK_SECTION_ID"] ?? $data['GET']['type'];
+            if(!$data["POST"]["IBLOCK_SECTION_ID"]) {
+                $this->errors["SUBSECTION"] = "Заполните марку и модель";
+            }
+
 
             $fieldsToCheck = [
                 "IBLOCK_SECTION_ID" => "Заполните поле",
@@ -426,7 +448,7 @@ class CreateElement extends \CBitrixComponent
             if (isset($data['POST']['PRICE']) && empty($data['POST']['PRICE'])) $this->errors['PRICE'] = "Заполните цену";
 
             //конвертация пробега в км
-            if(isset($this->userProps['race_km']) && !empty($data['POST']['race_unit']) && !empty($data['POST']['race'])) {
+            if (isset($this->userProps['race_km']) && !empty($data['POST']['race_unit']) && !empty($data['POST']['race'])) {
                 $raceUnitXmlId = \Bitrix\Iblock\PropertyEnumerationTable::getList([
                     "filter" => ["=ID" => $data['POST']['race_unit']],
                     "select" => ["XML_ID"],
