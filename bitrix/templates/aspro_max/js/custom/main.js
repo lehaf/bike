@@ -41,17 +41,15 @@ document.addEventListener("DOMContentLoaded", () => {
                     searchEnabled: true,
                     shouldSort: false,
                     searchPlaceholderValue: text,
-                    placeholder: true,
-                    placeholderValue: "hello",
                     removeItems: true,
                     position: 'bottom',
                     noResultsText: 'Ничего не найдено',
+                    searchResultLimit: 100,
                     searchFields: ['label'],
                     fuseOptions: {
                         keys: ['label'], // Поиск только по полю label
-                        threshold: 0.1, // Чем меньше значение, тем точнее поиск
-                        caseSensitive: false, // Игнорировать регистр
-                        distance: 100, // Максимальное расстояние от начала совпадения
+                        threshold: 0.1, // Позволяет находить подстроки, избегая слишком "размытых" совпадений
+                        distance: 1000, // Максимальное расстояние, в пределах которого совпадение считается допустимым
                     },
                 })
                 selectSearch.setChoices(options, 'value', 'label', true);
@@ -988,6 +986,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (subSect) {
                 formData.append("IBLOCK_SECTION_ID", subSect.value);
             }
+
 
             $("#stepForm").addClass('blur');
             fetch(window.location.href, {
