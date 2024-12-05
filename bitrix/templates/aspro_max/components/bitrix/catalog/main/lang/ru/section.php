@@ -1,6 +1,11 @@
 <?
 	$MESS["SECT_ORDER_desc"] = " (убывание)";
 	$MESS["SECT_ORDER_asc"] = " (возрастание)";
+    $MESS["SECT_ORDER_DATE_CREATE_desc"] = " (новые)";
+    $MESS["SECT_ORDER_DATE_CREATE_asc"] = " (старые)";
+    $MESS["SECT_ORDER_PRICE_desc"] = " (дороже)";
+    $MESS["SECT_ORDER_PRICE_asc"] = " (дешевле)";
+
 	$MESS["SECT_SORT_SORT"] = "По индексу сортировки";
 	$MESS["SECT_SORT_SHOWS"] = "По популярности";
 	$MESS["SECT_SORT_NAME"] = "По алфавиту";
@@ -34,4 +39,5 @@
 
 	$MESS["SORT_TITLE_PROPETY"] = "#CODE#";
 	$MESS["SECT_SORT_CUSTOM"] = "По умолчанию";
+    $MESS["SECT_SORT_DATE_CREATE"] = "Дата создания";
 ?>

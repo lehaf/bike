@@ -384,6 +384,7 @@
 	$MESS["RECOMEND_IN_SEARCH_COUNT_TITLE"] = "Количество элементов в блоке \"Рекомендуем\"";
 
 	$MESS["SORT_BUTTONS_CUSTOM"] = "по умолчанию";
+    $MESS["SORT_BUTTONS_DATE_CREATE"] = "по дате создания";
 
 	$MESS["CP_BC_TPL_PRODUCT_BLOCK_BUY_SERVICES"] = "Дополнительные услуги";
 	$MESS["TAB_BUY_SERVICES_NAME_TITLE"] = "Заголовок блока \"Дополнительные услуги\"";

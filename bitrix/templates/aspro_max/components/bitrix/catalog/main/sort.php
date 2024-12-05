@@ -57,52 +57,55 @@ $bShowSortInFilter = ($arParams['SHOW_SORT_IN_FILTER'] != 'N');
 			$arAvailableSort = array();
 			$arSorts = $arParams["SORT_BUTTONS"];
 
+            if(in_array("DATE_CREATE", $arSorts)){
+                $arAvailableSort["DATE_CREATE"] = array("DATE_CREATE", "desc");
+            }
+            if(in_array("PRICE", $arSorts)){
+                $arSortPrices = $arParams["SORT_PRICES"];
+                if($arSortPrices == "MINIMUM_PRICE" || $arSortPrices == "MAXIMUM_PRICE"){
+                    $arAvailableSort["PRICE"] = array("PROPERTY_".$arSortPrices, "desc");
+                }
+                else{
+                    if($arSortPrices == "REGION_PRICE")
+                    {
+                        global $arRegion;
+                        if($arRegion)
+                        {
+                            if(!$arRegion["PROPERTY_SORT_REGION_PRICE_VALUE"] || $arRegion["PROPERTY_SORT_REGION_PRICE_VALUE"] == "component")
+                            {
+                                $price = CCatalogGroup::GetList(array(), array("NAME" => $arParams["SORT_REGION_PRICE"]), false, false, array("ID", "NAME"))->GetNext();
+                                $arAvailableSort["PRICE"] = array("CATALOG_PRICE_".$price["ID"], "desc");
+                            }
+                            else
+                            {
+                                $arAvailableSort["PRICE"] = array("CATALOG_PRICE_".$arRegion["PROPERTY_SORT_REGION_PRICE_VALUE"], "desc");
+                            }
+                        }
+                        else
+                        {
+                            $price_name = ($arParams["SORT_REGION_PRICE"] ? $arParams["SORT_REGION_PRICE"] : "BASE");
+                            $price = CCatalogGroup::GetList(array(), array("NAME" => $price_name), false, false, array("ID", "NAME"))->GetNext();
+                            $arAvailableSort["PRICE"] = array("CATALOG_PRICE_".$price["ID"], "desc");
+                        }
+                    }
+                    else
+                    {
+                        $price = CCatalogGroup::GetList(array(), array("NAME" => $arParams["SORT_PRICES"]), false, false, array("ID", "NAME"))->GetNext();
+                        $arAvailableSort["PRICE"] = array("CATALOG_PRICE_".$price["ID"], "desc");
+                    }
+                }
+            }
 			if(in_array("POPULARITY", $arSorts)){
 				$arAvailableSort["SHOWS"] = array("SHOWS", "desc");
 			}
 			if(in_array("NAME", $arSorts)){
 				$arAvailableSort["NAME"] = array("NAME", "asc");
 			}
-			if(in_array("PRICE", $arSorts)){
-				$arSortPrices = $arParams["SORT_PRICES"];
-				if($arSortPrices == "MINIMUM_PRICE" || $arSortPrices == "MAXIMUM_PRICE"){
-					$arAvailableSort["PRICE"] = array("PROPERTY_".$arSortPrices, "desc");
-				}
-				else{
-					if($arSortPrices == "REGION_PRICE")
-					{
-						global $arRegion;
-						if($arRegion)
-						{
-							if(!$arRegion["PROPERTY_SORT_REGION_PRICE_VALUE"] || $arRegion["PROPERTY_SORT_REGION_PRICE_VALUE"] == "component")
-							{
-								$price = CCatalogGroup::GetList(array(), array("NAME" => $arParams["SORT_REGION_PRICE"]), false, false, array("ID", "NAME"))->GetNext();
-								$arAvailableSort["PRICE"] = array("CATALOG_PRICE_".$price["ID"], "desc");
-							}
-							else
-							{
-								$arAvailableSort["PRICE"] = array("CATALOG_PRICE_".$arRegion["PROPERTY_SORT_REGION_PRICE_VALUE"], "desc");
-							}
-						}
-						else
-						{
-							$price_name = ($arParams["SORT_REGION_PRICE"] ? $arParams["SORT_REGION_PRICE"] : "BASE");
-							$price = CCatalogGroup::GetList(array(), array("NAME" => $price_name), false, false, array("ID", "NAME"))->GetNext();
-							$arAvailableSort["PRICE"] = array("CATALOG_PRICE_".$price["ID"], "desc");
-						}
-					}
-					else
-					{
-						$price = CCatalogGroup::GetList(array(), array("NAME" => $arParams["SORT_PRICES"]), false, false, array("ID", "NAME"))->GetNext();
-						$arAvailableSort["PRICE"] = array("CATALOG_PRICE_".$price["ID"], "desc");
-					}
-				}
-			}
 			if(in_array("QUANTITY", $arSorts)){
 				$arAvailableSort["CATALOG_AVAILABLE"] = array("QUANTITY", "desc");
 			}			
 
-			$defaulSortButtons = array("SORT","POPULARITY", "NAME", "PRICE", "QUANTITY", "CUSTOM");
+			$defaulSortButtons = array("SORT","POPULARITY", "NAME", "PRICE", "QUANTITY", "CUSTOM", "DATE_CREATE");
 			$propsInSort = array();
 			$propsInSortName = array();
 			foreach($arSorts as $sort_prop){
@@ -166,12 +169,13 @@ $bShowSortInFilter = ($arParams['SHOW_SORT_IN_FILTER'] != 'N');
 			<?if($arAvailableSort):?>
 				<div class="dropdown-select">
 					<div class="dropdown-select__title font_xs darken">
-						<span>
+                        <?php $sortOrderMess = (\Bitrix\Main\Localization\Loc::getMessage('SECT_ORDER_'. $sort . '_' .$sort_order)) ?: \Bitrix\Main\Localization\Loc::getMessage('SECT_ORDER_' .$sort_order)?>
+                        <span>
 							<?if($sort_order && $sort):?>								
 								<?if( in_array($sort, array_keys($propsInSortName)) ):?>
-									<?=\Bitrix\Main\Localization\Loc::getMessage('SORT_TITLE_PROPETY', array('#CODE#' => $propsInSortName[$sort])).\Bitrix\Main\Localization\Loc::getMessage('SECT_ORDER_'.$sort_order)?>
+									<?=\Bitrix\Main\Localization\Loc::getMessage('SORT_TITLE_PROPETY', array('#CODE#' => $propsInSortName[$sort])).$sortOrderMess?>
 								<?else:?>
-									<?=\Bitrix\Main\Localization\Loc::getMessage('SECT_SORT_'.($customSort ? 'CUSTOM' : $sort)).\Bitrix\Main\Localization\Loc::getMessage('SECT_ORDER_'.$sort_order)?>
+									<?=\Bitrix\Main\Localization\Loc::getMessage('SECT_SORT_'.($customSort ? 'CUSTOM' : $sort)).$sortOrderMess?>
 								<?endif;?>
 							<?else:?>
 								<?=\Bitrix\Main\Localization\Loc::getMessage('NOTHING_SELECTED');?>
@@ -184,6 +188,7 @@ $bShowSortInFilter = ($arParams['SHOW_SORT_IN_FILTER'] != 'N');
 							<?$arOrder = ['desc', 'asc']?>
 							<?foreach($arAvailableSort as $key => $arVals):?>
 								<?foreach($arOrder as $value):?>
+                                    <?php $sortOrderMess = (\Bitrix\Main\Localization\Loc::getMessage('SECT_ORDER_'. $key . '_' .$value)) ?: \Bitrix\Main\Localization\Loc::getMessage('SECT_ORDER_' .$value)?>
 									<div class="dropdown-select__list-item font_xs">
 										<?$newSort = $sort_order == 'desc' ? 'asc' : 'desc';
 										$current_url = $APPLICATION->GetCurPageParam('sort='.$key.'&order='.$value, $arDelUrlParams);
@@ -194,9 +199,9 @@ $bShowSortInFilter = ($arParams['SHOW_SORT_IN_FILTER'] != 'N');
 											<a href="<?=$url;?>" class="dropdown-select__list-link <?=$value?> <?=$key?> darken <?=($arParams['AJAX_CONTROLS'] == 'Y' ? ' js-load-link' : '');?>" data-url="<?=$url;?>" rel="nofollow">
 										<?endif;?>
 											<?if( in_array($key, array_keys($propsInSortName)) ):?>
-												<span><?=\Bitrix\Main\Localization\Loc::getMessage('SORT_TITLE_PROPETY', array('#CODE#' => $propsInSortName[$key])).\Bitrix\Main\Localization\Loc::getMessage('SECT_ORDER_'.$value)?></span>
+												<span><?=\Bitrix\Main\Localization\Loc::getMessage('SORT_TITLE_PROPETY', array('#CODE#' => $propsInSortName[$key])).$sortOrderMess?></span>
 											<?else:?>
-												<span><?=\Bitrix\Main\Localization\Loc::getMessage('SECT_SORT_'.($arAvailableSort[$key][0] === 'CUSTOM' ? 'CUSTOM' : $key)).\Bitrix\Main\Localization\Loc::getMessage('SECT_ORDER_'.$value)?></span>												
+												<span><?=\Bitrix\Main\Localization\Loc::getMessage('SECT_SORT_'.($arAvailableSort[$key][0] === 'CUSTOM' ? 'CUSTOM' : $key)).$sortOrderMess?></span>
 											<?endif;?>
 										<?if($bCurrentLink):?>
 											</span>
