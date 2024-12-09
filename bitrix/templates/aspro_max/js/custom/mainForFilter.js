@@ -1,8 +1,6 @@
 let selectTypes = [];//new
 const selectList = document.querySelectorAll(".custom-select");
-let selectCategory = '';
 
-console.log(selectList);
 setSelect(selectList);
 
 function setSelect(selectList) {
@@ -13,16 +11,37 @@ function setSelect(selectList) {
                 searchEnabled: true,
                 shouldSort: false,
                 searchPlaceholderValue: text,
+                removeItems: true,
                 position: 'bottom',
                 noResultsText: 'Ничего не найдено',
-                searchResultLimit: 10
-
+                searchResultLimit: 100,
+                searchFields: ['label'],
+                fuseOptions: {
+                    keys: ['label'], // Поиск только по полю label
+                    threshold: 0.1, // Позволяет находить подстроки, избегая слишком "размытых" совпадений
+                    distance: 1000, // Максимальное расстояние, в пределах которого совпадение считается допустимым
+                },
             })
-            if (el.id === 'categorySelect') {
-                selectCategory = selectSearch;
-            }
+            moveSearchField(el.closest('.row--brand'));
+            listenerSelect(el, selectSearch);
+            el.addEventListener('change', function (event) {
+                const selectedItems = Array.from(el.selectedOptions).map(option => option.value);
 
-            listenerSelect(el, selectSearch)
+                if (selectedItems.length > 0) {
+                    this.parentElement.classList.add("is-active")
+                    this.closest(".choices").classList.add("is-active")
+                    this.closest(".form-row__col").classList.add("is-active")
+                }
+
+                if (el.value === "" || el.value === "reset") {
+                    selectSearch.setChoiceByValue('');
+
+                    this.parentElement.classList.remove("is-active");
+                    this.closest(".choices").classList.remove("is-active");
+                    this.closest(".form-row__col").classList.remove("is-active");
+                }
+                hideSelectItem();
+            });
         } else {
             const selectType = new Choices(el, {
                 searchEnabled: false,

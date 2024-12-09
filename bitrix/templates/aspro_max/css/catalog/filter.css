@@ -1084,6 +1084,13 @@ textarea.custom-textarea:focus {
     background: #fafafa url("../../images/svg/custom/search.svg") no-repeat 17px center;
 }
 
+/*.form-group .choices[data-type*=select-one] .choices__input.choices__input--cloned {*/
+/*    bottom: 0;*/
+/*    border: none;*/
+/*}*/
+
+
+
 .select-search .choices__list--dropdown {
     overflow: initial;
     z-index: 5;
@@ -2355,7 +2362,13 @@ input[type="file"] {
     height: 38px;
     top: 1px;
     left: 1px;
-    padding-left: 30px;
+    padding-left: 35px;
+}
+
+.form-group-custom-select .select-model .choices__inner,
+.select-model .choices.is-disabled .choices__inner,
+.row--brand .choices[data-type*=select-one] .choices__input.choices__input--cloned{
+    background: #fafafa url("../../images/svg/custom/search.svg") no-repeat 13px center;
 }
 
 .result-block {
@@ -2459,6 +2472,7 @@ input[type="file"] {
     min-height: 100px;
     overflow-y: auto;
 }
+
 @media (max-width: 1550px) {
     .save-inner {
         top: 30px;

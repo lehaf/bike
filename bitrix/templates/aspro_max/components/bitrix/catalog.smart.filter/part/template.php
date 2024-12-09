@@ -329,12 +329,14 @@ $price = $arResult['ITEMS']['BASE'];
             </div>
         <?php endif; ?>
 
-        <!--    тип транспорта-->
+        <!--    тип запчасти-->
         <?php if (!empty($arResult['ITEMS']['type_' . $sectCode]['VALUES'])): ?>
-            <div class="form-row__col <?= ($arResult['ITEMS']['type_' . $sectCode]['HAS_CHECKED']) ? 'store-active' : '' ?>">
-                <div class="form-group custom-select-inner form-group-custom-select color-select">
+            <div class="form-row__col row--brand<?= ($arResult['ITEMS']['type_' . $sectCode]['HAS_CHECKED']) ? 'store-active' : '' ?>">
+                <div class="form-group custom-select-inner form-group-custom-select">
                         <select name="<?= current($arResult['ITEMS']['type_' . $sectCode]['VALUES'])['CONTROL_NAME_ALT'] ?>"
-                                class="select-type custom-select">
+                                class="select-type custom-select selectSearch"
+                                data-text="Выбрать запчасть"
+                        >
                             <option value="" selected>
                                 Выбрать запчасть
                             </option>
