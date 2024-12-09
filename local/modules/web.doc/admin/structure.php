@@ -16,8 +16,17 @@ $APPLICATION->SetAdditionalCSS("/bitrix/css/" . $mid . "/style.css");
 <div class="point">
 
 </div>
-<p>Файл запускающий крон по отправке писем находится по пути: <i>/local/php_interface/cron/filterMail.php</i></p>
-<p>Файл с кодом для крона расположен в <i>/local/php_interface/classes/Filter.php</i></p>
+<h3 style="color: red">Если слетит после обновления аспро, то перезалить следующие файлы:</h3>
+<div style="margin-bottom: 50px">
+    <p>Файлы для изменения сортировки в каталоге (по дате создания):</p>
+    <p>bitrix/templates/aspro_max/components/bitrix/catalog/main/lang/ru/.parameters.php - название пункта в настройках компонента</p>
+    <p>bitrix/templates/aspro_max/components/bitrix/catalog/main/lang/ru/section.php - название пункта на странице каталога</p>
+    <p>bitrix/templates/aspro_max/components/bitrix/catalog/main/.parameters.php - добавлен пункт для сортировки по DATE_CREATE в параметр SORT_BUTTONS</p>
+    <p>bitrix/templates/aspro_max/components/bitrix/catalog/main/sort.php - добавлена логика для корректного отображения нового пункта сортировки "Дата создания" (DATE_CREATE)</p>
+</div>
+
+<p>Файл запускающий крон по отправке писем (сохраненные в фильтре поиски) находится по пути: <i>/local/php_interface/cron/filterMail.php</i> (запуск от 30 минут)</p>
+<p>Файл <i>/local/php_interface/cron/filterMail.php</i> использует метод init из класса  <i>/local/php_interface/classes/Filter.php </i></p>
 
 
 <?php
