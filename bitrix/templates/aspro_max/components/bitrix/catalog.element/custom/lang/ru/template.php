@@ -97,4 +97,7 @@ $MESS['S_ORDER_SERVISE'] = 'Заказать услугу';
 
 $MESS['VOTES_RESULT'] = 'Рейтинг #VALUE# из 5';
 $MESS['VOTES_RESULT_NONE'] = 'Нет оценок';
+
+$MESS['COMPLECT_TITLE'] = "Комплектация";
+$MESS['CONTRACT_PRICE'] = "Договорная";
 ?>

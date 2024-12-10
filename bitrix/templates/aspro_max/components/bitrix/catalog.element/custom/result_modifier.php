@@ -7,7 +7,6 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED!==true) die();
 /** @var CBitrixComponentTemplate $this */
 /** @var array $arParams */
 /** @var array $arResult */
-
 $displayPreviewTextMode = array(
 	'H' => true,
 	'E' => true,
@@ -682,7 +681,7 @@ if ($arResult['CATALOG'] && isset($arResult['OFFERS']) && !empty($arResult['OFFE
 	global $arSite;
 	if(\Bitrix\Main\Config\Option::get("aspro.max", "HIDE_SITE_NAME_TITLE", "N")=="N")
 		$postfix = ' - '.$arSite['SITE_NAME'];
-	
+
 	$bChangeTitleItem = \Bitrix\Main\Config\Option::get('aspro.max', 'CHANGE_TITLE_ITEM_DETAIL', 'N') === 'Y';
 
 	if( 'TYPE_1' == $arParams['TYPE_SKU'] && $arResult['OFFERS'] ){
@@ -695,7 +694,7 @@ if ($arResult['CATALOG'] && isset($arResult['OFFERS']) && !empty($arResult['OFFE
 				$foundOffer = ($arResult['OFFER_ID_SELECTED'] == $arOffer['ID']);
 			else
 				$foundOffer = $arOffer['CAN_BUY'];
-			
+
 			if ($foundOffer)
 				$intSelected = $keyOffer;
 			if (empty($arResult['MIN_PRICE']) /*&& $arOffer['CAN_BUY']*/)
@@ -1100,8 +1099,8 @@ if ($arResult['MODULES']['catalog'] && $arResult['CATALOG'])
 	} elseif (isset($arResult['ITEM_PRICE_MODE']) && $arResult['ITEM_PRICE_MODE'] === 'Q') {
 		//set PRICE_MATRIX when PRICE_RANGE will start not from 1
 		if (
-			function_exists('CatalogGetPriceTableEx') 
-			&& (isset($arResult['PRICE_MATRIX'])) 
+			function_exists('CatalogGetPriceTableEx')
+			&& (isset($arResult['PRICE_MATRIX']))
 			&& !$arResult['PRICE_MATRIX']
 			&& $arResult['CAT_PRICES']
 		) {
@@ -1119,12 +1118,12 @@ if ($arResult['MODULES']['catalog'] && $arResult['CATALOG'])
 			$arResult['OFFERS'],
 			$boolConvert ? $arResult['CONVERT_CURRENCY']['CURRENCY_ID'] : $strBaseCurrency
 		);
-		
+
 		$arFirstSkuPicture = array();
 		$bNeedFindPicture = (CMax::GetFrontParametrValue("SHOW_FIRST_SKU_PICTURE") == "Y") && $bEmptyPictureProduct;
 		if( $bNeedFindPicture ){
 			$bFindPicture = false;
-						
+
 			foreach ($arResult['OFFERS'] as $keyOffer => $arOffer) {
 				if (($arOffer['DETAIL_PICTURE'] && $arOffer['PREVIEW_PICTURE']) || (!$arOffer['DETAIL_PICTURE'] && $arOffer['PREVIEW_PICTURE'])) {
 					$arOffer['DETAIL_PICTURE'] = $arOffer['PREVIEW_PICTURE'];
@@ -1469,7 +1468,7 @@ if(in_array('HELP_TEXT', $arParams['PROPERTY_CODE']))
 					"EDIT_TEMPLATE" => ""
 				)
 			);?>
-		<?$help_text = ob_get_contents();		
+		<?$help_text = ob_get_contents();
 		ob_end_clean();
 		$bshowHelpTextFromFile = true;
 		if( strlen( trim($help_text) ) < 1){
@@ -1481,7 +1480,7 @@ if(in_array('HELP_TEXT', $arParams['PROPERTY_CODE']))
 				$bshowHelpTextFromFile = false;
 			}
 		}
-		
+
 		if( $bshowHelpTextFromFile ){
 			$arResult['HELP_TEXT'] = $help_text;
 			$arResult['HELP_TEXT_FILE'] = true;
@@ -1599,4 +1598,45 @@ if('TYPE_1' == $arParams['TYPE_SKU'] && $arResult['OFFERS']){
 		"IBLOCK_ID" => $arResult["SKU_IBLOCK_ID"],
 	);
 }
+
+if($arResult['PROPERTIES']['country']['VALUE']) $arResult['CITY'] = getElementCity($arResult['PROPERTIES']['country']['VALUE']);
+if($arResult["DATE_ACTIVE_FROM"]) $arResult['ACTIVE_FROM_DATE'] = convertDate($arResult["DATE_ACTIVE_FROM"]);
+
+$arResult['COMPLECT_PROPERTY'] = array_values(array_filter($arResult['DISPLAY_PROPERTIES'], function ($key) {
+	return strpos($key, 'complect_') !== false;
+}, ARRAY_FILTER_USE_KEY));
+
+$arResult['LOCATION_PROPERTY'] = array_filter($arResult['DISPLAY_PROPERTIES'], function ($el) {
+	return $el['CODE'] === 'location';
+});
+
+$arResult['DISPLAY_PROPERTIES'] = array_filter($arResult['DISPLAY_PROPERTIES'], function($el) {
+	return (!str_contains($el['CODE'], 'complect_') && $el['CODE'] !== 'location');
+});
+
+$allPrices = getItemPrices([$arResult['ID']]);
+$itemPrices = $allPrices['prices'][$arResult['ID']];
+if ($itemPrices) {
+	$arResult['PRICES_CUST'] = convertPrice($itemPrices, $allPrices['desired'], $allPrices['base']);
+}
+
+$currentSection = \Bitrix\Iblock\SectionTable::getRowById($arResult["IBLOCK_SECTION_ID"] ?? $arParams['SECTION_ID']);
+$secondLevelParent = \Bitrix\Iblock\SectionTable::getList([
+	'filter' => [
+		'<=LEFT_MARGIN' => $currentSection['LEFT_MARGIN'], // Родитель должен быть слева от текущего раздела
+		'>=RIGHT_MARGIN' => $currentSection['RIGHT_MARGIN'], // И справа от текущего
+		'=IBLOCK_ID' => $arResult['IBLOCK_ID'], // Указываем инфоблок
+		'=DEPTH_LEVEL' => 1 // Ищем только раздел второго уровня
+	],
+	'select' => ['ID', 'CODE'],
+])->fetch();
+$arResult['PARENT_SECTION'] = $secondLevelParent['ID'];
+
+
+$counter = \Bitrix\Iblock\ElementTable::getList([
+	'filter' => ['=ID' => $arResult['ID']],
+	'select' => ['SHOW_COUNTER']
+])->fetch();
+$arResult['SHOW_COUNTER'] = $counter['SHOW_COUNTER'];
+//pr($arResult['OFFERS'][$arResult['OFFERS_SELECTED']]);
 ?>

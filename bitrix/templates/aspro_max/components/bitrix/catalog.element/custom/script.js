@@ -5,18 +5,16 @@ $(document).ready(function () {
     setNewHeader();
   }, 10);
 
+  console.log('hello');
   $('.prices_block-btn').on('click', function(e){
     console.log($(this));
     $.ajax({
       url: '/ajax/form_custom.php',
-      data: {type: $(this).attr('data-event')},
+      data: {type: $(this).attr('data-event'), elementId:$(this).attr('data-el')},
       type: 'GET',             // Тип запроса (GET или POST)
       success: function(response){
         $('#popup_iframe_wrapper').append(response);
         $('#popup_iframe_wrapper').css({ "z-index": 3000, display: "flex" });
-
-        console.log($('#popup_iframe_wrapper'));
-        console.log(response);
       },
       error: function(xhr, status, error){
         console.log(error);
