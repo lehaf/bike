@@ -10,7 +10,7 @@ $APPLICATION->SetTitle(Loc::getMessage("SPS_TITLE_PRIVATE"));
 <div class="personal_wrapper">
 	<?$APPLICATION->IncludeComponent(
 		"bitrix:main.profile",
-		"profile",
+		"profile_custom",
 		Array(
 			"SET_TITLE" => "Y",
 			"AJAX_MODE" => $arParams['AJAX_MODE_PRIVATE'],

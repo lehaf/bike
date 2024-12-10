@@ -2,11 +2,21 @@
 
 /** @global object $APPLICATION */
 $sectionId = "";
+
 if(isset($_GET['type'])) {
+	$sectionName = "";
+	$section = \Bitrix\Iblock\SectionTable::getList([
+		'select' => ['NAME'], // Поле "Название"
+		'filter' => ['ID' => $_GET['type']],
+	])->fetch();
+	if(!empty($section)) {
+		$sectionName = mb_strtolower(trim($section['NAME']));
+	}
+
 	if($_GET['element'] && $_GET['action']) {
-		$APPLICATION->SetTitle("Изменить объявление");
+		$APPLICATION->SetTitle("Изменить объявление" . " (" . $sectionName . ")");
 	} else {
-		$APPLICATION->SetTitle("Подать объявление");
+		$APPLICATION->SetTitle("Подать объявление" . " (" . $sectionName . ")");
 	}
 
 	$sectionId = $_GET['type'];

@@ -10,7 +10,7 @@ if (!empty($sections)) {
             $rsSection = getSections([
                 '=IBLOCK_ID' => CATALOG_IBLOCK_ID,
                 '=ID' => $section,
-            ],);
+            ]);
             if (!empty($rsSection)) {
                 foreach ($rsSection as $sect) {
                     $arResult["CUSTOM_SECTIONS"]["SECTIONS_" . $key][] = $sect;
@@ -65,6 +65,45 @@ if ($_GET['type']) {
         });
     }
 }
+
+if(empty($arResult['ELEMENT_FIELDS'])) {
+    $user = \Bitrix\Main\UserTable::getList([
+        'select' => ['PERSONAL_PHONE'],
+        'filter' => ['ID' => \Bitrix\Main\Engine\CurrentUser::get()->getId()],
+    ])->fetch();
+
+    $arResult['USER_PROFILE'] = [
+        'phone' => $user['PERSONAL_PHONE'] ?? '',
+        'name' => \Bitrix\Main\Engine\CurrentUser::get()->getFirstName() ?? ''
+    ];
+} else {
+    $arResult['USER_PROFILE'] = [
+        'phone' => $arResult['ELEMENT_FIELDS']['phone'][0] ?? '',
+    ];
+}
+
+if(empty($arResult['ELEMENT_COUNTRY'])) {
+//    pr($arResult['COUNTRIES']);
+    $userLocation = \Bitrix\Main\UserTable::getList([
+        'select' => ['UF_COUNTRY_ID', 'UF_REGION_ID', 'UF_CITY_ID'],
+        'filter' => ['ID' => \Bitrix\Main\Engine\CurrentUser::get()->getId()],
+    ])->fetch();
+    if(!empty($userLocation['UF_COUNTRY_ID'])) {
+        $id = $userLocation['UF_COUNTRY_ID'];
+        $type = 'REGION';
+        $arResult['REGIONS'] = getLocations($type, $id);
+    }
+
+    if(!empty($userLocation['UF_REGION_ID'])) {;
+        $id = $userLocation['UF_REGION_ID'];
+        $type = 'CITY';
+        $arResult['CITIES'] = getLocations($type, $id);
+    }
+
+    $arResult['USER_LOCATION'] = $userLocation;
+
+}
+
 function getPriceType($value, $priceTypes) {
     return in_array($value['CODE'], $priceTypes);
 }
@@ -72,4 +111,5 @@ function getPriceType($value, $priceTypes) {
 function unsetPriceType($value, $priceTypes) {
     return !in_array($value['CODE'], $priceTypes);
 }
+
 ?>

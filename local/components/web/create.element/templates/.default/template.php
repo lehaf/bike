@@ -446,7 +446,7 @@ $notShowLabel = ['PRICE_TYPE'];
                                                                             Сбросить
                                                                         </option>
                                                                         <?php foreach ($arResult['COUNTRIES'] as $country): ?>
-                                                                            <option value="<?= $country['ID'] ?>" <?= ($country['ID'] === $arResult['ELEMENT_COUNTRY']['COUNTRY']) ? 'selected' : '' ?>>
+                                                                            <option value="<?= $country['ID'] ?>" <?= ($country['ID'] === $arResult['ELEMENT_COUNTRY']['COUNTRY'] || $arResult['USER_LOCATION']['UF_COUNTRY_ID'] === $country['ID']) ? 'selected' : '' ?>>
                                                                                 <?= $country['NAME_RU'] ?>
                                                                             </option>
                                                                         <?php endforeach; ?>
@@ -465,10 +465,24 @@ $notShowLabel = ['PRICE_TYPE'];
                                                                             id="region"
                                                                             data-select="region-list"
                                                                         <?= ($arResult['ELEMENT_COUNTRY']) ? 'data-el=' . $arResult['ELEMENT_COUNTRY']['REGION'] : '' ?>
-                                                                            disabled>
+                                                                        <?=(!empty($arResult['USER_LOCATION']['UF_COUNTRY_ID'])) ? '' : 'disabled'?>
+                                                                    >
                                                                         <option value="" selected>
                                                                             Область
                                                                         </option>
+                                                                        <option value="reset">
+                                                                            Сбросить
+                                                                        </option>
+                                                                        <?php if(!empty($arResult['REGIONS'])):?>
+                                                                            <?php foreach ($arResult['REGIONS'] as $region): ?>
+                                                                                <option
+                                                                                        value="<?= $region['ID'] ?>"
+                                                                                    <?=($arResult['USER_LOCATION']['UF_REGION_ID'] === $region['ID']) ? 'selected' : ''?>
+                                                                                >
+                                                                                    <?= $region['NAME'] ?>
+                                                                                </option>
+                                                                            <?php endforeach; ?>
+                                                                        <?php endif;?>
                                                                     </select>
                                                                     <div class="error-form">Необходимо заполнить
                                                                         «Область»
@@ -484,10 +498,24 @@ $notShowLabel = ['PRICE_TYPE'];
                                                                             id="city"
                                                                             data-select="city-list"
                                                                         <?= ($arResult['ELEMENT_COUNTRY']) ? 'data-el=' . $arResult['ELEMENT_COUNTRY']['CITY'] : '' ?>
-                                                                            disabled>
+                                                                        <?=(!empty($arResult['USER_LOCATION']['UF_REGION_ID'])) ? '' : 'disabled'?>
+                                                                            >
                                                                         <option value="" selected>
                                                                             Город
                                                                         </option>
+                                                                        <option value="reset">
+                                                                            Сбросить
+                                                                        </option>
+                                                                        <?php if(!empty($arResult['CITIES'])):?>
+                                                                            <?php foreach ($arResult['CITIES'] as $city): ?>
+                                                                                <option
+                                                                                        value="<?= $city['ID'] ?>"
+                                                                                    <?=($arResult['USER_LOCATION']['UF_CITY_ID'] === $city['ID']) ? 'selected' : ''?>
+                                                                                >
+                                                                                    <?= $city['NAME'] ?>
+                                                                                </option>
+                                                                            <?php endforeach; ?>
+                                                                        <?php endif;?>
                                                                     </select>
                                                                     <div class="error-form">Необходимо заполнить
                                                                         «Город»
@@ -575,7 +603,7 @@ $notShowLabel = ['PRICE_TYPE'];
                                                                                class="dataUserTel custom-input <?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? 'check-block' : '' ?>"
                                                                                id="dataUserTel"
                                                                                name="<?= $field['CODE'] ?>"
-                                                                               value="<?= $arResult['ELEMENT_FIELDS']['phone'][0] ?>"
+                                                                               value="<?= $arResult['USER_PROFILE']['phone']?>"
                                                                         >
                                                                     </div>
                                                                     <?php if (!empty($arResult['ELEMENT_FIELDS']['phone']) && count($arResult['ELEMENT_FIELDS']['phone']) > 1): ?>
@@ -625,7 +653,7 @@ $notShowLabel = ['PRICE_TYPE'];
                                                                    placeholder="<?= $field['NAME'] ?>"
                                                                    id="<?= $field['CODE'] ?>"
                                                                    name="<?= $field['CODE'] ?>"
-                                                                   value="<?= $arResult['ELEMENT_FIELDS'][$field['CODE']] ?>"
+                                                                   value="<?= ($field['CODE'] === 'contact_person' && empty($arResult['ELEMENT_FIELDS'])) ? $arResult['USER_PROFILE']['name'] : $arResult['ELEMENT_FIELDS'][$field['CODE']] ?>"
                                                             >
                                                         </div>
                                                         <div class="error-form">Необходимо заполнить

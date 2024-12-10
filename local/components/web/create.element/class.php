@@ -421,10 +421,9 @@ class CreateElement extends \CBitrixComponent
             }
 
             //раздел элемента
-            if(!$data["POST"]["IBLOCK_SECTION_ID"]) {
+            if(!$data["POST"]["IBLOCK_SECTION_ID"] && isset($data["POST"]["SUBSECTION"])) {
                 $this->errors["SUBSECTION"] = "Заполните марку и модель";
             }
-
 
             $fieldsToCheck = [
                 "IBLOCK_SECTION_ID" => "Заполните поле",
