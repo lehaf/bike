@@ -72,9 +72,13 @@ if(empty($arResult['ELEMENT_FIELDS'])) {
         'filter' => ['ID' => \Bitrix\Main\Engine\CurrentUser::get()->getId()],
     ])->fetch();
 
+    $lastName = \Bitrix\Main\Engine\CurrentUser::get()->getLastName() ?? '';
+    $firstName = \Bitrix\Main\Engine\CurrentUser::get()->getFirstName() ?? '';
+    $secondName = \Bitrix\Main\Engine\CurrentUser::get()->getSecondName() ?? '';
+
     $arResult['USER_PROFILE'] = [
         'phone' => $user['PERSONAL_PHONE'] ?? '',
-        'name' => \Bitrix\Main\Engine\CurrentUser::get()->getFirstName() ?? ''
+        'name' => $lastName . ' ' . $firstName . ' ' . $secondName,
     ];
 } else {
     $arResult['USER_PROFILE'] = [
