@@ -14,7 +14,7 @@ if ($_GET[$FILTER_NAME . '_year_MIN'] || $_GET[$FILTER_NAME . '_year_MAX']) {
 //добавление фото и видео
 if ($_GET[$FILTER_NAME . '_photo']) $GLOBALS[$FILTER_NAME]['!PREVIEW_PICTURE'] = false;
 if ($_GET[$FILTER_NAME . '_video']) {
-    $GLOBALS[$FILTER_NAME]['!PROPERTY_' . Filter::getPropertyId($arParams['IBLOCK_ID'], 'VIDEO_YOUTUBE')] = false;
+    $GLOBALS[$FILTER_NAME]['!PROPERTY_' . Filter::getPropertyId($arParams['IBLOCK_ID'], 'POPUP_VIDEO')] = false;
 }
 
 //добавление местоположения

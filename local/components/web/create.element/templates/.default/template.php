@@ -548,7 +548,7 @@ $notShowLabel = ['PRICE_TYPE'];
                                                         <?php break; ?>
                                                     <?php endif; ?>
 
-                                                    <?php if ($field['CODE'] === 'VIDEO_YOUTUBE'): ?>
+                                                    <?php if ($field['CODE'] === 'POPUP_VIDEO'): ?>
 
                                                         <div class="video-block">
                                                             <div class="video-block-text">
@@ -579,7 +579,7 @@ $notShowLabel = ['PRICE_TYPE'];
                                                                                placeholder="" id="videoLink"
                                                                                name="<?= $field['CODE'] ?>"
                                                                                autocomplete="off"
-                                                                               value="<?= $arResult['ELEMENT_FIELDS']['VIDEO_YOUTUBE'] ?>"
+                                                                               value="<?= $arResult['ELEMENT_FIELDS']['POPUP_VIDEO'] ?>"
                                                                         >
                                                                     </div>
                                                                     <div class="error-form">Необходимо заполнить

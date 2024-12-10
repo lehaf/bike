@@ -412,6 +412,22 @@ class CreateElement extends \CBitrixComponent
         return $race;
     }
 
+    private function convertYoutubeVideoUrl (string $url): string {
+        $convertUrl = '';
+        if (!empty($url)) {
+            if (preg_match('%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\.be/)([^"&?/ ]{11})%i', $url, $match)) {
+                $videoId = $match[1];
+                if (empty($videoId)) {
+                    $videoId = $url;
+                }
+            } else {
+                $videoId = $url;
+            }
+            $convertUrl = 'https://www.youtube.com/embed/' . $videoId;
+        }
+        return $convertUrl;
+    }
+
     private function ajaxPost(array $data): void
     {
         ob_end_clean();
@@ -513,6 +529,10 @@ class CreateElement extends \CBitrixComponent
                         $elementData[$code]["MULTIPLE"] = $isMultiple;
                     }
                 }
+            }
+
+            if(isset($elementData['POPUP_VIDEO'])) {
+                $elementData['POPUP_VIDEO']['VALUE'] = $this->convertYoutubeVideoUrl($elementData['POPUP_VIDEO']['VALUE']);
             }
 
             if ($data['POST']['action'] === 'add') {
