@@ -672,7 +672,7 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']) + $offerPropCount;
                                                       fill="#666666"/>
                                             </svg>
                                             <div class="_info-product_el__text">
-                                                <?=$arResult['SHOW_COUNTER']?> <span>(4 сегодня)</span>
+                                                <?= $arResult['SHOW_COUNTER'] ?> <span>(4 сегодня)</span>
                                             </div>
                                         </div>
                                         <div class="_info-product_el">
@@ -897,6 +897,7 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']) + $offerPropCount;
                                             <? } ?>
                                             <div class="prices_block _prices_block">
                                                 <? //prices?>
+                                                <?php if(!empty($arResult['PRICES_CUST'])):?>
                                                 <div class="cost prices detail">
                                                     <? if ($arResult["OFFERS"]): ?>
                                                         <?= \Aspro\Functions\CAsproMaxItem::showItemPricesDefault($arParams); ?>
@@ -918,7 +919,7 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']) + $offerPropCount;
                                                                     <?= CMax::showPriceMatrix($arCurrentSKU, $arParams, $strMeasure, $arAddToBasketData); ?>
                                                                 <? endif; ?>
                                                                 <? else: ?>
-<!--                                                                    тут выводятся цены у торговых предложений-->
+                                                                    <!--                                                                    тут выводятся цены у торговых предложений-->
                                                                     <? \Aspro\Functions\CAsproMaxItem::showItemPrices($arParams, $arCurrentSKU["PRICES"], $strMeasure, $min_price_id, ($arParams["SHOW_DISCOUNT_PERCENT_NUMBER"] == "Y" ? "N" : "Y")); ?>
                                                                 <? endif; ?>
                                                             <? else: ?>
@@ -934,28 +935,30 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']) + $offerPropCount;
                                                                 <?= CMax::showPriceMatrix($arResult, $arParams, $strMeasure, $arAddToBasketData); ?>
                                                             <? endif; ?>
                                                         <? elseif (isset($arResult["PRICES"]) && !empty($arResult['PRICES_CUST'])): ?>
-                                                                <div class="price_matrix_wrapper">
-                                                                    <?php $priceClasses = (in_array($arResult['PARENT_SECTION'], SECTION_TYPE_4)) ? 'price--left' : '' ?>
-                                                                    <div class="price font-bold font_mxs price--center <?=$priceClasses?>">
-                                                                        <?php if (!empty($arResult['PROPERTIES']['contract_price']['VALUE'])): ?>
-                                                                            <?= Loc::getMessage("CONTRACT_PRICE") ?>
-                                                                        <?php else: ?>
-                                                                            <?= $arResult['PRICES_CUST']['BASE'] ?>
-                                                                        <?php endif; ?>
-                                                                    </div>
+                                                            <div class="price_matrix_wrapper">
+                                                                <?php $priceClasses = (in_array($arResult['PARENT_SECTION'], SECTION_TYPE_4)) ? 'price--left' : '' ?>
+                                                                <div class="price font-bold font_mxs price--center <?= $priceClasses ?>">
+                                                                    <?php if (!empty($arResult['PROPERTIES']['contract_price']['VALUE'])): ?>
+                                                                        <?= Loc::getMessage("CONTRACT_PRICE") ?>
+                                                                    <?php else: ?>
+                                                                        <?= $arResult['PRICES_CUST']['BASE'] ?>
+                                                                    <?php endif; ?>
                                                                 </div>
+                                                            </div>
+                                                            <?php if (!empty($arResult['PRICES_CUST']['CONVERT'])): ?>
+                                                                <?php $currencyClasses = (in_array($arResult['PARENT_SECTION'], SECTION_TYPE_4)) ? 'price-currency--left' : '' ?>
+
+                                                                <div class="price-currency <?= $currencyClasses ?>">
+                                                                    <?php foreach ($arResult['PRICES_CUST']['CONVERT'] as $price): ?>
+                                                                        <div class="price-currency__i">
+                                                                            ≈ <?= $price ?></div>
+                                                                    <?php endforeach; ?>
+                                                                </div>
+                                                            <?php endif; ?>
                                                         <? endif; ?>
                                                     <? endif; ?>
                                                 </div>
-                                                <?php if (!empty($arResult['PRICES_CUST']['CONVERT'])): ?>
-                                                    <?php $currencyClasses = (in_array($arResult['PARENT_SECTION'], SECTION_TYPE_4)) ? 'price-currency--left' : '' ?>
-
-                                                    <div class="price-currency <?=$currencyClasses?>">
-                                                        <?php foreach ($arResult['PRICES_CUST']['CONVERT'] as $price): ?>
-                                                            <div class="price-currency__i">≈ <?= $price ?></div>
-                                                        <?php endforeach; ?>
-                                                    </div>
-                                                <?php endif; ?>
+                                                <?php endif;?>
 
                                                 <? \Aspro\Functions\CAsproMax::showBonusBlockDetail($arCurrentSKU ?: $arResult); ?>
                                                 <? //for product wo POPUP_PRICE in fixed header?>

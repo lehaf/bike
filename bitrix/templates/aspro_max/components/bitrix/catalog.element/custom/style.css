@@ -103,7 +103,6 @@
   text-transform: uppercase;
   color: #fff;
   background: #37c771;
-  /*margin-top: 30px;*/
 }
 
 .price-currency{
@@ -143,9 +142,13 @@
   text-align: center;
 }
 
-.product-container .prices_block .cost.prices.detail .price_matrix_wrapper {
+.product-container .prices_block .cost.prices.detail,
+.product-container .prices_block .item-stock{
   margin-bottom: 30px;
 }
+
+
+
 
 .product-container .cost.prices.detail .price.font_mxs {
   font-size: 1.733em !important;
