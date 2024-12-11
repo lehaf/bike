@@ -1632,11 +1632,15 @@ $secondLevelParent = \Bitrix\Iblock\SectionTable::getList([
 ])->fetch();
 $arResult['PARENT_SECTION'] = $secondLevelParent['ID'];
 
+//счетчик просмотров
+$iblockClass = \Bitrix\Iblock\Iblock::wakeUp($arResult["IBLOCK_ID"])->getEntityDataClass();
+$element = $iblockClass::getByPrimary($arResult["ID"], ['select' => ["SHOW_ALL", "SHOW_TODAY"]])->fetchObject();
+$allView = ($element->getShowAll()) ? (int)$element->getShowAll()->getValue() : 0;
+$todayView = ($element->getShowToday()) ? (int)$element->getShowToday()->getValue() : 0;
+$element->setShowAll(++$allView);
+$element->setShowToday(++$todayView);
+$element->save();
 
-$counter = \Bitrix\Iblock\ElementTable::getList([
-	'filter' => ['=ID' => $arResult['ID']],
-	'select' => ['SHOW_COUNTER']
-])->fetch();
-$arResult['SHOW_COUNTER'] = $counter['SHOW_COUNTER'];
-//pr($arResult['OFFERS'][$arResult['OFFERS_SELECTED']]);
+$arResult['PROPERTIES']['SHOW_ALL']['VALUE'] = $element->getShowAll()->getValue();
+$arResult['PROPERTIES']['SHOW_TODAY']['VALUE'] = $element->getShowToday()->getValue();
 ?>

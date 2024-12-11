@@ -26,8 +26,8 @@ function OnBuildGlobalMenuHandler(&$aGlobalMenu, &$aModuleMenu) : array
                     'items_id' => 'cp',
                 ],
                 [
-                    "text" => 'Страница добавления',
-                    "title" => 'Страница добавления',
+                    "text" => 'Страница добавления объявления',
+                    "title" => 'Страница добавления объявления',
                     'icon' => 'sys_menu_icon',
                     "url" => "/bitrix/admin/addPage.php?lang=" . LANGUAGE_ID,
                     'items_id' => 'cp',

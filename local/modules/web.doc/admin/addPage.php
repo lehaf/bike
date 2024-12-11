@@ -12,7 +12,7 @@ $mid = 'web.doc';
 if (!$USER->IsAdmin() || !Loader::includeModule($mid)) return;
 $APPLICATION->SetAdditionalCSS("/bitrix/css/" . $mid . "/style.css");
 ?>
-<h2>Страница добавления</h2>
+<h2>Страница добавления объявления</h2>
 <div class="point">
 
 </div>

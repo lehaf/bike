@@ -1,6 +1,8 @@
 <? if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) die(); ?>
 <? $this->setFrameMode(true); ?>
 <? use \Bitrix\Main\Localization\Loc; ?>
+
+
 <?php $section ?>
     <div class="basket_props_block" id="bx_basket_div_<?= $arResult["ID"]; ?>" style="display: none;">
         <? if (!empty($arResult['PRODUCT_PROPERTIES_FILL'])) {
@@ -672,7 +674,7 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']) + $offerPropCount;
                                                       fill="#666666"/>
                                             </svg>
                                             <div class="_info-product_el__text">
-                                                <?= $arResult['SHOW_COUNTER'] ?> <span>(4 сегодня)</span>
+                                                <?= $arResult['PROPERTIES']['SHOW_ALL']['VALUE'] ?> <span>(<?= $arResult['PROPERTIES']['SHOW_TODAY']['VALUE']?> сегодня)</span>
                                             </div>
                                         </div>
                                         <div class="_info-product_el">
