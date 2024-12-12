@@ -3,6 +3,7 @@ let isBlockMoved = false;
 $(document).on('ajaxSuccess', function (event, xhr, settings) {
     if (settings.url.includes('catalog') && isBlockMoved) {
         document.querySelector('.js-load-wrapper #filter').remove();
+        document.querySelector('.js-load-wrapper .found-brand').remove();
     }
 })
 //загрузка страницы (прелоудер)
@@ -10,10 +11,14 @@ let container = document.querySelector('.container');
 if (container) container.classList.add('loading-state');
 document.addEventListener('DOMContentLoaded', () => {
     let form = document.querySelector('#filter');
+    let foundBrands = document.querySelector('.found-brand');
     if (form) {
         let filter = new AjaxFilter(form);
 
-        isBlockMoved = filter.replaceFilterBlock();
+        isBlockMoved = filter.replaceFilterBlock(form);
+
+        if(foundBrands) isBlockMoved = filter.replaceFilterBlock(foundBrands);
+
 
         let checkboxes = form.querySelectorAll('input[type="checkbox"]:not(.no-send), input[type="radio"]');
         let inputs = form.querySelectorAll('input[type="text"]');
@@ -215,12 +220,12 @@ AjaxFilter.prototype.getParams = function () {
     return params;
 }
 
-AjaxFilter.prototype.replaceFilterBlock = function () {
+AjaxFilter.prototype.replaceFilterBlock = function (block) {
     let isBlockMoved = false;
     let wrapper = document.querySelector('.js_wrapper_items');
     if (wrapper) {
-        this.form.remove();
-        wrapper.parentNode.insertBefore(this.form, wrapper);
+        block.remove();
+        wrapper.parentNode.insertBefore(block, wrapper);
         isBlockMoved = true;
     }
 

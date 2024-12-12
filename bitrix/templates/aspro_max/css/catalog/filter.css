@@ -2365,7 +2365,7 @@ input[type="file"] {
     padding-left: 35px;
 }
 
-.form-group-custom-select .select-model .choices__inner,
+.select-model .choices__inner,
 .select-model .choices.is-disabled .choices__inner,
 .row--brand .choices[data-type*=select-one] .choices__input.choices__input--cloned{
     background: #fafafa url("../../images/svg/custom/search.svg") no-repeat 13px center;

@@ -870,7 +870,7 @@ $price = $arResult['ITEMS']['BASE'];
 </form>
 
 <?php if (!$arResult['ITEMS']['MODEL']): ?>
-    <div class="found-brand">
+    <div class="found-brand" data-text="<?=(!empty($arResult['ITEMS']['MARK']) ? 'Все модели' : 'Все марки')?>">
         <div class="found-brand-content" data-brand="<?= ($arResult['ITEMS']['MARK']) ?: $arResult['SECTION']['ID'] ?>">
             <?php foreach ($arResult['FOUND_BRANDS'] as $brand): ?>
                 <div class="found-brand__el">

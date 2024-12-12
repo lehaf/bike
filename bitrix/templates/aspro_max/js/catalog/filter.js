@@ -131,9 +131,9 @@ if (foundBrandBlock) {
     }).catch((error) => console.log(error));
 }
 
-const templateBtn = (obj) => {
+const templateBtn = (obj, text) => {
     return `
-    <div class="found-brand__btn">Все марки - <span>${obj}</span></div>
+    <div class="found-brand__btn">${text} - <span>${obj}</span></div>
     `
 }
 
@@ -628,6 +628,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function previewFoundBrand() {
     foundBrandBlock.innerHTML = "";
+    let text = document.querySelector('.found-brand').getAttribute('data-text');
+    console.log(text);
     let index = 0;
     for (const brand of popularDataFoundBrand) {
         let href = window.location.pathname + brand.CODE + "/";
@@ -635,13 +637,13 @@ function previewFoundBrand() {
         foundBrandBlock.innerHTML += item;
         index++;
         if (index === 11 && popularDataFoundBrand.length === fullDataFoundBrand.length) {
-            foundBrandBlock.innerHTML += templateBtn(fullDataFoundBrand.length);
+            foundBrandBlock.innerHTML += templateBtn(fullDataFoundBrand.length, text);
             break;
         }
     }
 
     if (popularDataFoundBrand.length < fullDataFoundBrand.length) {
-        foundBrandBlock.innerHTML += templateBtn(fullDataFoundBrand.length);
+        foundBrandBlock.innerHTML += templateBtn(fullDataFoundBrand.length, text);
     }
     // for (let el in popularDataFoundBrand) {
     //     let index = Object.keys(popularDataFoundBrand)
