@@ -1641,11 +1641,18 @@ $currentProductId = $templateData['OFFERS_INFO']["CURRENT_OFFER"] ?? $arResult['
                     </div>
 
                     <?php
-                    $currentSection['ID'] = \Bitrix\Iblock\SectionTable::getRowById($arResult["IBLOCK_SECTION_ID"] ?? $arParams['SECTION_ID']);
-
+                    $currentSection = \Bitrix\Iblock\SectionTable::getRowById($arResult["IBLOCK_SECTION_ID"] ?? $arParams['SECTION_ID']);
+                    $secondLevelParent = \Bitrix\Iblock\SectionTable::getList([
+                        'filter' => [
+                            '<=LEFT_MARGIN' => $currentSection['LEFT_MARGIN'], // Родитель должен быть слева от текущего раздела
+                            '>=RIGHT_MARGIN' => $currentSection['RIGHT_MARGIN'], // И справа от текущего
+                            '=IBLOCK_ID' => $arResult['IBLOCK_ID'], // Указываем инфоблок
+                            '=DEPTH_LEVEL' => 2 // Ищем только раздел второго уровня
+                        ],
+                        'select' => ['ID', 'CODE'],
+                    ])->fetch();
                     global $arrProductsFilterCustom;
                     $arrProductsFilterCustom = ['!=ID' => $arResult['ID']];
-
                     $elementCount = \Bitrix\Iblock\ElementTable::getList([
                         'select' => ['CNT'],
                         'filter' => [
@@ -1658,17 +1665,6 @@ $currentProductId = $templateData['OFFERS_INFO']["CURRENT_OFFER"] ?? $arResult['
                             new \Bitrix\Main\Entity\ExpressionField('CNT', 'COUNT(*)'),
                         ]
                     ])->fetch()['CNT'];
-                    if($elementCount['CNT'] === 0) {
-                        $currentSection = \Bitrix\Iblock\SectionTable::getList([
-                            'filter' => [
-                                '<=LEFT_MARGIN' => $currentSection['LEFT_MARGIN'], // Родитель должен быть слева от текущего раздела
-                                '>=RIGHT_MARGIN' => $currentSection['RIGHT_MARGIN'], // И справа от текущего
-                                '=IBLOCK_ID' => $arResult['IBLOCK_ID'], // Указываем инфоблок
-                                '=DEPTH_LEVEL' => 2 // Ищем только раздел второго уровня
-                            ],
-                            'select' => ['ID', 'CODE'],
-                        ])->fetch();
-                    }
                     ?>
                     <? $APPLICATION->IncludeComponent(
                         "bitrix:catalog.section",
