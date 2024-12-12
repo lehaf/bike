@@ -186,16 +186,17 @@ if (!strlen($arResult["FORM_NOTE"]) && $arParams['IGNORE_AJAX_HEAD'] !== 'Y') {
             });
 
             $(".jqmClose").on("click", function () {
-                $("#popup_iframe_wrapper").css("display", "none");
-                $(".callback-custom_frame").removeClass("show")
+                $(this).closest('#popup_iframe_wrapper').removeAttr('style');
+                $(this).closest('.callback-custom_frame').remove();
+                $('.jqmOverlay').remove();
             });
 
             // $('.popup').jqmAddClose('a.jqmClose');
-            $('.jqmClose').on('click', function (e) {
-                e.preventDefault();
-                $(this).closest('.jqmWindow').jqmHide();
-            })
-            $('.popup').jqmAddClose('button[name="web_form_reset"]');
+            // $('.jqmClose').on('click', function (e) {
+            //     e.preventDefault();
+            //     $(this).closest('.jqmWindow').jqmHide();
+            // })
+            // $('.popup').jqmAddClose('button[name="web_form_reset"]');
 
         });
     </script>

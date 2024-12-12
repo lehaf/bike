@@ -44,7 +44,7 @@
         e.preventDefault();
         $(this).closest('#popup_iframe_wrapper').removeAttr('style');
         $(this).closest('.callback-custom_frame').remove();
-        $(this).closest('.jqmOverlayCustom').remove();
+        $('.jqmOverlay').remove();
     })
 
     $('.form-popup').on('click', function (e) {
@@ -62,7 +62,7 @@
     });
     $(".jqmOverlay").on("click", function () {
         $("#popup_iframe_wrapper").css("display", "none");
-        $(".callback-custom_frame").removeClass("show")
+        $(".callback-custom_frame").remove();
     });
 
 </script>
