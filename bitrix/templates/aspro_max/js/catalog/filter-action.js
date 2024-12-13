@@ -10,15 +10,20 @@ $(document).on('ajaxSuccess', function (event, xhr, settings) {
 let container = document.querySelector('.container');
 if (container) container.classList.add('loading-state');
 document.addEventListener('DOMContentLoaded', () => {
+   initAjaxFilter();
+})
+
+function initAjaxFilter() {
     let form = document.querySelector('#filter');
     let foundBrands = document.querySelector('.found-brand');
     if (form) {
         let filter = new AjaxFilter(form);
+        let isTabsFilter = form.closest('.filter-tabs-content');
 
-        isBlockMoved = filter.replaceFilterBlock(form);
-
-        if(foundBrands) isBlockMoved = filter.replaceFilterBlock(foundBrands);
-
+        if(!isTabsFilter) {
+            isBlockMoved = filter.replaceFilterBlock(form);
+            if(foundBrands) isBlockMoved = filter.replaceFilterBlock(foundBrands);
+        }
 
         let checkboxes = form.querySelectorAll('input[type="checkbox"]:not(.no-send), input[type="radio"]');
         let inputs = form.querySelectorAll('input[type="text"]');
@@ -28,8 +33,10 @@ document.addEventListener('DOMContentLoaded', () => {
         let notifyCheckboxes = document.querySelectorAll('.dependent-checkbox');
         let notifySelects = document.querySelectorAll('.notify-select');
 
-        history.replaceState(null, null, filter.generateUrl(true));
-        filter.getElementsCount(true);
+        if(!isTabsFilter) {
+            history.replaceState(null, null, filter.generateUrl(true));
+        }
+        // filter.getElementsCount(true);
 
         inputs.forEach(input => {
             let inputVal = '';
@@ -55,7 +62,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
         //изменение select
-        console.log(selects);
         selects.forEach(select => {
             select.addEventListener('change', (e) => {
                 filter.changeSelect(select);
@@ -188,8 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
             filter.submit();
         })
     }
-})
-
+}
 function AjaxFilter(form) {
     this.url = window.location.pathname;
     this.emptyUrl = window.location.pathname + "?set_filter=Y";
@@ -343,9 +348,9 @@ AjaxFilter.prototype.getElementsCount = function (isPageLoad = false) {
                 result.innerHTML = this.templateCountEmpty();
             }
         }
+        //
         document.querySelector('.result-block').classList.remove('loading-state');
-        document.querySelector('.container').classList.remove('loading-state');
-
+        // document.querySelector('.container').classList.remove('loading-state');
         // document.querySelector('.num_el').innerHTML = "(" + data + ")";
     }).catch((error) => console.log(error));
 }
@@ -372,32 +377,41 @@ AjaxFilter.prototype.submit = function () {
 
     let url = this.generateUrl();
     let catalog = document.querySelector('.inner_wrapper');
-    catalog.classList.add('loading-state');
+    if(catalog) catalog.classList.add('loading-state');
 
-    fetch(url, {
-            headers: {'X-Requested-With': 'XMLHttpRequest'}
-        }
-    ).then(res => {
-        return res.text();
-    }).then(data => {
-        let tmpWrapper = document.createElement('div');
-        tmpWrapper.innerHTML = data;
-        catalog.classList.remove('loading-state');
-        document.querySelector(".inner_wrapper").innerHTML = tmpWrapper.querySelector('.inner_wrapper').innerHTML;
+    let tabsFilter = this.form.closest('.filter-tabs-content');
 
-        //изменение ссылки в кнопках отображения вида
-        let displayBtns = document.querySelectorAll('a.controls-view__link');
-        displayBtns.forEach(btn => {
-            let queryString = btn.href.split('?')[1];
-            let params = new URLSearchParams(queryString);
-            let modifiedParamsUrl = "?display=" + params.get('display') + '&' + this.filterParamsUrl.substring(1) + this.otherParams;
-            btn.setAttribute('data-url', this.url + modifiedParamsUrl);
-            btn.href = this.url + modifiedParamsUrl;
-        })
+    if(tabsFilter) {
+        let activeTab = document.querySelector('.advert-tabs__item.active');
+        let activeSection = activeTab.getAttribute('data-type');
+        let parentSection = tabsFilter.getAttribute('data-sect');
+        window.location.href = '/catalog/' + parentSection + '/' + activeSection + url;
+    } else {
+        fetch(url, {
+                headers: {'X-Requested-With': 'XMLHttpRequest'}
+            }
+        ).then(res => {
+            return res.text();
+        }).then(data => {
+            let tmpWrapper = document.createElement('div');
+            tmpWrapper.innerHTML = data;
+            catalog.classList.remove('loading-state');
+            document.querySelector(".inner_wrapper").innerHTML = tmpWrapper.querySelector('.inner_wrapper').innerHTML;
 
-    }).catch((error) => console.log(error));
-    history.replaceState(null, null, url);
-    this.scrollToElements();
+            //изменение ссылки в кнопках отображения вида
+            let displayBtns = document.querySelectorAll('a.controls-view__link');
+            displayBtns.forEach(btn => {
+                let queryString = btn.href.split('?')[1];
+                let params = new URLSearchParams(queryString);
+                let modifiedParamsUrl = "?display=" + params.get('display') + '&' + this.filterParamsUrl.substring(1) + this.otherParams;
+                btn.setAttribute('data-url', this.url + modifiedParamsUrl);
+                btn.href = this.url + modifiedParamsUrl;
+            })
+
+        }).catch((error) => console.log(error));
+        history.replaceState(null, null, url);
+        this.scrollToElements();
+    }
 }
 
 AjaxFilter.prototype.scrollToElements = function () {

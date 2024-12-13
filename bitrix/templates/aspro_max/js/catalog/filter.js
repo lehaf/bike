@@ -1,106 +1,137 @@
-let testUrl = "";
-let brandOptions = [{value: "", label: 'Марка'}, {value: "reset", label: "Любая"}];
+//переключение табов
+let tabBtns = document.querySelectorAll('.advert-tabs__item');
+let tabsContentWrapper =  document.querySelector('.filter-tabs-content');
+if(tabsContentWrapper) tabsContentWrapper.classList.add('loading-state');
+tabBtns.forEach(tab => {
+    tab.addEventListener('click', (event) => {
+        event.preventDefault();
+        let tabActive = document.querySelector('.advert-tabs__item.active');
+        if(tabActive) tabActive.classList.remove('active');
+        tab.classList.add('active');
 
-let cntParamСontent = "";
-let fullDataFoundBrand = [];
-let popularDataFoundBrand = [];
-
-const transportSelect = document.getElementById('transportSelect');
-const cylinderSelect = document.getElementById('cylinder');
-const cyclesSelect = document.getElementById('cycles');
-const mainGearSelect = document.getElementById('mainGear');
-const transmissionSelect = document.getElementById('transmission');
-
-if (transportSelect) selectMultiple(transportSelect, "Тип мотоцикла");
-if (cylinderSelect) selectMultiple(cylinderSelect, "Расположение цилиндров");
-if (cyclesSelect) selectMultiple(cyclesSelect, "Число тактов");
-if (mainGearSelect) selectMultiple(mainGearSelect, "Главная передача");
-if (transmissionSelect) selectMultiple(transmissionSelect, "Коробка");
-
-const brandSelect = document.getElementById('brand-select');
-const modelSelect = document.getElementById('model-select');
-let numberIdSelect = 1; //new
-
-
-const brandChoices = new Choices(brandSelect, {
-    placeholder: true,
-    searchPlaceholderValue: 'Марка',
-    duplicateItemsAllowed: false,
-    choices: brandOptions,
-    shouldSort: false,
-    shouldSortItems: false,
-    searchEnabled: true,
-    searchChoices: true,
-    position: "bottom",
-    noResultsText: 'Ничего не найдено',
-    searchResultLimit: 100,
-    fuseOptions: {
-        keys: ['label'], // Поиск только по полю label
-        threshold: 0.1, // Чем меньше значение, тем точнее поиск
-        caseSensitive: false, // Игнорировать регистр
-        distance: 100, // Максимальное расстояние от начала совпадения
-    },
-});
-
-const originalSearch = brandChoices._handleSearch;
-brandChoices._handleSearch = function (value) {
-    originalSearch.call(this, value);
-    hideDuplicateChoices(this.dropdown.element);
-};
-
-//удаление дубликатов при поиске в select
-function hideDuplicateChoices(dropdown) {
-    const uniqueLabels = new Set();
-    const choices = dropdown.querySelectorAll('.choices__item--choice');
-
-    choices.forEach(choice => {
-        const label = choice.innerText.trim();
-        if (uniqueLabels.has(label)) {
-            choice.classList.add('hidden');
-        } else {
-            uniqueLabels.add(label);
-            choice.classList.remove('hidden');
-        }
-    });
-}
-
-//
-const modelChoices = new Choices(modelSelect, {
-    placeholder: true,
-    searchPlaceholderValue: 'Модель',
-    choices: ["Модель"],
-    shouldSort: false,
-    resetScrollPosition: false,
-    renderSelectedChoices: 'always',
-    removeItemButton: true,
-    duplicateItemsAllowed: true,
-    position: "bottom",
-    noResultsText: 'Ничего не найдено',
-    searchResultLimit: 100,
-    fuseOptions: {
-        keys: ['label'], // Поиск только по полю label
-        threshold: 0.1, // Чем меньше значение, тем точнее поиск
-        caseSensitive: false, // Игнорировать регистр
-        distance: 100, // Максимальное расстояние от начала совпадения
-    },
-});
-
-//для выбранных марок, если количество больше 1
-const allBrands = document.querySelectorAll('.select-brand select');
-let allBrandChoices = [];
-
-const allModels = document.querySelectorAll('.select-model select');
-let allModelChoices = [];
-allBrands.forEach(brand => {
-    let brandId = brand.getAttribute('data-key');
-    if (brandId && brandId !== "0") {
-        addSelectBrandMark(brandId);
-    }
+        let sectionId = tab.getAttribute('data-id');
+        let code = tab.getAttribute('data-type');
+        let params = "?filter_tab=Y" + "&sect_id=" + sectionId + "&sect_code=" + code;
+        let tabsContentWrapper =  document.querySelector('.filter-tabs-content');
+        tabsContentWrapper.classList.add('loading-state');
+        fetch(window.location.pathname + params, {
+            method: 'GET',
+            headers: {'X-Requested-With': 'XMLHttpRequest'}
+        }).then(res => {
+            return res.text();
+        }).then(data => {
+            tabsContentWrapper.innerHTML = "";
+            tabsContentWrapper.insertAdjacentHTML('beforeend', data);
+            initFilter();
+            initMainForFilter();
+            initAjaxFilter();
+        }).catch((error) => console.log(error));
+    })
 })
 
-const templateFoundBrand = (name, sum, href) => {
-    let brandEl =
-        `
+initFilter();
+function initFilter() {
+    let brandOptions = [{value: "", label: 'Марка'}, {value: "reset", label: "Любая"}];
+
+    let cntParamСontent = "";
+    let fullDataFoundBrand = [];
+    let popularDataFoundBrand = [];
+
+    const transportSelect = document.getElementById('transportSelect');
+    const cylinderSelect = document.getElementById('cylinder');
+    const cyclesSelect = document.getElementById('cycles');
+    const mainGearSelect = document.getElementById('mainGear');
+    const transmissionSelect = document.getElementById('transmission');
+
+    if (transportSelect) selectMultiple(transportSelect, "Тип мотоцикла");
+    if (cylinderSelect) selectMultiple(cylinderSelect, "Расположение цилиндров");
+    if (cyclesSelect) selectMultiple(cyclesSelect, "Число тактов");
+    if (mainGearSelect) selectMultiple(mainGearSelect, "Главная передача");
+    if (transmissionSelect) selectMultiple(transmissionSelect, "Коробка");
+
+    const brandSelect = document.getElementById('brand-select');
+    const modelSelect = document.getElementById('model-select');
+    let numberIdSelect = 1; //new
+
+    const brandChoices = new Choices(brandSelect, {
+        placeholder: true,
+        searchPlaceholderValue: 'Марка',
+        duplicateItemsAllowed: false,
+        choices: brandOptions,
+        shouldSort: false,
+        shouldSortItems: false,
+        searchEnabled: true,
+        searchChoices: true,
+        position: "bottom",
+        noResultsText: 'Ничего не найдено',
+        searchResultLimit: 100,
+        fuseOptions: {
+            keys: ['label'], // Поиск только по полю label
+            threshold: 0.1, // Чем меньше значение, тем точнее поиск
+            caseSensitive: false, // Игнорировать регистр
+            distance: 100, // Максимальное расстояние от начала совпадения
+        },
+    });
+
+    const originalSearch = brandChoices._handleSearch;
+    brandChoices._handleSearch = function (value) {
+        originalSearch.call(this, value);
+        hideDuplicateChoices(this.dropdown.element);
+    };
+
+//удаление дубликатов при поиске в select
+    function hideDuplicateChoices(dropdown) {
+        const uniqueLabels = new Set();
+        const choices = dropdown.querySelectorAll('.choices__item--choice');
+
+        choices.forEach(choice => {
+            const label = choice.innerText.trim();
+            if (uniqueLabels.has(label)) {
+                choice.classList.add('hidden');
+            } else {
+                uniqueLabels.add(label);
+                choice.classList.remove('hidden');
+            }
+        });
+    }
+
+//
+    const modelChoices = new Choices(modelSelect, {
+        placeholder: true,
+        searchPlaceholderValue: 'Модель',
+        choices: ["Модель"],
+        shouldSort: false,
+        resetScrollPosition: false,
+        renderSelectedChoices: 'always',
+        removeItemButton: true,
+        duplicateItemsAllowed: true,
+        position: "bottom",
+        noResultsText: 'Ничего не найдено',
+        searchResultLimit: 100,
+        fuseOptions: {
+            keys: ['label'], // Поиск только по полю label
+            threshold: 0.1, // Чем меньше значение, тем точнее поиск
+            caseSensitive: false, // Игнорировать регистр
+            distance: 100, // Максимальное расстояние от начала совпадения
+        },
+    });
+
+//для выбранных марок, если количество больше 1
+    const allBrands = document.querySelectorAll('.select-brand select');
+    let allBrandChoices = [];
+
+    const allModels = document.querySelectorAll('.select-model select');
+    let allModelChoices = [];
+    allBrands.forEach(brand => {
+        let brandId = brand.getAttribute('data-key');
+        if (brandId && brandId !== "0") {
+            addSelectBrandMark(brandId);
+        }
+    })
+
+    const templateFoundBrand = (name, sum, href) => {
+        let brandEl =
+            `
     <div class="found-brand__el">
             <a href="${href}" class="found-brand__name">
                 ${name}
@@ -109,59 +140,59 @@ const templateFoundBrand = (name, sum, href) => {
             <span class="found-brand__sum">${sum}</span>
     </div>
     `
-    return brandEl
-}
+        return brandEl
+    }
 
-const foundBrandBlock = document.querySelector(".found-brand-content");
-if (foundBrandBlock) {
-    fetch('/ajax/elements_filter.php', {
-        method: 'POST',
-        body: new URLSearchParams({
-            action: 'categoryWithPopular',
-            flag: 'founds',
-            sectId: foundBrandBlock.getAttribute('data-brand')
-        }),
-        headers: {'X-Requested-With': 'XMLHttpRequest'}
-    }).then(res => {
-        return res.json();
-    }).then(data => {
-        fullDataFoundBrand = data['fullCategories'];
-        popularDataFoundBrand = (data['popularCategories'].length !== 0) ? data['popularCategories'] : data['fullCategories'];
-        previewFoundBrand();
-    }).catch((error) => console.log(error));
-}
+    const foundBrandBlock = document.querySelector(".found-brand-content");
+    if (foundBrandBlock) {
+        fetch('/ajax/elements_filter.php', {
+            method: 'POST',
+            body: new URLSearchParams({
+                action: 'categoryWithPopular',
+                flag: 'founds',
+                sectId: foundBrandBlock.getAttribute('data-brand')
+            }),
+            headers: {'X-Requested-With': 'XMLHttpRequest'}
+        }).then(res => {
+            return res.json();
+        }).then(data => {
+            fullDataFoundBrand = data['fullCategories'];
+            popularDataFoundBrand = (data['popularCategories'].length !== 0) ? data['popularCategories'] : data['fullCategories'];
+            previewFoundBrand();
+        }).catch((error) => console.log(error));
+    }
 
-const templateBtn = (obj, text) => {
-    return `
+    const templateBtn = (obj, text) => {
+        return `
     <div class="found-brand__btn">${text} - <span>${obj}</span></div>
     `
-}
-
-$("body").on("click", function () {
-    let target = $(event.target);
-    if (target.closest(".found-brand__btn").length) {
-        $(".found-brand__collapse").addClass("active");
-        addELlFoundBrand();
-    } else if (target.closest(".found-brand__collapse").length) {
-        $(".found-brand__collapse").removeClass("active");
-        previewFoundBrand();
     }
 
-    if (!target.closest(".save-search-popup").length && !target.closest(".save-search").length) {
-        $(".save-search-popup").removeClass("active");
-    }
+    $("body").on("click", function () {
+        let target = $(event.target);
+        if (target.closest(".found-brand__btn").length) {
+            $(".found-brand__collapse").addClass("active");
+            addELlFoundBrand();
+        } else if (target.closest(".found-brand__collapse").length) {
+            $(".found-brand__collapse").removeClass("active");
+            previewFoundBrand();
+        }
 
-    if (!target.closest(".save-list-container").length && !target.closest(".save-list").length) {
-        $(".save-list").removeClass("active");
-        addScroll();
-    }
-})
+        if (!target.closest(".save-search-popup").length && !target.closest(".save-search").length) {
+            $(".save-search-popup").removeClass("active");
+        }
 
-document.addEventListener("DOMContentLoaded", () => {
+        if (!target.closest(".save-list-container").length && !target.closest(".save-list").length) {
+            $(".save-list").removeClass("active");
+            addScroll();
+        }
+    })
+
+
     cntParamСontent = document.querySelector(".cnt-parameters");
 
     moveSearchField(document.querySelector('.row--brand'));
-    // setTimeout(moveSearchField, 100);
+// setTimeout(moveSearchField, 100);
 
     brandSelect.addEventListener('change', function (event) {
         const selectedBrands = Array.from(brandSelect.selectedOptions).map(option => option.value);
@@ -370,47 +401,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     })
 
-    const templateItemListSave = (i, brand, info, checked, url) => {
-        return `<div class="save-list__item">
-                <a href="${url}" class="search-popup__mark">${brand}</a>
-                <a href="${url}" class="search-popup__parameters">${info}</a>
-                <div class="form-row form-row-checkbox form-row-checkbox--selection no-save">
-                    <input type="checkbox" class="input-checkbox dependent-checkbox-${i}" name="emailMes" id="emailMes-${i}" ${checked}>
-                    <label for="emailMes-${i}" class="checkbox-label">Уведомления на электронную почту</label>
-                </div>
-                                
-                <div class="form-group custom-select-inner form-group-custom-select color-select no-save">
-                    <select class="select-type custom-select right-select" id="custom-select-${i}">
-                        <option value="">
-                            Получать письма
-                        </option>
-                        <option value="reset">
-                            Сбросить
-                        </option>
-                        <option value="Получать письма каждые 4 часа">
-                            Получать письма каждые 4 часа
-                        </option>
-                        <option value="Получать письма каждые 8 часа">
-                            Получать письма каждые 8 часа
-                        </option>
-                        <option value=" Получать письма каждые 8 часа">
-                            Получать письма каждые 24 часа
-                        </option>
-                    </select>
-                </div>
-                <div class="remove-save-item">
-                                <svg width="14" height="16" viewBox="0 0 14 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M10.2853 15.9999H3.42815C2.48284 15.9999 1.71387 15.2309 1.71387 14.2856V5.14272C1.71387 4.82717 1.96975 4.57129 2.2853 4.57129H11.4282C11.7437 4.57129 11.9996 4.82717 11.9996 5.14272V14.2856C11.9996 15.2309 11.2306 15.9999 10.2853 15.9999ZM2.85672 5.71415V14.2856C2.85672 14.6006 3.11312 14.857 3.42815 14.857H10.2853C10.6003 14.857 10.8567 14.6006 10.8567 14.2856V5.71415H2.85672Z" fill="#ED1C24"/>
-                                    <path d="M12 5.71446H1.71429C0.768972 5.71446 0 4.94549 0 4.00017C0 3.05486 0.768972 2.28589 1.71429 2.28589H12C12.9453 2.28589 13.7143 3.05486 13.7143 4.00017C13.7143 4.94549 12.9453 5.71446 12 5.71446ZM1.71429 3.42875C1.39926 3.42875 1.14286 3.68515 1.14286 4.00017C1.14286 4.3152 1.39926 4.5716 1.71429 4.5716H12C12.315 4.5716 12.5714 4.3152 12.5714 4.00017C12.5714 3.68515 12.315 3.42875 12 3.42875H1.71429Z" fill="#ED1C24"/>
-                                    <path d="M9.14286 3.42857H4.57143C4.25589 3.42857 4 3.17269 4 2.85714V0.571429C4 0.255886 4.25589 0 4.57143 0H9.14286C9.4584 0 9.71429 0.255886 9.71429 0.571429V2.85714C9.71429 3.17269 9.4584 3.42857 9.14286 3.42857ZM5.14286 2.28571H8.57143V1.14286H5.14286V2.28571Z" fill="#ED1C24"/>
-                                    <path d="M5.14272 13.7138C4.82717 13.7138 4.57129 13.4579 4.57129 13.1424V7.42812C4.57129 7.11258 4.82717 6.85669 5.14272 6.85669C5.45826 6.85669 5.71415 7.11258 5.71415 7.42812V13.1424C5.71415 13.4579 5.45826 13.7138 5.14272 13.7138Z" fill="#ED1C24"/>
-                                    <path d="M8.57094 13.7143C8.2554 13.7143 7.99951 13.4584 7.99951 13.1429V7.42861C7.99951 7.11306 8.2554 6.85718 8.57094 6.85718C8.88648 6.85718 9.14237 7.11306 9.14237 7.42861V13.1429C9.14237 13.4584 8.88648 13.7143 8.57094 13.7143Z" fill="#ED1C24"/>
-                                </svg>
-                                Удалить поиск
-                            </div>
-        </div>`
-    }
-    //new
+//new
     let numItemSearch = 0;
     $(".save-search__save").on("click", function () {
         this.parentElement.classList.add("active");
@@ -425,94 +416,6 @@ document.addEventListener("DOMContentLoaded", () => {
             this.parentElement.classList.add("active");
             $(".save-search-popup").addClass("active");
             selectableItems();
-            let content = document.querySelector(".save-search-popup");
-            let saveBrandContent = document.querySelector(".save-search-popup .search-popup__mark").textContent;
-            let saveParamContent = document.querySelector(".save-search-popup .search-popup__parameters").textContent;
-            let handleInputCheck = content.querySelector("input").checked ? "checked" : "";
-            let selectSaveInfo = document.querySelector(".save-search-popup .choices__list--single .choices__item--selectable").textContent.trim();
-
-
-            if (!saveBrandContent) {
-                saveBrandContent = "Все марки"
-            }
-
-            // let contentClone = content.cloneNode(true);
-            // contentClone.querySelector(".search-popup__btn").remove();
-
-            // $(".save-list").append(templateItemListSave(numItemSearch, saveBrandContent, saveParamContent, handleInputCheck))
-            // let selectNew = `#custom-select-${numItemSearch}`
-            // // removeDuplicates(selectNew)
-            // let select = document.querySelector(selectNew);
-            //
-            // const selectHistory = new Choices(select, {
-            //     searchEnabled: false,
-            //     shouldSort: false,
-            //     duplicateItemsAllowed: false
-            // })
-            // setTimeout(() => {
-            //     $('.custom-select-inner .choices__item--choice[data-id=1]').hide();
-            // }, 0)
-            // if (!handleInputCheck) {
-            //     selectHistory.disable()
-            // }
-            //
-            // select.addEventListener('change', function (event) {
-            //     let textContent = event.target.textContent.replace(/\s+/g, '')
-            //     if (textContent === "Сбросить") {
-            //         selectHistory.setChoiceByValue('');
-            //         setTimeout(() => {
-            //             this.closest(".choices__inner").classList.remove("is-active")
-            //         }, 100)
-            //
-            //     }
-            //     setTimeout(() => {
-            //         $('.custom-select-inner .choices__item--choice[data-id=1]').hide();
-            //     }, 500)
-            //
-            // });
-            //
-            // $(`.dependent-checkbox-${numItemSearch}`).on("change", function () {
-            //     if (this.checked) {
-            //         selectHistory.enable()
-            //     } else {
-            //         selectHistory.disable()
-            //         selectHistory.containerInner.element.classList.remove("is-active")
-            //     }
-            // })
-
-            // selectOptionByText(selectSaveInfo);
-            //
-            // //new
-            // function selectOptionByText(text) {
-            //     const options = select.options;
-            //     for (let i = 0; i < options.length; i++) {
-            //         if (options[i].text === text) {
-            //             select.value = options[i].value;
-            //             selectHistory.setChoiceByValue(select.value);
-            //             break;
-            //         }
-            //     }
-            // }
-
-            if (selectSaveInfo !== "Получать письма") {
-                select.closest(".choices__inner").classList.add("is-active");
-            }
-
-            // select.addEventListener('change', function (event) {
-            //         let textContent = event.target.textContent.replace(/\s+/g, '')
-            //         if (textContent === "Сбросить") {
-            //             this.closest(".choices__inner").classList.remove("is-active")
-            //         } else {
-            //             this.closest(".choices__inner").classList.add("is-active")
-            //         }
-            //         addScroll()
-            //         setTimeout(() => {
-            //             $('.custom-select-inner .choices__item--choice[data-id=1]').show();
-            //         }, 0)
-            //     },
-            //     false,
-            // );
-
 
             $(".save-list__item .search-popup__parameters").each(function (i, el) {
                 if (!el.textContent) {
@@ -610,7 +513,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     activeItems();
 
-    //подсчет активных параметров
+//подсчет активных параметров
     let activeElements = document.querySelectorAll('.is-active, input[type="checkbox"]:checked, input[type="radio"]:checked');
     activeElements.forEach(elem => {
         if (cntParamСontent && elem.closest('.inner-more-form') && elem.value !== "") {
@@ -619,564 +522,559 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     })
 
-    // let selectedMarks = document.querySelectorAll('.select-brand.is-active, .select-model.is-active');
-    // selectedMarks.forEach(mark => {
-    //     // mark.querySelector('.choices').classList.add('is-active');
-    //     mark.querySelector('.choices__inner').classList.add('is-active');
-    // })
-})
+    function previewFoundBrand() {
+        foundBrandBlock.innerHTML = "";
+        let text = document.querySelector('.found-brand').getAttribute('data-text');
+        console.log(text);
+        let index = 0;
+        for (const brand of popularDataFoundBrand) {
+            let pathName = (getUrlForCatalog().length !== 0) ? getUrlForCatalog() : window.location.pathname;
 
-function previewFoundBrand() {
-    foundBrandBlock.innerHTML = "";
-    let text = document.querySelector('.found-brand').getAttribute('data-text');
-    console.log(text);
-    let index = 0;
-    for (const brand of popularDataFoundBrand) {
-        let href = window.location.pathname + brand.CODE + "/";
-        let item = templateFoundBrand(brand.NAME, brand.ELEMENTS_COUNT, href)
-        foundBrandBlock.innerHTML += item;
-        index++;
-        if (index === 11 && popularDataFoundBrand.length === fullDataFoundBrand.length) {
+            let href = pathName + brand.CODE + "/";
+            let item = templateFoundBrand(brand.NAME, brand.ELEMENTS_COUNT, href)
+            foundBrandBlock.innerHTML += item;
+            index++;
+            if (index === 11 && popularDataFoundBrand.length === fullDataFoundBrand.length) {
+                foundBrandBlock.innerHTML += templateBtn(fullDataFoundBrand.length, text);
+                break;
+            }
+        }
+
+        if (popularDataFoundBrand.length < fullDataFoundBrand.length) {
             foundBrandBlock.innerHTML += templateBtn(fullDataFoundBrand.length, text);
-            break;
         }
+        // for (let el in popularDataFoundBrand) {
+        //     let index = Object.keys(popularDataFoundBrand)
+        //     index.find((element, i) => {
+        //         if (element === el && i < 11) {
+        //             console.log(popularDataFoundBrand[el]);
+        //             let href = window.location.pathname + popularDataFoundBrand[el].CODE + "/";
+        //             let item = templateFoundBrand(popularDataFoundBrand[el].NAME, popularDataFoundBrand[el].ELEMENTS_COUNT, href)
+        //             foundBrandBlock.innerHTML += item;
+        //             return;
+        //         } else if (i === 11) {
+        //             foundBrandBlock.innerHTML += templateBtn(fullDataFoundBrand.length)
+        //             return;
+        //         }
+        //     })
+        // }
     }
 
-    if (popularDataFoundBrand.length < fullDataFoundBrand.length) {
-        foundBrandBlock.innerHTML += templateBtn(fullDataFoundBrand.length, text);
-    }
-    // for (let el in popularDataFoundBrand) {
-    //     let index = Object.keys(popularDataFoundBrand)
-    //     index.find((element, i) => {
-    //         if (element === el && i < 11) {
-    //             console.log(popularDataFoundBrand[el]);
-    //             let href = window.location.pathname + popularDataFoundBrand[el].CODE + "/";
-    //             let item = templateFoundBrand(popularDataFoundBrand[el].NAME, popularDataFoundBrand[el].ELEMENTS_COUNT, href)
-    //             foundBrandBlock.innerHTML += item;
-    //             return;
-    //         } else if (i === 11) {
-    //             foundBrandBlock.innerHTML += templateBtn(fullDataFoundBrand.length)
-    //             return;
-    //         }
-    //     })
-    // }
-}
+    function getCategories(flag, action, sectId, choices) {
+        fetch('/ajax/elements_filter.php', {
+            method: 'POST',
+            body: new URLSearchParams({action: action, sectId: sectId, flag: flag}),
+            headers: {'X-Requested-With': 'XMLHttpRequest'}
+        }).then(res => {
+            return res.json();
+        }).then(data => {
+            if (flag === 'getMarks') {
+                if (data['popularCategories'].length !== 0) {
+                    brandOptions.push({
+                        value: 'popular_group',
+                        label: 'Популярные',
+                        disabled: true,
+                        customProperties: {type: 'group'}
+                    })
+                    brandOptions.push(
+                        ...data['popularCategories'].map(mark => ({
+                            value: mark['ID'],
+                            label: mark['NAME']
+                        }))
+                    );
+                }
 
-function addELlFoundBrand() {
-    foundBrandBlock.innerHTML = ""
-    for (let el in fullDataFoundBrand) {
-        let href = window.location.pathname + fullDataFoundBrand[el].CODE + "/";
-        let item = templateFoundBrand(fullDataFoundBrand[el].NAME, fullDataFoundBrand[el].ELEMENTS_COUNT, href)
-        foundBrandBlock.innerHTML += item
-    }
-}
+                if (data['fullCategories'].length !== 0) {
+                    brandOptions.push({
+                        value: 'all_group',
+                        label: 'Все',
+                        disabled: true,
+                        customProperties: {type: 'group'}
+                    })
+                    brandOptions.push(
+                        ...data['fullCategories'].map(mark => ({
+                            value: mark['ID'],
+                            label: mark['NAME']
+                        }))
+                    );
+                }
 
-function hideSelectItem() {
-    setTimeout(() => {
-        $('.custom-select-inner .choices__item--choice[data-id=1]').hide();
-        $('.custom-select-inner:not(".select-no_reset") .choices__item--choice[data-id=2]').attr("data-value", "reset");
-    }, 0)
-}
-
-function addSelectBrandMark(id) {
-    const selectList = {
-        [`brandChoices${id}`]: document.getElementById(`brand-select-${id}`),
-        [`modelSelect${id}`]: document.getElementById(`model-select-${id}`)
-    }
-
-    let selectBrandRow = document.getElementById(`brand-select-${id}`).closest('.row--brand');
-    const brandChoices = new Choices(selectList[`brandChoices${id}`], {
-        placeholder: true,
-        searchPlaceholderValue: 'Марка',
-        duplicateItemsAllowed: true,
-        choices: brandOptions,
-        shouldSort: false,
-        shouldSortItems: false,
-        searchEnabled: true,
-        searchChoices: true,
-        position: "bottom",
-        noResultsText: 'Ничего не найдено',
-        searchResultLimit: 100,
-        fuseOptions: {
-            keys: ['label'], // Поиск только по полю label
-            threshold: 0.1, // Чем меньше значение, тем точнее поиск
-            caseSensitive: false, // Игнорировать регистр
-            distance: 100, // Максимальное расстояние от начала совпадения
-        },
-    });
-    brandChoices._handleSearch = function (value) {
-        originalSearch.call(this, value);
-        hideDuplicateChoices(this.dropdown.element);
-    };
-    allBrandChoices.push(brandChoices);
-
-    const modelChoices = new Choices(selectList[`modelSelect${id}`], {
-        placeholder: true,
-        searchPlaceholderValue: 'Модель',
-        // choices: ["Модель"],
-        shouldSort: false,
-        resetScrollPosition: false,
-        renderSelectedChoices: 'always',
-        removeItemButton: true,
-        duplicateItemsAllowed: true,
-        position: "bottom",
-        searchResultLimit: 10
-    });
-    allModelChoices.push(modelChoices);
-
-    moveSearchField(selectBrandRow);
-    setMarkAndModel(selectList[`brandChoices${id}`], modelChoices);
-    let selectedMark = selectList[`brandChoices${id}`].getAttribute('data-sect');
-    if (selectedMark) {
-        const options = selectList[`brandChoices${id}`].querySelectorAll('option');
-        options.forEach(option => {
-            if (option.value === selectedMark) {
-                option.setAttribute('selected', 'selected');
-            } else {
-                option.removeAttribute('selected');
-            }
-        });
-        brandChoices.setChoiceByValue(selectedMark);
-    }
-    // setTimeout(moveSearchField, 100);
-    hideSelectItem();
-
-    //new
-    // selectList[`brandChoices${id}`].addEventListener('search', function (event) {
-    //     $('.custom-select-inner .choices__item--choice[data-id=1]').hide();
-    //     $('.custom-select-inner .choices__item--choice[data-value="Любая"]').hide();
-    // })
-    //end new
-
-    selectList[`brandChoices${id}`].addEventListener('change', function (event) {
-        const selectedBrands = Array.from(selectList[`brandChoices${id}`].selectedOptions).map(option => option.value);
-
-        if (selectedBrands.length > 0) {
-            cntParam(1, this.closest(".form-row__col"))
-            this.parentElement.classList.add("is-active")
-            this.closest(".choices").classList.add("is-active")
-            this.closest(".form-row__col").classList.add("is-active")
-
-            modelChoices.clearStore();
-            getCategories('getModels', 'categories', event.target.value, modelChoices);
-
-
-            this.closest(".form-row__col").classList.add("is-active");
-            modelChoices.enable();
-        } else {
-            modelChoices.clearStore();
-            modelChoices.enable();
-        }
-        const textContent = event.target.textContent.replace(/\s+/g, '');
-        if (textContent.includes("Любая")) {
-            brandChoices.setChoiceByValue('');
-            modelChoices.setChoiceByValue('1')
-            modelChoices.disable();
-            cntParam(-1, this.closest(".form-row__col"))
-
-            //new
-            let activeEl = Array.from(this.closest(".form-group-custom-select").querySelectorAll(".is-active"));
-            activeEl.forEach((el) => {
-                el.classList.remove("is-active")
-            })
-        }
-        this.closest(".form-group-custom-select").querySelector(".custom-select--multiple").classList.remove("is-active");
-        hideSelectItem();
-    });
-
-    selectList[`modelSelect${id}`].addEventListener('choice', function (event) {
-        const choiceValue = event.detail.choice.value;
-
-        if (modelChoices.getValue(true).includes(choiceValue)) {
-            setTimeout(() => {
-                modelChoices.removeActiveItemsByValue(choiceValue);
-                $('.custom-select-inner .choices__item--choice[data-id=1]').hide();
-                $('.custom-select-inner:not(".select-no_reset") .choices__item--choice[data-id=2]').attr("data-value", "reset");
-            }, 0)
-        } else {
-            hideSelectItem()
-        }
-
-        if (choiceValue === 'reset') {
-            setTimeout(() => {
-                modelChoices.removeActiveItems();
-                modelChoices.hideDropdown();
-                brandChoices.setChoiceByValue('');
-                cntParam(-1, this.closest(".form-row__col"));
-                this.closest(".form-row__col").classList.remove("is-active");
-            })
-        } else {
-            cntParam(1, this.closest(".form-row__col"));
-            this.closest(".form-row__col").classList.add("is-active");
-            listItemMultiple(this);
-        }
-
-    });
-
-    selectList[`modelSelect${id}`].addEventListener('change', function (event) {
-        hideSelectItem();
-    });
-}
-
-function selectMultiple(item, name) {
-    const selectMultiple = new Choices(item, {
-        placeholder: true,
-        searchEnabled: false,
-        shouldSort: false,
-        resetScrollPosition: false,
-        renderSelectedChoices: 'always',
-        removeItemButton: true,
-        duplicateItemsAllowed: true,
-        position: 'bottom'
-    });
-
-    item.addEventListener('choice', function (event) {
-        const choiceValue = event.detail.choice.value;
-        if (selectMultiple.getValue(true).includes(choiceValue)) {
-            setTimeout(() => {
-                selectMultiple.removeActiveItemsByValue(choiceValue);
-                $('.custom-select-inner .choices__item--choice[data-id=1]').hide();
-                $('.custom-select-inner:not(".select-no_reset") .choices__item--choice[data-id=2]').attr("data-value", "reset");
-            }, 0)
-        } else {
-            hideSelectItem()
-        }
-
-        if (choiceValue === 'reset') {
-            setTimeout(() => {
-                selectMultiple.removeActiveItems();
-                selectMultiple.hideDropdown();
-                // cntParam(-1, this.closest(".form-row__col"));
-                this.closest(".form-row__col").classList.remove("is-active");
-            })
-        } else {
-            cntParam(1, this.closest(".form-row__col"));
-            this.closest(".form-row__col").classList.add("is-active");
-        }
-        listItemMultiple(item);
-    });
-
-    // item.addEventListener('change', function (event) {
-    //     hideSelectItem();
-    // });
-
-    listItemMultiple(item);
-    hideSelectItem();
-}
-
-function setMarkAndModel(brandSelect, modelChoices) {
-    let selectedMark = brandSelect.getAttribute('data-sect');
-    if (selectedMark) {
-        getCategories('getModels', 'categories', selectedMark, modelChoices);
-    }
-}
-
-function getCategories(flag, action, sectId, choices) {
-    fetch('/ajax/elements_filter.php', {
-        method: 'POST',
-        body: new URLSearchParams({action: action, sectId: sectId, flag: flag}),
-        headers: {'X-Requested-With': 'XMLHttpRequest'}
-    }).then(res => {
-        return res.json();
-    }).then(data => {
-        if (flag === 'getMarks') {
-            if (data['popularCategories'].length !== 0) {
-                brandOptions.push({
-                    value: 'popular_group',
-                    label: 'Популярные',
-                    disabled: true,
-                    customProperties: {type: 'group'}
+                choices.setChoices(brandOptions, 'value', 'label', true);
+                allBrandChoices.forEach(brandChoice => {
+                    brandChoice.setChoices(brandOptions, 'value', 'label', true);
                 })
-                brandOptions.push(
-                    ...data['popularCategories'].map(mark => ({
-                        value: mark['ID'],
-                        label: mark['NAME']
-                    }))
-                );
-            }
-
-            if (data['fullCategories'].length !== 0) {
-                brandOptions.push({
-                    value: 'all_group',
-                    label: 'Все',
-                    disabled: true,
-                    customProperties: {type: 'group'}
+                allBrands.forEach(brandSelect => {
+                    numberIdSelect++; //new
+                    let selectedMark = brandSelect.getAttribute('data-sect');
+                    if (selectedMark) {
+                        allBrandChoices.forEach(brandChoice => {
+                            brandChoice.setChoiceByValue(selectedMark);
+                        })
+                    }
                 })
-                brandOptions.push(
-                    ...data['fullCategories'].map(mark => ({
-                        value: mark['ID'],
-                        label: mark['NAME']
-                    }))
-                );
-            }
 
-            choices.setChoices(brandOptions, 'value', 'label', true);
-            allBrandChoices.forEach(brandChoice => {
-                brandChoice.setChoices(brandOptions, 'value', 'label', true);
-            })
-            allBrands.forEach(brandSelect => {
-                numberIdSelect++; //new
                 let selectedMark = brandSelect.getAttribute('data-sect');
                 if (selectedMark) {
-                    allBrandChoices.forEach(brandChoice => {
-                        brandChoice.setChoiceByValue(selectedMark);
-                    })
+                    choices.setChoiceByValue(selectedMark);
                 }
-            })
-
-            let selectedMark = brandSelect.getAttribute('data-sect');
-            if (selectedMark) {
-                choices.setChoiceByValue(selectedMark);
-            }
-            hideSelectItem();
-        }
-
-        if (flag === 'getModels') {
-            let modelOptions = [{value: "", label: 'Модель'}, {value: "reset", label: "Любая"}];
-            data.forEach(model => {
-                modelOptions.push({value: model['ID'], label: model['NAME']});
-            })
-
-            choices.setChoices(modelOptions, 'value', 'label', true);
-
-            let selectedModel = choices.passedElement.element.getAttribute('data-sect') || "";
-
-            if (selectedModel !== "") {
-                selectedModel = (selectedModel.includes(',')) ? selectedModel.split(',') : [selectedModel];
-                choices.setChoiceByValue(selectedModel);
+                hideSelectItem();
             }
 
-            listItemMultiple(choices.passedElement.element);
-            hideSelectItem();
-            document.querySelector('.select-model').classList.remove('loading-state');
-        }
-    }).catch((error) => console.log(error));
-}
+            if (flag === 'getModels') {
+                let modelOptions = [{value: "", label: 'Модель'}, {value: "reset", label: "Любая"}];
+                data.forEach(model => {
+                    modelOptions.push({value: model['ID'], label: model['NAME']});
+                })
 
-//новые функции
-function moveSearchField(selectRow) {
-    const choicesContainer = selectRow.querySelector('.choices');
+                choices.setChoices(modelOptions, 'value', 'label', true);
 
-    const searchInput = choicesContainer.querySelector('.choices__input.choices__input--cloned');
+                let selectedModel = choices.passedElement.element.getAttribute('data-sect') || "";
 
-    const dropdown = choicesContainer.querySelector('.choices__list--dropdown');
+                if (selectedModel !== "") {
+                    selectedModel = (selectedModel.includes(',')) ? selectedModel.split(',') : [selectedModel];
+                    choices.setChoiceByValue(selectedModel);
+                }
 
-    if (searchInput && dropdown) {
-        choicesContainer.insertBefore(searchInput, dropdown);
+                listItemMultiple(choices.passedElement.element);
+                hideSelectItem();
+                document.querySelector('.select-model').classList.remove('loading-state');
+            }
+            document.querySelector('.result-block').classList.remove('loading-state');
+            document.querySelector('.container').classList.remove('loading-state');
+            let filterTabsContent = document.querySelector('.filter-tabs-content');
+            if(filterTabsContent) filterTabsContent.classList.remove('loading-state');
+        }).catch((error) => console.log(error));
     }
-}
 
-function listItemMultiple(item) {
-    let val = item.value;
-    setTimeout(() => {
-        let container = item.parentNode.querySelector(".choices__list--multiple");
-        if (container) {
-            let allElem = Array.from(item.querySelectorAll("option")).map(item => item.innerText)
+    function cntParam(num, el) {
+        $(".save-search").removeClass("active");
+        if (cntParamСontent) {
+            if (!el.classList.contains("is-active") && el.closest(".inner-more-form")) {
+                cntParamСontent.textContent = +cntParamСontent.textContent + num;
+            } else if (num < 0 && el.closest(".inner-more-form")) {
+                cntParamСontent.textContent = +cntParamСontent.textContent + num;
+            }
 
+            if (cntParamСontent.textContent > 0) {
+                cntParamСontent.style.visibility = 'visible';
+            } else {
+                cntParamСontent.style.visibility = 'hidden';
+            }
+        }
+    }
+
+    function addELlFoundBrand() {
+        foundBrandBlock.innerHTML = ""
+        for (let el in fullDataFoundBrand) {
+            let pathName = (getUrlForCatalog().length !== 0) ? getUrlForCatalog() : window.location.pathname;
+
+            let href = pathName + fullDataFoundBrand[el].CODE + "/";
+            let item = templateFoundBrand(fullDataFoundBrand[el].NAME, fullDataFoundBrand[el].ELEMENTS_COUNT, href);
+            foundBrandBlock.innerHTML += item;
+        }
+    }
+
+    function getUrlForCatalog() {
+        let tabsFilter = document.querySelector('#filter').closest('.filter-tabs-content');
+        let url = "";
+
+        if(tabsFilter) {
+            let activeTab = document.querySelector('.advert-tabs__item.active');
+            let activeSection = activeTab.getAttribute('data-type');
+            let parentSection = tabsFilter.getAttribute('data-sect');
+            url = '/catalog/' + parentSection + '/' + activeSection + '/';
+        }
+         return url;
+    }
+
+    function hideSelectItem() {
+        setTimeout(() => {
             $('.custom-select-inner .choices__item--choice[data-id=1]').hide();
             $('.custom-select-inner:not(".select-no_reset") .choices__item--choice[data-id=2]').attr("data-value", "reset");
-            if (item.length) {
-                let concatStr = allElem.reduce((str, el) => str + "; " + el);
-                container.innerHTML = `
+        }, 0)
+    }
+
+    function addSelectBrandMark(id) {
+        const selectList = {
+            [`brandChoices${id}`]: document.getElementById(`brand-select-${id}`),
+            [`modelSelect${id}`]: document.getElementById(`model-select-${id}`)
+        }
+
+        let selectBrandRow = document.getElementById(`brand-select-${id}`).closest('.row--brand');
+        const brandChoices = new Choices(selectList[`brandChoices${id}`], {
+            placeholder: true,
+            searchPlaceholderValue: 'Марка',
+            duplicateItemsAllowed: true,
+            choices: brandOptions,
+            shouldSort: false,
+            shouldSortItems: false,
+            searchEnabled: true,
+            searchChoices: true,
+            position: "bottom",
+            noResultsText: 'Ничего не найдено',
+            searchResultLimit: 100,
+            fuseOptions: {
+                keys: ['label'], // Поиск только по полю label
+                threshold: 0.1, // Чем меньше значение, тем точнее поиск
+                caseSensitive: false, // Игнорировать регистр
+                distance: 100, // Максимальное расстояние от начала совпадения
+            },
+        });
+        brandChoices._handleSearch = function (value) {
+            originalSearch.call(this, value);
+            hideDuplicateChoices(this.dropdown.element);
+        };
+        allBrandChoices.push(brandChoices);
+
+        const modelChoices = new Choices(selectList[`modelSelect${id}`], {
+            placeholder: true,
+            searchPlaceholderValue: 'Модель',
+            // choices: ["Модель"],
+            shouldSort: false,
+            resetScrollPosition: false,
+            renderSelectedChoices: 'always',
+            removeItemButton: true,
+            duplicateItemsAllowed: true,
+            position: "bottom",
+            searchResultLimit: 10
+        });
+        allModelChoices.push(modelChoices);
+
+        moveSearchField(selectBrandRow);
+        setMarkAndModel(selectList[`brandChoices${id}`], modelChoices);
+        let selectedMark = selectList[`brandChoices${id}`].getAttribute('data-sect');
+        if (selectedMark) {
+            const options = selectList[`brandChoices${id}`].querySelectorAll('option');
+            options.forEach(option => {
+                if (option.value === selectedMark) {
+                    option.setAttribute('selected', 'selected');
+                } else {
+                    option.removeAttribute('selected');
+                }
+            });
+            brandChoices.setChoiceByValue(selectedMark);
+        }
+        // setTimeout(moveSearchField, 100);
+        hideSelectItem();
+
+        //new
+        // selectList[`brandChoices${id}`].addEventListener('search', function (event) {
+        //     $('.custom-select-inner .choices__item--choice[data-id=1]').hide();
+        //     $('.custom-select-inner .choices__item--choice[data-value="Любая"]').hide();
+        // })
+        //end new
+
+        selectList[`brandChoices${id}`].addEventListener('change', function (event) {
+            const selectedBrands = Array.from(selectList[`brandChoices${id}`].selectedOptions).map(option => option.value);
+
+            if (selectedBrands.length > 0) {
+                cntParam(1, this.closest(".form-row__col"))
+                this.parentElement.classList.add("is-active")
+                this.closest(".choices").classList.add("is-active")
+                this.closest(".form-row__col").classList.add("is-active")
+
+                modelChoices.clearStore();
+                getCategories('getModels', 'categories', event.target.value, modelChoices);
+
+
+                this.closest(".form-row__col").classList.add("is-active");
+                modelChoices.enable();
+            } else {
+                modelChoices.clearStore();
+                modelChoices.enable();
+            }
+            const textContent = event.target.textContent.replace(/\s+/g, '');
+            if (textContent.includes("Любая")) {
+                brandChoices.setChoiceByValue('');
+                modelChoices.setChoiceByValue('1')
+                modelChoices.disable();
+                cntParam(-1, this.closest(".form-row__col"))
+
+                //new
+                let activeEl = Array.from(this.closest(".form-group-custom-select").querySelectorAll(".is-active"));
+                activeEl.forEach((el) => {
+                    el.classList.remove("is-active")
+                })
+            }
+            this.closest(".form-group-custom-select").querySelector(".custom-select--multiple").classList.remove("is-active");
+            hideSelectItem();
+        });
+
+        selectList[`modelSelect${id}`].addEventListener('choice', function (event) {
+            const choiceValue = event.detail.choice.value;
+
+            if (modelChoices.getValue(true).includes(choiceValue)) {
+                setTimeout(() => {
+                    modelChoices.removeActiveItemsByValue(choiceValue);
+                    $('.custom-select-inner .choices__item--choice[data-id=1]').hide();
+                    $('.custom-select-inner:not(".select-no_reset") .choices__item--choice[data-id=2]').attr("data-value", "reset");
+                }, 0)
+            } else {
+                hideSelectItem()
+            }
+
+            if (choiceValue === 'reset') {
+                setTimeout(() => {
+                    modelChoices.removeActiveItems();
+                    modelChoices.hideDropdown();
+                    brandChoices.setChoiceByValue('');
+                    cntParam(-1, this.closest(".form-row__col"));
+                    this.closest(".form-row__col").classList.remove("is-active");
+                })
+            } else {
+                cntParam(1, this.closest(".form-row__col"));
+                this.closest(".form-row__col").classList.add("is-active");
+                listItemMultiple(this);
+            }
+
+        });
+
+        selectList[`modelSelect${id}`].addEventListener('change', function (event) {
+            hideSelectItem();
+        });
+    }
+
+    function selectMultiple(item, name) {
+        const selectMultiple = new Choices(item, {
+            placeholder: true,
+            searchEnabled: false,
+            shouldSort: false,
+            resetScrollPosition: false,
+            renderSelectedChoices: 'always',
+            removeItemButton: true,
+            duplicateItemsAllowed: true,
+            position: 'bottom'
+        });
+
+        item.addEventListener('choice', function (event) {
+            const choiceValue = event.detail.choice.value;
+            if (selectMultiple.getValue(true).includes(choiceValue)) {
+                setTimeout(() => {
+                    selectMultiple.removeActiveItemsByValue(choiceValue);
+                    $('.custom-select-inner .choices__item--choice[data-id=1]').hide();
+                    $('.custom-select-inner:not(".select-no_reset") .choices__item--choice[data-id=2]').attr("data-value", "reset");
+                }, 0)
+            } else {
+                hideSelectItem()
+            }
+
+            if (choiceValue === 'reset') {
+                setTimeout(() => {
+                    selectMultiple.removeActiveItems();
+                    selectMultiple.hideDropdown();
+                    // cntParam(-1, this.closest(".form-row__col"));
+                    this.closest(".form-row__col").classList.remove("is-active");
+                })
+            } else {
+                cntParam(1, this.closest(".form-row__col"));
+                this.closest(".form-row__col").classList.add("is-active");
+            }
+            listItemMultiple(item);
+        });
+
+        // item.addEventListener('change', function (event) {
+        //     hideSelectItem();
+        // });
+
+        listItemMultiple(item);
+        hideSelectItem();
+    }
+
+    function setMarkAndModel(brandSelect, modelChoices) {
+        let selectedMark = brandSelect.getAttribute('data-sect');
+        if (selectedMark) {
+            getCategories('getModels', 'categories', selectedMark, modelChoices);
+        }
+    }
+
+    function moveSearchField(selectRow) {
+        const choicesContainer = selectRow.querySelector('.choices');
+
+        const searchInput = choicesContainer.querySelector('.choices__input.choices__input--cloned');
+
+        const dropdown = choicesContainer.querySelector('.choices__list--dropdown');
+
+        if (searchInput && dropdown) {
+            choicesContainer.insertBefore(searchInput, dropdown);
+        }
+    }
+
+    function listItemMultiple(item) {
+        let val = item.value;
+        setTimeout(() => {
+            let container = item.parentNode.querySelector(".choices__list--multiple");
+            if (container) {
+                let allElem = Array.from(item.querySelectorAll("option")).map(item => item.innerText)
+
+                $('.custom-select-inner .choices__item--choice[data-id=1]').hide();
+                $('.custom-select-inner:not(".select-no_reset") .choices__item--choice[data-id=2]').attr("data-value", "reset");
+                if (item.length) {
+                    let concatStr = allElem.reduce((str, el) => str + "; " + el);
+                    container.innerHTML = `
               <div class="multipleSelectedContent">${concatStr}</div>
               <div class="multipleSelectedCnt">(${item.length})</div>
               `;
-            } else {
-                if (val !== "") {
-                    cntParam(-1, item.closest(".form-row__col"))
+                } else {
+                    if (val !== "") {
+                        cntParam(-1, item.closest(".form-row__col"))
+                    }
+                    // cntParam(-1, item.closest(".form-row__col"))
+                    item.closest(".form-row__col").classList.remove("is-active")
                 }
-                // cntParam(-1, item.closest(".form-row__col"))
-                item.closest(".form-row__col").classList.remove("is-active")
             }
+        })
+    }
+
+    function addBrandToString(brandName, brandString) {
+        const lowerCaseBrandName = brandName.toLowerCase();
+        const lowerCaseBrandString = brandString.toLowerCase();
+        if (lowerCaseBrandString.includes(lowerCaseBrandName)) {
+            return brandString;
         }
-    })
-}
-
-function addBrandToString(brandName, brandString) {
-    const lowerCaseBrandName = brandName.toLowerCase();
-    const lowerCaseBrandString = brandString.toLowerCase();
-    if (lowerCaseBrandString.includes(lowerCaseBrandName)) {
-        return brandString;
-    }
-    const updatedBrandString = brandString ? `${brandString}, ${brandName}` : brandName;
-    return updatedBrandString;
-}
-
-//new
-function selectableItems() {
-    let saveBrand = document.querySelector(".save-search-popup .search-popup__mark");
-    saveBrand.textContent = ""
-    let saveParam = document.querySelector(".save-search-popup .search-popup__parameters");
-    saveParam.textContent = ""
-    let arrSelectable = document.querySelectorAll(".choices__inner.is-active , .form-row__col.is-active");
-    let checkboxList = document.querySelectorAll("input[type='checkbox']:checked:not(.no-send)")
-    let radioList = document.querySelectorAll("input[type='radio']:checked")
-
-    if (!arrSelectable.length) {
-        saveBrand.textContent = "Все марки"
+        const updatedBrandString = brandString ? `${brandString}, ${brandName}` : brandName;
+        return updatedBrandString;
     }
 
-    arrSelectable.forEach((el) => {
-        let content = el.querySelector(".choices__item--selectable");
-        let brand = el.closest(".row--brand");
-        let filteredElements = Array.from(arrSelectable).filter(element =>
-            element.closest('.row--brand') !== null
-        );
-        if (!filteredElements.length) {
+    function selectableItems() {
+        let saveBrand = document.querySelector(".save-search-popup .search-popup__mark");
+        saveBrand.textContent = ""
+        let saveParam = document.querySelector(".save-search-popup .search-popup__parameters");
+        saveParam.textContent = ""
+        let arrSelectable = document.querySelectorAll(".choices__inner.is-active , .form-row__col.is-active");
+        let checkboxList = document.querySelectorAll("input[type='checkbox']:checked:not(.no-send)")
+        let radioList = document.querySelectorAll("input[type='radio']:checked")
+
+        if (!arrSelectable.length) {
             saveBrand.textContent = "Все марки"
         }
 
-        if (brand) {
-            saveBrand.textContent = addBrandToString(content.innerText, saveBrand.textContent);
-        } else if (el.classList.contains("custom-select--multiple")) {
-            let multipleItems = el.querySelector(".choices__list--multiple .multipleSelectedContent").innerText;
-            let brandName = el.closest(".form-row").querySelector(".row--brand .choices__item--selectable").innerText;
-            multipleItems = multipleItems.split(";");
-            multipleItems.forEach((multiItem) => {
-                let brandMark = multiItem;
-                let str = `${brandName} ${brandMark}`;
-                saveBrand.textContent = addBrandToString(str, saveBrand.textContent);
-                let regEx = brandName + ",";
-                saveBrand.textContent = saveBrand.textContent.replace(regEx, '')
-            })
-        } else if (el.querySelector(".custom-select--multiple")) {
-            let multipleItems = el.querySelector(".choices__list--multiple .multipleSelectedContent").innerText;
-            multipleItems = multipleItems.split(";");
-            multipleItems.forEach((multiItem) => {
-                let brandMark = multiItem;
-                saveParam.textContent = addBrandToString(brandMark, saveParam.textContent);
-            })
-        } else if (el.classList.contains("choices__inner")) {
-            if(el.closest('.form-group:not(.no-send)')) {
-                let textContent = el.querySelector(".choices__item--selectable").innerText;
-                if (el.closest(".year-end")) {
-                    let yearStart = document.querySelector(".year-start select").value
-                    if (yearStart) {
-                        saveParam.textContent = saveParam.textContent + `-${textContent}`
-                    } else {
-                        saveParam.textContent = saveParam.textContent + `${textContent}`
-                    }
-                } else {
-                    saveParam.textContent = addBrandToString(textContent, saveParam.textContent);
-                }
+        arrSelectable.forEach((el) => {
+            let content = el.querySelector(".choices__item--selectable");
+            let brand = el.closest(".row--brand");
+            let filteredElements = Array.from(arrSelectable).filter(element =>
+                element.closest('.row--brand') !== null
+            );
+            if (!filteredElements.length) {
+                saveBrand.textContent = "Все марки"
             }
-        } else {
-            saveParam.textContent = addBrandToString(el.querySelector("input").value, saveParam.textContent);
-        }
-    })
+
+            if (brand) {
+                saveBrand.textContent = addBrandToString(content.innerText, saveBrand.textContent);
+            } else if (el.classList.contains("custom-select--multiple")) {
+                let multipleItems = el.querySelector(".choices__list--multiple .multipleSelectedContent").innerText;
+                let brandName = el.closest(".form-row").querySelector(".row--brand .choices__item--selectable").innerText;
+                multipleItems = multipleItems.split(";");
+                multipleItems.forEach((multiItem) => {
+                    let brandMark = multiItem;
+                    let str = `${brandName} ${brandMark}`;
+                    saveBrand.textContent = addBrandToString(str, saveBrand.textContent);
+                    let regEx = brandName + ",";
+                    saveBrand.textContent = saveBrand.textContent.replace(regEx, '')
+                })
+            } else if (el.querySelector(".custom-select--multiple")) {
+                let multipleItems = el.querySelector(".choices__list--multiple .multipleSelectedContent").innerText;
+                multipleItems = multipleItems.split(";");
+                multipleItems.forEach((multiItem) => {
+                    let brandMark = multiItem;
+                    saveParam.textContent = addBrandToString(brandMark, saveParam.textContent);
+                })
+            } else if (el.classList.contains("choices__inner")) {
+                if (el.closest('.form-group:not(.no-send)')) {
+                    let textContent = el.querySelector(".choices__item--selectable").innerText;
+                    if (el.closest(".year-end")) {
+                        let yearStart = document.querySelector(".year-start select").value
+                        if (yearStart) {
+                            saveParam.textContent = saveParam.textContent + `-${textContent}`
+                        } else {
+                            saveParam.textContent = saveParam.textContent + `${textContent}`
+                        }
+                    } else {
+                        saveParam.textContent = addBrandToString(textContent, saveParam.textContent);
+                    }
+                }
+            } else {
+                saveParam.textContent = addBrandToString(el.querySelector("input").value, saveParam.textContent);
+            }
+        })
 
 
-    $(".save-list-btn").on("click", function () {
-        $(".save-list").addClass("active");
-    })
+        $(".save-list-btn").on("click", function () {
+            $(".save-list").addClass("active");
+        })
 
-    checkboxList.forEach((el) => {
-        let str = `${el.getAttribute('data-val')}`;
-        saveParam.textContent = addBrandToString(str, saveParam.textContent);
-        let regEx = el.getAttribute('data-val') + ",";
-        saveParam.textContent = saveParam.textContent.replace(regEx, '')
-    });
-
-    radioList.forEach((el) => {
-        let elValue = el.value.toLowerCase();
-        if (elValue.length !== 0) {
+        checkboxList.forEach((el) => {
             let str = `${el.getAttribute('data-val')}`;
             saveParam.textContent = addBrandToString(str, saveParam.textContent);
             let regEx = el.getAttribute('data-val') + ",";
             saveParam.textContent = saveParam.textContent.replace(regEx, '')
-        }
-    })
+        });
 
-    let location = document.querySelectorAll(".form-row__col-30.is-active");
-    location.forEach((el, i) => {
-        let content = el.querySelector(".choices__item--selectable").textContent.trim();
-        if (location.length - 1 === i) {
-            saveParam.textContent = saveParam.textContent + " " + content
-        } else {
-            saveParam.textContent = saveParam.textContent + ` ${content},`
-        }
-    })
+        radioList.forEach((el) => {
+            let elValue = el.value.toLowerCase();
+            if (elValue.length !== 0) {
+                let str = `${el.getAttribute('data-val')}`;
+                saveParam.textContent = addBrandToString(str, saveParam.textContent);
+                let regEx = el.getAttribute('data-val') + ",";
+                saveParam.textContent = saveParam.textContent.replace(regEx, '')
+            }
+        })
 
-}
+        let location = document.querySelectorAll(".form-row__col-30.is-active");
+        location.forEach((el, i) => {
+            let content = el.querySelector(".choices__item--selectable").textContent.trim();
+            if (location.length - 1 === i) {
+                saveParam.textContent = saveParam.textContent + " " + content
+            } else {
+                saveParam.textContent = saveParam.textContent + ` ${content},`
+            }
+        })
 
-function cntParam(num, el) {
-    $(".save-search").removeClass("active");
-    if (cntParamСontent) {
-        if (!el.classList.contains("is-active") && el.closest(".inner-more-form")) {
-            cntParamСontent.textContent = +cntParamСontent.textContent + num;
-        } else if (num < 0 && el.closest(".inner-more-form")) {
-            cntParamСontent.textContent = +cntParamСontent.textContent + num;
-        }
-
-        if (cntParamСontent.textContent > 0) {
-            cntParamСontent.style.visibility = 'visible';
-        } else {
-            cntParamСontent.style.visibility = 'hidden';
-        }
     }
-}
 
-function activeItems() {
-    let activeItem = document.querySelectorAll(".store-active");
-    activeItem.forEach((el) => {
-        el.querySelector(".choices__inner").classList.add("is-active");
-    })
-}
+    function activeItems() {
+        let activeItem = document.querySelectorAll(".store-active");
+        activeItem.forEach((el) => {
+            el.querySelector(".choices__inner").classList.add("is-active");
+        })
+    }
 
-function removeDuplicates(el) {
-    const select = document.querySelector(el);
-    const textSet = new Set();
-    for (let i = select.options.length - 1; i >= 0; i--) {
-        const option = select.options[i];
-        if (textSet.has(option.text)) {
-            select.remove(i);
-        } else {
-            textSet.add(option.text);
+    function showList(list, elPosition) {
+        const rect = elPosition.getBoundingClientRect();
+
+        list.style.top = `${rect.bottom + 5}px`;
+        list.style.left = `${rect.left}px`;
+        list.style.width = `${rect.width}px`;
+        list.style.display = 'block';
+    }
+
+    function preventScroll(event) {
+        event.preventDefault();
+    }
+
+    function hasScroll() {
+        const documentHeight = document.documentElement.scrollHeight;
+        const windowHeight = window.innerHeight;
+
+        return documentHeight > windowHeight;
+    }
+
+    function addScroll() {
+        const scrollTop = window.scrollY;
+        const scrollableElement = document.querySelector('.save-list');
+        scrollableElement.removeEventListener('wheel', preventScroll);
+        scrollableElement.removeEventListener('touchmove', preventScroll);
+        $("body").removeClass("no-scroll")
+        $("body").removeClass("fake")
+    }
+
+    function removeScroll() {
+        const scrollableElement = document.querySelector('.save-list');
+        const scrollTop = window.scrollY;
+        $("body").addClass("no-scroll")
+        if (hasScroll()) {
+            $("body").addClass("fake")
         }
+        scrollableElement.addEventListener('wheel', preventScroll, {passive: false});
+        scrollableElement.addEventListener('touchmove', preventScroll, {passive: false});
     }
-}
-
-//new
-function showList(list, elPosition) {
-    const rect = elPosition.getBoundingClientRect();
-
-    list.style.top = `${rect.bottom + 5}px`;
-    list.style.left = `${rect.left}px`;
-    list.style.width = `${rect.width}px`;
-    list.style.display = 'block';
-}
-
-//new
-function preventScroll(event) {
-    event.preventDefault();
-}
-
-//new
-function hasScroll() {
-    const documentHeight = document.documentElement.scrollHeight;
-    const windowHeight = window.innerHeight;
-
-    return documentHeight > windowHeight;
-}
-
-//new
-function addScroll() {
-    const scrollTop = window.scrollY;
-    const scrollableElement = document.querySelector('.save-list');
-    scrollableElement.removeEventListener('wheel', preventScroll);
-    scrollableElement.removeEventListener('touchmove', preventScroll);
-    $("body").removeClass("no-scroll")
-    $("body").removeClass("fake")
-}
-
-//new
-function removeScroll() {
-    const scrollableElement = document.querySelector('.save-list');
-    const scrollTop = window.scrollY;
-    $("body").addClass("no-scroll")
-    if (hasScroll()) {
-        $("body").addClass("fake")
-    }
-    scrollableElement.addEventListener('wheel', preventScroll, {passive: false});
-    scrollableElement.addEventListener('touchmove', preventScroll, {passive: false});
 }

@@ -257,7 +257,7 @@ input[type='text'].choices__input:focus {
 
 .form-group {
     position: relative;
-    max-width: 690px;
+    /*max-width: 690px;*/
     margin: 0 auto;
 }
 
@@ -2132,7 +2132,22 @@ input[type="file"] {
         gap: 6px;
         width: 100%;
     }
+
+    .form-header {
+        flex-direction: column;
+    }
 }
+
+@media (max-width: 600px) {
+    .form-header {
+        flex-direction: column;
+    }
+
+    .save-inner {
+        margin-bottom: 20px;
+    }
+}
+
 
 .search-result{
     display: flex;
@@ -2191,7 +2206,7 @@ input[type="file"] {
     max-width: 456px;
     width: 100%;
     right: 40px;
-    top: 75px;
+    top: 62px;
     box-shadow: 0 2px 18px 0 rgba(0, 0, 0, 0.08);
     background: #fff;
     border-radius: 3px;
@@ -2513,4 +2528,8 @@ body.no-scroll{
 
 .flex-next .svg {
     top: 35%;
+}
+
+.container.CUSTOM_FILTER {
+    overflow: visible;
 }

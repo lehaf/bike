@@ -881,6 +881,20 @@ $price = $arResult['ITEMS']['BASE'];
             </div>
         </div>
         <div class="result-block">
+            <?php if($arResult['FILTER_ELEMENTS_COUNT'] > 0):?>
+                <button class="selection-btn count">
+                    Показать <span><?=$arResult['FILTER_ELEMENTS_COUNT']?></span> предложений
+                </button>
+            <?php else:?>
+                <div class="search-result count">
+                    <div class="search-result-mes">
+                        Ничего не найдено
+                    </div>
+                    <div class="search-result-text">
+                        Попробуйте изменить параметры поиска
+                    </div>
+                </div>
+            <?php endif;?>
         </div>
 
     </div>

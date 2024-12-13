@@ -1,4 +1,7 @@
 <?php
+
+use classes\Filter;
+
 \Bitrix\Main\Loader::IncludeModule("highloadblock");
 $arResult['SECTION']['CODE'] = \Bitrix\Iblock\SectionTable::getList([
     'filter' => ['=ID' => $arResult['SECTION']['ID']],
@@ -90,6 +93,11 @@ if (!empty($arResult["ITEMS"])) {
         }
         unset($item);
     }
+
+    $filter = new Filter();
+    $arFilter = $filter::getFilterParams($_SERVER['QUERY_STRING'], $arParams['FILTER_NAME'], CATALOG_IBLOCK_ID, $currentSection['ID']);
+    $arResult['FILTER_ELEMENTS_COUNT'] = CIBlockElement::GetList([], $arFilter, [], false);
+
 
     $arResult['ITEMS'] = $newItems;
 

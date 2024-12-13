@@ -1,5 +1,7 @@
 <?php
 
+use classes\Filter;
+
 $arResult['SECTION']['CODE'] = \Bitrix\Iblock\SectionTable::getList([
     'filter' => ['=ID' => $arResult['SECTION']['ID']],
     'select' => ['CODE'] // Получаем только ID и CODE
@@ -83,6 +85,10 @@ if(!empty($arResult["ITEMS"])) {
         }
         $newItems['status'] = $statusStock;
     }
+
+    $filter = new Filter();
+    $arFilter = $filter::getFilterParams($_SERVER['QUERY_STRING'], $arParams['FILTER_NAME'], CATALOG_IBLOCK_ID, $currentSection['ID']);
+    $arResult['FILTER_ELEMENTS_COUNT'] = CIBlockElement::GetList([], $arFilter, [], false);
 
     $arResult['ITEMS'] = $newItems;
 }

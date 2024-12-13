@@ -1,116 +1,116 @@
-let selectTypes = [];//new
-const selectList = document.querySelectorAll(".custom-select");
+initMainForFilter();
+function  initMainForFilter() {
+    let selectTypes = [];//new
+    const selectList = document.querySelectorAll(".custom-select");
+    console.log(selectList);
 
-setSelect(selectList);
+    setSelect(selectList);
 
-function setSelect(selectList) {
-    selectList.forEach((el) => {
-        if (el.classList.contains("selectSearch")) {
-            let text = el.getAttribute("data-text")
-            const selectSearch = new Choices(el, {
-                searchEnabled: true,
-                shouldSort: false,
-                searchPlaceholderValue: text,
-                removeItems: true,
-                position: 'bottom',
-                noResultsText: 'Ничего не найдено',
-                searchResultLimit: 100,
-                searchFields: ['label'],
-                fuseOptions: {
-                    keys: ['label'], // Поиск только по полю label
-                    threshold: 0.1, // Позволяет находить подстроки, избегая слишком "размытых" совпадений
-                    distance: 1000, // Максимальное расстояние, в пределах которого совпадение считается допустимым
-                },
-            })
-            moveSearchField(el.closest('.row--brand'));
-            listenerSelect(el, selectSearch);
-            el.addEventListener('change', function (event) {
-                const selectedItems = Array.from(el.selectedOptions).map(option => option.value);
+    function setSelect(selectList) {
+        selectList.forEach((el) => {
+            if (el.classList.contains("selectSearch")) {
+                let text = el.getAttribute("data-text")
+                const selectSearch = new Choices(el, {
+                    searchEnabled: true,
+                    shouldSort: false,
+                    searchPlaceholderValue: text,
+                    removeItems: true,
+                    position: 'bottom',
+                    noResultsText: 'Ничего не найдено',
+                    searchResultLimit: 100,
+                    searchFields: ['label'],
+                    fuseOptions: {
+                        keys: ['label'], // Поиск только по полю label
+                        threshold: 0.1, // Позволяет находить подстроки, избегая слишком "размытых" совпадений
+                        distance: 1000, // Максимальное расстояние, в пределах которого совпадение считается допустимым
+                    },
+                })
+                moveSearchField(el.closest('.row--brand'));
+                listenerSelect(el, selectSearch);
+                el.addEventListener('change', function (event) {
+                    const selectedItems = Array.from(el.selectedOptions).map(option => option.value);
 
-                if (selectedItems.length > 0) {
-                    this.parentElement.classList.add("is-active")
-                    this.closest(".choices").classList.add("is-active")
-                    this.closest(".form-row__col").classList.add("is-active")
-                }
+                    if (selectedItems.length > 0) {
+                        this.parentElement.classList.add("is-active")
+                        this.closest(".choices").classList.add("is-active")
+                        this.closest(".form-row__col").classList.add("is-active")
+                    }
 
-                if (el.value === "" || el.value === "reset") {
-                    selectSearch.setChoiceByValue('');
+                    if (el.value === "" || el.value === "reset") {
+                        selectSearch.setChoiceByValue('');
 
-                    this.parentElement.classList.remove("is-active");
-                    this.closest(".choices").classList.remove("is-active");
-                    this.closest(".form-row__col").classList.remove("is-active");
-                }
-                hideSelectItem();
-            });
-        } else {
-            const selectType = new Choices(el, {
-                searchEnabled: false,
-                shouldSort: false,
-                position: 'bottom'
-            })
-            // if(el.closest(".save-search-popup") || el.closest(".save-list")){ //new
-            //     selectType.disable()
-            // }
-            listenerSelect(el, selectType)
-            selectTypes.push(selectType);//new
-        }
-    })
-
-    $('.custom-select-inner .choices__item--choice[data-id=1]').hide();
-}
-
-function listenerSelect(el, select) {
-    el.addEventListener(
-        'change',
-        function (event) {
-            let textContent = event.target.textContent.replace(/\s+/g, '')
-            if (textContent === "Сбросить" || textContent === "Любая" || textContent === "Любой") {
-                select.setChoiceByValue('');
-            } else if(el.getAttribute("data-type") === "currency"){
-                changePrice()
+                        this.parentElement.classList.remove("is-active");
+                        this.closest(".choices").classList.remove("is-active");
+                        this.closest(".form-row__col").classList.remove("is-active");
+                    }
+                    hideSelectItem();
+                });
+            } else {
+                const selectType = new Choices(el, {
+                    searchEnabled: false,
+                    shouldSort: false,
+                    position: 'bottom'
+                })
+                // if(el.closest(".save-search-popup") || el.closest(".save-list")){ //new
+                //     selectType.disable()
+                // }
+                listenerSelect(el, selectType)
+                selectTypes.push(selectType);//new
             }
-            setTimeout(() => {
-                $('.custom-select-inner .choices__item--choice[data-id=1]').hide();
-            }, 0)
-        },
-        false,
-    );
-}
+        })
 
-function changePrice(){
-    let startPrice = document.querySelector(".price-start");
-    let endPrice = document.querySelector(".price-end");
-    let localСurrency = startPrice.getAttribute("data-text").toLowerCase();
-    if(localСurrency === "byn"){
-        startPrice.setAttribute("data-text" , "USD");
-        startPrice.setAttribute("placeholder" , "Цена (USD), от");
-        endPrice.setAttribute("data-text" , "USD");
-        if(startPrice.value){
-            let sumStart = startPrice.value.slice(0,-5);
-            console.log(sumStart)
-            startPrice.value = sumStart + ", " + "USD";
-        }
-        if(endPrice.value){
-            let sumStart = endPrice.value.slice(0,-5);
-            endPrice.value = sumStart + ", " + "USD";
-        }
-    }else{
-        startPrice.setAttribute("data-text" , "BYN");
-        startPrice.setAttribute("placeholder" , "Цена (BYN), от");
-        endPrice.setAttribute("data-text" , "BYN");
+        $('.custom-select-inner .choices__item--choice[data-id=1]').hide();
+    }
+    function listenerSelect(el, select) {
+        el.addEventListener(
+            'change',
+            function (event) {
+                let textContent = event.target.textContent.replace(/\s+/g, '')
+                if (textContent === "Сбросить" || textContent === "Любая" || textContent === "Любой") {
+                    select.setChoiceByValue('');
+                } else if (el.getAttribute("data-type") === "currency") {
+                    changePrice()
+                }
+                setTimeout(() => {
+                    $('.custom-select-inner .choices__item--choice[data-id=1]').hide();
+                }, 0)
+            },
+            false,
+        );
+    }
+    function changePrice() {
+        let startPrice = document.querySelector(".price-start");
+        let endPrice = document.querySelector(".price-end");
+        let localСurrency = startPrice.getAttribute("data-text").toLowerCase();
+        if (localСurrency === "byn") {
+            startPrice.setAttribute("data-text", "USD");
+            startPrice.setAttribute("placeholder", "Цена (USD), от");
+            endPrice.setAttribute("data-text", "USD");
+            if (startPrice.value) {
+                let sumStart = startPrice.value.slice(0, -5);
+                console.log(sumStart)
+                startPrice.value = sumStart + ", " + "USD";
+            }
+            if (endPrice.value) {
+                let sumStart = endPrice.value.slice(0, -5);
+                endPrice.value = sumStart + ", " + "USD";
+            }
+        } else {
+            startPrice.setAttribute("data-text", "BYN");
+            startPrice.setAttribute("placeholder", "Цена (BYN), от");
+            endPrice.setAttribute("data-text", "BYN");
 
-        if(startPrice.value){
-            let sumStart = startPrice.value.slice(0,-5);
-            startPrice.value = sumStart + ", " + "BYN";
-        }
-        if(endPrice.value){
-            let sumStart = endPrice.value.slice(0,-5);
-            endPrice.value = sumStart + ", " + "BYN";
+            if (startPrice.value) {
+                let sumStart = startPrice.value.slice(0, -5);
+                startPrice.value = sumStart + ", " + "BYN";
+            }
+            if (endPrice.value) {
+                let sumStart = endPrice.value.slice(0, -5);
+                endPrice.value = sumStart + ", " + "BYN";
+            }
         }
     }
-}
 
-document.addEventListener("DOMContentLoaded", () => {
     let params = window
         .location
         .search
@@ -126,31 +126,9 @@ document.addEventListener("DOMContentLoaded", () => {
         );
     let filterName = document.querySelector('#filter').getAttribute('data-filter') || 'arFilter';
 
-    // $(".dependent-checkbox").on("change", function (){ //new
-    //     let checkId = this.getAttribute('data-id');
-    //     let select = selectTypes.find((el) =>  el.passedElement.element.id === "notify-select-" + checkId);
-    //
-    //     selectTypes.forEach(select => {
-    //         console.log(select.passedElement.element.id);
-    //     })
-    //
-    //     if(this.checked){
-    //         select.enable();
-    //     }else{
-    //         select.disable()
-    //         select.containerInner.element.classList.remove("is-active")
-    //     }
-    //
-    //     // let checkTest = document.querySelectorAll(`.dependent-checkbox[data-id="${checkId}"]`);
-    //     // checkTest.forEach(check => {
-    //     //     check.checked = this.checked;
-    //     // })
-    // })
-
     $(".custom-input.number").on('input', function () {
         this.value = this.value.replace(/[^0-9]/g, '');
     });
-
 
     function ajaxSelect(el, secondEl, listsArr, elChoices, secondElChoices, listType) {
         elChoices.setChoiceByValue('');
@@ -202,13 +180,13 @@ document.addEventListener("DOMContentLoaded", () => {
     function selectAdd() {
         if (countryEl && regionEl) {
             countryEl.onchange = () => {
-                if(countryEl.value !== "" && countryEl.value !== 'reset') {
+                if (countryEl.value !== "" && countryEl.value !== 'reset') {
                     $('.select-region').addClass('loading-state');
                     getLocation('getRegions', 'location', countryEl.value)
                 }
             };
             regionEl.onchange = () => {
-                if(countryEl.value !== "" && countryEl.value !== 'reset') {
+                if (countryEl.value !== "" && countryEl.value !== 'reset') {
                     $('.select-city').addClass('loading-state');
                     getLocation('getCities', 'location', regionEl.value);
                 }
@@ -256,11 +234,12 @@ document.addEventListener("DOMContentLoaded", () => {
             citySelect.setChoiceByValue('');
             citySelect.disable()
 
-            setTimeout(()=>{
+            setTimeout(() => {
                 $('.custom-select-inner .choices__item--choice[data-id=1]').hide();
                 $('.custom-select-inner:not(".select-no_reset") .choices__item--choice[data-id=2]').attr("data-value", "reset");
             })
         })
+
         // window.onload = selectCountry;
         function getLocation(flag, action, id) {
             $('#stepForm').addClass('blur');
@@ -305,30 +284,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     if (textContent === "сбросить" || textContent === "любая") {
                         let attribute = el.getAttribute("id");
-                        if(attribute === "country"){
+                        if (attribute === "country") {
                             regionSelect.setChoiceByValue('1');
                             regionSelect.disable(); //new
                             citySelect.setChoiceByValue('1');
                             citySelect.disable(); //new
 
                             $(".location-group-select .is-active").removeClass("is-active")
-                            if(flagActiveItem && regionFlag && cityFlag){
+                            if (flagActiveItem && regionFlag && cityFlag) {
                                 cntParamСontent.textContent = +cntParamСontent.textContent - 3;
-                            }else if(flagActiveItem && regionFlag){
+                            } else if (flagActiveItem && regionFlag) {
                                 cntParamСontent.textContent = +cntParamСontent.textContent - 2;
-                            }else if(flagActiveItem){
+                            } else if (flagActiveItem) {
                                 cntParamСontent.textContent = +cntParamСontent.textContent - 1;
                             }
-                        }else if(attribute === "region"){
+                        } else if (attribute === "region") {
                             cityEl.closest(".is-active") ? cityEl.closest(".is-active").classList.remove("is-active") : false
                             citySelect.setChoiceByValue('1');
-                            if(flagActiveItem && cityFlag){
+                            if (flagActiveItem && cityFlag) {
                                 cntParamСontent.textContent = +cntParamСontent.textContent - 2;
-                            }else if(flagActiveItem){
+                            } else if (flagActiveItem) {
                                 cntParamСontent.textContent = +cntParamСontent.textContent - 1;
                             }
-                        }else{
-                            if(flagActiveItem){
+                        } else {
+                            if (flagActiveItem) {
                                 cntParamСontent.textContent = +cntParamСontent.textContent - 1;
                             }
                         }
@@ -351,7 +330,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             selectClear.enable();
                         }
                         this.closest(".form-row__col-30").classList.add("is-active");
-                        if (!flagActiveItem){
+                        if (!flagActiveItem) {
                             cntParamСontent.textContent = +cntParamСontent.textContent + 1;
                         }
 
@@ -372,6 +351,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     setColor();
+
 
     function setColor() {
         const colorLIst = $("._color-item");
@@ -423,4 +403,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
     })
-})
+}
+
+
+

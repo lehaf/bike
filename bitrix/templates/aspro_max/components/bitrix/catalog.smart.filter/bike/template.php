@@ -408,7 +408,7 @@ $price = $arResult['ITEMS']['BASE'];
                         <option value="" selected>
                             BYN
                         </option>
-                        <option value="USD">
+                        <option value="USD" <?=($_GET[$arParams['FILTER_NAME'] . "_currency"]  === "USD") ? "selected" : ""?>>
                             USD
                         </option>
                     </select>
@@ -954,6 +954,20 @@ $price = $arResult['ITEMS']['BASE'];
             </div>
         </div>
         <div class="result-block">
+            <?php if($arResult['FILTER_ELEMENTS_COUNT'] > 0):?>
+            <button class="selection-btn count">
+                Показать <span><?=$arResult['FILTER_ELEMENTS_COUNT']?></span> предложений
+            </button>
+            <?php else:?>
+            <div class="search-result count">
+                <div class="search-result-mes">
+                    Ничего не найдено
+                </div>
+                <div class="search-result-text">
+                    Попробуйте изменить параметры поиска
+                </div>
+            </div>
+            <?php endif;?>
         </div>
 
     </div>
@@ -977,7 +991,6 @@ $price = $arResult['ITEMS']['BASE'];
                 <path d="M1 5.5L5 1.5L9 5.5" stroke="#ED1C24" stroke-width="2" stroke-linecap="round"
                       stroke-linejoin="round"/>
             </svg>
-
         </div>
     </div>
 <?php endif; ?>
