@@ -7,8 +7,8 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
 }
 ?>
 <?$APPLICATION->IncludeComponent(
-	"aspro:tabs.max", 
-	"main", 
+	"aspro:tabs.max",
+	"main",
 	array(
 		"IBLOCK_TYPE" => "aspro_max_catalog",
 		"IBLOCK_ID" => "26",
@@ -123,7 +123,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
 		"SHOW_DISCOUNT_PERCENT_NUMBER" => "Y",
 		"SHOW_MEASURE_WITH_RATIO" => "Y",
 		"SHOW_DISCOUNT_TIME_EACH_SKU" => "Y",
-		"TITLE_BLOCK" => "Товары для дома и дачи",
+		"TITLE_BLOCK" => "пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ",
 		"TITLE_BLOCK_ALL" => "Р’РµСЃСЊ РєР°С‚Р°Р»РѕРі",
 		"ALL_URL" => "catalog/tovary_dlya_doma_i_dachi/",
 		"COMPOSITE_FRAME_MODE" => "A",
