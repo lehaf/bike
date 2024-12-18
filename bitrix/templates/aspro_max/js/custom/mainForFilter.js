@@ -25,7 +25,7 @@ function  initMainForFilter() {
                         distance: 1000, // Максимальное расстояние, в пределах которого совпадение считается допустимым
                     },
                 })
-                moveSearchField(el.closest('.row--brand'));
+
                 listenerSelect(el, selectSearch);
                 el.addEventListener('change', function (event) {
                     const selectedItems = Array.from(el.selectedOptions).map(option => option.value);
