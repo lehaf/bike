@@ -2,7 +2,6 @@ initMainForFilter();
 function  initMainForFilter() {
     let selectTypes = [];//new
     const selectList = document.querySelectorAll(".custom-select");
-    console.log(selectList);
 
     setSelect(selectList);
 
@@ -26,6 +25,7 @@ function  initMainForFilter() {
                     },
                 })
 
+                moveSearchField(el.closest('.row--brand'));
                 listenerSelect(el, selectSearch);
                 el.addEventListener('change', function (event) {
                     const selectedItems = Array.from(el.selectedOptions).map(option => option.value);
@@ -403,6 +403,18 @@ function  initMainForFilter() {
             }
         }
     })
+
+    function moveSearchField(selectRow) {
+        const choicesContainer = selectRow.querySelector('.choices');
+
+        const searchInput = choicesContainer.querySelector('.choices__input.choices__input--cloned');
+
+        const dropdown = choicesContainer.querySelector('.choices__list--dropdown');
+
+        if (searchInput && dropdown) {
+            choicesContainer.insertBefore(searchInput, dropdown);
+        }
+    }
 }
 
 
