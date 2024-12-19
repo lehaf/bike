@@ -4,7 +4,7 @@
 	"front_news", 
 	array(
 		"IBLOCK_TYPE" => "aspro_max_content",
-		"IBLOCK_ID" => CMaxCache::$arIBlocks[SITE_ID]['aspro_max_content']['aspro_max_articles'][0],
+		"IBLOCK_ID" => CMaxCache::$arIBlocks[SITE_ID]["aspro_max_content"]["aspro_max_articles"][0],
 		"NEWS_COUNT" => "5",
 		"SORT_BY1" => "ACTIVE_FROM",
 		"SORT_ORDER1" => "DESC",
@@ -14,9 +14,12 @@
 		"FIELD_CODE" => array(
 			0 => "PREVIEW_PICTURE",
 			1 => "DATE_ACTIVE_FROM",
+			2 => "",
 		),
 		"PROPERTY_CODE" => array(
-			0 => "PERIOD",
+			0 => "",
+			1 => "PERIOD",
+			2 => "",
 		),
 		"CHECK_DATES" => "Y",
 		"DETAIL_URL" => "",
@@ -58,7 +61,7 @@
 		"SET_LAST_MODIFIED" => "N",
 		"INCLUDE_SUBSECTIONS" => "Y",
 		"STRICT_SECTION_CHECK" => "N",
-		"TITLE_BLOCK" => "Блог",
+		"TITLE_BLOCK" => "Новости и анонсы",
 		"TITLE_BLOCK_ALL" => "Все статьи",
 		"ALL_URL" => "blog/",
 		"SIZE_IN_ROW" => "5",
@@ -71,10 +74,15 @@
 		"TITLE_SUBSCRIBE" => "Подписаться",
 		"PAGER_BASE_LINK_ENABLE" => "N",
 		"SHOW_404" => "N",
-		"MOBILE_TEMPLATE" => $GLOBALS['arTheme']['MOBILE_BLOG']['VALUE'],
-		"CHECK_REQUEST_BLOCK" => CMax::checkRequestBlock('blog'),
+		"MOBILE_TEMPLATE" => $GLOBALS["arTheme"]["MOBILE_BLOG"]["VALUE"],
+		"CHECK_REQUEST_BLOCK" => CMax::checkRequestBlock("blog"),
 		"IS_AJAX" => CMax::checkAjaxRequest(),
-		"MESSAGE_404" => ""
+		"MESSAGE_404" => "",
+		"HALF_BLOCK" => "N",
+		"ALL_BLOCK_BG" => "N",
+		"FON_BLOCK_2_COLS" => "N",
+		"USE_BG_IMAGE_ALTERNATE" => "N",
+		"TITLE_SHOW_FON" => "N"
 	),
 	false
 );?>
