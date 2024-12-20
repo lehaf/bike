@@ -1073,10 +1073,10 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']) + $offerPropCount;
                     </div>
 
                     <? //dop text?>
-                    <? $path = SITE_DIR . "include/element_detail_text.php" ?>
-                    <div class="price_txt muted font_sxs<?= ((CMax::checkContentFile($path) ? ' filed' : '')); ?>">
-                        <? $APPLICATION->IncludeFile($path, array(), array("MODE" => "html", "NAME" => GetMessage('CT_BCE_CATALOG_DOP_DESCR'))); ?>
-                    </div>
+<!--                    --><?// $path = SITE_DIR . "include/element_detail_text.php" ?>
+<!--                    <div class="price_txt muted font_sxs--><?php //= ((CMax::checkContentFile($path) ? ' filed' : '')); ?><!--">-->
+<!--                        --><?// $APPLICATION->IncludeFile($path, array(), array("MODE" => "html", "NAME" => GetMessage('CT_BCE_CATALOG_DOP_DESCR'))); ?>
+<!--                    </div>-->
                 </div>
             </div>
 
@@ -1218,6 +1218,9 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']) + $offerPropCount;
     <? $this->EndViewTarget(); ?>
 <? endif; ?>
 
+    <? $this->SetViewTarget('SMALL_TEXT'); ?>
+    <? $APPLICATION->IncludeFile(SITE_DIR . "include/element_detail_text.php", array(), array("MODE" => "html", "NAME" => GetMessage('CT_BCE_CATALOG_DOP_DESCR'))); ?>
+    <? $this->EndViewTarget(); ?>
 
 <? //additional gallery?>
 <? if ($arResult['ADDITIONAL_GALLERY']): ?>

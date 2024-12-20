@@ -35,6 +35,13 @@ if( !in_array('modules', $arBlockOrder) ){
 
 $currentProductId = $templateData['OFFERS_INFO']["CURRENT_OFFER"] ?? $arResult['ID'] ;
 
+foreach ($arBlockOrder as $key => &$value) {
+    $result[] = $value; // Копируем текущий элемент в новый массив
+    if ($value === 'delivery') {
+        $result[] = 'text'; // Добавляем новый элемент сразу после найденного
+    }
+}
+$arBlockOrder = $result;
 ?>
 <?if($arResult["ID"]):?>
 	<?if ($templateData['OUT_OF_PRODUCTION']):?>
@@ -839,6 +846,10 @@ $currentProductId = $templateData['OFFERS_INFO']["CURRENT_OFFER"] ?? $arResult['
 						<?$APPLICATION->ShowViewContent('PRODUCT_ADDITIONAL_GALLERY_INFO')?>
 					<?endif;?>
 				<?//props?>
+                <?elseif($code === 'text'):?>
+                    <div class="ordered-block <?=$code?>">
+                        <?$APPLICATION->ShowViewContent('SMALL_TEXT')?>
+                    </div>
 				<?elseif($code == 'char' && $bShowPropsTab):?>
 					<div class="ordered-block <?=$code?>">
 						<div class="ordered-block__title option-font-bold font_lg">

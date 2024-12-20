@@ -449,6 +449,7 @@ $parentsId[] = $arResult["VARIABLES"]["SECTION_ID"];
             $customSections = array_merge(SECTION_TYPE_1, SECTION_TYPE_2, SECTION_TYPE_3, SECTION_TYPE_4);
             ?>
             <?php $customClass = (array_intersect($parentsId, $customSections)) ? '_custom' : ''; ?>
+
             <? $APPLICATION->IncludeComponent(
                 "bitrix:catalog.section",
                 $template . $customClass,
@@ -591,6 +592,12 @@ $parentsId[] = $arResult["VARIABLES"]["SECTION_ID"];
                     "COMPATIBLE_MODE" => "Y",
                 ), $component, array("HIDE_ICONS" => $isAjax)
             ); ?>
+
+            <p class="font_sxs" style="color: #999; margin-top: 30px">
+                Расчёты осуществляются в белорусских рублях. Сумма в иностранной валюте (после знака ≈)
+                указана как эквивалент для определения стоимости (цены) в белорусских рублях по курсу НБРБ или
+                определённому рекламодателем (заказчиком).
+            </p>
 
             <!--noindex-->
             <script class="smart-filter-filter" data-skip-moving="true">
