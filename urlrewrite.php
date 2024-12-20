@@ -8,6 +8,14 @@ $arUrlRewrite=array (
     'PATH' => '/bitrix/services/ymarket/index.php',
     'SORT' => 100,
   ),
+  28 => 
+  array (
+    'CONDITION' => '#^/catalog/(.+?)/filter/(.+?)/apply/\\??(.*)#',
+    'RULE' => 'SECTION_CODE_PATH=$1&SMART_FILTER_PATH=$2&$3',
+    'ID' => 'bitrix:catalog.smart.filter',
+    'PATH' => '/include/mainpage/components/custom_filter/filter.php',
+    'SORT' => 100,
+  ),
   4 => 
   array (
     'CONDITION' => '#^/personal/history-of-orders/#',
@@ -160,12 +168,20 @@ $arUrlRewrite=array (
     'PATH' => '/personal/index.php',
     'SORT' => 100,
   ),
-  27 => 
+  29 => 
   array (
     'CONDITION' => '#^/catalog/#',
     'RULE' => '',
     'ID' => 'bitrix:catalog',
     'PATH' => '/catalog/index.php',
+    'SORT' => 100,
+  ),
+  30 => 
+  array (
+    'CONDITION' => '#^/blog1/#',
+    'RULE' => '',
+    'ID' => 'bitrix:news',
+    'PATH' => '/blog/index.php',
     'SORT' => 100,
   ),
   1 => 
@@ -174,14 +190,6 @@ $arUrlRewrite=array (
     'RULE' => '',
     'ID' => NULL,
     'PATH' => '/bitrix/services/rest/index.php',
-    'SORT' => 100,
-  ),
-  7 => 
-  array (
-    'CONDITION' => '#^/blog/#',
-    'RULE' => '',
-    'ID' => 'bitrix:news',
-    'PATH' => '/blog/index.php',
     'SORT' => 100,
   ),
   8 => 

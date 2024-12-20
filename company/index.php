@@ -1,6 +1,7 @@
 <?
 require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
-$APPLICATION->SetTitle("О компании");
+$APPLICATION->SetPageProperty("description", "О проекте bike.by");
+$APPLICATION->SetTitle("О проекте1");
 ?><p>
 	 Аспро: Максимум&nbsp;— интернет-магазин полезных вещей для себя, дома, офиса и дачи. Здесь вы найдете товары под свои предпочтения: от аудиотехники и одежды до строительных материалов и велосипедов.
 </p>
