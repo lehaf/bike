@@ -41,7 +41,7 @@ data-slide-class-list="<?= $arOptions['GALLERY_SETTINGS']['MAIN']['SLIDE_CLASS_L
                         </a>
                     <?}else{?>
                         <span class="detail-gallery-big__link <?=$arOptions['CONFIG']['IS_MAGNIFIER'] ? 'line_link' : ''?>" >
-                            <img class="detail-gallery-big__picture one rounded3 " src="<?=$arImage["SRC"]?>" alt="<?=$alt;?>" title="<?=$title;?>" />
+                            <img class="detail-gallery-big__picture one rounded3 " src="<?=SITE_TEMPLATE_PATH?>/images/empty_img_element.png" alt="<?=$alt;?>" title="<?=$title;?>" />
                         </span>
                     <?}?>
                 </div>

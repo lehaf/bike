@@ -2033,6 +2033,10 @@ input[type="file"] {
         padding: 6px 20px 5px;
     }
 
+    .custom-select--multiple.select-model.is-active .choices__inner {
+        padding-left: 20px;
+    }
+
     .form-group-custom-select .choices__inner {
         padding: 6px 45px 5px 20px;
     }
@@ -2042,7 +2046,7 @@ input[type="file"] {
     }
 }
 
-@media (max-width: 1370px) {
+@media (max-width: 1270px) {
     .flex-row {
         flex-direction: column;
     }
@@ -2310,11 +2314,12 @@ input[type="file"] {
 }
 
 .form-row__col--price .form-row__col{
-    width: auto;
+    width: 40%;
     flex-grow: 1;
 }
 
 .form-row__col--price .form-row__col:last-child{
+    width: 18%;
     max-width: 109px;
     margin-left: 10px;
 }
@@ -2377,6 +2382,10 @@ input[type="file"] {
     height: 38px;
     top: 1px;
     left: 1px;
+    padding-left: 35px;
+}
+
+.custom-select--multiple.select-model .choices__inner {
     padding-left: 35px;
 }
 

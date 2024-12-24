@@ -947,9 +947,8 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']) + $offerPropCount;
                                                                     <?php endif; ?>
                                                                 </div>
                                                             </div>
-                                                            <?php if (!empty($arResult['PRICES_CUST']['CONVERT'])): ?>
+                                                            <?php if (!empty($arResult['PRICES_CUST']['CONVERT']) && empty($arResult['PROPERTIES']['contract_price']['VALUE'])): ?>
                                                                 <?php $currencyClasses = (in_array($arResult['PARENT_SECTION'], SECTION_TYPE_4)) ? 'price-currency--left' : '' ?>
-
                                                                 <div class="price-currency <?= $currencyClasses ?>">
                                                                     <?php foreach ($arResult['PRICES_CUST']['CONVERT'] as $price): ?>
                                                                         <div class="price-currency__i">
@@ -1073,10 +1072,10 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']) + $offerPropCount;
                     </div>
 
                     <? //dop text?>
-<!--                    --><?// $path = SITE_DIR . "include/element_detail_text.php" ?>
-<!--                    <div class="price_txt muted font_sxs--><?php //= ((CMax::checkContentFile($path) ? ' filed' : '')); ?><!--">-->
-<!--                        --><?// $APPLICATION->IncludeFile($path, array(), array("MODE" => "html", "NAME" => GetMessage('CT_BCE_CATALOG_DOP_DESCR'))); ?>
-<!--                    </div>-->
+                    <? $path = SITE_DIR . "include/element_detail_text.php" ?>
+                    <div class="price_txt muted font_sxs<?= ((CMax::checkContentFile($path) ? ' filed' : '')); ?>">
+                        <? $APPLICATION->IncludeFile($path, array(), array("MODE" => "html", "NAME" => GetMessage('CT_BCE_CATALOG_DOP_DESCR'))); ?>
+                    </div>
                 </div>
             </div>
 
@@ -1218,9 +1217,9 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']) + $offerPropCount;
     <? $this->EndViewTarget(); ?>
 <? endif; ?>
 
-    <? $this->SetViewTarget('SMALL_TEXT'); ?>
-    <? $APPLICATION->IncludeFile(SITE_DIR . "include/element_detail_text.php", array(), array("MODE" => "html", "NAME" => GetMessage('CT_BCE_CATALOG_DOP_DESCR'))); ?>
-    <? $this->EndViewTarget(); ?>
+<!--    --><?// $this->SetViewTarget('SMALL_TEXT'); ?>
+<!--    --><?// $APPLICATION->IncludeFile(SITE_DIR . "include/element_detail_text.php", array(), array("MODE" => "html", "NAME" => GetMessage('CT_BCE_CATALOG_DOP_DESCR'))); ?>
+<!--    --><?// $this->EndViewTarget(); ?>
 
 <? //additional gallery?>
 <? if ($arResult['ADDITIONAL_GALLERY']): ?>

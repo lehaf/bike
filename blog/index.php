@@ -23,7 +23,7 @@ $APPLICATION->SetTitle("Новости и анонсы");
 		"SORT_ORDER2" => "DESC",
 		"CHECK_DATES" => "Y",
 		"SEF_MODE" => "Y",
-		"SEF_FOLDER" => "/blog1/",
+		"SEF_FOLDER" => "/blog/",
 		"AJAX_MODE" => "N",
 		"AJAX_OPTION_JUMP" => "N",
 		"AJAX_OPTION_STYLE" => "Y",
