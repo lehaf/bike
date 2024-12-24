@@ -242,6 +242,12 @@ body header#header div.header-v27.new-header .logo_and_menu-row .wrap_icon > *:h
 body .mega-menu table .dropdown-menu {
   top: 100%;
 }
+.header__main-part .wrap_icon .search {
+  opacity: 1;
+}
+.header__main-part .wrap_icon .search svg use {
+  fill: #ffffff !important;
+}
 
 
 @media (max-width: 1293px) {

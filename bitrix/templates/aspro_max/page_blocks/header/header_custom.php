@@ -185,6 +185,13 @@ $dopClass = 'wides_menu smalls big_header';
                                        </div>
                                    </div>
                                </div>
+                               <div class="line-block__item no-shrinked">
+                                   <div class="wrap_icon">
+                                       <button class="top-btn inline-search-show">
+                                           <?=CMax::showSpriteIconSvg(SITE_TEMPLATE_PATH."/images/svg/header_icons_srite.svg#search", "svg-inline-search search", ['WIDTH' => 22,'HEIGHT' => 22]);?>
+                                       </button>
+                                   </div>
+                               </div>
                            </div>
                        </div>
                    </div>
