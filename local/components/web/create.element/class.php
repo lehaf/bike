@@ -93,6 +93,15 @@ class CreateElement extends \CBitrixComponent
         $newElement->set("SEARCHABLE_CONTENT", strtoupper($data["NAME"]["VALUE"]));
         $newElement->set("CREATED_BY", $data["USER"]["VALUE"]);
 
+        $userBrand = \Bitrix\Main\UserTable::getList([
+            'select' => ['UF_BRAND_ID'],
+            'filter' => ['=ID' => \Bitrix\Main\Engine\CurrentUser::get()->getId()],
+        ])->fetch();
+
+        if($userBrand) {
+            $newElement->set("BRAND", $userBrand['UF_BRAND_ID']);
+        }
+
         $arTransParams = array(
             "max_len" => 250,
             "change_case" => 'L',

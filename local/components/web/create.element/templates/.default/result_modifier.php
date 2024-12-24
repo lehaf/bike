@@ -1,6 +1,5 @@
 <?php if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) die(); ?>
 <?php
-
 $productsSections = [TIRES_SECTION_ID, PRODUCTS_SECTION_ID, SERVICES_SECTION_ID, GARAGES_SECTION_ID];
 $sections = [TRANSPORT_SECTION_ID, PARTS_SECTION_ID, $productsSections];
 $arResult["CUSTOM_SECTIONS"] = [];
@@ -8,7 +7,6 @@ if (!empty($sections)) {
     foreach ($sections as $key => $section) {
         if (is_array($section)) {
             $rsSection = getSections([
-                '=IBLOCK_ID' => CATALOG_IBLOCK_ID,
                 '=ID' => $section,
             ]);
             if (!empty($rsSection)) {
@@ -18,7 +16,6 @@ if (!empty($sections)) {
             }
         } else {
             $rsSection = getSections([
-                '=IBLOCK_ID' => CATALOG_IBLOCK_ID,
                 '=IBLOCK_SECTION_ID' => $section,
             ]);
 
@@ -87,7 +84,6 @@ if(empty($arResult['ELEMENT_FIELDS'])) {
 }
 
 if(empty($arResult['ELEMENT_COUNTRY'])) {
-//    pr($arResult['COUNTRIES']);
     $userLocation = \Bitrix\Main\UserTable::getList([
         'select' => ['UF_COUNTRY_ID', 'UF_REGION_ID', 'UF_CITY_ID'],
         'filter' => ['ID' => \Bitrix\Main\Engine\CurrentUser::get()->getId()],
