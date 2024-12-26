@@ -324,7 +324,7 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.forEach(element => {
             let statusBlock = element.querySelector('.advert-item__status__content');
             element.querySelector('.advert-btn-pause, .advert-btn-post').remove();
-            let upBtn = element.querySelector('.advert-btn-up') || element.querySelector('.advert-btn-update');
+            let upBtn = element.querySelector('.advert-btn-up') || element.querySelector('.btn-inner');
             let newBtn = document.createElement('div');
             const updateStatusAndButton = (statusHtml, btnHtml, isChecking) => {
                 if (statusBlock) {
