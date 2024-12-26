@@ -22,4 +22,9 @@ $arTemplateParameters = array(
 		"TYPE" => "CHECKBOX",
 		"DEFAULT" => "Y",
 	),
+    "UP_TIME" => Array(
+        "NAME" => "Следующее обновление объявления через (в часах)",
+        "TYPE" => "STRING",
+        "DEFAULT" => "48",
+    ),
 );

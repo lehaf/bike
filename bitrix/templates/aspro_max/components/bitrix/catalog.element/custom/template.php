@@ -2,7 +2,6 @@
 <? $this->setFrameMode(true); ?>
 <? use \Bitrix\Main\Localization\Loc; ?>
 
-
 <?php $section ?>
     <div class="basket_props_block" id="bx_basket_div_<?= $arResult["ID"]; ?>" style="display: none;">
         <? if (!empty($arResult['PRODUCT_PROPERTIES_FILL'])) {
@@ -947,9 +946,8 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']) + $offerPropCount;
                                                                     <?php endif; ?>
                                                                 </div>
                                                             </div>
-                                                            <?php if (!empty($arResult['PRICES_CUST']['CONVERT'])): ?>
+                                                            <?php if (!empty($arResult['PRICES_CUST']['CONVERT']) && empty($arResult['PROPERTIES']['contract_price']['VALUE'])): ?>
                                                                 <?php $currencyClasses = (in_array($arResult['PARENT_SECTION'], SECTION_TYPE_4)) ? 'price-currency--left' : '' ?>
-
                                                                 <div class="price-currency <?= $currencyClasses ?>">
                                                                     <?php foreach ($arResult['PRICES_CUST']['CONVERT'] as $price): ?>
                                                                         <div class="price-currency__i">

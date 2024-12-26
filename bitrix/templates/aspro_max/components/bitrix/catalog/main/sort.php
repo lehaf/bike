@@ -57,8 +57,8 @@ $bShowSortInFilter = ($arParams['SHOW_SORT_IN_FILTER'] != 'N');
 			$arAvailableSort = array();
 			$arSorts = $arParams["SORT_BUTTONS"];
 
-            if(in_array("DATE_CREATE", $arSorts)){
-                $arAvailableSort["DATE_CREATE"] = array("DATE_CREATE", "desc");
+            if(in_array("PROPERTY_LAST_RISE", $arSorts)){
+                $arAvailableSort["PROPERTY_LAST_RISE"] = array("PROPERTY_LAST_RISE", "desc");
             }
             if(in_array("PRICE", $arSorts)){
                 $arSortPrices = $arParams["SORT_PRICES"];
@@ -105,7 +105,7 @@ $bShowSortInFilter = ($arParams['SHOW_SORT_IN_FILTER'] != 'N');
 				$arAvailableSort["CATALOG_AVAILABLE"] = array("QUANTITY", "desc");
 			}			
 
-			$defaulSortButtons = array("SORT","POPULARITY", "NAME", "PRICE", "QUANTITY", "CUSTOM", "DATE_CREATE");
+			$defaulSortButtons = array("SORT","POPULARITY", "NAME", "PRICE", "QUANTITY", "CUSTOM", "PROPERTY_LAST_RISE");
 			$propsInSort = array();
 			$propsInSortName = array();
 			foreach($arSorts as $sort_prop){
@@ -149,7 +149,7 @@ $bShowSortInFilter = ($arParams['SHOW_SORT_IN_FILTER'] != 'N');
 				if(!array_key_exists($sortElementField, $arAvailableSort) || $arAvailableSort[$sortElementField][0] === 'CUSTOM'  ){
 					$customSort = true;
 				}				
-			} 			
+			}
 			
 			$sort_order=$arAvailableSort[$sort][1];
 			if((array_key_exists("order", $_REQUEST) && in_array(ToLower($_REQUEST["order"]), Array("asc", "desc"))) || (array_key_exists("order", $_REQUEST) && in_array(ToLower($_REQUEST["order"]), Array("asc", "desc")) ) || $arParams["ELEMENT_SORT_ORDER"]){
@@ -178,7 +178,7 @@ $bShowSortInFilter = ($arParams['SHOW_SORT_IN_FILTER'] != 'N');
 									<?=\Bitrix\Main\Localization\Loc::getMessage('SECT_SORT_'.($customSort ? 'CUSTOM' : $sort)).$sortOrderMess?>
 								<?endif;?>
 							<?else:?>
-								<?=\Bitrix\Main\Localization\Loc::getMessage('NOTHING_SELECTED');?>
+								<?=\BitriPROPERTY_LAST_RISEx\Main\Localization\Loc::getMessage('NOTHING_SELECTED');?>
 							<?endif;?>
 						</span>
 						<?=CMax::showIconSvg("down", SITE_TEMPLATE_PATH.'/images/svg/trianglearrow_down.svg', '', '', true, false);?>

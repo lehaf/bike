@@ -5,9 +5,7 @@ $(document).ready(function () {
     setNewHeader();
   }, 10);
 
-  console.log('hello');
   $('.prices_block-btn').on('click', function(e){
-    console.log($(this));
     $.ajax({
       url: '/ajax/form_custom.php',
       data: {type: $(this).attr('data-event'), elementId:$(this).attr('data-el')},

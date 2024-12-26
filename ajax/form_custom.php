@@ -19,7 +19,7 @@ if (\Bitrix\Main\Loader::includeModule("aspro.max")) {
 if($type === 'call-form') {
     $entity = \Bitrix\Iblock\Iblock::wakeUp(CATALOG_IBLOCK_ID)->getEntityDataClass();
     $properties = $entity::getList([
-        'select' => ['phone_' => 'phone.VALUE', 'contact_person_' => 'contact_person.VALUE'],
+        'select' => ['phone_' => 'phone.VALUE', 'contact_person_' => 'contact_person.VALUE', 'SHOW_PHONE_' => 'SHOW_PHONE.IBLOCK_GENERIC_VALUE'],
         'filter' => ['ID' => $request['elementId']]
     ])->fetchAll();
     $name = "";
@@ -29,6 +29,8 @@ if($type === 'call-form') {
             $name = $property['contact_person_'];
             $phones[] = $property['phone_'];
         }
+        $element = new CIBlockElement();
+        $result = $element->SetPropertyValuesEx($request['elementId'], false, ['SHOW_PHONE' => ++$properties[0]['SHOW_PHONE_']]);
     }
     include('call_form_custom.php');
 } elseif ($type === 'claim-form') {
