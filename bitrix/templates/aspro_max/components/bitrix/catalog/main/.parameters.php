@@ -273,7 +273,7 @@ $arTemplateParametersParts[] = array_merge($arPageBlocksParams,array(
 		"SORT" => 100,
 		"NAME" => GetMessage("SORT_BUTTONS"),
 		"TYPE" => "LIST",
-		"VALUES" => array("SORT"=>GetMessage("SORT_BUTTONS_SORT"), "DATE_CREATE" => GetMessage("SORT_BUTTONS_DATE_CREATE") ,"POPULARITY"=>GetMessage("SORT_BUTTONS_POPULARITY"), "NAME"=>GetMessage("SORT_BUTTONS_NAME"), "PRICE"=>GetMessage("SORT_BUTTONS_PRICE"), "QUANTITY"=>GetMessage("SORT_BUTTONS_QUANTITY"), "CUSTOM"=>GetMessage("SORT_BUTTONS_CUSTOM")) + (array)$arPropertySort,
+		"VALUES" => array("SORT"=>GetMessage("SORT_BUTTONS_SORT"), "PROPERTY_LAST_RISE" => GetMessage("SORT_BUTTONS_DATE_CREATE") ,"POPULARITY"=>GetMessage("SORT_BUTTONS_POPULARITY"), "NAME"=>GetMessage("SORT_BUTTONS_NAME"), "PRICE"=>GetMessage("SORT_BUTTONS_PRICE"), "QUANTITY"=>GetMessage("SORT_BUTTONS_QUANTITY"), "CUSTOM"=>GetMessage("SORT_BUTTONS_CUSTOM")) + (array)$arPropertySort,
 		"DEFAULT" => array("POPULARITY", "NAME", "PRICE"),
 		"PARENT" => "LIST_SETTINGS",
 		"TYPE" => "LIST",

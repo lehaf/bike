@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
         productsTabs();
         updateCategorySelect();
         updateProducts();
+        upperAds();
     }
 
     function setTabs() {
@@ -236,6 +237,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 ajaxUpdateProductsMenu();
             }
 
+            if(action === 'up') {
+                elementsBlock.forEach(element => {
+                    let upBtn = element.querySelector('.advert-btn-up');
+                    let upBtnsContainer = element.querySelector('.advert-btn') || element.querySelector('.product-item-btn');
+                    let upDateText = element.querySelector('.advert-data__day');
+                    let upDateTextContainer = element.querySelector('.advert-data') || element.querySelector('.product-item-text');
+                    if(upBtn) upBtn.remove();
+                    if(upDateText) upDateText.remove();
+
+                    let type = 'default';
+                    if(upBtnsContainer.classList.contains('product-item-btn')) {
+                        type = 'product';
+                    }
+                    upBtnsContainer.insertAdjacentHTML('afterbegin', activeUpperAdsTemplate(type));
+                    upDateTextContainer.insertAdjacentHTML('beforeend', upperDaysTemplate('Поднято: сегодня'));
+                })
+            }
+
         }).catch((error) => console.log(error));
     }
 
@@ -305,7 +324,7 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.forEach(element => {
             let statusBlock = element.querySelector('.advert-item__status__content');
             element.querySelector('.advert-btn-pause, .advert-btn-post').remove();
-            let upBtn = element.querySelector('.advert-btn-up');
+            let upBtn = element.querySelector('.advert-btn-up') || element.querySelector('.advert-btn-update');
             let newBtn = document.createElement('div');
             const updateStatusAndButton = (statusHtml, btnHtml, isChecking) => {
                 if (statusBlock) {
@@ -504,5 +523,81 @@ document.addEventListener('DOMContentLoaded', () => {
 
             }
         }
+    }
+
+    function upperAds() {
+        let upperBtns = document.querySelectorAll('.advert-btn-up');
+        upperBtns.forEach(upBtn => {
+            upBtn.addEventListener('click', (event) => {
+                event.preventDefault();
+                ajaxAction('up', [upBtn]);
+
+            })
+        })
+    }
+
+    function activeUpperAdsTemplate(type = 'default') {
+        if (type === 'product') {
+            return `
+            <div class="btn-inner">
+                                            <div class="btn-info-update">
+                                                <svg width="14" height="12" viewBox="0 0 14 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M9.67075 9.71069H3.94756C3.63572 9.71069 3.37891 9.86765 3.37891 10.0351V10.9036C3.37891 11.0814 3.65406 11.2279 3.94756 11.2279H9.67075C9.98259 11.2279 10.2394 11.071 10.2394 10.9036V10.0351C10.2394 9.86765 9.98259 9.71069 9.67075 9.71069Z" fill="#37C770"/>
+                                                    <path d="M13.5221 4.93913L7.26697 0.889689C7.04684 0.732734 6.58825 0.732734 6.34979 0.889689L0.0946302 4.93913C-0.125493 5.09609 0.057943 5.35768 0.443158 5.35768H3.37813V8.07824C3.37813 8.25612 3.65328 8.40261 3.94678 8.40261H9.66997C9.98182 8.40261 10.2386 8.24566 10.2386 8.07824V5.35768H13.1736C13.5772 5.35768 13.7606 5.09609 13.5221 4.93913Z" fill="#37C770"/>
+                                                </svg>
+                                                Через 48 ч.
+                                            </div>
+                                            <a href="#" class="advert-btn-update">
+                                                <svg width="14" height="13" viewBox="0 0 14 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M9.30674 0.36134C5.93024 -0.791579 2.20532 0.90639 1.00384 4.14627C0.53031 5.42399 0.513644 6.78018 0.906756 8.0301L1.56696 6.25009L1.57932 6.25412C1.57614 5.64767 1.67788 5.03702 1.89543 4.45082C2.92188 1.68253 6.10436 0.231875 8.98958 1.2169C11.8746 2.20148 13.3867 5.25478 12.36 8.02265C11.3737 10.6824 8.36417 12.1363 5.56634 11.3491L5.87156 10.5263L3.43124 11.0807L4.95422 13L5.24887 12.2057C8.53855 13.16 12.0916 11.4576 13.2524 8.32777C14.4537 5.08744 12.6845 1.51394 9.30682 0.361494L9.30674 0.36134Z" fill="white"/>
+                                                </svg>
+                                                Обновить за 7,80 р.
+                                            </a>
+                                        </div>
+            `
+        } else {
+            return `<div class="btn-info-update">
+                                <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M7.5 15C11.6294 15 15 11.6294 15 7.5C15 3.37059 11.6294 0 7.5 0C3.37059 0 0 3.37059 0 7.5C0 11.6294 3.37059 15 7.5 15ZM7.5 0.705882C11.2412 0.705882 14.2941 3.75879 14.2941 7.5C14.2941 11.2412 11.2411 14.2941 7.5 14.2941C3.75892 14.2941 0.705882 11.2412 0.705882 7.5C0.705882 3.75882 3.75892 0.705882 7.5 0.705882Z" fill="#8F8F8F"/>
+                                    <path d="M7.81626 7.74717L7.85159 7.58825V2.55884H7.14577V7.50001L5.32812 11.1353L5.96342 11.4529L7.81626 7.74717Z" fill="#8F8F8F"/>
+                                </svg>
+                                Следующее поднятие через 48 ч.
+                            </div>
+                            <div class="btn-info-update btn-info-update--table">
+                                <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M7.5 15C11.6294 15 15 11.6294 15 7.5C15 3.37059 11.6294 0 7.5 0C3.37059 0 0 3.37059 0 7.5C0 11.6294 3.37059 15 7.5 15ZM7.5 0.705882C11.2412 0.705882 14.2941 3.75879 14.2941 7.5C14.2941 11.2412 11.2411 14.2941 7.5 14.2941C3.75892 14.2941 0.705882 11.2412 0.705882 7.5C0.705882 3.75882 3.75892 0.705882 7.5 0.705882Z" fill="#8F8F8F"/>
+                                    <path d="M7.81626 7.74717L7.85159 7.58825V2.55884H7.14577V7.50001L5.32812 11.1353L5.96342 11.4529L7.81626 7.74717Z" fill="#8F8F8F"/>
+                                </svg>
+                                Поднятие через 48 ч.
+                            </div>
+                            <div class="btn-info-mobile">
+                                <svg width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M10.3583 9.71069H4.63506C4.32322 9.71069 4.06641 9.86765 4.06641 10.0351V10.9036C4.06641 11.0814 4.34156 11.2279 4.63506 11.2279H10.3583C10.6701 11.2279 10.9269 11.071 10.9269 10.9036V10.0351C10.9269 9.86765 10.6701 9.71069 10.3583 9.71069Z" fill="#37C770"/>
+                                    <path d="M14.2096 4.93926L7.95447 0.889811C7.73434 0.732856 7.27575 0.732856 7.03729 0.889811L0.78213 4.93926C0.562007 5.09621 0.745443 5.3578 1.13066 5.3578H4.06563V8.07836C4.06563 8.25624 4.34078 8.40274 4.63428 8.40274H10.3575C10.6693 8.40274 10.9261 8.24578 10.9261 8.07836V5.3578H13.8611C14.2647 5.3578 14.4481 5.09621 14.2096 4.93926Z" fill="#37C770"/>
+                                </svg>
+                                Через 48 ч.
+                            </div>
+                            <a href="#" class="advert-btn-update">
+                                <svg width="15" height="16" viewBox="0 0 15 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M10.0129 0.916931C6.11692 -0.41336 1.81894 1.54583 0.432621 5.28416C-0.113765 6.75845 -0.132995 8.32329 0.320596 9.7655L1.08237 7.71164L1.09663 7.71629C1.09297 7.01654 1.21035 6.31194 1.46137 5.63556C2.64573 2.44138 6.31783 0.767548 9.64693 1.90411C12.9758 3.04017 14.7205 6.5632 13.5359 9.7569C12.3978 12.8258 8.9253 14.5034 5.69704 13.5951L6.04921 12.6457L3.23346 13.2854L4.99075 15.5L5.33073 14.5835C9.12651 15.6846 13.2262 13.7204 14.5656 10.109C15.9517 6.37012 13.9103 2.24685 10.013 0.917109L10.0129 0.916931Z" fill="white"/>
+                                </svg>
+                                Обновить за 7,80 р.
+                            </a>`
+        }
+    }
+
+    function upperDaysTemplate(text) {
+        return `
+        <div class="advert-data__day">
+                    <svg width="14" height="12" viewBox="0 0 14 12" fill="none"
+                         xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9.67075 9.71069H3.94756C3.63572 9.71069 3.37891 9.86765 3.37891 10.0351V10.9036C3.37891 11.0814 3.65406 11.2279 3.94756 11.2279H9.67075C9.98259 11.2279 10.2394 11.071 10.2394 10.9036V10.0351C10.2394 9.86765 9.98259 9.71069 9.67075 9.71069Z"
+                              fill="#37C770"/>
+                        <path d="M13.5221 4.93926L7.26697 0.889811C7.04684 0.732856 6.58825 0.732856 6.34979 0.889811L0.0946302 4.93926C-0.125493 5.09621 0.057943 5.3578 0.443158 5.3578H3.37813V8.07836C3.37813 8.25624 3.65328 8.40274 3.94678 8.40274H9.66997C9.98181 8.40274 10.2386 8.24578 10.2386 8.07836V5.3578H13.1736C13.5772 5.3578 13.7606 5.09621 13.5221 4.93926Z"
+                              fill="#37C770"/>
+                    </svg>
+                    ${text}
+                </div>
+        `
     }
 })

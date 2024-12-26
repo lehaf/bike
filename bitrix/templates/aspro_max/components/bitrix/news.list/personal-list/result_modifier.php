@@ -100,6 +100,52 @@ if (!empty($arResult['ITEMS'])) {
 
         //получение даты добавления в виде "7 сентября"
         $item['FORMAT_ACTIVE_FROM'] = convertDate($item['ACTIVE_FROM'] ?? $item['DATE_CREATE']);
+
+        //количество дней в продаже
+        $startDate = new DateTime($item['DATE_CREATE']);
+        $currentDate = new DateTime(); // по умолчанию берет текущую дату и время
+
+        $interval = $startDate->diff($currentDate);
+        $item['DIFF_DAYS'] = number_format((int)$interval->days, 0, '.', ' ');
+
+        //количество в избранном
+        $entityFav = \Bitrix\Iblock\Iblock::wakeUp(32)->getEntityDataClass();
+        $resultFav = $entityFav::getList([
+            'select' => ['LINK_ELEMENTS'],
+            'filter' => ['LINK_ELEMENTS.IBLOCK_GENERIC_VALUE' => $item['ID']],
+        ])->fetchAll();
+       $item['FAVORIT_COUNT'] = count($resultFav);
+
+        //доступно ли поднятие вверх
+        $item['UP_TIME_LEFT'] = false;
+        $item['UP_DAYS'] = false;
+        if(!empty($item['PROPERTIES']['LAST_RISE']['VALUE'])) {
+            $currentDate = new DateTime();
+            $lastRiseDate = new DateTime($item['PROPERTIES']['LAST_RISE']['VALUE']);
+
+            $interval = $currentDate->diff($lastRiseDate);
+            $elapsedHours = ($interval->days * 24) + $interval->h;
+
+            if($elapsedHours < (int)$arParams['UP_TIME']) {
+                $item['UP_TIME_LEFT'] = $arParams['UP_TIME'] - $elapsedHours;
+            }
+
+            $currentDay = $currentDate->setTime(0,0);
+            $lastRiseDay = $lastRiseDate->setTime(0,0);
+            $intervalDays = $currentDay->diff($lastRiseDate);
+            $daysDiff = $intervalDays->days;
+
+            if ($interval->invert === 1) { // Если дата последнего поднятия раньше текущей даты
+                if ($daysDiff === 0) {
+                    $item['UP_DAYS'] = "сегодня";
+                } elseif ($daysDiff === 1) {
+                    $item['UP_DAYS'] = "вчера";
+                } else {
+                    $item['UP_DAYS'] = $daysDiff . ' ' . getPluralForm($daysDiff, ['день', 'дня', 'дней']) . ' '  ."назад";
+                }
+            }
+        }
+
     }
 
     $arResult['PARENT_SECTION_ID'] = Bitrix\Iblock\SectionTable::getList([
@@ -114,7 +160,6 @@ if (!empty($arResult['ITEMS'])) {
 
         $arResult['SECTION_TREE'] = $sectionTree[PRODUCTS_SECTION_ID]['CHILDREN'];
     }
-
 }
 
 function buildSectionTreeFromItems(array $items, int $iblockId): array

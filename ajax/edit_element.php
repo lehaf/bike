@@ -17,8 +17,6 @@ if (isset($_POST['action']) && isset($_POST['elementsId'])) {
                 $imagesPathIds[] = $photo->getValue();
             }
 
-            \Bitrix\Main\Diag\Debug::dumpToFile($imagesPathIds);
-
             if (!empty($imagesPathIds)) {
                 foreach ($imagesPathIds as $id) {
                     $result[] = \CFile::GetPath($id);
@@ -116,6 +114,19 @@ if (isset($_POST['action']) && isset($_POST['elementsId'])) {
                         'ACTIVE_FROM' => $active ? date('d.m.Y H:i:s') : null,
                     ]
                 );
+            }
+            break;
+        case 'up':
+            if (!empty($_POST['elementsId'])) {
+                global $DB;
+                $dateCreate = date('Y-m-d H:i:s');
+                $elementsId = implode(",", $_POST['elementsId']);
+                foreach ($_POST['elementsId'] as $elementId) {
+                    $element = new \CIBlockElement;
+                    $updateRes = $element->SetPropertyValuesEx($elementId, false, ['LAST_RISE' => $dateCreate]);
+                }
+
+                $result = $errors ?? 'success';
             }
             break;
     }

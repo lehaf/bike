@@ -1,8 +1,8 @@
 <?
 	$MESS["SECT_ORDER_desc"] = " (убывание)";
 	$MESS["SECT_ORDER_asc"] = " (возрастание)";
-    $MESS["SECT_ORDER_DATE_CREATE_desc"] = " (новые объявления)";
-    $MESS["SECT_ORDER_DATE_CREATE_asc"] = " (старые объявления)";
+    $MESS["SECT_ORDER_PROPERTY_LAST_RISE_desc"] = " (новые объявления)";
+    $MESS["SECT_ORDER_PROPERTY_LAST_RISE_asc"] = " (старые объявления)";
     $MESS["SECT_ORDER_PRICE_desc"] = " (дорогие)";
     $MESS["SECT_ORDER_PRICE_asc"] = " (дешевые)";
 
@@ -39,5 +39,5 @@
 
 	$MESS["SORT_TITLE_PROPETY"] = "#CODE#";
 	$MESS["SECT_SORT_CUSTOM"] = "По умолчанию";
-    $MESS["SECT_SORT_DATE_CREATE"] = "Дата";
+    $MESS["SECT_SORT_PROPERTY_LAST_RISE"] = "Дата";
 ?>

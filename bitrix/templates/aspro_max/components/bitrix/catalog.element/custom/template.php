@@ -2,7 +2,6 @@
 <? $this->setFrameMode(true); ?>
 <? use \Bitrix\Main\Localization\Loc; ?>
 
-
 <?php $section ?>
     <div class="basket_props_block" id="bx_basket_div_<?= $arResult["ID"]; ?>" style="display: none;">
         <? if (!empty($arResult['PRODUCT_PROPERTIES_FILL'])) {

@@ -413,6 +413,10 @@
     background: linear-gradient(104deg, #ff8030 0%, #ff3130 51.11%, #f151f3 100%);
 }
 
+.advert-btn-up:hover {
+    color: #ffffff;
+}
+
 .advert-btn-up svg{
     margin-left: 8px;
 }
@@ -536,6 +540,7 @@
 
 .advert-btn-update:hover{
     background: #08b74e;
+    color: #ffffff;
 }
 
 .advert-btn-pause{
@@ -556,6 +561,7 @@
 .advert-btn-pause:hover{
     background: #ffebeb;
     border: 1px solid #ffebeb;
+    color: #ed1c24;
 }
 
 .advert-status--published{
@@ -597,6 +603,10 @@
 .advert-item__info{
     display: flex;
     gap: 30px;
+}
+
+body .right_block.wide_ {
+    width: 100% !important;
 }
 
 @media (max-width: 1300px) {

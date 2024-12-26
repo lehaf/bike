@@ -160,6 +160,7 @@
                     </div>
                 </div>
                 <div class="advert-btn">
+                    <?php if(!$arItem['UP_TIME_LEFT']):?>
                     <a href="#" class="advert-btn-up">
                         Поднять <span>вверх</span>
                         <svg width="20" height="14" viewBox="0 0 20 14" fill="none"
@@ -168,6 +169,35 @@
                                   fill="white"/>
                         </svg>
                     </a>
+                    <?php else:?>
+                        <div class="btn-info-update">
+                            <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M7.5 15C11.6294 15 15 11.6294 15 7.5C15 3.37059 11.6294 0 7.5 0C3.37059 0 0 3.37059 0 7.5C0 11.6294 3.37059 15 7.5 15ZM7.5 0.705882C11.2412 0.705882 14.2941 3.75879 14.2941 7.5C14.2941 11.2412 11.2411 14.2941 7.5 14.2941C3.75892 14.2941 0.705882 11.2412 0.705882 7.5C0.705882 3.75882 3.75892 0.705882 7.5 0.705882Z" fill="#8F8F8F"/>
+                                <path d="M7.81626 7.74717L7.85159 7.58825V2.55884H7.14577V7.50001L5.32812 11.1353L5.96342 11.4529L7.81626 7.74717Z" fill="#8F8F8F"/>
+                            </svg>
+                            Следующее поднятие через <?=$arItem['UP_TIME_LEFT']?> ч.
+                        </div>
+                        <div class="btn-info-update btn-info-update--table">
+                            <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M7.5 15C11.6294 15 15 11.6294 15 7.5C15 3.37059 11.6294 0 7.5 0C3.37059 0 0 3.37059 0 7.5C0 11.6294 3.37059 15 7.5 15ZM7.5 0.705882C11.2412 0.705882 14.2941 3.75879 14.2941 7.5C14.2941 11.2412 11.2411 14.2941 7.5 14.2941C3.75892 14.2941 0.705882 11.2412 0.705882 7.5C0.705882 3.75882 3.75892 0.705882 7.5 0.705882Z" fill="#8F8F8F"/>
+                                <path d="M7.81626 7.74717L7.85159 7.58825V2.55884H7.14577V7.50001L5.32812 11.1353L5.96342 11.4529L7.81626 7.74717Z" fill="#8F8F8F"/>
+                            </svg>
+                            Поднятие через <?=$arItem['UP_TIME_LEFT']?> ч.
+                        </div>
+                        <div class="btn-info-mobile">
+                            <svg width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M10.3583 9.71069H4.63506C4.32322 9.71069 4.06641 9.86765 4.06641 10.0351V10.9036C4.06641 11.0814 4.34156 11.2279 4.63506 11.2279H10.3583C10.6701 11.2279 10.9269 11.071 10.9269 10.9036V10.0351C10.9269 9.86765 10.6701 9.71069 10.3583 9.71069Z" fill="#37C770"/>
+                                <path d="M14.2096 4.93926L7.95447 0.889811C7.73434 0.732856 7.27575 0.732856 7.03729 0.889811L0.78213 4.93926C0.562007 5.09621 0.745443 5.3578 1.13066 5.3578H4.06563V8.07836C4.06563 8.25624 4.34078 8.40274 4.63428 8.40274H10.3575C10.6693 8.40274 10.9261 8.24578 10.9261 8.07836V5.3578H13.8611C14.2647 5.3578 14.4481 5.09621 14.2096 4.93926Z" fill="#37C770"/>
+                            </svg>
+                            Через 48 ч.
+                        </div>
+                        <a href="#" class="advert-btn-update">
+                            <svg width="15" height="16" viewBox="0 0 15 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M10.0129 0.916931C6.11692 -0.41336 1.81894 1.54583 0.432621 5.28416C-0.113765 6.75845 -0.132995 8.32329 0.320596 9.7655L1.08237 7.71164L1.09663 7.71629C1.09297 7.01654 1.21035 6.31194 1.46137 5.63556C2.64573 2.44138 6.31783 0.767548 9.64693 1.90411C12.9758 3.04017 14.7205 6.5632 13.5359 9.7569C12.3978 12.8258 8.9253 14.5034 5.69704 13.5951L6.04921 12.6457L3.23346 13.2854L4.99075 15.5L5.33073 14.5835C9.12651 15.6846 13.2262 13.7204 14.5656 10.109C15.9517 6.37012 13.9103 2.24685 10.013 0.917109L10.0129 0.916931Z" fill="white"/>
+                            </svg>
+                            Обновить за 7,80 р.
+                        </a>
+                    <?php endif;?>
                     <?php if ($arItem['ACTIVE'] === 'N'): ?>
                         <a href="" class="advert-btn-post">
                             Опубликовать
@@ -198,6 +228,7 @@
                 <div class="advert-data__public">
                     Опубликовано <?= $arItem['FORMAT_ACTIVE_FROM'] ?>
                 </div>
+                <?php if($arItem['UP_DAYS']):?>
                 <div class="advert-data__day">
                     <svg width="14" height="12" viewBox="0 0 14 12" fill="none"
                          xmlns="http://www.w3.org/2000/svg">
@@ -206,8 +237,9 @@
                         <path d="M13.5221 4.93926L7.26697 0.889811C7.04684 0.732856 6.58825 0.732856 6.34979 0.889811L0.0946302 4.93926C-0.125493 5.09621 0.057943 5.3578 0.443158 5.3578H3.37813V8.07836C3.37813 8.25624 3.65328 8.40274 3.94678 8.40274H9.66997C9.98181 8.40274 10.2386 8.24578 10.2386 8.07836V5.3578H13.1736C13.5772 5.3578 13.7606 5.09621 13.5221 4.93926Z"
                               fill="#37C770"/>
                     </svg>
-                    Поднято: 4 дня назад
+                    Поднято: <?=$arItem['UP_DAYS']?>
                 </div>
+                <?php endif;?>
             </div>
             <div class="advert-stats">
                 <div class="advert-stats__title">
@@ -232,21 +264,23 @@
                     Статистика объявления
                 </div>
                 <div class="advert-stats-list">
+                    <?php $allShow = (!empty($arItem['PROPERTIES']['SHOW_ALL']['VALUE'])) ? $arItem['PROPERTIES']['SHOW_ALL']['VALUE'] : 0?>
+                    <?php $phoneShow = (!empty($arItem['PROPERTIES']['SHOW_PHONE']['VALUE'])) ? $arItem['PROPERTIES']['SHOW_PHONE']['VALUE'] : 0?>
                     <div class="advert-stats__item">
-                        <div class="advert-stats__item__num">196</div>
-                        <div class="advert-stats__item__title">просмотров объявления</div>
+                        <div class="advert-stats__item__num"><?=number_format($allShow, 0, '.', ' ')?></div>
+                        <div class="advert-stats__item__title"><?=getPluralForm($allShow, ['просмотр', 'просмотра', 'просмотров'])?> объявления</div>
                     </div>
                     <div class="advert-stats__item">
-                        <div class="advert-stats__item__num">6 000</div>
-                        <div class="advert-stats__item__title">просмотров телефона</div>
+                        <div class="advert-stats__item__num"><?=number_format($phoneShow, 0, '.', ' ')?></div>
+                        <div class="advert-stats__item__title"><?=getPluralForm($phoneShow, ['просмотр', 'просмотра', 'просмотров'])?> телефона</div>
                     </div>
                     <div class="advert-stats__item">
-                        <div class="advert-stats__item__num">6</div>
+                        <div class="advert-stats__item__num"><?=$arItem['FAVORIT_COUNT']?></div>
                         <div class="advert-stats__item__title">пользователей добавлены в закладки</div>
                     </div>
                     <div class="advert-stats__item">
-                        <div class="advert-stats__item__num"><?= $arItem['PUBLISH_DAYS'] ?></div>
-                        <div class="advert-stats__item__title"><?= getPluralForm((int)$arItem['PUBLISH_DAYS'], ['день', 'дня', 'дней']) ?>
+                        <div class="advert-stats__item__num"><?= $arItem['DIFF_DAYS'] ?></div>
+                        <div class="advert-stats__item__title"><?= getPluralForm((int)$arItem['DIFF_DAYS'], ['день', 'дня', 'дней']) ?>
                             в продаже
                         </div>
                     </div>
