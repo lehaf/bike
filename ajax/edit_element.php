@@ -45,25 +45,20 @@ if (isset($_POST['action']) && isset($_POST['elementsId'])) {
 
             if (!empty($_POST['elementsId'])) {
                 foreach ($_POST['elementsId'] as $elementId) {
-                    $iblockClass::delete($elementId);
+                    $element = new CIBlockElement;
+                    $element->Update($elementId, ['IBLOCK_SECTION_ID' => []]);
+                    $element->Delete($elementId);
                 }
             }
-
             $result = ['success' => true];
             break;
         case 'category':
             if (!empty($_POST['elementsId'])) {
                 foreach ($_POST['elementsId'] as $elementId) {
-                    \CIBlockElement::SetElementSection($elementId, $_POST['section']);
+                    $element = new CIBlockElement;
+                    $element->Update($elementId, ['IBLOCK_SECTION_ID' => $_POST['section']]);
                 }
             }
-
-            $edit = \Bitrix\Iblock\ElementTable::updateMulti(
-                $_POST['elementsId'],
-                [
-                    'IBLOCK_SECTION_ID' => $_POST['section'],
-                ]
-            );
             break;
         case 'price':
             if (!empty($_POST['elementsId']) && !empty($_POST['price'])) {
@@ -79,6 +74,7 @@ if (isset($_POST['action']) && isset($_POST['elementsId'])) {
                         \Bitrix\Catalog\PriceTable::update($existingPrice['ID'], [
                             'PRICE' => $_POST['price']
                         ]);
+                        $CACHE_MANAGER->ClearByTag('iblock_id_' . CATALOG_IBLOCK_ID);
                     }
                 }
             }
@@ -115,6 +111,7 @@ if (isset($_POST['action']) && isset($_POST['elementsId'])) {
                     ]
                 );
             }
+            $CACHE_MANAGER->ClearByTag('iblock_id_' . CATALOG_IBLOCK_ID);
             break;
         case 'up':
             if (!empty($_POST['elementsId'])) {
@@ -131,7 +128,7 @@ if (isset($_POST['action']) && isset($_POST['elementsId'])) {
             break;
     }
 }
-
+//$CACHE_MANAGER->ClearByTag('iblock_id_' . CATALOG_IBLOCK_ID);
 echo json_encode($result);
 die();
 ?>

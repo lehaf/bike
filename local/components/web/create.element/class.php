@@ -128,6 +128,9 @@ class CreateElement extends \CBitrixComponent
         $newItemId = $newElement->save();
 
         if ($newItemId->isSuccess()) {
+            $element = new \CIBlockElement;
+            $element->Update($newItemId->getId(), ['IBLOCK_SECTION_ID' => $data['IBLOCK_SECTION_ID']['VALUE']]);
+
             $newElement->setXmlId($newElement->getId());
             $newElement->save();
             $result = ["STATUS" => "OK", "ID" => $newItemId->getId()];
