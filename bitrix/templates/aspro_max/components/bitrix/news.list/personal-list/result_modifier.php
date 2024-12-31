@@ -55,7 +55,25 @@ if (!empty($arResult['ITEMS'])) {
     //получение доступных валют и цен
     $allPrices = getItemPrices(array_column($arResult['ITEMS'], 'ID'));
 
+    //дерево разделов услуг
+    $servicesSectionTree = [];
+    if((int)$_GET['section'] === SERVICES_SECTION_ID) {
+        $servicesSectionTree = buildSectionTreeFromItems($arResult['ITEMS'], $arParams['IBLOCK_ID']);
+    }
+
+    $parentSection = $servicesSectionTree[$_GET['section']]['CHILDREN'];
     foreach ($arResult['ITEMS'] as &$item) {
+        //получение раздела и подрадела
+        $item['SECTIONS_CHAIN'] = findSectionRecursive($parentSection, $item['IBLOCK_SECTION_ID']);
+
+        $nameParts = explode(',', $item['NAME']); // Разделяем по запятой
+
+        if (count($nameParts) > 1) {
+            $name = trim($nameParts[1]);
+            $fc = mb_strtoupper(mb_substr($name, 0, 1));
+            $item['NAME'] =$fc . mb_substr($name, 1);; // Преобразуем вторую часть
+        }
+
         //получение ссылки на детальную страницу
         $rsItems = \Bitrix\Iblock\ElementTable::getList([
             'select' => ['ID', 'IBLOCK_ID', 'IBLOCK_SECTION_ID', 'CODE', 'DETAIL_PAGE_URL' => 'IBLOCK.DETAIL_PAGE_URL'],
@@ -251,6 +269,24 @@ function updateElementCounts(array &$tree): void
             }
         }
     }
+}
+
+function findSectionRecursive($sections, $targetSectionId) {
+    foreach ($sections as $sectionId => $section) {
+        // Проверяем, является ли текущий раздел нужным
+        if ($sectionId == $targetSectionId) {
+            return $section['NAME']; // Возвращаем название найденного раздела
+        }
+
+        // Если есть дочерние разделы, ищем среди них
+        if (!empty($section['CHILDREN'])) {
+            $result = findSectionRecursive($section['CHILDREN'], $targetSectionId);
+            if ($result) {
+                return $section['NAME'] . ' — ' . $result; // Формируем цепочку разделов
+            }
+        }
+    }
+    return null; // Если не нашли, возвращаем null
 }
 
 ?>

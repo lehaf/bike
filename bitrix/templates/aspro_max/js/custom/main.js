@@ -470,6 +470,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
 
                 } else {
+                    let subCategoryBlock = document.querySelector('.subcategory');
+                    if (subCategoryBlock && subCategoryBlock.children.length === 0) {
+                        subCategoryBlock.closest('.step-form__inner').remove();
+                    }
                     getFields(sectId);
                 }
             }
