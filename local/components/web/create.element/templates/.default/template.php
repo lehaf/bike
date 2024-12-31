@@ -768,7 +768,7 @@ $notShowLabel = ['PRICE_TYPE'];
                                 <?php else: ?>
                                     <button type="submit"
                                             class="step-form__btn step-form__btn-submit form__btn--disable">
-                                        <?=($arResult['ELEMENT_PROPS']) ? Loc::getMessage('EDIT') : Loc::getMessage('SUBMIT')?>
+                                        <?=($_GET['action'] === 'edit') ? Loc::getMessage('EDIT') : Loc::getMessage('SUBMIT')?>
                                     </button>
                                 <?php endif; ?>
                                 <?php if ($ajax === true && $key === 'FIELDS') die(); ?>
