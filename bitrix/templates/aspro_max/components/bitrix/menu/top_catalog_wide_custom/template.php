@@ -325,7 +325,7 @@ $iVisibleItemsMenu = ($arTheme['MAX_VISIBLE_ITEMS_MENU']['VALUE'] ? $arTheme['MA
                                 <div class="dropdown-menu BANNER">
                                     <div class="customScrollbar scrollblock scrollblock--thick">
                                         <ul class="menu-wrapper menu-type-1">
-                                            <? foreach ($arItem["CHILD"] as $arSubItem2): ?>
+                                            <? foreach ($arItem["CHILD"] as $key => $arSubItem2): ?>
                                                 <li class="dropdown-submenu icon  has_img parent-items">
                                                     <div class="menu_img icon">
                                                         <a href="<?= $arSubItem2["LINK"] ?>"
@@ -347,9 +347,11 @@ $iVisibleItemsMenu = ($arTheme['MAX_VISIBLE_ITEMS_MENU']['VALUE'] ? $arTheme['MA
                                                             </svg>
                                                         </i>
                                                     </a>
+
+                                                    <? $iCountChilds = count($arSubItem2["CHILD"] ?? []); ?>
                                                     <ul class="dropdown-menu toggle_menu">
-                                                        <? foreach ($arSubItem2["CHILD"] as $arSubItem3): ?>
-                                                            <li class="menu-item  dropdown-submenu ">
+                                                        <? foreach ($arSubItem2["CHILD"] as $key => $arSubItem3): ?>
+                                                            <li class="menu-item  dropdown-submenu <?= (++$key > $iVisibleItemsMenu ? 'collapsed' : ''); ?>">
                                                                 <a href="<?= $arSubItem3["LINK"] ?>" title="Телевизоры"
                                                                    style="white-space: normal;"><span
                                                                             class="name"><?= $arSubItem3["TEXT"] ?></span>
@@ -372,6 +374,11 @@ $iVisibleItemsMenu = ($arTheme['MAX_VISIBLE_ITEMS_MENU']['VALUE'] ? $arTheme['MA
                                                                 </ul>
                                                             </li>
                                                         <? endforeach; ?>
+                                                        <? if ($iCountChilds > $iVisibleItemsMenu && $bWideMenu): ?>
+                                                            <li>
+                                                                <span class="colored more_items with_dropdown"><?= \Bitrix\Main\Localization\Loc::getMessage("S_MORE_ITEMS").' '.($iCountChilds-$arParams['VISIBLE_ITEMS_MENU']); ?></span>
+                                                            </li>
+                                                        <? endif; ?>
                                                     </ul>
                                                 </li>
                                             <? endforeach; ?>
