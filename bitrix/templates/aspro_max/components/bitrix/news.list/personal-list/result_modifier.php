@@ -66,13 +66,16 @@ if (!empty($arResult['ITEMS'])) {
         //получение раздела и подрадела
         $item['SECTIONS_CHAIN'] = findSectionRecursive($parentSection, $item['IBLOCK_SECTION_ID']);
 
-        $nameParts = explode(',', $item['NAME']); // Разделяем по запятой
+        if((int)$_GET['section'] === SERVICES_SECTION_ID) {
+            $nameParts = explode(',', $item['NAME']); // Разделяем по запятой
 
-        if (count($nameParts) > 1) {
-            $name = trim($nameParts[1]);
-            $fc = mb_strtoupper(mb_substr($name, 0, 1));
-            $item['NAME'] =$fc . mb_substr($name, 1);; // Преобразуем вторую часть
+            if (count($nameParts) > 1) {
+                $name = trim($nameParts[1]);
+                $fc = mb_strtoupper(mb_substr($name, 0, 1));
+                $item['NAME'] =$fc . mb_substr($name, 1);; // Преобразуем вторую часть
+            }
         }
+
 
         //получение ссылки на детальную страницу
         $rsItems = \Bitrix\Iblock\ElementTable::getList([
