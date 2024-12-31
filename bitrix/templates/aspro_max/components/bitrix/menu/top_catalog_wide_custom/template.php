@@ -156,7 +156,6 @@ $iVisibleItemsMenu = ($arTheme['MAX_VISIBLE_ITEMS_MENU']['VALUE'] ? $arTheme['MA
 
                                     <ul class="menu-wrapper <?= 'menu-type-' . $MENU_TYPE ?>">
                                         <? foreach ($arItem["CHILD"] as $arSubItem): ?>
-
                                             <? if ($MENU_TYPE == 2): ?>
 
                                                 <?
@@ -326,6 +325,7 @@ $iVisibleItemsMenu = ($arTheme['MAX_VISIBLE_ITEMS_MENU']['VALUE'] ? $arTheme['MA
                                     <div class="customScrollbar scrollblock scrollblock--thick">
                                         <ul class="menu-wrapper menu-type-1">
                                             <? foreach ($arItem["CHILD"] as $arSubItem2): ?>
+                                                <?php $iCountChilds = count($arSubItem2["CHILD"] ?? []);?>
                                                 <li class="dropdown-submenu icon  has_img parent-items">
                                                     <div class="menu_img icon">
                                                         <a href="<?= $arSubItem2["LINK"] ?>"
@@ -378,6 +378,7 @@ $iVisibleItemsMenu = ($arTheme['MAX_VISIBLE_ITEMS_MENU']['VALUE'] ? $arTheme['MA
                                         </ul>
                                     </div>
                                 </div>
+
                             <?php endif; ?>
                         </div>
                     </td>
