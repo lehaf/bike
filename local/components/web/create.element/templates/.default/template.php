@@ -740,6 +740,8 @@ $notShowLabel = ['PRICE_TYPE'];
                                         <?= ($arResult['ELEMENT_PROPS']) ? 'data-el=' . $arResult['ELEMENT_PROPS']['IBLOCK_SECTION_ID'] : '' ?>
                                     >
                                     </div>
+
+                                    <?php if((int)$_GET['type'] !== SERVICES_SECTION_ID):?>
                                     <div class="form-group">
                                         <label for="nameText" class="form-group__label">Название товара/услуги<span>*</span></label>
                                         <div class="form-row form-row--rel">
@@ -758,6 +760,7 @@ $notShowLabel = ['PRICE_TYPE'];
                                         </div>
                                         <div class="error-form">Необходимо заполнить «Название товара/услуги»</div>
                                     </div>
+                                    <?php endif;?>
                                 <?php endif; ?>
 
                                 <?php if ($key !== $arResult['LAST_FIELD']): ?>

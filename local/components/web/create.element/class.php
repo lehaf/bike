@@ -362,7 +362,7 @@ class CreateElement extends \CBitrixComponent
     private function setName(array $data): string
     {
         $section = SectionTable::getById($data['GET']['type'])->fetch();
-        $name = "";
+        $name = $data["POST"]["NAME"] ?? "";
 
         if ((int)$section["IBLOCK_SECTION_ID"] === TRANSPORT_SECTION_ID || (int)$section["IBLOCK_SECTION_ID"] === PARTS_SECTION_ID) {
             $type = $this->getCheckProperty('type_' . $section['CODE'], $data);
@@ -376,8 +376,16 @@ class CreateElement extends \CBitrixComponent
             $category = $this->getCheckProperty('category_garage', $data);
             $type = $this->getCheckProperty('type_garage', $data);
             $name = $category . ' ' . $type;
-
         }
+
+        if((int)$section["ID"] === SERVICES_SECTION_ID) {
+            $name = trim($data['POST']['contact_person']) ?? '';
+            $serviceSection = SectionTable::getById($data['POST']['IBLOCK_SECTION_ID'])->fetch();
+            if($serviceSection) {
+                $name .= ", " . mb_strtolower($serviceSection['NAME']);
+            }
+        }
+
         return $name;
     }
 
@@ -444,9 +452,7 @@ class CreateElement extends \CBitrixComponent
     {
         ob_end_clean();
         if (!empty($data["POST"])) {
-            if (!isset($data["POST"]["NAME"])) {
-                $data["POST"]["NAME"] = $this->setName($data);
-            }
+            $data["POST"]["NAME"] = $this->setName($data);
 
             //раздел элемента
             if(!$data["POST"]["IBLOCK_SECTION_ID"] && isset($data["POST"]["SUBSECTION"])) {
