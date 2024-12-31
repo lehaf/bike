@@ -26,6 +26,7 @@ $APPLICATION->SetAdditionalCSS("/bitrix/css/" . $mid . "/style.css");
 </div>
 
 <div style="margin-bottom: 50px">
+    Для работы функционала захода на неактивные обявления пользователем, который их создал необходимо:
     В файле <i>bitrix/templates/aspro_max/components/bitrix/catalog/main/elements.php</i> убрать подобный вызов метода process404:
     <pre>
         $arElement = CMaxCache::CIBLockElement_GetList(array('CACHE' => array("MULTI" =>"N", "TAG" => CMaxCache::GetIBlockCacheTag($arParams["IBLOCK_ID"]))), CMax::makeElementFilterInRegion($arElementFilter), false, false, array("ID", "IBLOCK_ID", "IBLOCK_SECTION_ID", "NAME", "PREVIEW_TEXT", "PREVIEW_PICTURE", "DETAIL_PICTURE", "PROPERTY_ASSOCIATED_FILTER", "PROPERTY_EXPANDABLES_FILTER", "PROPERTY_ASSOCIATED", "PROPERTY_EXPANDABLES"));
@@ -41,7 +42,6 @@ $APPLICATION->SetAdditionalCSS("/bitrix/css/" . $mid . "/style.css");
             );
         }
     </pre>
-    для работы функционала захода на неактивные обявления пользователем, который их создал
 </div>
 
 
