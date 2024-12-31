@@ -74,13 +74,10 @@ $APPLICATION->SetAdditionalCSS("/bitrix/css/" . $mid . "/style.css");
     </p>
     <div class="subpoint">
         <p>a. <i>Название (UF_NAME)</i> отвечает за заголовок секции</p>
-        <p>b. <i>Название (UF_NAME)</i> отвечает за заголовок секции</p>
-        <p>c. <i>Название (UF_NAME)</i> отвечает за заголовок секции</p>
-        <p>d. <i>Название (UF_NAME)</i> отвечает за заголовок секции</p>
-        <p>e. <i>Название (UF_NAME)</i> отвечает за заголовок секции</p>
-        <p class="note">
-            <span class="important">****</span> Это свойство у уже существующих полей не менять
-        </p>
+        <p>b. <i>Название (UF_SECTIONS)</i> отвечает за разделы, в которых будет отображаться секция</p>
+        <p>c. <i>Название (UF_SORT)</i> отвечает за порядок секций</p>
+        <p>d. <i>Название (UF_CODE)</i> отвечает за символьный код секции (нужно для разработки)</p>
+        <p>e. <i>Название (UF_DESCRIPTION)</i> отвечает за описание секции (<span class="important">****</span> Данное свойство у уже существующих секций не менять)</p>
     </div>
 </div>
 <div class="point">
@@ -95,7 +92,7 @@ $APPLICATION->SetAdditionalCSS("/bitrix/css/" . $mid . "/style.css");
 <div class="point">
     <p>
         3. Чтобы сделать свойство обязательным для определенного раздела необходимо аналогичным способом (выбрав раздел
-        и зава ID необходимых свойств) добавить их в Highload-блок <a
+        и задав ID необходимых свойств) добавить их в Highload-блок <a
                 href="/bitrix/admin/highloadblock_rows_list.php?ENTITY_ID=7&lang=ru">“Обязательные при добавлении поля”
             (RequiredFields)</a>.
     </p>
