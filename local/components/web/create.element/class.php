@@ -242,7 +242,7 @@ class CreateElement extends \CBitrixComponent
         $newItemId = $element->save();
 
         if ($newItemId->isSuccess()) {
-            $result = ["STATUS" => "OK", 'FORM' => $this->successFormTemplate()];
+            $result = ["STATUS" => "OK", 'FORM' => $this->successFormTemplate(), 'action' => 'edit'];
         } else {
             $this->errors = $this->addErrors($newItemId);
             $result = ["STATUS" => "ERROR", "ERRORS" => $this->errors];
@@ -553,7 +553,7 @@ class CreateElement extends \CBitrixComponent
                 $elementData['POPUP_VIDEO']['VALUE'] = $this->convertYoutubeVideoUrl($elementData['POPUP_VIDEO']['VALUE']);
             }
 
-            if ($data['POST']['action'] === 'add') {
+            if ($data['POST']['action'] === 'add' || $data['POST']['action'] === 'copy') {
                 $newElement = $this->createElement($elementData ?? []);
                 if (Loader::includeModule('sale') && $newElement["STATUS"] === "OK") {
                     $catalogIblock = \Bitrix\Catalog\CatalogIblockTable::getList([

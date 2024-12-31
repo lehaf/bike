@@ -1193,11 +1193,12 @@ ul.menu li.menu-item {
 }
 
 .product-advert .advert-edit__item{
-    padding-bottom: 13px;
+    padding-bottom: 10px;
 }
 
+
 .product-advert  .advert-edit{
-    gap: 13px;
+    gap: 10px;
 }
 
 .btn-inner{

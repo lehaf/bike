@@ -13,7 +13,7 @@ if(isset($_GET['type'])) {
 		$sectionName = mb_strtolower(trim($section['NAME']));
 	}
 
-	if($_GET['element'] && $_GET['action']) {
+	if($_GET['element'] && $_GET['action'] === 'edit') {
 		$APPLICATION->SetTitle("Изменить объявление" . " (" . $sectionName . ")");
 	} else {
 		$APPLICATION->SetTitle("Подать объявление" . " (" . $sectionName . ")");
