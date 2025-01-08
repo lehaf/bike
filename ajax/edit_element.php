@@ -72,8 +72,10 @@ if (isset($_POST['action']) && isset($_POST['elementsId'])) {
 
                     if ($existingPrice) {
                         \Bitrix\Catalog\PriceTable::update($existingPrice['ID'], [
-                            'PRICE' => $_POST['price']
+                            'PRICE' => $_POST['price'],
+                            'CURRENCY' => $_POST['currency']
                         ]);
+                        $result = ["newPrice" => \CCurrencyLang::CurrencyFormat($_POST['price'], $_POST['currency'], true)];
                         $CACHE_MANAGER->ClearByTag('iblock_id_' . CATALOG_IBLOCK_ID);
                     }
                 }

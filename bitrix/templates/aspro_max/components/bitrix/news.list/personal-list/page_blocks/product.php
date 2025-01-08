@@ -52,9 +52,11 @@
                     <option value="pause" data-action="no-active" data-show="none">
                         Постаивть на паузу
                     </option>
+                    <?php if((int)$_GET['section'] !== SERVICES_SECTION_ID):?>
                     <option value="price" data-action="price" data-show="text">
                         Изменить цену
                     </option>
+                    <?php endif;?>
                     <option value="delete" data-action="delete" data-show="none">
                         Удалить
                     </option>
@@ -87,7 +89,7 @@
                                 <img src="<?= $img ?>" alt="img">
                             </div>
                             <div class="product-item-text">
-                                <div class="product-item__name"><?= $arItem['SECTION_NAME'] ?></div>
+                                <div class="product-item__name"> <?=(!empty($arItem['CURRENT_PRICE']) ? '<span style="color: #ed1c24; font-weight: bold">' . $arItem['CURRENT_PRICE'] . '</span>' . ' | '   : '')?><?= $arItem['SECTION_NAME'] ?></div>
                                 <a href="/<?=$arItem['DETAIL_PAGE_URL']?>" class="product-item__title">
                                     <?= $arItem['NAME'] ?>
                                 </a>
@@ -205,14 +207,13 @@ function renderSectionTree(array $sections): void
         $classLink = !$hasSubmenu ? 'class="last"' : '';
         ?>
         <li class="<?= $class ?>">
-
             <a href="" data-sect="<?= $section['ID'] ?>" <?= $classLink ?>>
                 <?php if ($hasSubmenu): ?>
                     <span class="arrow">
-            <svg width="6" height="8" viewBox="0 0 6 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M5.625 3.97998L0.9375 7.87709L0.9375 0.082866L5.625 3.97998Z" fill="#333333"></path>
-            </svg>
-        </span>
+                        <svg width="6" height="8" viewBox="0 0 6 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M5.625 3.97998L0.9375 7.87709L0.9375 0.082866L5.625 3.97998Z" fill="#333333"></path>
+                        </svg>
+                    </span>
                 <?php endif; ?>
                 <?= $section['NAME'] ?>
                 <span class="quantity">(<?= $section['ELEMENT_COUNT'] ?>)</span>
