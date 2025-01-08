@@ -67,7 +67,7 @@ if (!empty($arResult['ITEMS'])) {
         $item['SECTIONS_CHAIN'] = findSectionRecursive($parentSection, $item['IBLOCK_SECTION_ID']);
 
         if((int)$_GET['section'] === SERVICES_SECTION_ID) {
-            $nameParts = explode(',', $item['NAME']); // Разделяем по запятой
+            $nameParts = explode('|', $item['NAME']); // Разделяем по запятой
 
             if (count($nameParts) > 1) {
                 $name = trim($nameParts[1]);

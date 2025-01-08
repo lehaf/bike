@@ -382,7 +382,7 @@ class CreateElement extends \CBitrixComponent
             $name = trim($data['POST']['contact_person']) ?? '';
             $serviceSection = SectionTable::getById($data['POST']['IBLOCK_SECTION_ID'])->fetch();
             if($serviceSection) {
-                $name .= ", " . mb_strtolower($serviceSection['NAME']);
+                $name .= " | " . $serviceSection['NAME'];
             }
         }
 
