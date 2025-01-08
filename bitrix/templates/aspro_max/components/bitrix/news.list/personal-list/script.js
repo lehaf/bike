@@ -191,8 +191,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (action === 'price') {
             let price = document.querySelector('.product-custom-block input');
-            if (price.value.length !== 0) {
+            let currency = document.querySelector('#price-currency');
+            if (price) {
                 params.append('price', price.value);
+                params.append('currency', currency.value);
             } else {
                 return;
             }
@@ -207,55 +209,77 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
+        if(elementsId.length > 0) {
+            fetch('/ajax/edit_element.php', {
+                method: 'POST',
+                body: params,
+                headers: {'X-Requested-With': 'XMLHttpRequest'}
+            }).then(res => {
+                return res.json();
+            }).then(data => {
+                if (action === 'pause' || action === 'active') {
+                    setElementStatus(data, elementsBlock);
+                }
 
-        fetch('/ajax/edit_element.php', {
-            method: 'POST',
-            body: params,
-            headers: {'X-Requested-With': 'XMLHttpRequest'}
-        }).then(res => {
-            return res.json();
-        }).then(data => {
-            if (action === 'pause' || action === 'active') {
-                setElementStatus(data, elementsBlock);
-            }
+                if(action === 'price') {
+                    elementsBlock.forEach(element => {
+                        let elementPrice = element.querySelector('.product-item__name > span');
+                        elementPrice.innerHTML = data['newPrice'];
+                    })
+                }
 
-            if (action === 'delete') {
-                elementsBlock.forEach(element => {
-                    element.remove();
-                })
+                if (action === 'delete') {
+                    let count = 0;
+                    elementsBlock.forEach(element => {
+                        element.remove();
+                        count++;
+                    })
 
-                getAds(window.location.href);
-            }
+                    // let leftMenuItem = document.querySelector('.v_bottom.opened span.name');
+                    // console.log(leftMenuItem);
+                    // if(leftMenuItem) {
+                    //     const match = leftMenuItem.innerHTML.match(/\((\d+)\)/);
+                    //     if(match) {
+                    //         let newNumber = match[1] - count;
+                    //         leftMenuItem.innerHTML = leftMenuItem.innerHTML.replace(/\(\d+\)/, `(${newNumber})`);
+                    //     }
+                    //     console.log(leftMenuItem.innerHTML);
+                    //     console.log(match);
+                    // }
 
-            if (action === 'category') {
-                let section = document.querySelector('#section');
-                let sectionName = section.options[0].text;
-                elementsBlock.forEach(element => {
-                    element.querySelector('.product-item__name').innerHTML = sectionName;
-                })
+                    getAds(window.location.href);
+                }
 
-                ajaxUpdateProductsMenu();
-            }
+                if (action === 'category') {
+                    let section = document.querySelector('#section');
+                    let sectionName = section.options[0].text;
+                    elementsBlock.forEach(element => {
+                        element.querySelector('.product-item__name').innerHTML = sectionName;
+                    })
 
-            if(action === 'up') {
-                elementsBlock.forEach(element => {
-                    let upBtn = element.querySelector('.advert-btn-up');
-                    let upBtnsContainer = element.querySelector('.advert-btn') || element.querySelector('.product-item-btn');
-                    let upDateText = element.querySelector('.advert-data__day');
-                    let upDateTextContainer = element.querySelector('.advert-data') || element.querySelector('.product-item-text');
-                    if(upBtn) upBtn.remove();
-                    if(upDateText) upDateText.remove();
+                    ajaxUpdateProductsMenu();
+                }
 
-                    let type = 'default';
-                    if(upBtnsContainer.classList.contains('product-item-btn')) {
-                        type = 'product';
-                    }
-                    upBtnsContainer.insertAdjacentHTML('afterbegin', activeUpperAdsTemplate(type));
-                    upDateTextContainer.insertAdjacentHTML('beforeend', upperDaysTemplate('Поднято: сегодня'));
-                })
-            }
+                if(action === 'up') {
+                    elementsBlock.forEach(element => {
+                        let upBtn = element.querySelector('.advert-btn-up');
+                        let upBtnsContainer = element.querySelector('.advert-btn') || element.querySelector('.product-item-btn');
+                        let upDateText = element.querySelector('.advert-data__day');
+                        let upDateTextContainer = element.querySelector('.advert-data') || element.querySelector('.product-item-text');
+                        if(upBtn) upBtn.remove();
+                        if(upDateText) upDateText.remove();
 
-        }).catch((error) => console.log(error));
+                        let type = 'default';
+                        if(upBtnsContainer.classList.contains('product-item-btn')) {
+                            type = 'product';
+                        }
+                        upBtnsContainer.insertAdjacentHTML('afterbegin', activeUpperAdsTemplate(type));
+                        upDateTextContainer.insertAdjacentHTML('beforeend', upperDaysTemplate('Поднято: сегодня'));
+                    })
+                }
+
+            }).catch((error) => console.log(error));
+        }
     }
 
     function ajaxUpdateProductsMenu() {
@@ -484,8 +508,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (updateProductSelect) {
             updateProductSelect.onchange = (event) => {
                 let productUpdate = document.querySelector('.product-update-select');
-                let productCustomBlock = document.querySelector('.product-custom-block');
-                if (productCustomBlock) productCustomBlock.remove();
+                let productCustomBlock = document.querySelectorAll('.product-custom-block');
+                productCustomBlock.forEach(block => block.remove());
 
                 if (updateProductSelect.value === 'category') {
                     fetch('/ajax/edit_product.php', {
@@ -512,13 +536,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 if (updateProductSelect.value === 'price') {
-                    let div = document.createElement('div');
-                    div.className = 'product-custom-block';
-                    let input = document.createElement('input');
-                    input.type = 'text';
-                    div.appendChild(input);
+                    // let div = document.createElement('div');
+                    // div.className = 'product-custom-block';
+                    // let input = document.createElement('input');
+                    // input.type = 'text';
+                    // div.appendChild(input);
 
-                    productUpdate.after(div);
+                    productUpdate.insertAdjacentHTML('afterend',priceInputsTemplate());
+                    let currencySelect = document.querySelector('#price-currency');
+                    const currencyChoices = new Choices(currencySelect, {
+                        searchEnabled: false,
+                        shouldSort: false,
+                        position: 'bottom'
+                    })
                 }
 
             }
@@ -534,6 +564,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
             })
         })
+    }
+
+    function priceInputsTemplate() {
+        return `<div class="product-custom-block">
+                    <input type="text">
+                 </div>
+                 <div class="product-custom-block product-custom-block--small">
+                   <select name="currency" class="select-type custom-select check-block" id="price-currency">
+                    <option value="BYN" selected>
+                        BYN
+                    </option>
+                    <option value="USD" data-action="category" data-show="select">
+                        USD
+                    </option>
+                    <option value="EUR" data-action="active" data-show="none">
+                        EUR
+                    </option>
+                    <option value="RUB" data-action="no-active" data-show="none">
+                        RUB
+                    </option>
+                </select>
+                </div>`;
     }
 
     function activeUpperAdsTemplate(type = 'default') {
