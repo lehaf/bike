@@ -118,18 +118,19 @@ class CreateElement extends \CBitrixComponent
                 }
             } else {
                 $newElement->set($prop, $item["VALUE"]);
-
-                if ($prop === "IBLOCK_SECTION_ID") {
-                    $newElement->set("IN_SECTIONS", "Y");
-                }
+//                if ($prop === "IBLOCK_SECTION_ID") {
+//                    $newElement->set("IN_SECTIONS", "Y");
+//                }
             }
         }
 
         $newItemId = $newElement->save();
 
         if ($newItemId->isSuccess()) {
+            //для оновления в общем списке
             $element = new \CIBlockElement;
             $element->Update($newItemId->getId(), ['IBLOCK_SECTION_ID' => $data['IBLOCK_SECTION_ID']['VALUE']]);
+            $element->SetPropertyValuesEx($newItemId->getId(), false, ['LAST_RISE' => $newElement->getDateCreate()]);
 
             $newElement->setXmlId($newElement->getId());
             $newElement->save();
@@ -455,8 +456,12 @@ class CreateElement extends \CBitrixComponent
             $data["POST"]["NAME"] = $this->setName($data);
 
             //раздел элемента
-            if(!$data["POST"]["IBLOCK_SECTION_ID"] && isset($data["POST"]["SUBSECTION"])) {
-                $this->errors["SUBSECTION"] = "Заполните марку и модель";
+            if(!$data["POST"]["IBLOCK_SECTION_ID"]) {
+                if(isset($data["POST"]["SUBSECTION"])) {
+                    $this->errors["SUBSECTION"] = "Заполните марку и модель";
+                } else {
+                    $data["POST"]["IBLOCK_SECTION_ID"] = $data['GET']['type'];
+                }
             }
 
             $fieldsToCheck = [

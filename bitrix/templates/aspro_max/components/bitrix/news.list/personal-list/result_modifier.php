@@ -140,29 +140,33 @@ if (!empty($arResult['ITEMS'])) {
         //доступно ли поднятие вверх
         $item['UP_TIME_LEFT'] = false;
         $item['UP_DAYS'] = false;
+
         if(!empty($item['PROPERTIES']['LAST_RISE']['VALUE'])) {
             $currentDate = new DateTime();
+            $createDate = new DateTime($item['DATE_CREATE']);
             $lastRiseDate = new DateTime($item['PROPERTIES']['LAST_RISE']['VALUE']);
 
-            $interval = $currentDate->diff($lastRiseDate);
-            $elapsedHours = ($interval->days * 24) + $interval->h;
+            if($createDate->format('Y-m-d H:i:s') !== $lastRiseDate->format('Y-m-d H:i:s')) {
+                $interval = $currentDate->diff($lastRiseDate);
+                $elapsedHours = ($interval->days * 24) + $interval->h;
 
-            if($elapsedHours < (int)$arParams['UP_TIME']) {
-                $item['UP_TIME_LEFT'] = $arParams['UP_TIME'] - $elapsedHours;
-            }
+                if($elapsedHours < (int)$arParams['UP_TIME']) {
+                    $item['UP_TIME_LEFT'] = $arParams['UP_TIME'] - $elapsedHours;
+                }
 
-            $currentDay = $currentDate->setTime(0,0);
-            $lastRiseDay = $lastRiseDate->setTime(0,0);
-            $intervalDays = $currentDay->diff($lastRiseDate);
-            $daysDiff = $intervalDays->days;
+                $currentDay = $currentDate->setTime(0,0);
+                $lastRiseDay = $lastRiseDate->setTime(0,0);
+                $intervalDays = $currentDay->diff($lastRiseDate);
+                $daysDiff = $intervalDays->days;
 
-            if ($interval->invert === 1) { // Если дата последнего поднятия раньше текущей даты
-                if ($daysDiff === 0) {
-                    $item['UP_DAYS'] = "сегодня";
-                } elseif ($daysDiff === 1) {
-                    $item['UP_DAYS'] = "вчера";
-                } else {
-                    $item['UP_DAYS'] = $daysDiff . ' ' . getPluralForm($daysDiff, ['день', 'дня', 'дней']) . ' '  ."назад";
+                if ($interval->invert === 1) { // Если дата последнего поднятия раньше текущей даты
+                    if ($daysDiff === 0) {
+                        $item['UP_DAYS'] = "сегодня";
+                    } elseif ($daysDiff === 1) {
+                        $item['UP_DAYS'] = "вчера";
+                    } else {
+                        $item['UP_DAYS'] = $daysDiff . ' ' . getPluralForm($daysDiff, ['день', 'дня', 'дней']) . ' '  ."назад";
+                    }
                 }
             }
         }
