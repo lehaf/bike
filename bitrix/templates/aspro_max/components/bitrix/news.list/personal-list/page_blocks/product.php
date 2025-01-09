@@ -52,11 +52,11 @@
                     <option value="pause" data-action="no-active" data-show="none">
                         Постаивть на паузу
                     </option>
-                    <?php if((int)$_GET['section'] !== SERVICES_SECTION_ID):?>
-                    <option value="price" data-action="price" data-show="text">
-                        Изменить цену
-                    </option>
-                    <?php endif;?>
+                    <?php if ((int)$_GET['section'] !== SERVICES_SECTION_ID): ?>
+                        <option value="price" data-action="price" data-show="text">
+                            Изменить цену
+                        </option>
+                    <?php endif; ?>
                     <option value="delete" data-action="delete" data-show="none">
                         Удалить
                     </option>
@@ -89,7 +89,11 @@
                                 <img src="<?= $img ?>" alt="img">
                             </div>
                             <div class="product-item-text">
-                                <div class="product-item__name"> <?=(!empty($arItem['CURRENT_PRICE']) ? '<span style="color: #ed1c24; font-weight: bold">' . $arItem['CURRENT_PRICE'] . '</span>' . ' | '   : '')?><?= $arItem['SECTION_NAME'] ?></div>
+                                <div class="product-item__name">
+                                    <?=(!empty($arItem['CURRENT_PRICE']) ? '<span style="color: #ed1c24; font-weight: bold">' . $arItem['CURRENT_PRICE'] . '</span>' . ' | '   : '')?>
+                                    <?=(!empty($arItem['CITY']) ? '<span style="font-weight: bold">' . $arItem['CITY'] . '</span>' . ' | '   : '')?>
+                                    <?= $arItem['SECTION_NAME'] ?>
+                                </div>
                                 <a href="/<?=$arItem['DETAIL_PAGE_URL']?>" class="product-item__title">
                                     <?= $arItem['NAME'] ?>
                                 </a>

@@ -75,6 +75,10 @@ if (isset($_POST['action']) && isset($_POST['elementsId'])) {
                             'PRICE' => $_POST['price'],
                             'CURRENCY' => $_POST['currency']
                         ]);
+
+                        $element = new \CIBlockElement;
+                        $updateRes = $element->SetPropertyValuesEx($elementId, false, ['contract_price' => false]);
+
                         $result = ["newPrice" => \CCurrencyLang::CurrencyFormat($_POST['price'], $_POST['currency'], true)];
                         $CACHE_MANAGER->ClearByTag('iblock_id_' . CATALOG_IBLOCK_ID);
                     }

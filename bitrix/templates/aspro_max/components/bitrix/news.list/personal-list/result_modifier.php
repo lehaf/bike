@@ -82,7 +82,11 @@ if (!empty($arResult['ITEMS'])) {
 
         //конвертация цены
         $itemPrices = $allPrices['prices'][$item['ID']];
-        $item['CURRENT_PRICE'] = \CCurrencyLang::CurrencyFormat($itemPrices['PRICE'], $itemPrices['CURRENCY'], true);
+        if(!empty($item['PROPERTIES']['contract_price']['VALUE'])) {
+            $item['CURRENT_PRICE'] = 'Договорная';
+        } else {
+            $item['CURRENT_PRICE'] = \CCurrencyLang::CurrencyFormat($itemPrices['PRICE'], $itemPrices['CURRENCY'], true);
+        }
         if ($itemPrices) {
             $item['PRICES'] = convertPrice($itemPrices, $allPrices['desired'], $allPrices['base']);
         }
