@@ -7,12 +7,13 @@ if (!$USER->isAuthorized()) {
     ?>
     <?php
     global $filterUser;
-    $filterUser = [
+	$filterUser = [
 		'=PROPERTY_USER' => \Bitrix\Main\Engine\CurrentUser::get()->getId(),
 		'=SECTION_ID' => (isset($_GET['subsection'])) ? $_GET['subsection'] : $_GET['section'],
 		'INCLUDE_SUBSECTIONS' => 'Y',
 		'ACTIVE' => "",
 	];
+	$CACHE_MANAGER->ClearByTag('bitrix:menu');
     ?>
     <?$APPLICATION->IncludeComponent(
 	"bitrix:news.list", 
@@ -56,7 +57,7 @@ if (!$USER->isAuthorized()) {
 		"PAGER_DESC_NUMBERING_CACHE_TIME" => "36000",
 		"PAGER_SHOW_ALL" => "N",
 		"PAGER_SHOW_ALWAYS" => "N",
-		"PAGER_TEMPLATE" => ".default",
+		"PAGER_TEMPLATE" => "main",
 		"PAGER_TITLE" => "Новости",
 		"PARENT_SECTION" => "",
 		"PARENT_SECTION_CODE" => "",
@@ -123,7 +124,23 @@ if (!$USER->isAuthorized()) {
 		"SORT_ORDER2" => "ASC",
 		"STRICT_SECTION_CHECK" => "N",
 		"COMPONENT_TEMPLATE" => "personal-list",
-		"UP_TIME" => "48"
+		"UP_TIME" => "48",
+		"TITLE_BLOCK" => "Новости",
+		"TITLE_BLOCK_ALL" => "Все новости",
+		"ALL_URL" => "sale/",
+		"INCLUDE_FILE" => "",
+		"SHOW_SECTION_NAME" => "N",
+		"BG_POSITION" => "top left",
+		"SHOW_SUBSCRIBE" => "Y",
+		"TITLE_SUBSCRIBE" => "Текст подписки",
+		"HALF_BLOCK" => "N",
+		"ALL_BLOCK_BG" => "N",
+		"TYPE_IMG" => "md",
+		"SIZE_IN_ROW" => "4",
+		"BORDERED" => "N",
+		"FON_BLOCK_2_COLS" => "N",
+		"USE_BG_IMAGE_ALTERNATE" => "N",
+		"TITLE_SHOW_FON" => "N"
 	),
 	false
 );?>

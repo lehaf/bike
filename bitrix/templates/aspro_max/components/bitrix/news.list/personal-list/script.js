@@ -89,6 +89,10 @@ document.addEventListener('DOMContentLoaded', () => {
             })
         }
 
+       checkedAllItems();
+    }
+
+    function checkedAllItems () {
         let checkAllProducts = document.querySelector('#all-product-2');
         let itemCheck = document.querySelectorAll('input.product-check');
         if (checkAllProducts) {
@@ -100,7 +104,6 @@ document.addEventListener('DOMContentLoaded', () => {
             })
         }
     }
-
     function setItems() {
         let items = document.querySelectorAll('.advert-item, .product-advert__item');
 
@@ -235,17 +238,19 @@ document.addEventListener('DOMContentLoaded', () => {
                         count++;
                     })
 
-                    // let leftMenuItem = document.querySelector('.v_bottom.opened span.name');
-                    // console.log(leftMenuItem);
-                    // if(leftMenuItem) {
-                    //     const match = leftMenuItem.innerHTML.match(/\((\d+)\)/);
-                    //     if(match) {
-                    //         let newNumber = match[1] - count;
-                    //         leftMenuItem.innerHTML = leftMenuItem.innerHTML.replace(/\(\d+\)/, `(${newNumber})`);
-                    //     }
-                    //     console.log(leftMenuItem.innerHTML);
-                    //     console.log(match);
-                    // }
+                    let leftMenuItem = document.querySelector('.v_bottom.opened span.name');
+                    let dropdownMenuItem = document.querySelectorAll('.dropdown-menu li.active');
+
+                    let combinedNodesArray = [leftMenuItem, ...Array.from(dropdownMenuItem)].filter(node => node !== null);
+                    combinedNodesArray.forEach(node => {
+                        if(node) {
+                            const match = node.innerHTML.match(/\((\d+)\)/);
+                            if(match) {
+                                let newNumber = match[1] - count;
+                                node.innerHTML = node.innerHTML.replace(/\(\d+\)/, `(${newNumber})`);
+                            }
+                        }
+                    });
 
                     getAds(window.location.href);
                 }
@@ -500,6 +505,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }).then(data => {
             listBlock.innerHTML = data;
             listBlock.removeAttribute('style');
+            setItems();
+            upperAds();
+            checkedAllItems();
         }).catch((error) => console.log(error));
     }
 
