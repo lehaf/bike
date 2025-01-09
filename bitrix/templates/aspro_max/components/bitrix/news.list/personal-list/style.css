@@ -1376,7 +1376,7 @@ li.menu-item > a.selected{
 }
 
 .product-update .product-custom-block .choices__inner{
-    width: 20vw;
+    width: 15vw;
     max-width: 400px;
 }
 
@@ -1403,7 +1403,13 @@ li.menu-item > a.selected{
     margin-right: 15px;
 }
 
-@media (max-width: 1379px) {
+@media (max-width: 1380px) {
+    .product-menu {
+        width: 300px ;
+    }
+}
+
+@media (max-width: 1279px) {
     .product-block{
         flex-direction: column;
         border: none;

@@ -129,11 +129,16 @@ class CreateElement extends \CBitrixComponent
         if ($newItemId->isSuccess()) {
             //для оновления в общем списке
             $element = new \CIBlockElement;
-            $element->Update($newItemId->getId(), ['IBLOCK_SECTION_ID' => $data['IBLOCK_SECTION_ID']['VALUE']]);
+            $element->Update($newItemId->getId(), [
+                'IBLOCK_SECTION_ID' => $data['IBLOCK_SECTION_ID']['VALUE'],
+                'XML_ID' => $newElement->getId()
+            ]);
             $element->SetPropertyValuesEx($newItemId->getId(), false, ['LAST_RISE' => $newElement->getDateCreate()]);
 
-            $newElement->setXmlId($newElement->getId());
-            $newElement->save();
+            //для обновления меню
+            global $CACHE_MANAGER;
+            $CACHE_MANAGER->ClearByTag('bitrix:menu');
+
             $result = ["STATUS" => "OK", "ID" => $newItemId->getId()];
         } else {
             $this->errors = $this->addErrors($newItemId);

@@ -50,6 +50,7 @@ if (isset($_POST['action']) && isset($_POST['elementsId'])) {
                     $element->Delete($elementId);
                 }
             }
+            $CACHE_MANAGER->ClearByTag('bitrix:menu');
             $result = ['success' => true];
             break;
         case 'category':
