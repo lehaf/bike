@@ -89,6 +89,10 @@ document.addEventListener('DOMContentLoaded', () => {
             })
         }
 
+       checkedAllItems();
+    }
+
+    function checkedAllItems () {
         let checkAllProducts = document.querySelector('#all-product-2');
         let itemCheck = document.querySelectorAll('input.product-check');
         if (checkAllProducts) {
@@ -100,7 +104,6 @@ document.addEventListener('DOMContentLoaded', () => {
             })
         }
     }
-
     function setItems() {
         let items = document.querySelectorAll('.advert-item, .product-advert__item');
 
@@ -500,6 +503,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }).then(data => {
             listBlock.innerHTML = data;
             listBlock.removeAttribute('style');
+            setItems();
+            upperAds();
+            checkedAllItems();
         }).catch((error) => console.log(error));
     }
 
