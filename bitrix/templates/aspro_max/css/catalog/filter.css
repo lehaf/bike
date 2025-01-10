@@ -1763,6 +1763,7 @@ input[type="file"] {
 
 
 
+
 .choices.is-active:after {
     border-color: #ed1c24 transparent transparent;
 }
@@ -2408,6 +2409,11 @@ input[type="file"] {
 .row--brand .choices[data-type*=select-one] .choices__input.choices__input--cloned{
     background: #fafafa url("../../images/svg/custom/search.svg") no-repeat 13px center;
 }
+
+.row--brand.store-active .choices[data-type*="select-one"] .choices__input.choices__input--cloned  {
+    display: none;
+}
+
 
 .result-block {
     position: relative;

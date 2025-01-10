@@ -1,9 +1,21 @@
 let isBlockMoved = false;
 //перемещение фильтра за пределы блока с объявлениями
 $(document).on('ajaxSuccess', function (event, xhr, settings) {
+    const [path, queryString] = settings.url.split("?");
+    if (queryString) {
+        const queryParams = new URLSearchParams(queryString);
+        if (queryParams?.get('from_smartseo') === 'Y' &&
+            !queryParams.get('display') && !queryParams.get('linerow')) {
+            initMainForFilter();
+            initFilter();
+            initAjaxFilter();
+        }
+    }
+
+
     if (settings.url.includes('catalog') && isBlockMoved) {
-        document.querySelector('.js-load-wrapper #filter').remove();
-        document.querySelector('.js-load-wrapper .found-brand').remove();
+        document.querySelector('.js-load-wrapper #filter')?.remove();
+        document.querySelector('.js-load-wrapper .found-brand')?.remove();
     }
 })
 //загрузка страницы (прелоудер)
