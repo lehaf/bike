@@ -1034,6 +1034,7 @@ function initFilter() {
     function activeItems() {
         let activeItem = document.querySelectorAll(".store-active");
         activeItem.forEach((el) => {
+            console.log(el);
             el.querySelector(".choices__inner").classList.add("is-active");
         })
     }
