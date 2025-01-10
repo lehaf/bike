@@ -248,6 +248,10 @@ class CreateElement extends \CBitrixComponent
         $newItemId = $element->save();
 
         if ($newItemId->isSuccess()) {
+            //сброс зависимостей для отображения корректных данных
+            $ipropValues = new \Bitrix\Iblock\InheritedProperty\ElementValues(CATALOG_IBLOCK_ID, $this->elementId);
+            $ipropValues->clearValues();
+
             $result = ["STATUS" => "OK", 'FORM' => $this->successFormTemplate(), 'action' => 'edit'];
         } else {
             $this->errors = $this->addErrors($newItemId);
@@ -370,25 +374,27 @@ class CreateElement extends \CBitrixComponent
         $section = SectionTable::getById($data['GET']['type'])->fetch();
         $name = $data["POST"]["NAME"] ?? "";
 
-        if ((int)$section["IBLOCK_SECTION_ID"] === TRANSPORT_SECTION_ID || (int)$section["IBLOCK_SECTION_ID"] === PARTS_SECTION_ID) {
-            $type = $this->getCheckProperty('type_' . $section['CODE'], $data);
-            $year = $this->getCheckProperty('year', $data);
+        if(empty($name)) {
+            if ((int)$section["IBLOCK_SECTION_ID"] === TRANSPORT_SECTION_ID || (int)$section["IBLOCK_SECTION_ID"] === PARTS_SECTION_ID) {
+                $type = $this->getCheckProperty('type_' . $section['CODE'], $data);
+                $year = $this->getCheckProperty('year', $data);
 
-            $name = $type . ' ' . $data["POST"]["SECTION"] . ' ' . $data["POST"]["SUBSECTION"];
-            if (!empty($data["POST"]["year"])) $name .= ', ' . $year;
-        }
+                $name = $type . ' ' . $data["POST"]["SECTION"] . ' ' . $data["POST"]["SUBSECTION"];
+                if (!empty($data["POST"]["year"])) $name .= ', ' . $year;
+            }
 
-        if ((int)$section["ID"] === GARAGES_SECTION_ID) {
-            $category = $this->getCheckProperty('category_garage', $data);
-            $type = $this->getCheckProperty('type_garage', $data);
-            $name = $category . ' ' . $type;
-        }
+            if ((int)$section["ID"] === GARAGES_SECTION_ID) {
+                $category = $this->getCheckProperty('category_garage', $data);
+                $type = $this->getCheckProperty('type_garage', $data);
+                $name = $category . ' ' . $type;
+            }
 
-        if((int)$section["ID"] === SERVICES_SECTION_ID) {
-            $name = trim($data['POST']['contact_person']) ?? '';
-            $serviceSection = SectionTable::getById($data['POST']['IBLOCK_SECTION_ID'])->fetch();
-            if($serviceSection) {
-                $name .= " | " . $serviceSection['NAME'];
+            if((int)$section["ID"] === SERVICES_SECTION_ID) {
+                $name = trim($data['POST']['contact_person']) ?? '';
+                $serviceSection = SectionTable::getById($data['POST']['IBLOCK_SECTION_ID'])->fetch();
+                if($serviceSection) {
+                    $name .= " | " . $serviceSection['NAME'];
+                }
             }
         }
 
