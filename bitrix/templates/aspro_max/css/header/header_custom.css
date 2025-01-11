@@ -227,7 +227,7 @@ div.header-v27.new-header .logo_and_menu-row .wrap_icon > *:hover .svg:not(.icon
 }
 
 div.header-v27.new-header .auth_wr_inner.with_dropdown > .svg.inline {
-  right: 5px;
+  right: 0;
 }
 
 div.header-v27.new-header i.svg.svg-inline-cabinet svg path{
