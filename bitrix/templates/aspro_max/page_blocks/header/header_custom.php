@@ -101,6 +101,14 @@ $dopClass = 'wides_menu smalls big_header';
                                         </div>
                                     </div>
                                 <?php else:?>
+<!--                                    Получение номера кабинета пользователя-->
+                                    <?php
+                                        $cabinetNumber = \Bitrix\Main\UserTable::getList([
+                                            'select' => ['UF_CABINET_NUMBER'],
+                                            'filter' => ['=ID' => \Bitrix\Main\Engine\CurrentUser::get()->getId()],
+                                        ])->fetch();
+                                        $cabinetNumber = ($cabinetNumber['UF_CABINET_NUMBER']) ?: "";
+                                    ?>
                                     <div class="line-block line-block--40 line-block--40-1200">
                                         <div class="line-block__item no-shrinked">
                                             <div class="wrap_icon inner-table-block1 person">
@@ -113,7 +121,7 @@ $dopClass = 'wides_menu smalls big_header';
                                                                 <path fill-rule="evenodd" clip-rule="evenodd" d="M6.84631 6.44704C8.42484 6.44704 9.2141 5.66889 9.2141 3.72352C9.2141 1.77815 8.42484 1 6.84631 1C5.26778 1 4.47852 1.77815 4.47852 3.72352C4.47852 5.66889 5.26778 6.44704 6.84631 6.44704Z" stroke="#505456" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
                                                             </svg>
                                                         </i>
-                                                        <span class="wrap"><span class="name">Личный кабинет</span></span>
+                                                        <span class="wrap"><span class="name">Кабинет №<?=$cabinetNumber?></span></span>
                                                     </a>
                                                     <i class="svg downs big inline " aria-hidden="true">
                                                         <svg width="5" height="3">
