@@ -44,6 +44,38 @@ $APPLICATION->SetAdditionalCSS("/bitrix/css/" . $mid . "/style.css");
     </pre>
 </div>
 
+<div style="margin-bottom: 50px">
+    Для отображения кнопок "Регистрация как ФИЗ лицо", "Регистрация как Юр. лицо" в форме авторизации:
+    В файле <i>bitrix/templates/aspro_max/components/bitrix/system.auth.form/main/template.php</i> вместо кода
+    <pre>
+        <?= htmlspecialchars('<a href="<?= $arResult[\'AUTH_REGISTER_URL\']; ?>" rel="nofollow" class="btn btn-transparent-border-color btn-lg pull-right register" tabindex="6"><?= GetMessage(\'AUTH_REGISTER_NEW\') ?></a>') ?>
+    </pre>
+
+    вставить код:
+    <pre>
+        <?= htmlspecialchars('<div class="pull-right" style="width: max-content;display: flex;flex-direction: column; gap: 10px">
+             <a href="<?= $arResult[\'AUTH_REGISTER_URL\']; ?>" rel="nofollow" class="btn btn-transparent-border-color btn-lg pull-right register" tabindex="6"><?= GetMessage(\'AUTH_REGISTER_FIS\') ?></a>
+             <a href="/info/faq/?tab=accordion34_10" rel="nofollow" class="btn btn-transparent-border-color btn-lg pull-right register" tabindex="6"><?= GetMessage(\'AUTH_REGISTER_LEGAL\') ?></a>
+         </div>')?>
+
+    </pre>
+</div>
+
+<div style="margin-bottom: 50px">
+    Для отображения открытого аккордиона на странице /info/faq/ при нажатии на кнопку "Регистрация как Юр. лицо" в форме авторизации:
+    В файл <i>bitrix/templates/aspro_max/components/bitrix/news.list/items-list/script.js</i> добавить код:
+    <pre>
+        const urlObj = new URL(window.location);
+        const searchParams = urlObj.searchParams;
+        let accordionId = searchParams.get('tab');
+
+        if(accordionId) {
+            const accordion = document.querySelector(`.accordion-head[href='#${accordionId}']`);
+            accordion?.parentElement.classList.add('opened');
+            accordion?.click();
+        }
+    </pre>
+</div>
 
 
 <h3>Кроны</h3>
