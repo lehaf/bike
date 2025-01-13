@@ -1,6 +1,3 @@
-<?php \Bitrix\Main\Page\Asset::getInstance()->addCss(SITE_TEMPLATE_PATH . "/css/catalog/section-list.css", ['GROUP' => 1000]); ?>
-<?php \Bitrix\Main\Page\Asset::getInstance()->addCss(SITE_TEMPLATE_PATH . "/css/catalog/section-block.css", ['GROUP' => 1000]); ?>
-<?php \Bitrix\Main\Page\Asset::getInstance()->addCss(SITE_TEMPLATE_PATH . "/css/catalog/section-table.css", ['GROUP' => 1000]); ?>
 <?
 global $bHeaderStickyMenu, $bHeaderStickyMenuSm, $arTheme;
 if ($bHeaderStickyMenu || $bHeaderStickyMenuSm) {
@@ -10,7 +7,7 @@ if ($bHeaderStickyMenu || $bHeaderStickyMenuSm) {
     }
 }
 
-if ((int)$arSection["ID"] === ALL_TRANSPORT_SECTION) {
+if ((int)$arSection["ID"] === TRANSPORT_SECTION_ID) {
     LocalRedirect($_SERVER['REQUEST_URI'] . 'bike/', true, '301 Moved Permanently');
     exit();
 }
@@ -593,12 +590,6 @@ $parentsId[] = $arResult["VARIABLES"]["SECTION_ID"];
                 ), $component, array("HIDE_ICONS" => $isAjax)
             ); ?>
 
-            <p class="font_sxs" style="color: #999; margin-top: 30px">
-                Расчёты осуществляются в белорусских рублях. Сумма в иностранной валюте (после знака ≈)
-                указана как эквивалент для определения стоимости (цены) в белорусских рублях по курсу НБРБ или
-                определённому рекламодателем (заказчиком).
-            </p>
-
             <!--noindex-->
             <script class="smart-filter-filter" data-skip-moving="true">
                 <?if($SMART_FILTER_FILTER) {?>
@@ -617,8 +608,6 @@ $parentsId[] = $arResult["VARIABLES"]["SECTION_ID"];
                 </div>
                 <? $frame->end(); ?>
             <? } ?>
-
-
         <? else: ?>
             <div class="no_goods">
                 <div class="no_products">
