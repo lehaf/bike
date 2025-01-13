@@ -598,11 +598,7 @@ if ($bHideSideSectionBlock) {
 				<?endif;?>
 			</div>
 		</div>
-        <p class="font_sxs" style="color: #999; margin-top: 30px">
-            Расчёты осуществляются в белорусских рублях. Сумма в иностранной валюте (после знака ≈)
-            указана как эквивалент для определения стоимости (цены) в белорусских рублях по курсу НБРБ или
-            определённому рекламодателем (заказчиком).
-        </p>
+        <?@include_once($_SERVER['DOCUMENT_ROOT'] . '/include/section_info.php');?>
 		<?CMax::get_banners_position('CONTENT_BOTTOM');
 		global $bannerContentBottom;
 		$bannerContentBottom = true;
