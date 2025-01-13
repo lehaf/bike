@@ -77,6 +77,17 @@ $APPLICATION->SetAdditionalCSS("/bitrix/css/" . $mid . "/style.css");
     </pre>
 </div>
 
+<div style="margin-bottom: 50px">
+    Для отображения текста после списка объявлений типа "Расчёты осуществляются в белорусских рублях. Сумма в иностранной валюте (после знака ≈) указана как эквивалент для определения стоимости (цены) в белорусских рублях по курсу НБРБ или определённому рекламодателем (заказчиком)." в выбранном разделе:
+    В файл <i>bitrix/templates/aspro_max/components/bitrix/catalog/main/section.php</i> добавить код:
+    <pre>
+        @include_once($_SERVER['DOCUMENT_ROOT'] . '/include/section_info.php');
+    </pre>
+    после тега div, имеющего класс 'js_wrapper_items'.
+</div>
+
+
+
 
 <h3>Кроны</h3>
 <div>
