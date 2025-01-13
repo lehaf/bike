@@ -99,5 +99,16 @@ if (isset($_POST['action'])) {
 
         echo json_encode($newAllRegions);
         die();
+    } elseif($_POST['action'] === 'check') {
+        $entityElement = \Bitrix\Iblock\Iblock::wakeUp(CATALOG_IBLOCK_ID)->getEntityDataClass();
+        $element = $entityElement::getList([
+            'filter' => [
+                'USER.VALUE' => \Bitrix\Main\Engine\CurrentUser::get()->getId(),
+                'exp_id.VALUE' => $_POST['value'],
+                '!=ID' => ($_POST['actionPage'] === 'edit') ? $_POST['elementId'] : 0
+            ]
+        ])->fetch();
+        $result = ($element) ? ['status' => 'ERROR', 'ERRORS' => ['exp_id' => 'Объявление с таким артиклом уже существует']] : ['status' => 'OK'];
+        echo json_encode($result);
     }
 }

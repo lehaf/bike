@@ -2,9 +2,11 @@
 <? $this->setFrameMode(true); ?>
 <? use \Bitrix\Main\Localization\Loc,
     \Bitrix\Main\Web\Json; ?>
+
 <?php \Bitrix\Main\Page\Asset::getInstance()->addCss(SITE_TEMPLATE_PATH . "/css/catalog/section-list.css", ['GROUP' => 1000]); ?>
 <?php \Bitrix\Main\Page\Asset::getInstance()->addCss(SITE_TEMPLATE_PATH . "/css/catalog/section-block.css", ['GROUP' => 1000]); ?>
 <?php \Bitrix\Main\Page\Asset::getInstance()->addCss(SITE_TEMPLATE_PATH . "/css/catalog/section-table.css", ['GROUP' => 1000]); ?>
+
 <?
 $bShowOfferTree = $arParams["SHOW_OFFER_TREE_IN_TABLE"] === "Y";
 $bHideProps = $arParams['SHOW_PROPS_TABLE'] == 'not' || !isset($arParams['SHOW_PROPS_TABLE']);
@@ -327,6 +329,13 @@ $bColProps = $arParams['SHOW_PROPS_TABLE'] == 'cols';
                                         <div class="product-description">
                                             <?php if (array_intersect($arResult['LEVEL_PARENTS'], SECTION_TYPE_1)): ?>
                                                 <div class="product-description__left">
+                                                    <?php if (!empty($arItem['PROPERTIES']['exp_id']['VALUE'])): ?>
+                                                        <div class="article_block">
+                                                            <div class="muted"><?= Loc::getMessage('ARTICLE_FULL'); ?>
+                                                                : <?= $arItem['PROPERTIES']['exp_id']['VALUE']; ?>
+                                                            </div>
+                                                        </div>
+                                                    <?php endif; ?>
                                                     <div class="product-description__el">
                                                         <?php if (!empty($arItem['PROPERTIES']['power']['VALUE'])): ?>
                                                             <div class="product-description__i">
@@ -416,17 +425,17 @@ $bColProps = $arParams['SHOW_PROPS_TABLE'] == 'cols';
                                                             </div>
                                                         <? endif; ?>
 
-                                                        <?php if (array_intersect($arResult['LEVEL_PARENTS'], SECTION_TYPE_4)): ?>
+                                                        <?php if (array_intersect($arResult['LEVEL_PARENTS'], SECTION_TYPE_4) && !empty($arItem['PROPERTIES']['status']['VALUE_XML_ID'])): ?>
                                                             <div class="item-stock">
                                                                 <span class="icon <?= $arItem['PROPERTIES']['status']['VALUE_XML_ID'] ?>"></span>
                                                                 <span class="value font_sxs"><?= $arItem['PROPERTIES']['status']['VALUE'] ?></span>
                                                             </div>
                                                         <?php endif; ?>
 
-                                                        <?php if (!empty($arItem['PROPERTIES']['article_part']['VALUE']) && (array_intersect($arResult['LEVEL_PARENTS'], array_merge(SECTION_TYPE_2, SECTION_TYPE_4)))): ?>
+                                                        <?php if (!empty($arItem['PROPERTIES']['exp_id']['VALUE'])): ?>
                                                             <div class="article_block">
                                                                 <div class="muted"><?= Loc::getMessage('ARTICLE_FULL'); ?>
-                                                                    : <?= $arItem['PROPERTIES']['article_part']['VALUE']; ?>
+                                                                    : <?= $arItem['PROPERTIES']['exp_id']['VALUE']; ?>
                                                                 </div>
                                                             </div>
                                                         <?php endif; ?>

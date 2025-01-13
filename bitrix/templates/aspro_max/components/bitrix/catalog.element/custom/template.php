@@ -2,6 +2,17 @@
 <? $this->setFrameMode(true); ?>
 <? use \Bitrix\Main\Localization\Loc; ?>
 
+
+<?php
+//if ($USER->IsAuthorized()) {
+//    pr('hello');
+////    define("ERROR_404", "Y");
+////    \CHTTP::SetStatus("404 Not Found");
+////    include $_SERVER["DOCUMENT_ROOT"] . "/404.php";
+//    die();
+//}
+//?>
+
 <?php $section ?>
     <div class="basket_props_block" id="bx_basket_div_<?= $arResult["ID"]; ?>" style="display: none;">
         <? if (!empty($arResult['PRODUCT_PROPERTIES_FILL'])) {
@@ -683,7 +694,7 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']) + $offerPropCount;
                                                       fill="#666666"/>
                                             </svg>
                                             <div class="_info-product_el__text">
-                                                <?= $arResult['ID'] ?>
+                                                <?= $arResult['PROPERTIES']['exp_id']['VALUE'] ?>
                                             </div>
                                         </div>
                                     </div>
@@ -1071,10 +1082,10 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']) + $offerPropCount;
                     </div>
 
                     <? //dop text?>
-                    <? $path = SITE_DIR . "include/element_detail_text.php" ?>
-                    <div class="price_txt muted font_sxs<?= ((CMax::checkContentFile($path) ? ' filed' : '')); ?>">
-                        <? $APPLICATION->IncludeFile($path, array(), array("MODE" => "html", "NAME" => GetMessage('CT_BCE_CATALOG_DOP_DESCR'))); ?>
-                    </div>
+<!--                    --><?// $path = SITE_DIR . "include/element_detail_text.php" ?>
+<!--                    <div class="price_txt muted font_sxs--><?php //= ((CMax::checkContentFile($path) ? ' filed' : '')); ?><!--">-->
+<!--                        --><?// $APPLICATION->IncludeFile($path, array(), array("MODE" => "html", "NAME" => GetMessage('CT_BCE_CATALOG_DOP_DESCR'))); ?>
+<!--                    </div>-->
                 </div>
             </div>
 
@@ -1216,9 +1227,9 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']) + $offerPropCount;
     <? $this->EndViewTarget(); ?>
 <? endif; ?>
 
-<!--    --><?// $this->SetViewTarget('SMALL_TEXT'); ?>
-<!--    --><?// $APPLICATION->IncludeFile(SITE_DIR . "include/element_detail_text.php", array(), array("MODE" => "html", "NAME" => GetMessage('CT_BCE_CATALOG_DOP_DESCR'))); ?>
-<!--    --><?// $this->EndViewTarget(); ?>
+    <? $this->SetViewTarget('SMALL_TEXT'); ?>
+    <? $APPLICATION->IncludeFile(SITE_DIR . "include/element_detail_text.php", array(), array("MODE" => "html", "NAME" => GetMessage('CT_BCE_CATALOG_DOP_DESCR'))); ?>
+    <? $this->EndViewTarget(); ?>
 
 <? //additional gallery?>
 <? if ($arResult['ADDITIONAL_GALLERY']): ?>
