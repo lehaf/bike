@@ -379,7 +379,7 @@ class CreateElement extends \CBitrixComponent
                 $type = $this->getCheckProperty('type_' . $section['CODE'], $data);
                 $year = $this->getCheckProperty('year', $data);
 
-                $name = $type . ' ' . $data["POST"]["SECTION"] . ' ' . $data["POST"]["SUBSECTION"];
+                $name = $type . ', ' . $data["POST"]["SECTION"] . ' ' . $data["POST"]["SUBSECTION"];
                 if (!empty($data["POST"]["year"])) $name .= ', ' . $year;
             }
 

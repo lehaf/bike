@@ -471,7 +471,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 } else {
                     let subCategoryBlock = document.querySelector('.subcategory');
-                    if (subCategoryBlock && subCategoryBlock.children.length === 0) {
+                    let nextFormGroup = subCategoryBlock?.nextElementSibling;
+                    if (subCategoryBlock && !nextFormGroup.classList.contains('form-group')) {
                         subCategoryBlock.closest('.step-form__inner').remove();
                     }
                     getFields(sectId);
@@ -971,8 +972,9 @@ document.addEventListener("DOMContentLoaded", () => {
             let formData = new FormData(event.target);
             formData.append('ajax', 'Y');
             formData.append('action', 'add');
+            console.log(params);
             if (params['element']) {
-                formData.set('action', 'edit');
+                formData.set('action', params['action']);
             }
 
             console.log(fileListImg);

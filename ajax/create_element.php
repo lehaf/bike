@@ -22,7 +22,7 @@ if (isset($_POST['action'])) {
                 foreach ($categories as $category) {
                     $options .= '<option value="' . $category['ID'] . '">' . $category['NAME'] . '</option>';
                 }
-                $html = '<label for="categorySelect" class="form-group__label">Подкатегория товара<span>*</span></label>
+                $html = '<label for="categorySelect" class="form-group__label">Подкатегория товара/услуги<span>*</span></label>
                                     <div class="form-row">
                                         <select name="SUBCATEGORY" class="select-type custom-select selectSearch check-block"
                                                 id="subCategorySelect" data-text="Поиск по названию" data-select="subcat-list">
@@ -34,7 +34,7 @@ if (isset($_POST['action'])) {
                             </option>';
                 $html .= $options;
                 $html .= '</select>
-                      <div class="error-form">Необходимо заполнить «Подкатегория товара»</div>
+                      <div class="error-form">Необходимо заполнить «Подкатегория товара/услуги»</div>
                       </div>';
             }
             echo json_encode($html);
