@@ -18,3 +18,8 @@
 body .right_block.wide_ {
     width: calc(100% - 290px) !important;
 }
+
+.breadcrumbs__dropdown {
+    max-height: 60vh;
+    overflow: auto;
+}
