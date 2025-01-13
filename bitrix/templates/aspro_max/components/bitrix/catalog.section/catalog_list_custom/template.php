@@ -2,7 +2,9 @@
 <? $this->setFrameMode(true); ?>
 <? use \Bitrix\Main\Localization\Loc,
     \Bitrix\Main\Web\Json; ?>
-
+<?php \Bitrix\Main\Page\Asset::getInstance()->addCss(SITE_TEMPLATE_PATH . "/css/catalog/section-list.css", ['GROUP' => 1000]); ?>
+<?php \Bitrix\Main\Page\Asset::getInstance()->addCss(SITE_TEMPLATE_PATH . "/css/catalog/section-block.css", ['GROUP' => 1000]); ?>
+<?php \Bitrix\Main\Page\Asset::getInstance()->addCss(SITE_TEMPLATE_PATH . "/css/catalog/section-table.css", ['GROUP' => 1000]); ?>
 <? if (count($arResult["ITEMS"]) >= 1) { ?>
     <?
     $arTransferParams = array(
@@ -264,6 +266,11 @@
                                 <?php if (array_intersect($arResult['LEVEL_PARENTS'], SECTION_TYPE_1)): ?>
                                     <div class="description__name-product">
                                         <?= $arItem['PROPERTIES']['type_' . $arParams['SECTION_CODE']]['VALUE'] ?>
+                                        <?= (!empty($arItem['PROPERTIES']['exp_id']['VALUE']) && !empty($arItem['PROPERTIES']['type_' . $arParams['SECTION_CODE']]['VALUE'])) ? '|' : ''?>
+                                        <?php if (!empty($arItem['PROPERTIES']['exp_id']['VALUE'])): ?>
+                                           <?= Loc::getMessage('ARTICLE_FULL'); ?>
+                                            : <?= $arItem['PROPERTIES']['exp_id']['VALUE']; ?>
+                                        <?php endif; ?>
                                     </div>
                                 <?php else: ?>
                                     <div class="wrapp_stockers md-store sa_block <?= ($arParams["SHOW_RATING"] == "Y" ? 'with-rating' : ''); ?>"
@@ -312,7 +319,7 @@
                                             </div>
                                         <? endif; ?>
 
-                                        <?php if (array_intersect($arResult['LEVEL_PARENTS'], SECTION_TYPE_4)): ?>
+                                        <?php if (array_intersect($arResult['LEVEL_PARENTS'], SECTION_TYPE_4) && !empty($arItem['PROPERTIES']['status']['VALUE_XML_ID'])): ?>
                                             <div class="item-stock">
                                                 <span class="icon <?= $arItem['PROPERTIES']['status']['VALUE_XML_ID'] ?>"></span>
                                                 <span class="value font_sxs"><?= $arItem['PROPERTIES']['status']['VALUE'] ?></span>
@@ -322,10 +329,10 @@
                                         <!--                                        --><? // if (isset($arQuantityDataCMP) && $arQuantityDataCMP && $arItem['OFFERS'] && !empty($arItem['OFFERS_PROP'])): ?>
                                         <!--                                            --><?php //= $arQuantityDataCMP["HTML"]; ?>
                                         <!--                                        --><? // endif; ?>
-                                        <?php if (!empty($arItem['PROPERTIES']['article_part']['VALUE']) && (array_intersect($arResult['LEVEL_PARENTS'], array_merge(SECTION_TYPE_2, SECTION_TYPE_4)))): ?>
+                                        <?php if (!empty($arItem['PROPERTIES']['exp_id']['VALUE'])): ?>
                                             <div class="article_block muted font_sxs">
                                                 <?= Loc::getMessage('ARTICLE_FULL'); ?>
-                                                : <?= $arItem['PROPERTIES']['article_part']['VALUE']; ?>
+                                                : <?= $arItem['PROPERTIES']['exp_id']['VALUE']; ?>
                                             </div>
                                         <?php endif; ?>
                                     </div>

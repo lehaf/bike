@@ -471,7 +471,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 } else {
                     let subCategoryBlock = document.querySelector('.subcategory');
-                    if (subCategoryBlock && subCategoryBlock.children.length === 0) {
+                    let nextFormGroup = subCategoryBlock?.nextElementSibling;
+                    if (subCategoryBlock && !nextFormGroup.classList.contains('form-group')) {
                         subCategoryBlock.closest('.step-form__inner').remove();
                     }
                     getFields(sectId);
@@ -916,9 +917,8 @@ document.addEventListener("DOMContentLoaded", () => {
         let flag = !$(this).hasClass("form__btn--disable") ? true : false;
         let parent = $(this).parent();
         let listCheck = parent.find(".check-block");
-        $(".error-form").removeClass("show");
-        $(".error").removeClass("error");
-
+        // $(".error-form").removeClass("show");
+        // $(".error").removeClass("error");
         if (listCheck.length) {
             $.each(listCheck, function (i, el) {
                 let tagName = el.tagName.toLowerCase();
@@ -939,6 +939,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     flag = true
                 }
             })
+            let errors = parent[0].querySelectorAll('.error-form.show');
+            if(errors.length !== 0) {
+                flag = false;
+            }
         } else flag = true
 
         if (flag) {
@@ -971,8 +975,9 @@ document.addEventListener("DOMContentLoaded", () => {
             let formData = new FormData(event.target);
             formData.append('ajax', 'Y');
             formData.append('action', 'add');
+            console.log(params);
             if (params['element']) {
-                formData.set('action', 'edit');
+                formData.set('action', params['action']);
             }
 
             console.log(fileListImg);
@@ -1043,33 +1048,8 @@ document.addEventListener("DOMContentLoaded", () => {
                             })
                         }
 
-                        for (let key in data['ERRORS']) {
-                            let element = document.querySelector('[name="' + key + '"]') || document.querySelector('[name="' + key + '[]"]');
-                            if (key === "country") {
-                                let parentCountryBlock = element.closest('.step-form__inner');
-                                let checkBlocks = parentCountryBlock.querySelectorAll('.check-block.country');
-                                checkBlocks.forEach(block => {
-                                    if (!block.value || block.value == 0) {
-                                        block.closest(".form-group").querySelector(".choices__inner").classList.add("error");
-                                        block.closest(".form-group").querySelector(".error-form").classList.add("show");
-                                    }
-                                })
-                            }
+                        setErrors(data['ERRORS']);
 
-                            if (element) {
-                                let tagName = element.tagName;
-                                let parentElement = element.closest('.form-col') || element.closest('.form-group:not(.form-group--tel)') || element.closest('.form-row');
-
-                                if (tagName === "SELECT") {
-                                    parentElement.querySelector(".choices__inner").classList.add("error");
-                                } else {
-                                    element.classList.add("error");
-                                }
-
-                                let errorBlock = parentElement.querySelector('.error-form');
-                                if (errorBlock) errorBlock.classList.add('show');
-                            }
-                        }
                         $("#stepForm").removeClass('blur');
                         let hiddenElem = document.querySelector('.error-form.show');
                         hiddenElem.scrollIntoView({block: "center", behavior: "smooth"});
@@ -1256,4 +1236,53 @@ document.addEventListener("DOMContentLoaded", () => {
         return blob;
     }
 
+    function setErrors(errors) {
+        for (let key in errors) {
+            let element = document.querySelector('[name="' + key + '"]') || document.querySelector('[name="' + key + '[]"]');
+            if (key === "country") {
+                let parentCountryBlock = element.closest('.step-form__inner');
+                let checkBlocks = parentCountryBlock.querySelectorAll('.check-block.country');
+                checkBlocks.forEach(block => {
+                    if (!block.value || block.value == 0) {
+                        block.closest(".form-group").querySelector(".choices__inner").classList.add("error");
+                        block.closest(".form-group").querySelector(".error-form").classList.add("show");
+                    }
+                })
+            }
+
+            if (element) {
+                let tagName = element.tagName;
+                let parentElement = element.closest('.form-col') || element.closest('.form-group:not(.form-group--tel)') || element.closest('.form-row');
+
+                if (tagName === "SELECT") {
+                    parentElement.querySelector(".choices__inner").classList.add("error");
+                } else {
+                    element.classList.add("error");
+                }
+
+                let errorBlock = parentElement.querySelector('.error-form');
+                if (errorBlock) {
+                    errorBlock.classList.add('show');
+                    errorBlock.innerHTML = errors[key];
+                }
+            }
+        }
+    }
+
+    let expIdInput = document.querySelector('#exp_id');
+    expIdInput?.addEventListener('blur', (event) => {
+        fetch('/ajax/create_element.php', {
+            method: 'POST',
+            body: new URLSearchParams({action:'check', value:event.target.value, elementId: params['element'], actionPage: params['action']}),
+            headers: {'X-Requested-With': 'XMLHttpRequest'}
+        }).then(res => {
+            return res.json();
+        }).then(data => {
+            if(data['status'] === 'ERROR') {
+                setErrors(data['ERRORS'])
+            }
+           console.log(data);
+        }).catch((error) => console.log(error));
+
+    })
 })

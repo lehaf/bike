@@ -2,6 +2,17 @@
 <? $this->setFrameMode(true); ?>
 <? use \Bitrix\Main\Localization\Loc; ?>
 
+
+<?php
+//if ($USER->IsAuthorized()) {
+//    pr('hello');
+////    define("ERROR_404", "Y");
+////    \CHTTP::SetStatus("404 Not Found");
+////    include $_SERVER["DOCUMENT_ROOT"] . "/404.php";
+//    die();
+//}
+//?>
+
 <?php $section ?>
     <div class="basket_props_block" id="bx_basket_div_<?= $arResult["ID"]; ?>" style="display: none;">
         <? if (!empty($arResult['PRODUCT_PROPERTIES_FILL'])) {
@@ -683,7 +694,7 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']) + $offerPropCount;
                                                       fill="#666666"/>
                                             </svg>
                                             <div class="_info-product_el__text">
-                                                <?= $arResult['ID'] ?>
+                                                <?= $arResult['PROPERTIES']['exp_id']['VALUE'] ?>
                                             </div>
                                         </div>
                                     </div>

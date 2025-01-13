@@ -3,8 +3,12 @@
 <? $this->setFrameMode(true); ?>
 <? use \Bitrix\Main\Localization\Loc,
     \Bitrix\Main\Web\Json; ?>
-<? $arParams["SHOW_HINTS"] = "N"; ?>
 
+<?php \Bitrix\Main\Page\Asset::getInstance()->addCss(SITE_TEMPLATE_PATH . "/css/catalog/section-list.css", ['GROUP' => 1000]); ?>
+<?php \Bitrix\Main\Page\Asset::getInstance()->addCss(SITE_TEMPLATE_PATH . "/css/catalog/section-block.css", ['GROUP' => 1000]); ?>
+<?php \Bitrix\Main\Page\Asset::getInstance()->addCss(SITE_TEMPLATE_PATH . "/css/catalog/section-table.css", ['GROUP' => 1000]); ?>
+
+<? $arParams["SHOW_HINTS"] = "N"; ?>
 <? if ($arResult["ITEMS"]): ?>
     <?
     $arTransferParams = array(
@@ -335,20 +339,33 @@
                         <div class="item_info_product">
                             <?= (!empty($arItem['PROPERTIES']['year']['VALUE'])) ? $arItem['PROPERTIES']['year']['VALUE'] . ', ' : '' ?> <?= $arItem['PROPERTIES']['race']['VALUE'] ?> <?= $arItem['PROPERTIES']['race_unit']['VALUE_ENUM'] ?>
                         </div>
+                        <?php if (!empty($arItem['PROPERTIES']['exp_id']['VALUE'])): ?>
+                            <div class="sa_block " data-fields='<?= Json::encode($arParams["FIELDS"]) ?>'
+                                 data-stores='<?= Json::encode($arParams["STORES"]) ?>'
+                                 data-user-fields='<?= Json::encode($arParams["USER_FIELDS"]) ?>'>
+                                <?php if (!empty($arItem['PROPERTIES']['exp_id']['VALUE'])): ?>
+                                    <div class="article_block">
+                                        <div class="muted font_sxs"><?= Loc::getMessage('ARTICLE_FULL'); ?>
+                                            : <?= $arItem['PROPERTIES']['exp_id']['VALUE']; ?>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                        <?php endif; ?>
                     <?php else: ?>
                         <div class="sa_block " data-fields='<?= Json::encode($arParams["FIELDS"]) ?>'
                              data-stores='<?= Json::encode($arParams["STORES"]) ?>'
                              data-user-fields='<?= Json::encode($arParams["USER_FIELDS"]) ?>'>
-                            <?php if (array_intersect($arResult['LEVEL_PARENTS'], SECTION_TYPE_4)): ?>
+                            <?php if (array_intersect($arResult['LEVEL_PARENTS'], SECTION_TYPE_4) && !empty($arItem['PROPERTIES']['status']['VALUE_XML_ID'])): ?>
                                 <div class="item-stock">
                                     <span class="icon <?= $arItem['PROPERTIES']['status']['VALUE_XML_ID'] ?>"></span>
                                     <span class="value font_sxs"><?= $arItem['PROPERTIES']['status']['VALUE'] ?></span>
                                 </div>
                             <?php endif; ?>
-                            <?php if (!empty($arItem['PROPERTIES']['article_part']['VALUE']) && (array_intersect($arResult['LEVEL_PARENTS'], array_merge(SECTION_TYPE_2, SECTION_TYPE_4)))): ?>
+                            <?php if (!empty($arItem['PROPERTIES']['exp_id']['VALUE'])): ?>
                                 <div class="article_block">
                                     <div class="muted font_sxs"><?= Loc::getMessage('ARTICLE_FULL'); ?>
-                                        : <?= $arItem['PROPERTIES']['article_part']['VALUE']; ?>
+                                        : <?= $arItem['PROPERTIES']['exp_id']['VALUE']; ?>
                                     </div>
                                 </div>
                             <?php endif; ?>
