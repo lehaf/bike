@@ -361,7 +361,7 @@ $price = $arResult['ITEMS']['BASE'];
 
     <!--    артикул-->
     <div class="form-row flex-row">
-        <div class="form-row__col">
+        <div class="form-row__col-30">
             <div class="form-row__col">
                 <input
                         type="text"
@@ -378,7 +378,41 @@ $price = $arResult['ITEMS']['BASE'];
                     </span>
             </div>
         </div>
-        <div class="form-row__col">
+        <?php if (!empty($arResult['ITEMS']['saller']['VALUES'])): ?>
+            <div class="form-row__col-30">
+                <div class="form-row form-row-radio-block">
+                    <?php $curSaller = current($arResult['ITEMS']['saller']['VALUES']) ?>
+                    <div class="form-col grow-1">
+                        <input
+                                type="radio"
+                                class="radio-block"
+                                name="<?= $curSaller['CONTROL_NAME_ALT'] ?>"
+                                id="all_<?= $curSaller['CONTROL_ID'] ?>"
+                                value=""
+                                checked=""
+                        >
+                        <label for="all_<?= $curSaller['CONTROL_ID'] ?>" class="radio-block__label">Неважно</label>
+                    </div>
+
+                    <?php foreach ($arResult['ITEMS']['saller']['VALUES'] as $ar): ?>
+                        <div class="form-col grow-1">
+                            <input
+                                    type="radio"
+                                    class="radio-block"
+                                    name="<?= $ar['CONTROL_NAME_ALT'] ?>"
+                                    id="<?= $ar['CONTROL_ID'] ?>"
+                                    value="<?= $ar['HTML_VALUE_ALT'] ?>"
+                                    data-val="<?= $ar['VALUE'] ?>"
+                                <?= ($ar["CHECKED"]) ? 'checked' : '' ?>
+                            >
+                            <label for="<?= $ar['CONTROL_ID'] ?>"
+                                   class="radio-block__label"><?= $ar['VALUE'] ?></label>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        <?php endif; ?>
+        <div class="form-row__col-30">
             <div class="form-row form-row-checkbox selection-block-checkbox-row">
                 <div class="col">
                     <input type="checkbox" class="input-checkbox" name="<?= $arParams['FILTER_NAME'] ?>_photo"
