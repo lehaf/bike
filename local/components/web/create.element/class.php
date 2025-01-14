@@ -488,8 +488,32 @@ class CreateElement extends \CBitrixComponent
             'filter' => ['=ID' => \Bitrix\Main\Engine\CurrentUser::get()->getId()],
         ])->fetch();
 
-        if($userBrand) {
+
+        if($userBrand['UF_BRAND_ID']) {
             $newElement->set("BRAND", $userBrand['UF_BRAND_ID']);
+            $userType = 'legal';
+        } else {
+            $newElement->set("saller", "legal");
+            $userType = 'fis';
+        }
+
+        $property = \Bitrix\Iblock\PropertyTable::getList([
+            'filter' => [
+                'IBLOCK_ID' => CATALOG_IBLOCK_ID,
+                'CODE' => 'saller',
+            ],
+            'select' => ['ID'],
+        ])->fetch();
+
+        if($property['ID']) {
+            $enum = \Bitrix\Iblock\PropertyEnumerationTable::getList([
+                'filter' => [
+                    'PROPERTY_ID' => $property['ID'],
+                    'XML_ID' => $userType,
+                ],
+                'select' => ['ID'],
+            ])->fetch();
+            $newElement->set("saller", $enum['ID']);
         }
 
         $arTransParams = array(
