@@ -568,16 +568,16 @@ $price = $arResult['ITEMS']['BASE'];
 
             <div class="form-row__col-30 gap-20">
                 <!--            число тактов-->
-                <?php if (!empty($arResult['ITEMS']['cycles_number_' . $sectCode]['VALUES'])): ?>
+                <?php if (!empty($arResult['ITEMS']['transmission_' . $sectCode]['VALUES'])): ?>
                     <div class="form-row__col">
                         <div class="custom-select-inner form-group-custom-select">
                             <div class="custom-select--multiple">
                                 <select id="cycles"
-                                        name="<?= current($arResult['ITEMS']['cycles_number_' . $sectCode]['VALUES'])['CONTROL_NAME_ALT'] ?>"
+                                        name="<?= current($arResult['ITEMS']['transmission_' . $sectCode]['VALUES'])['CONTROL_NAME_ALT'] ?>"
                                         multiple>
                                     <option placeholder>Число тактов</option>
                                     <option value="reset">Любое</option>
-                                    <?php foreach ($arResult['ITEMS']['cycles_number_' . $sectCode]['VALUES'] as $ar): ?>
+                                    <?php foreach ($arResult['ITEMS']['transmission_' . $sectCode]['VALUES'] as $ar): ?>
                                         <option
                                                 id="<?= $ar['CONTROL_ID'] ?>"
                                                 value="<?= $ar["HTML_VALUE_ALT"] ?>"
