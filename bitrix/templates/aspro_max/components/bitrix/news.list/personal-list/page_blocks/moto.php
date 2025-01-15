@@ -104,10 +104,10 @@
                                             <?php endif; ?>
                                         </div>
 
-                                        <?php if (!empty($arItem['PROPERTIES']['transmission']['VALUE'])): ?>
+                                        <?php if (!empty($arItem['PROPERTIES']['transmission_' . $sectionCode]['VALUE'])): ?>
                                             <div class="advert-description__inner">
                                                 <div class="advert-description-list__el">
-                                                    <?= $arItem['PROPERTIES']['transmission']['VALUE_ENUM'] ?>
+                                                    <?= $arItem['PROPERTIES']['transmission_' . $sectionCode]['VALUE_ENUM'] ?>
                                                     <span>/</span>
                                                 </div>
                                             </div>
