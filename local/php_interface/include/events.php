@@ -78,35 +78,42 @@ class CustomEvents
         $previousBrandId = $user['UF_BRAND_ID'];
         $newBrandId = $arFields['UF_BRAND_ID'];
 
-        if((!empty($newBrandId) && empty($previousBrandId)) || (!empty($previousBrandId) && empty($newBrandId))) {
-            $property = \Bitrix\Iblock\PropertyTable::getList([
-                'filter' => [
-                    'IBLOCK_ID' => CATALOG_IBLOCK_ID,
-                    'CODE' => 'saller',
-                ],
+        if($previousBrandId != $newBrandId) {
+            $entityIblock = \Bitrix\Iblock\Iblock::wakeUp(CATALOG_IBLOCK_ID)->getEntityDataClass();
+            $elements = $entityIblock::getList([
                 'select' => ['ID'],
-            ])->fetch();
-            $userType = (empty($newBrandId)) ? 'fis' : 'legal';
+                'filter' => ['USER.VALUE' => $arFields['ID']]
+            ])->fetchCollection();
 
-            if($property['ID']) {
-                $entityIblock = \Bitrix\Iblock\Iblock::wakeUp(CATALOG_IBLOCK_ID)->getEntityDataClass();
-                $elements = $entityIblock::getList([
-                    'select' => ['ID'],
-                    'filter' => ['USER.VALUE' => $arFields['ID']]
-                ])->fetchCollection();
-                $enum = \Bitrix\Iblock\PropertyEnumerationTable::getList([
+            if((!empty($newBrandId) && empty($previousBrandId)) || (!empty($previousBrandId) && empty($newBrandId))) {
+                $property = \Bitrix\Iblock\PropertyTable::getList([
                     'filter' => [
-                        'PROPERTY_ID' => $property['ID'],
-                        'XML_ID' => $userType,
+                        'IBLOCK_ID' => CATALOG_IBLOCK_ID,
+                        'CODE' => 'saller',
                     ],
                     'select' => ['ID'],
                 ])->fetch();
+                $userType = (empty($newBrandId)) ? 'fis' : 'legal';
 
-                foreach ($elements as $element) {
-                    $element->setSaller($enum['ID']);
-                    $element->setBrand($arFields['UF_BRAND_ID']);
-                    $element->save();
+                if($property['ID']) {
+                    $enum = \Bitrix\Iblock\PropertyEnumerationTable::getList([
+                        'filter' => [
+                            'PROPERTY_ID' => $property['ID'],
+                            'XML_ID' => $userType,
+                        ],
+                        'select' => ['ID'],
+                    ])->fetch();
+
+                    foreach ($elements as $element) {
+                        $element->setSaller($enum['ID']);
+                        $element->save();
+                    }
                 }
+            }
+
+            foreach ($elements as $element) {
+                $element->setBrand($arFields['UF_BRAND_ID']);
+                $element->save();
             }
         }
     }

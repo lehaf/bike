@@ -99,6 +99,10 @@ $APPLICATION->SetAdditionalCSS("/bitrix/css/" . $mid . "/style.css");
         <p>Файл запускающий крон по обнулению счетчика за текущий день находится по пути: <i>/local/php_interface/cron/elementResetCounter.php</i> (запуск каждый день в 00:00)</p>
         <p>Файл <i>/local/php_interface/cron/elementResetCounter.php</i> использует метод resetTodayCounter из класса  <i>/local/php_interface/classes/Page.php </i></p>
     </div>
+    <div>
+        <p>Файл запускающий крон по обновлению курса валют НЦБ находится по пути: <i>/local/php_interface/cron/currencyRates.php</i> (запуск каждый день в 00:01)</p>
+        <p>Файл <i>/local/php_interface/cron/currencyRates.php</i> использует метод getCurrency из класса  <i>/local/php_interface/classes/CurrencyRates.php </i></p>
+    </div>
 </div>
 
 
