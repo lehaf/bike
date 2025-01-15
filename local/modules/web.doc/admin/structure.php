@@ -95,11 +95,11 @@ $APPLICATION->SetAdditionalCSS("/bitrix/css/" . $mid . "/style.css");
         <p>Файл запускающий крон по отправке писем (сохраненные в фильтре поиски) находится по пути: <i>/local/php_interface/cron/filterMail.php</i> (запуск от 30 минут)</p>
         <p>Файл <i>/local/php_interface/cron/filterMail.php</i> использует метод init из класса  <i>/local/php_interface/classes/Filter.php </i></p>
     </div>
-    <div>
+    <div style="margin-bottom: 30px">
         <p>Файл запускающий крон по обнулению счетчика за текущий день находится по пути: <i>/local/php_interface/cron/elementResetCounter.php</i> (запуск каждый день в 00:00)</p>
         <p>Файл <i>/local/php_interface/cron/elementResetCounter.php</i> использует метод resetTodayCounter из класса  <i>/local/php_interface/classes/Page.php </i></p>
     </div>
-    <div>
+    <div style="margin-bottom: 30px">
         <p>Файл запускающий крон по обновлению курса валют НЦБ находится по пути: <i>/local/php_interface/cron/updateCurrencyRates.php</i> (запуск каждый день в 00:01)</p>
         <p>Файл <i>/local/php_interface/cron/currencyRates.php</i> использует метод getCurrency из класса  <i>/local/php_interface/classes/CurrencyRates.php </i></p>
     </div>
