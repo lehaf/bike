@@ -575,8 +575,8 @@ $price = $arResult['ITEMS']['BASE'];
                                 <select id="cycles"
                                         name="<?= current($arResult['ITEMS']['transmission_' . $sectCode]['VALUES'])['CONTROL_NAME_ALT'] ?>"
                                         multiple>
-                                    <option placeholder>Число тактов</option>
-                                    <option value="reset">Любое</option>
+                                    <option placeholder>Коробка</option>
+                                    <option value="reset">Любая</option>
                                     <?php foreach ($arResult['ITEMS']['transmission_' . $sectCode]['VALUES'] as $ar): ?>
                                         <option
                                                 id="<?= $ar['CONTROL_ID'] ?>"
