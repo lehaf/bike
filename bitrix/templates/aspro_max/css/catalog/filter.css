@@ -1,4 +1,5 @@
-#filter {
+#filter,
+form.step-form{
     line-height: normal;
 }
 
