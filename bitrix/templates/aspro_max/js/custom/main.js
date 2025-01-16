@@ -487,9 +487,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const templateBrandsItem = (id, img, text) => {
         return `
                                 <div class="brand-list__el" data-id="${id}">
-                                    <div class="brand-list__el__img">
-                                        <img src="${img}" alt="img">
-                                    </div>
                                     <div class="brand-list__el__title">
                                         ${text}
                                     </div>
