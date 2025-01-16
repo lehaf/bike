@@ -634,42 +634,18 @@ $price = $arResult['ITEMS']['BASE'];
                         </div>
                     </div>
                 <?php endif; ?>
-                <!--                коробка-->
-                <?php if (!empty($arResult['ITEMS']['transmission']['VALUES'])): ?>
-                    <div class="form-row__col <?= ($arResult['ITEMS']['transmission_' . $sectCode]['HAS_CHECKED']) ? 'store-active' : '' ?>">
-                        <div class="custom-select-inner form-group-custom-select">
-                            <div class="custom-select--multiple">
-                                <select name="<?= current($arResult['ITEMS']['transmission_' . $sectCode]['VALUES'])['CONTROL_NAME_ALT'] ?>"
-                                        id="transmission" multiple>
-                                    <option placeholder>Коробка</option>
-                                    <option value="reset">Любая</option>
-                                    <?php foreach ($arResult['ITEMS']['transmission_' . $sectCode]['VALUES'] as $ar): ?>
-                                        <option
-                                                id="<?= $ar['CONTROL_ID'] ?>"
-                                                value="<?= $ar["HTML_VALUE_ALT"] ?>"
-                                            <?= ($ar["CHECKED"]) ? 'selected' : '' ?>
-                                        >
-                                            <?= $ar["VALUE"] ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                <?php endif; ?>
             </div>
 
-            <!--            число тактов-->
-            <?php if (!empty($arResult['ITEMS']['cycles_number_' . $sectCode]['VALUES'])): ?>
-                <div class="form-row__col form-row__col-30 <?= ($arResult['ITEMS']['cycles_number_' . $sectCode]['HAS_CHECKED']) ? 'store-active' : '' ?>">
+            <!--                коробка-->
+            <?php if (!empty($arResult['ITEMS']['transmission_' . $sectCode]['VALUES'])): ?>
+                <div class="form-row__col-30 <?= ($arResult['ITEMS']['transmission_' . $sectCode]['HAS_CHECKED']) ? 'store-active' : '' ?>">
                     <div class="custom-select-inner form-group-custom-select">
                         <div class="custom-select--multiple">
-                            <select id="cycles"
-                                    name="<?= current($arResult['ITEMS']['cycles_number_' . $sectCode]['VALUES'])['CONTROL_NAME_ALT'] ?>"
-                                    multiple>
-                                <option placeholder>Число тактов</option>
-                                <option value="reset">Любое</option>
-                                <?php foreach ($arResult['ITEMS']['cycles_number_' . $sectCode]['VALUES'] as $ar): ?>
+                            <select name="<?= current($arResult['ITEMS']['transmission_' . $sectCode]['VALUES'])['CONTROL_NAME_ALT'] ?>"
+                                    id="transmission" multiple>
+                                <option placeholder>Коробка</option>
+                                <option value="reset">Любая</option>
+                                <?php foreach ($arResult['ITEMS']['transmission_' . $sectCode]['VALUES'] as $ar): ?>
                                     <option
                                             id="<?= $ar['CONTROL_ID'] ?>"
                                             value="<?= $ar["HTML_VALUE_ALT"] ?>"
