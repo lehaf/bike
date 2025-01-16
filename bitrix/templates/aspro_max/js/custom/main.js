@@ -1271,18 +1271,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let expIdInput = document.querySelector('#exp_id');
     expIdInput?.addEventListener('blur', (event) => {
-        fetch('/ajax/create_element.php', {
-            method: 'POST',
-            body: new URLSearchParams({action:'check', value:event.target.value, elementId: params['element'], actionPage: params['action']}),
-            headers: {'X-Requested-With': 'XMLHttpRequest'}
-        }).then(res => {
-            return res.json();
-        }).then(data => {
-            if(data['status'] === 'ERROR') {
-                setErrors(data['ERRORS'])
-            }
-           console.log(data);
-        }).catch((error) => console.log(error));
-
+        if(expIdInput.value.length !== 0) {
+            fetch('/ajax/create_element.php', {
+                method: 'POST',
+                body: new URLSearchParams({action:'check', value:event.target.value, elementId: params['element'], actionPage: params['action']}),
+                headers: {'X-Requested-With': 'XMLHttpRequest'}
+            }).then(res => {
+                return res.json();
+            }).then(data => {
+                if(data['status'] === 'ERROR') {
+                    setErrors(data['ERRORS'])
+                }
+            }).catch((error) => console.log(error));
+        }
     })
 })
