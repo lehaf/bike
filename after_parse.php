@@ -334,6 +334,20 @@ function deleteElements(int $elementId): void
 
 function createElement(array $data): array
 {
+    $notUserProps = [
+        "ID",
+        "IBLOCK_ID",
+        "IBLOCK_SECTION_ID",
+        "SORT",
+        "NAME",
+        "PREVIEW_PICTURE",
+        "PREVIEW_TEXT",
+        "DETAIL_PICTURE",
+        "DETAIL_TEXT",
+        "CODE",
+        "MORE_PHOTO",
+    ];
+
     $iblockClass = \Bitrix\Iblock\Iblock::wakeUp(CATALOG_IBLOCK_ID)->getEntityDataClass();
     $newElement = $iblockClass::createObject();
     $newElement->setId(0);
@@ -351,6 +365,7 @@ function createElement(array $data): array
     );
     $newElement->set("CODE", \CUtil::translit($data["NAME"], "ru", $arTransParams));
 
+
     foreach ($data as $prop => &$item) {
         if($prop === 'PREVIEW_PICTURE' || $prop === 'DETAIL_PICTURE') {
             $arFile = \CFile::MakeFileArray($_SERVER["DOCUMENT_ROOT"] . "/photos/img/" . $item);
@@ -367,14 +382,26 @@ function createElement(array $data): array
 //
 //            $data[$prop] = $fileId;
 //        }
-
-        if (is_array($item)) {
-            foreach ($item as $value) {
-                $newElement->addTo($prop, new \Bitrix\Iblock\ORM\PropertyValue($value));
+        if(!in_array($prop, $notUserProps)) {
+            $property = \Bitrix\Iblock\PropertyTable::getList([
+                'filter' => [
+                    'IBLOCK_ID' => CATALOG_IBLOCK_ID,
+                    'CODE' => $prop,
+                ],
+                'select' => ['ID', 'PROPERTY_TYPE'],
+            ])->fetch();
+            if($property['ID']) {
+                if (is_array($item)) {
+                    foreach ($item as $value) {
+                        $newElement->addTo($prop, new \Bitrix\Iblock\ORM\PropertyValue($value));
+                    }
+                } else {
+                    $newElement->set($prop, $item);
+                }
             }
-        } else {
-            $newElement->set($prop, $item);
         }
+
+
     }
 
     $newItemId = $newElement->save();
@@ -445,6 +472,19 @@ function editElement(array $data, int $elementId, array $productInfo): array
     $element->set("TIMESTAMP_X", $currentDate->format('d.m.Y H:i:s'));
 
     if (!empty($data)) {
+        $notUserProps = [
+            "ID",
+            "IBLOCK_ID",
+            "IBLOCK_SECTION_ID",
+            "SORT",
+            "NAME",
+            "PREVIEW_PICTURE",
+            "PREVIEW_TEXT",
+            "DETAIL_PICTURE",
+            "DETAIL_TEXT",
+            "CODE",
+            "MORE_PHOTO",
+        ];
         foreach ($data as $prop => &$item) {
             if($prop === 'PREVIEW_PICTURE' || $prop === 'DETAIL_PICTURE') {
                 $arFile = \CFile::MakeFileArray($_SERVER["DOCUMENT_ROOT"] . "/photos/img/" . $item);
@@ -462,19 +502,30 @@ function editElement(array $data, int $elementId, array $productInfo): array
 //            $data[$prop] = $fileId;
 //        }
 
-            if (is_array($item)) {
-                foreach ($item as $value) {
-                    $propertyValues = $element->get($prop);
-                    // Удаляем все существующие значения
-                    foreach ($propertyValues as $val) {
-                        $propertyValues->remove($val);
+            if(!in_array($prop, $notUserProps)) {
+                $property = \Bitrix\Iblock\PropertyTable::getList([
+                    'filter' => [
+                        'IBLOCK_ID' => CATALOG_IBLOCK_ID,
+                        'CODE' => $prop,
+                    ],
+                    'select' => ['ID', 'PROPERTY_TYPE'],
+                ])->fetch();
+                if($property['ID']) {
+                    if (is_array($item)) {
+                        foreach ($item as $value) {
+                            $propertyValues = $element->get($prop);
+                            // Удаляем все существующие значения
+                            foreach ($propertyValues as $val) {
+                                $propertyValues->remove($val);
+                            }
+
+                            $element->addTo($prop, new \Bitrix\Iblock\ORM\PropertyValue($value));
+
+                        }
+                    } else {
+                        $element->set($prop, $item);
                     }
-
-                   $element->addTo($prop, new \Bitrix\Iblock\ORM\PropertyValue($value));
-
                 }
-            } else {
-                $element->set($prop, $item);
             }
         }
     }
