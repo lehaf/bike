@@ -252,6 +252,7 @@ $bHideLeftBlock = $APPLICATION->GetDirProperty('HIDE_LEFT_BLOCK') == 'Y' || ($ar
 				<?
 				$current_url = '';
 				$current_url = $APPLICATION->GetCurPageParam('display='.$displayType, $arDelUrlParams);
+				// comment because in search input space was replaced by plus "led tv" => "led+tv"
 				// $url = str_replace('+', '%2B', $current_url);
 				$url = $current_url;
 				?>
@@ -294,7 +295,9 @@ $bHideLeftBlock = $APPLICATION->GetDirProperty('HIDE_LEFT_BLOCK') == 'Y' || ($ar
 					<?
 					$current_url = '';
 					$current_url = $APPLICATION->GetCurPageParam('linerow='.$value, $arDelUrlParams);
-					$url = str_replace('+', '%2B', $current_url);
+					// comment because in search input space was replaced by plus "led tv" => "led+tv"
+					// $url = str_replace('+', '%2B', $current_url);
+					$url = $current_url;
 					?>
 					<?if($linerow == $value):?>
 						<span title="<?=\Bitrix\Main\Localization\Loc::getMessage("SECT_DISPLAY_".$value)?>" class="controls-view__link controls-view__link--current"><?=CMax::showIconSvg("type", SITE_TEMPLATE_PATH.'/images/svg/catalog/'.$value.'inarow.svg', '', '', true, false);?></span>

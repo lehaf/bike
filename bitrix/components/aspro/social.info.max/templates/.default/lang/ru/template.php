@@ -16,4 +16,5 @@ $MESS['TEMPL_SOCIAL_PINTEREST'] = 'Pinterest';
 $MESS['TEMPL_SOCIAL_SNAPCHAT'] = 'Snapchat';
 $MESS['TEMPL_SOCIAL_ZEN'] = 'Яндекс.Дзен';
 $MESS['TEMPL_SOCIAL_LINKEDIN'] = 'LinkedIn';
+$MESS['TEMPL_SOCIAL_RUTUBE'] = 'Rutube';
 ?>

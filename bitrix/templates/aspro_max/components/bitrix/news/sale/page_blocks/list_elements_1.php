@@ -1,6 +1,4 @@
-<?
-
-$APPLICATION->IncludeComponent(
+<?$APPLICATION->IncludeComponent(
 	"bitrix:news.list", 
 	"front_sale", 
 	array(
@@ -50,11 +48,8 @@ $APPLICATION->IncludeComponent(
 		"DISPLAY_PREVIEW_TEXT"	=>	$arParams["DISPLAY_PREVIEW_TEXT"],
 		"AJAX_OPTION_ADDITIONAL" => "",
 		"COMPONENT_TEMPLATE" => "front_sale",
-		//"SET_BROWSER_TITLE" => "N",
-		//"SET_LAST_MODIFIED" => "N",
 		"INCLUDE_SUBSECTIONS" => "Y",
 		"STRICT_SECTION_CHECK" => "N",
-		"BG_POSITION" => $arParams["BG_POSITION"],
 		"TITLE_BLOCK" => "",
 		"TITLE_BLOCK_ALL" => "",
 		"ALL_URL" => "sale/",
@@ -64,6 +59,4 @@ $APPLICATION->IncludeComponent(
 		"MESSAGE_404" => $arParams["MESSAGE_404"]
 	),
 	false
-);
-
-?>
+);?>

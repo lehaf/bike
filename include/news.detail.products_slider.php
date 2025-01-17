@@ -19,7 +19,7 @@ if($arRegion)
 	"products_slider", 
 	array(
 		"IBLOCK_TYPE" => "aspro_max_catalog",
-		"IBLOCK_ID" => \Bitrix\Main\Config\Option::get("aspro.max", "CATALOG_IBLOCK_ID", "26"),
+		"IBLOCK_ID" => CMax::GetFrontParametrValue('CATALOG_IBLOCK_ID'),
 		"ELEMENT_SORT_FIELD" => "sort",
 		"ELEMENT_SORT_ORDER" => "asc",
 		"ELEMENT_COUNT" => ($arParams["LINKED_ELEMENST_PAGE_COUNT"] ? $arParams["LINKED_ELEMENST_PAGE_COUNT"] : 20),

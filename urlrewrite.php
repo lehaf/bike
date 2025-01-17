@@ -8,6 +8,14 @@ $arUrlRewrite=array (
     'PATH' => '/bitrix/services/ymarket/index.php',
     'SORT' => 100,
   ),
+  28 => 
+  array (
+    'CONDITION' => '#^/catalog/(.+?)/filter/(.+?)/apply/\\??(.*)#',
+    'RULE' => 'SECTION_CODE_PATH=$1&SMART_FILTER_PATH=$2&$3',
+    'ID' => 'bitrix:catalog.smart.filter',
+    'PATH' => '/include/mainpage/components/custom_filter/filter.php',
+    'SORT' => 100,
+  ),
   4 => 
   array (
     'CONDITION' => '#^/personal/history-of-orders/#',
@@ -152,7 +160,7 @@ $arUrlRewrite=array (
     'PATH' => '/landings/index.php',
     'SORT' => 100,
   ),
-  24 => 
+  26 => 
   array (
     'CONDITION' => '#^/personal/#',
     'RULE' => '',
@@ -160,7 +168,7 @@ $arUrlRewrite=array (
     'PATH' => '/personal/index.php',
     'SORT' => 100,
   ),
-  15 => 
+  29 => 
   array (
     'CONDITION' => '#^/catalog/#',
     'RULE' => '',
@@ -174,14 +182,6 @@ $arUrlRewrite=array (
     'RULE' => '',
     'ID' => NULL,
     'PATH' => '/bitrix/services/rest/index.php',
-    'SORT' => 100,
-  ),
-  7 => 
-  array (
-    'CONDITION' => '#^/blog/#',
-    'RULE' => '',
-    'ID' => 'bitrix:news',
-    'PATH' => '/blog/index.php',
     'SORT' => 100,
   ),
   8 => 
@@ -198,6 +198,14 @@ $arUrlRewrite=array (
     'RULE' => '',
     'ID' => 'bitrix:news',
     'PATH' => '/sale/index.php',
+    'SORT' => 100,
+  ),
+  30 => 
+  array (
+    'CONDITION' => '#^/blog/#',
+    'RULE' => '',
+    'ID' => 'bitrix:news',
+    'PATH' => '/blog/index.php',
     'SORT' => 100,
   ),
 );

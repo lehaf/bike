@@ -77,6 +77,13 @@
 				</a>
 			</li>
 		<?endif;?>
+		<?if(!empty($arResult['SOCIAL_RUTUBE'])):?>
+			<li class="rtb">
+				<a href="<?=$arResult['SOCIAL_RUTUBE']?>" target="_blank" rel="nofollow" title="<?=GetMessage('TEMPL_SOCIAL_RUTUBE')?>">
+					<?=GetMessage('TEMPL_SOCIAL_RUTUBE')?>
+				</a>
+			</li>
+		<?endif;?>
 		<?/*if(!empty($arResult['SOCIAL_GOOGLEPLUS'])):?>
 			<li class="gplus">
 				<a href="<?=$arResult['SOCIAL_GOOGLEPLUS']?>" target="_blank" rel="nofollow" title="<?=GetMessage('TEMPL_SOCIAL_GOOGLEPLUS')?>">

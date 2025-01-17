@@ -169,7 +169,7 @@ if ($arResult['MODULES']['catalog'])
 
 	$arSKU = CCatalogSKU::GetInfoByProductIBlock($arParams['IBLOCK_ID']);
 	$boolSKU = !empty($arSKU) && is_array($arSKU);
-	$bUseModuleProps = \Bitrix\Main\Config\Option::get("iblock", "property_features_enabled", "N") === "Y";
+	$bUseModuleProps = \Bitrix\Main\Config\Option::get("iblock", "property_features_enabled", "Y") === "Y";
 
 	if ($bUseModuleProps) {
 		$arParams['OFFERS_CART_PROPERTIES'] = (array)\Bitrix\Catalog\Product\PropertyCatalogFeature::getBasketPropertyCodes($arSKU['IBLOCK_ID'], ['CODE' => 'Y']);
@@ -347,76 +347,77 @@ else
 }
 
 /* ADDITIONAL GALLERY */
-if($arParams['USE_ADDITIONAL_GALLERY'] === 'Y'){
-	$arResult['ADDITIONAL_GALLERY'] = $arElementAdditionalGallery = $arOffersAdditionalGallery = array();
+if ($arParams['USE_ADDITIONAL_GALLERY'] === 'Y') {
+    $arResult['ADDITIONAL_GALLERY'] = [];
 
-	if($arResult['OFFERS'] && $arParams['ADDITIONAL_GALLERY_OFFERS_PROPERTY_CODE']){
-		foreach($arResult['OFFERS'] as &$arOffer){
+    if ($arResult['OFFERS'] && $arParams['ADDITIONAL_GALLERY_OFFERS_PROPERTY_CODE']) {
+        foreach ($arResult['OFFERS'] as $offer) {
+            $imageIDs = $offer['PROPERTIES'][$arParams['ADDITIONAL_GALLERY_OFFERS_PROPERTY_CODE']]['VALUE'];
 			if('TYPE_1' === $arParams['TYPE_SKU']){
-				$arOffersAdditionalGallery[$arOffer['ID']] = array();
+				$arResult['ADDITIONAL_GALLERY'][$offer['ID']] = [];
 			}
-			if($arOffer['PROPERTIES'] && isset($arOffer['PROPERTIES'][$arParams['ADDITIONAL_GALLERY_OFFERS_PROPERTY_CODE']]) && $arOffer['PROPERTIES'][$arParams['ADDITIONAL_GALLERY_OFFERS_PROPERTY_CODE']]['VALUE']){
-				foreach($arOffer['PROPERTIES'][$arParams['ADDITIONAL_GALLERY_OFFERS_PROPERTY_CODE']]['VALUE'] as $img){
-					$alt = (strlen($arPhoto['DESCRIPTION']) ? $arPhoto['DESCRIPTION'] : (strlen($arResult['DETAIL_PICTURE']['ALT']) ? $arResult['DETAIL_PICTURE']['ALT']  : (strlen($arPhoto['ALT']) ? $arPhoto['ALT'] : $arResult['NAME'])));
-                	$title = (strlen($arPhoto['DESCRIPTION']) ? $arPhoto['DESCRIPTION'] : (strlen($arResult['DETAIL_PICTURE']['TITLE']) ? $arResult['DETAIL_PICTURE']['TITLE']  :(strlen($arPhoto['TITLE']) ? $arPhoto['TITLE'] : $arResult['NAME'])));
-                	if($arParams['ALT_TITLE_GET'] == 'SEO')
-                	{
-                		$alt = (strlen($arResult['DETAIL_PICTURE']['ALT']) ? $arResult['DETAIL_PICTURE']['ALT']  : (strlen($arPhoto['ALT']) ? $arPhoto['ALT'] : $arResult['NAME']));
-                		$title = (strlen($arResult['DETAIL_PICTURE']['TITLE']) ? $arResult['DETAIL_PICTURE']['TITLE']  :(strlen($arPhoto['TITLE']) ? $arPhoto['TITLE'] : $arResult['NAME']));
-                	}
-					$arPhoto = array(
-						'DETAIL' => ($arPhoto = CFile::GetFileArray($img)),
-						'PREVIEW' => CFile::ResizeImageGet($img, array('width' => 1500, 'height' => 1500), BX_RESIZE_IMAGE_PROPORTIONAL_ALT, true),
-						'THUMB' => CFile::ResizeImageGet($img , array('width' => 60, 'height' => 60), BX_RESIZE_IMAGE_EXACT, true),
-						'TITLE' => $title,
-						'ALT' => $alt,
-					);
-					if('TYPE_1' === $arParams['TYPE_SKU']){
-						$arOffersAdditionalGallery[$arOffer['ID']][] = $arPhoto;
+            if (!empty($imageIDs)) {
+                foreach ($imageIDs as $imgID) {
+                    $arFileImage = CFile::GetFileArray($imgID);
+                   
+					$alt = trim($arFileImage['DESCRIPTION']) ?: trim($arResult['DETAIL_PICTURE']['ALT']) ?: trim($arFileImage['ALT']) ?: trim($arResult['NAME']);
+					$title = trim($arFileImage['DESCRIPTION']) ?: trim($arResult['DETAIL_PICTURE']['TITLE']) ?: trim($arFileImage['TITLE']) ?: trim($arResult['NAME']);
+
+					if ($arParams['ALT_TITLE_GET'] == 'SEO') {
+						$alt =  trim($arResult['DETAIL_PICTURE']['ALT']) ?: trim($arFileImage['ALT']) ?: trim($arResult['NAME']);
+						$title = trim($arResult['DETAIL_PICTURE']['TITLE']) ?: trim($arFileImage['TITLE']) ?: trim($arResult['NAME']);
 					}
-					else{
-						$arOffersAdditionalGallery[] = $arPhoto;
-					}
+
+                    $arImageGallery = [
+                        'DETAIL' => $arFileImage,
+                        'PREVIEW' => CFile::ResizeImageGet($imgID, ['width' => 1500, 'height' => 1500], BX_RESIZE_IMAGE_PROPORTIONAL_ALT, true),
+                        'THUMB' => CFile::ResizeImageGet($imgID, ['width' => 60, 'height' => 60], BX_RESIZE_IMAGE_EXACT, true),
+                        'TITLE' => $title,
+                        'ALT' => $alt,
+                    ];
+
+                    if ($arParams['TYPE_SKU'] === 'TYPE_1') {
+                        $arResult['ADDITIONAL_GALLERY'][$offer['ID']][] = $arImageGallery;
+                    } else {
+                        $arResult['ADDITIONAL_GALLERY'][] = $arImageGallery;
+                    }
+                }
+            }
+        }
+    }
+
+    $imageIDs = $arResult['PROPERTIES'][$arParams['ADDITIONAL_GALLERY_PROPERTY_CODE']]['VALUE'];
+    if (!empty($imageIDs)) {
+        foreach ($imageIDs as $imgID) {
+            $arFileImage = CFile::GetFileArray($imgID);
+
+			$alt = trim($arFileImage['DESCRIPTION']) ?: trim($arResult['DETAIL_PICTURE']['ALT']) ?: trim($arFileImage['ALT']) ?: trim($arResult['NAME']);
+			$title = trim($arFileImage['DESCRIPTION']) ?: trim($arResult['DETAIL_PICTURE']['TITLE']) ?: trim($arFileImage['TITLE']) ?: trim($arResult['NAME']);
+
+			if ($arParams['ALT_TITLE_GET'] == 'SEO') {
+				$alt =  trim($arResult['DETAIL_PICTURE']['ALT']) ?: trim($arFileImage['ALT']) ?: trim($arResult['NAME']);
+				$title = trim($arResult['DETAIL_PICTURE']['TITLE']) ?: trim($arFileImage['TITLE']) ?: trim($arResult['NAME']);
+			}
+
+            $arImageGallery = [
+                'DETAIL' => $arFileImage,
+                'PREVIEW' => CFile::ResizeImageGet($imgID, ['width' => 1500, 'height' => 1500], BX_RESIZE_IMAGE_PROPORTIONAL_ALT, true),
+                'THUMB' => CFile::ResizeImageGet($imgID, ['width' => 60, 'height' => 60], BX_RESIZE_IMAGE_EXACT, true),
+                'TITLE' => $title,
+                'ALT' => $alt,
+            ];
+
+            if ($arResult['OFFERS'] && ($arParams['TYPE_SKU'] === 'TYPE_1')) {
+				foreach ($arResult['ADDITIONAL_GALLERY'] as $key => $gallery) {
+					$arResult['ADDITIONAL_GALLERY'][$key][] = $arImageGallery;
 				}
-			}
-		}
-		unset($arOffer);
-	}
-
-	if($arParams['ADDITIONAL_GALLERY_PROPERTY_CODE'] && isset($arResult['PROPERTIES'][$arParams['ADDITIONAL_GALLERY_PROPERTY_CODE']]) && $arResult['PROPERTIES'][$arParams['ADDITIONAL_GALLERY_PROPERTY_CODE']]['VALUE']){
-		foreach($arResult['PROPERTIES'][$arParams['ADDITIONAL_GALLERY_PROPERTY_CODE']]['VALUE'] as $img){
-			$alt = (strlen($arPhoto['DESCRIPTION']) ? $arPhoto['DESCRIPTION'] : (strlen($arResult['DETAIL_PICTURE']['ALT']) ? $arResult['DETAIL_PICTURE']['ALT']  : (strlen($arPhoto['ALT']) ? $arPhoto['ALT'] : $arResult['NAME'])));
-        	$title = (strlen($arPhoto['DESCRIPTION']) ? $arPhoto['DESCRIPTION'] : (strlen($arResult['DETAIL_PICTURE']['TITLE']) ? $arResult['DETAIL_PICTURE']['TITLE']  :(strlen($arPhoto['TITLE']) ? $arPhoto['TITLE'] : $arResult['NAME'])));
-        	if($arParams['ALT_TITLE_GET'] == 'SEO')
-        	{
-        		$alt = (strlen($arResult['DETAIL_PICTURE']['ALT']) ? $arResult['DETAIL_PICTURE']['ALT']  : (strlen($arPhoto['ALT']) ? $arPhoto['ALT'] : $arResult['NAME']));
-        		$title = (strlen($arResult['DETAIL_PICTURE']['TITLE']) ? $arResult['DETAIL_PICTURE']['TITLE']  :(strlen($arPhoto['TITLE']) ? $arPhoto['TITLE'] : $arResult['NAME']));
-        	}
-			$arElementAdditionalGallery[] = array(
-				'DETAIL' => ($arPhoto = CFile::GetFileArray($img)),
-				'PREVIEW' => CFile::ResizeImageGet($img, array('width' => 1500, 'height' => 1500), BX_RESIZE_IMAGE_PROPORTIONAL_ALT, true),
-				'THUMB' => CFile::ResizeImageGet($img , array('width' => 60, 'height' => 60), BX_RESIZE_IMAGE_EXACT, true),
-				'TITLE' => $title,
-				'ALT' => $alt,
-			);
-		}
-	}
-	if($arResult['OFFERS']){
-		if('TYPE_1' !== $arParams['TYPE_SKU']){
-			$arResult['ADDITIONAL_GALLERY'] = $arOffersAdditionalGallery ? array_merge($arOffersAdditionalGallery, $arElementAdditionalGallery) : $arElementAdditionalGallery;
-		}
-		else{
-			foreach($arOffersAdditionalGallery as $offerID => $arGallery){
-				$arResult['ADDITIONAL_GALLERY'][$offerID] = $arOffersAdditionalGallery[$offerID] ? array_merge($arOffersAdditionalGallery[$offerID], $arElementAdditionalGallery) : $arElementAdditionalGallery;
-			}
-		}
-	}
-	else{
-		$arResult['ADDITIONAL_GALLERY'] = $arElementAdditionalGallery;
-	}
-
-	unset($arElementAdditionalGallery, $arOffersAdditionalGallery);
+            } else {
+                $arResult['ADDITIONAL_GALLERY'][] = $arImageGallery;
+            }
+        }
+    }
 }
+
 $arResult["TMP_OFFERS_PROP"] = array();
 if ($arResult['CATALOG'] && isset($arResult['OFFERS']) && !empty($arResult['OFFERS']))
 {
@@ -980,7 +981,8 @@ if ($arResult['CATALOG'] && isset($arResult['OFFERS']) && !empty($arResult['OFFE
 
 				$arResult['OFFERS'][$keyOffer] = array_merge($arOffer, CMax::formatPriceMatrix($arOffer));
 			}
-
+			$arOffer['IS_OFFER'] = 'Y';
+			$arOffer['IBLOCK_ID'] = $arResult['IBLOCK_ID'];
 			$arResult['OFFERS'][$keyOffer]['TOTAL_COUNT'] = CMax::GetTotalCount($arOffer, $arParams);
 			$arResult['OFFERS'][$keyOffer]['ADD_TO_BASKET_DATA'] = CMax::GetAddToBasketArray($arOffer, $arResult['OFFERS'][$keyOffer]['TOTAL_COUNT'], $arParams["DEFAULT_COUNT"], $arParams["BASKET_URL"], false, array(), 'small', $arParams);
 
@@ -1409,46 +1411,29 @@ if(($arResult["DISPLAY_PROPERTIES"]["BRAND"]["VALUE"] ?? false) && $arResult["PR
 $arResult["BRAND_ITEM"] = $arBrand;
 
 /*get section table sizes*/
-$tmpTableSizes = $tableSizes = '';
 if($arResult["SECTION"])
 {
-	$arSection = CMaxCache::CIBlockSection_GetList(array('CACHE' => array("MULTI" =>"N", "TAG" => CMaxCache::GetIBlockCacheTag($arParams["IBLOCK_ID"]))), array('GLOBAL_ACTIVE' => 'Y', "ID" => $arResult["SECTION"]["ID"], "IBLOCK_ID" => $arParams["IBLOCK_ID"]), false, array("ID", "IBLOCK_ID", "IBLOCK_SECTION_ID", "LEFT_MARGIN", "RIGHT_MARGIN", "NAME", "UF_TABLE_SIZES"));
-	if($arSection['UF_TABLE_SIZES'])
-		$tmpTableSizes = $arSection['UF_TABLE_SIZES'];
+	$arSectionSelect = array(
+		'UF_TABLE_SIZES',
+		'UF_VIDEO',
+		'UF_VIDEO_IFRAME',
+	);
 
-	if(!$tmpTableSizes)
-	{
-		if($arResult["SECTION"]["DEPTH_LEVEL"] > 2)
-		{
-			$arSectionParent = CMaxCache::CIBlockSection_GetList(array('CACHE' => array("MULTI" =>"N", "TAG" => CMaxCache::GetIBlockCacheTag($arParams["IBLOCK_ID"]))), array('GLOBAL_ACTIVE' => 'Y', "ID" => $arSection["IBLOCK_SECTION_ID"], "IBLOCK_ID" => $arParams["IBLOCK_ID"]), false, array("ID", "IBLOCK_ID", "NAME", "UF_TABLE_SIZES"));
-			if($arSectionParent['UF_TABLE_SIZES'])
-				$tmpTableSizes = $arSectionParent['UF_TABLE_SIZES'];
+	$arInherite = TSolution\Functions::getSectionInheritedUF(array(
+		'sectionId' => $arResult['IBLOCK_SECTION_ID'],
+		'iblockId' => $arParams['IBLOCK_ID'],
+		'select' => $arSectionSelect,
+		'filter' => array(
+			'GLOBAL_ACTIVE' => 'Y',
+		),
+		'enums' => array(
+			'UF_TABLE_SIZES',
+		)
+	));
 
-			if(!$tmpTableSizes)
-			{
-				$sectionRoot = CMaxCache::CIBlockSection_GetList(array('CACHE' => array("MULTI" => "N", "TAG" => CMaxCache::GetIBlockCacheTag($arParams["IBLOCK_ID"]))), array('GLOBAL_ACTIVE' => 'Y', "<=LEFT_BORDER" => $arSection["LEFT_MARGIN"], ">=RIGHT_BORDER" => $arSection["RIGHT_MARGIN"], "DEPTH_LEVEL" => 1, "IBLOCK_ID" => $arParams["IBLOCK_ID"]), false, array("ID", "IBLOCK_ID", "NAME", "UF_TABLE_SIZES"));
-				if($sectionRoot['UF_TABLE_SIZES'])
-					$tmpTableSizes = $sectionRoot['UF_TABLE_SIZES'];
-			}
-		}
-		else
-		{
-			$sectionRoot = CMaxCache::CIBlockSection_GetList(array('CACHE' => array("MULTI" => "N", "TAG" => CMaxCache::GetIBlockCacheTag($arParams["IBLOCK_ID"]))), array('GLOBAL_ACTIVE' => 'Y', "<=LEFT_BORDER" => $arSection["LEFT_MARGIN"], ">=RIGHT_BORDER" => $arSection["RIGHT_MARGIN"], "DEPTH_LEVEL" => 1, "IBLOCK_ID" => $arParams["IBLOCK_ID"]), false, array("ID", "IBLOCK_ID", "NAME", "UF_TABLE_SIZES"));
-			if($sectionRoot['UF_TABLE_SIZES'])
-				$tmpTableSizes = $sectionRoot['UF_TABLE_SIZES'];
-		}
-	}
-
-	if($tmpTableSizes)
-	{
-		$rsTypes = CUserFieldEnum::GetList(array(), array("ID" => $tmpTableSizes));
-		if($arType = $rsTypes->GetNext())
-			$tableSizes = $arType['XML_ID'];
-		if($tableSizes)
-		{
-			$arResult["SIZE_PATH"] = SITE_DIR."/include/table_sizes/detail_".strtolower($tableSizes).".php";
-			$arResult["SIZE_PATH"] = str_replace("//", "/", $arResult["SIZE_PATH"]);
-		}
+	if ($arInherite['UF_TABLE_SIZES']) {
+		$arResult["SIZE_PATH"] = SITE_DIR."/include/table_sizes/detail_".strtolower($arInherite['UF_TABLE_SIZES']).".php";
+		$arResult["SIZE_PATH"] = str_replace("//", "/", $arResult["SIZE_PATH"]);
 	}
 }
 
@@ -1491,35 +1476,22 @@ if(in_array('HELP_TEXT', $arParams['PROPERTY_CODE']))
 	<?endif;?>
 <?}
 
+/*video block*/
+$arResult["VIDEO"] = \Aspro\Max\Video\Inline::getFilesFromProperties($arResult['DISPLAY_PROPERTIES']);
+
+if($arInherite['UF_VIDEO']){
+	$arResult["VIDEO"]['VIDEO_FILE'] = array_merge((array)$arResult["VIDEO"]['VIDEO_FILE'], array_map(fn($arVideoFile) => unserialize($arVideoFile), $arInherite['UF_VIDEO']));
+}
+
+if($arInherite['UF_VIDEO_IFRAME']){
+	$arResult["VIDEO"]['VIDEO_YOUTUBE'] = array_merge((array)$arResult["VIDEO"]['VIDEO_YOUTUBE'], $arInherite['UF_VIDEO_IFRAME']);
+}
+
 if(!empty($arResult['DISPLAY_PROPERTIES']))
 {
 	$arResult['LINK_STAFF'] = $arResult['DISPLAY_PROPERTIES']['LINK_STAFF']['VALUE'] ?? '';
 	$arResult['LINK_VACANCY'] = $arResult['DISPLAY_PROPERTIES']['LINK_VACANCY']['VALUE'] ?? '';
 
-	$arVideo = array();
-	if (isset($arResult["DISPLAY_PROPERTIES"]["VIDEO"]["VALUE"])) {
-		if (is_array($arResult["DISPLAY_PROPERTIES"]["VIDEO"]["VALUE"])) {
-			$arVideo = $arVideo + $arResult["DISPLAY_PROPERTIES"]["VIDEO"]["~VALUE"];
-		}
-		elseif (strlen($arResult["DISPLAY_PROPERTIES"]["VIDEO"]["VALUE"])) {
-			$arVideo[] = $arResult["DISPLAY_PROPERTIES"]["VIDEO"]["~VALUE"];
-		}
-	}
-
-	if (isset($arResult["DISPLAY_PROPERTIES"]["VIDEO_YOUTUBE"]["VALUE"])) {
-		if (is_array($arResult["DISPLAY_PROPERTIES"]["VIDEO_YOUTUBE"]["VALUE"])) {
-			$arVideo = $arVideo + $arResult["DISPLAY_PROPERTIES"]["VIDEO_YOUTUBE"]["~VALUE"];
-		}
-		elseif (strlen($arResult["DISPLAY_PROPERTIES"]["VIDEO_YOUTUBE"]["VALUE"])) {
-			$arVideo[] = $arResult["DISPLAY_PROPERTIES"]["VIDEO_YOUTUBE"]["~VALUE"];
-		}
-	}
-
-	if(strlen($arResult["SECTION_FULL"]["UF_VIDEO"]))
-		$arVideo[] = $arResult["SECTION_FULL"]["~UF_VIDEO"];
-	if(strlen($arResult["SECTION_FULL"]["UF_VIDEO_YOUTUBE"]))
-		$arVideo[] = $arResult["SECTION_FULL"]["~UF_VIDEO_YOUTUBE"];
-	$arResult["VIDEO"] = $arVideo;
 
 	$arResult['DISPLAY_PROPERTIES'] = CMax::PrepareItemProps($arResult['DISPLAY_PROPERTIES']);
 

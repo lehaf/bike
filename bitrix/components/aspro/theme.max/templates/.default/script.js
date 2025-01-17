@@ -14,7 +14,7 @@ $(document).ready(function () {
   };
   /* get updates for solutions from aspro.ru */
   getExternalNews = function () {
-    if (!$(".section-block.updates_tab").hasClass("hidden")) {
+    if (!$(".section-block.updates_tab").hasClass("loading_state")) {
       return;
     }
     $.ajax({
@@ -22,7 +22,7 @@ $(document).ready(function () {
       type: "POST",
       data: { AJAX_FORM: "Y" },
       success: function (html) {
-        $(".section-block.updates_tab").removeClass("hidden");
+        $(".section-block.updates_tab").removeClass("loading_state");
         $(".right-block .inner-content .contents.updates .body_block").html(html);
       },
       error: function (jqXhr) {
@@ -166,7 +166,7 @@ $(document).ready(function () {
       styleswitcher.find(".section-block").removeClass("active");
       _this.removeClass("loadings");
 
-      getExternalNews();
+      // getExternalNews();
 
       if (typeof getAjaxForm === "function") {
         //   getAjaxForm();

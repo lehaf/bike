@@ -149,4 +149,5 @@ $MESS["PAY_SYSTEM_PAYABLE_ERROR_DEFAULT"] = "You'll be able to pay for the order
 $MESS["PICKUP_MAP_TYPE"] = "Use maps";
 $MESS["PICKUP_MAP_TYPE_YANDEX"] = "Yandex.Maps";
 $MESS["PICKUP_MAP_TYPE_GOOGLE"] = "Google Maps";
+$MESS["SHOW_IMAGES"] = "Display images of delivery services and payment systems";
 ?>

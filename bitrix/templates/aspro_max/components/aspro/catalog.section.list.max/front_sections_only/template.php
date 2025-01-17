@@ -20,7 +20,7 @@
 							<div class="row">
 								<div class="col-md-3">
 									<?if($arParams['TITLE_BLOCK'] || $arParams['TITLE_BLOCK_ALL']):?>
-										<h3><?=$arParams['TITLE_BLOCK'];?></h3>
+										<?=Aspro\Functions\CAsproMax::showTitleH($arParams['TITLE_BLOCK']);?>
 										<?// intro text?>
 										<?if($arParams['INCLUDE_FILE']):?>
 											<div class="text_before_items font_xs">
@@ -41,7 +41,7 @@
 								<div class="col-md-9">
 					<?else:?>
 						<div class="top_block">
-							<h3><?=$arParams["TITLE_BLOCK"];?></h3>
+							<?=Aspro\Functions\CAsproMax::showTitleH($arParams['TITLE_BLOCK']);?>
 							<a href="<?=SITE_DIR.$arParams["ALL_URL"];?>" class="pull-right font_upper muted"><?=$arParams["TITLE_BLOCK_ALL"] ;?></a>
 						</div>
 					<?endif;?>

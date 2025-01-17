@@ -78,5 +78,5 @@
 
 	<script>if($('.item-views.company').length && $('.js-tizers-tmp .item-views').length){$('.js-tizers-tmp').appendTo($('.item-views.company .js-tizers'));}</script>
 <?endif;?>
-<script>if($('.item-views.company.no-img').length && $('.item-views.company.no-img h3').length)$('.item-views.company.no-img h3').appendTo($('.item-views.company .js-h3'));</script>
+<script>if($('.item-views.company.no-img').length && $('.item-views.company.no-img h2').length)$('.item-views.company.no-img h2').appendTo($('.item-views.company .js-h2'));</script>
 <?\Aspro\Max\Functions\Extensions::init('fancybox');?>

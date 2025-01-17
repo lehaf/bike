@@ -44,44 +44,9 @@
 	{
 		if($arRegion["LIST_STORES"] && $arParams["HIDE_NOT_AVAILABLE"] == "Y")
 		{
-			if($arParams['STORES']){
-				if(CMax::checkVersionModule('18.6.200', 'iblock')){
-					$arStoresFilter = array(
-						'STORE_NUMBER' => $arParams['STORES'],
-						'>STORE_AMOUNT' => 0,
-					);
-				}
-				else{
-					if(count($arParams['STORES']) > 1){
-						$arStoresFilter = array('LOGIC' => 'OR');
-						foreach($arParams['STORES'] as $storeID)
-						{
-							$arStoresFilter[] = array(">CATALOG_STORE_AMOUNT_".$storeID => 0);
-						}
-					}
-					else{
-						foreach($arParams['STORES'] as $storeID)
-						{
-							$arStoresFilter = array(">CATALOG_STORE_AMOUNT_".$storeID => 0);
-						}
-					}
-				}
-
-				$arTmpFilter = array('!TYPE' => array('2', '3'));
-				if($arStoresFilter){
-					if(count($arStoresFilter) > 1){
-						$arTmpFilter[] = $arStoresFilter;
-					}
-					else{
-						$arTmpFilter = array_merge($arTmpFilter, $arStoresFilter);
-					}
-
-					$GLOBALS['arrProductsFilter'][] = array(
-						'LOGIC' => 'OR',
-						array('TYPE' => array('2', '3')),
-						$arTmpFilter,
-					);
-				}
+			$arStoresFilter = TSolution\Filter::getAvailableByStores($arParams['STORES']);
+			if($arStoresFilter){
+				$GLOBALS['arrProductsFilter'][] = $arStoresFilter;
 			}
 		}
 		
@@ -254,42 +219,10 @@
 
 		if( $arRegion ){			
 			if( $arRegion['LIST_STORES'] && $arParams['HIDE_NOT_AVAILABLE'] === 'Y' ){
-				$arStoresFilter = [];
-
-				if(CMax::checkVersionModule('18.6.200', 'iblock')){
-					$arStoresFilter = [
-						'STORE_NUMBER' => $arParams['STORES'],
-						'>STORE_AMOUNT' => 0,
-					];
-				}else{
-					if(count($arParams['STORES']) > 1){
-						$arStoresFilter = ['LOGIC' => 'OR'];
-
-						foreach($arParams['STORES'] as $storeID){
-							$arStoresFilter[] = [">CATALOG_STORE_AMOUNT_".$storeID => 0];
-						}
-					}else{
-						foreach($arParams['STORES'] as $storeID){
-							$arStoresFilter = [">CATALOG_STORE_AMOUNT_".$storeID => 0];
-						}
-					}
-				}
-
-				$arTmpFilter = [ '!TYPE' => ['2', '3'] ];
-				
+				$arStoresFilter = TSolution\Filter::getAvailableByStores($arParams['STORES']);
 				if($arStoresFilter){
-					if(!CMax::checkVersionModule('18.6.200', 'iblock') && count($arStoresFilter) > 1){
-						$arTmpFilter[] = $arStoresFilter;
-					}else{
-						$arTmpFilter = array_merge($arTmpFilter, $arStoresFilter);
-					}
+					$arItemsFilter[] = $arStoresFilter;
 				}
-
-				$arItemsFilter[] = [
-					'LOGIC' => 'OR',
-					['TYPE' => ['2', '3']],
-					$arTmpFilter,
-				];
 			}
 		}
 		$arItems = CMaxCache::CIBLockElement_GetList(array('CACHE' => array("MULTI" =>"Y", "TAG" => CMaxCache::GetIBlockCacheTag($arTheme["CATALOG_IBLOCK_ID"]["VALUE"]))), $arItemsFilter, false, false, array("ID", "IBLOCK_ID", "IBLOCK_SECTION_ID"));

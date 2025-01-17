@@ -261,7 +261,11 @@ if($arResult["ITEMS"]){?>
 								$style="style='display:block;'";
 							}/*elseif($arItem["DISPLAY_EXPANDED"]!= "Y"){
 								$style="style='display:none;'";
-							}*/?>
+							}*/
+							if(count($arItem['VALUES']) < 2)
+								$arItem["DISPLAY_TYPE"] = 'DEFAULT';
+
+							?>
 							<div class="bx_filter_block <?=($arItem['IS_PROP_INLINE'] ? "limited_block" : "");?>" <?=$style;?>>
 								<div class="bx_filter_parameters_box_container <?=($arItem["DISPLAY_TYPE"]=="G" ? "pict_block" : "");?> <?=(!$arItem['IS_PROP_INLINE'] && $arItem["DISPLAY_TYPE"] != 'A' ? 'scrollblock' : '');?>">
 								<?
@@ -725,17 +729,22 @@ if($arResult["ITEMS"]){?>
 										<?
 										break;
 									default://CHECKBOXES
-										$count=count($arItem["VALUES"]);
-										$i=1;
-										if(!$arItem["FILTER_HINT"]){
-											$prop = CIBlockProperty::GetByID($arItem["ID"], $arItem["IBLOCK_ID"])->GetNext();
-											$arItem["FILTER_HINT"]=$prop["HINT"];
+										$count = count($arItem["VALUES"]);
+										$i = 1;
+
+										if ($arParams["SHOW_HINTS"] !== 'N' && !$arItem["FILTER_HINT"]){
+											$getProp = CIBlockProperty::GetByID($arItem["ID"], $arParams["IBLOCK_ID"]);
+											if($prop = $getProp->GetNext()) {
+												$arItem["FILTER_HINT"]=$prop["HINT"];
+											}
 										}
+
 										if($arItem["IBLOCK_ID"]!=$arParams["IBLOCK_ID"] && strpos($arItem["FILTER_HINT"],'line')!==false){
 											$isSize=true;
 										}else{
 											$isSize=false;
 										}?>
+
 										<?$j=1;
 										$isHidden = false;?>
 
@@ -749,7 +758,8 @@ if($arResult["ITEMS"]){?>
 												$isHidden = true;?>
 												<div class="hidden_values filter label_block">
 											<?endif;?>
-											<div class="filter label_block">
+											<?$bHint = $arItem["FILTER_HINT"] && strpos( $arItem["FILTER_HINT"],'line')===false;?>
+											<div class="filter label_block <?= ($count < 2) ? 'single' : ''?> <?=$bHint ? 'props-hint' : ''?>">
 											<input
 												type="checkbox"
 												value="<? echo $ar["HTML_VALUE"] ?>"
@@ -768,6 +778,20 @@ if($arResult["ITEMS"]){?>
 													endif;?></span>
 												</span>
 											</label>
+											<?if($arItem['IS_PROP_INLINE']):?>
+												<div class="char_name single">
+													<div class="props_list">
+														<?if($arParams["SHOW_HINTS"] !== 'N') :?>											
+															<?if( $arItem["FILTER_HINT"] && strpos( $arItem["FILTER_HINT"],'line')===false) :?>
+																	<div class="hint">
+																		<span class="icon"><i>?</i></span>
+																		<div class="tooltip" style="display: none;"><?=$arItem["FILTER_HINT"]?></div>
+																	</div>
+															<?endif;?>
+														<?endif;?>
+													</div>
+												</div>
+											<?endif;?>
 											<?$i++;?>
 											<?$j++;?>
 											</div>
@@ -789,15 +813,21 @@ if($arResult["ITEMS"]){?>
 								<?if(!$arItem['IS_PROP_INLINE']):?>
 								<div class="char_name">
 									<div class="props_list">
-										<?if($arParams["SHOW_HINTS"] !== 'N'){
-											if(!$arItem["FILTER_HINT"]){
+										<?if($arParams["SHOW_HINTS"] !== 'N'):?>
+											<?if(!$arItem["FILTER_HINT"]){
 												$prop = CIBlockProperty::GetByID($arItem["ID"], $arParams["IBLOCK_ID"])->GetNext();
 												$arItem["FILTER_HINT"]=$prop["HINT"];
-											}?>
-											<?if( $arItem["FILTER_HINT"] && strpos( $arItem["FILTER_HINT"],'line')===false){?>
-												<div class="hint"><span class="icon"><i>?</i></span><span class="text"><?=Loc::getMessage('HINT');?></span><div class="tooltip" style="display: none;"><?=$arItem["FILTER_HINT"]?></div></div>
-											<?}?>
-										<?}?>
+											}
+											if($arItem["FILTER_HINT"] && strpos( $arItem["FILTER_HINT"],'line')===false) :?>
+												<div class="hint">
+													<span class="icon">
+														<i>?</i>
+													</span>
+													<span class="text"><?=Loc::getMessage('HINT');?></span>
+													<div class="tooltip" style="display: none;"><?=$arItem["FILTER_HINT"]?></div>
+												</div>
+											<?endif;?>
+										<?endif;?>
 									</div>
 								</div>
 								

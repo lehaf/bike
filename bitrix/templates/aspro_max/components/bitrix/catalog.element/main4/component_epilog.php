@@ -332,7 +332,13 @@ $currentProductId = $templateData['OFFERS_INFO']["CURRENT_OFFER"] ?? $arResult['
 	}
 
 	if($bShowPropsTab && $arParams["PROPERTIES_DISPLAY_LOCATION"] != "TAB")
-		--$i;?>
+		--$i;
+
+	if($bShowVideoTab){
+		$totalCountVideoElements = array_reduce($templateData["VIDEO"], fn($summ, $item) => $summ + count($item), 0);
+	}
+
+?>
 
 	<div class="maxwidth-theme bottom-info-wrapper">
 		<div class="bottom-info product-view--side-left">
@@ -513,8 +519,8 @@ $currentProductId = $templateData['OFFERS_INFO']["CURRENT_OFFER"] ?? $arResult['
 													<li class="bordered rounded3 <?=(!($iTab++) ? 'active' : '')?>">
 														<a href="#video" data-toggle="tab">
 															<?=$arParams["TAB_VIDEO_NAME"];?>
-															<?if(count($templateData["VIDEO"]) > 1):?>
-																<span class="count empty">&nbsp;(<?=count($templateData["VIDEO"])?>)</span>
+															<?if($totalCountVideoElements > 1):?>
+																<span class="count empty">&nbsp;(<?=$totalCountVideoElements?>)</span>
 															<?endif;?>
 														</a>
 													</li>
@@ -875,8 +881,8 @@ $currentProductId = $templateData['OFFERS_INFO']["CURRENT_OFFER"] ?? $arResult['
 					<div class="ordered-block <?=$code?>">
 						<div class="ordered-block__title option-font-bold font_lg">
 							<?=$arParams["TAB_VIDEO_NAME"];?>
-							<?if(count($templateData["VIDEO"]) > 1):?>
-								<span class="count empty">&nbsp;(<?=count($templateData["VIDEO"])?>)</span>
+							<?if($totalCountVideoElements > 1):?>
+								<span class="count empty">&nbsp;(<?=$totalCountVideoElements?>)</span>
 							<?endif;?>
 						</div>
 						<?$APPLICATION->ShowViewContent('PRODUCT_VIDEO_INFO')?>
@@ -1002,6 +1008,8 @@ $currentProductId = $templateData['OFFERS_INFO']["CURRENT_OFFER"] ?? $arResult['
 											"REVIEW_COMMENT_REQUIRED" => $arParams["REVIEW_COMMENT_REQUIRED"],
 											"REVIEW_FILTER_BUTTONS" => $arParams["REVIEW_FILTER_BUTTONS"],
 											"REAL_CUSTOMER_TEXT" => $arParams["REAL_CUSTOMER_TEXT"],
+											"NO_USE_IMAGE" => $arParams["NO_USE_IMAGE"],
+											"MAX_IMAGE_COUNT" => $arParams["MAX_IMAGE_COUNT"],
 										),
 										false, array("HIDE_ICONS" => "Y")
 									);?>
@@ -1839,12 +1847,12 @@ if( $templateData["OFFERS_INFO"]["CURRENT_OFFER"] && $arTheme['CHANGE_TITLE_ITEM
 	$currentOfferTitle["CURRENT_OFFER_TITLE"] = $templateData["OFFERS_INFO"]["CURRENT_OFFER_TITLE"];
 	$currentOfferTitle["CURRENT_OFFER_WINDOW_TITLE"] = $templateData["OFFERS_INFO"]["CURRENT_OFFER_WINDOW_TITLE"];
 }
-$arScripts = ['swiper', 'swiper_main_styles', 'swiper_events', 'hash_location', 'tabs_history', 'countdown'];
+$arScripts = ['swiper', 'swiper_main_styles', 'swiper_events', 'hash_location', 'tabs_history', 'countdown', 'grid-list','video_inline_appear','skeleton','ui-card', 'video_block'];
 if (isset($templateData['OUT_OF_PRODUCTION']) && $templateData['OUT_OF_PRODUCTION']['SHOW_ANALOG']) {
 	$arScripts[] = 'out_of_production';
 }
-if (isset($templateData['CHARACTERISTICS']) && $templateData['CHARACTERISTICS'] && $arTheme["GRUPPER_PROPS"]["VALUE"] == "ASPRO_PROPS_GROUP") {
-	$arScripts[] = 'propertygroups';
+if (isset($templateData['CHARACTERISTICS']) && $templateData['CHARACTERISTICS'] ) {
+	$arScripts[] = 'hint';
 }
 if (isset($templateData['JS_OBJ'])) {
 	$arScripts[] = 'ikSelect';

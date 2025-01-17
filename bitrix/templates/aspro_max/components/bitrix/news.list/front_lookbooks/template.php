@@ -7,7 +7,7 @@
             <div class="tab_slider_wrapp lookbooks">
                 <?if($arParams['TITLE_BLOCK'] || $arParams['TITLE_BLOCK_ALL']):?>
                     <div class="top_block">
-                        <h3><?=$arParams['TITLE_BLOCK'];?></h3>
+                        <?=Aspro\Functions\CAsproMax::showTitleH($arParams['TITLE_BLOCK']);?>
                         <div class="right_block_wrapper">
                             <?if ($arResult['SECTIONS']):?>
                                 <div class="tabs-wrapper <?=$arParams['TITLE_BLOCK_ALL'] && $arParams['ALL_URL'] ? 'with_link' : ''?>">

@@ -38,6 +38,7 @@ if(\Bitrix\Main\Loader::includeModule('aspro.max'))
 	$arResult['SOCIAL_SNAPCHAT'] = $arFrontParametrs['SOCIAL_SNAPCHAT'];
 	$arResult['SOCIAL_TIKTOK'] = $arFrontParametrs['SOCIAL_TIKTOK'];
 	$arResult['SOCIAL_LINKEDIN'] = $arFrontParametrs['SOCIAL_LINKEDIN'];
+	$arResult['SOCIAL_RUTUBE'] = $arFrontParametrs['SOCIAL_RUTUBE'];
 
 	if($this->StartResultCache(false, array(($arParams['CACHE_GROUPS'] === 'N'? false : $USER->GetGroups()), $arResult))){
 		$this->SetResultCacheKeys(array(
@@ -58,6 +59,7 @@ if(\Bitrix\Main\Loader::includeModule('aspro.max'))
 			'SOCIAL_TIKTOK',
 			'SOCIAL_PINTEREST',
 			'SOCIAL_SNAPCHAT',
+			'SOCIAL_RUTUBE',
 		));
 
 		$this->IncludeComponentTemplate();

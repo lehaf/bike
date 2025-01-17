@@ -120,4 +120,7 @@ $MESS["COMPLECT_BUTTON"] = "Choose products";
 $MESS["DETAIL_SET_PRODUCT"] = "Collect the set";
 $MESS["T_COMPLECT_ALL_ON"] = "Choose all";
 $MESS["T_COMPLECT_ALL_OFF"] = "Reset everything";
+
+$MESS["MORE_DETAIL_TEXT"] = "Expand";
+$MESS["HIDE_DETAIL_TEXT"] = "Hide";
 ?>

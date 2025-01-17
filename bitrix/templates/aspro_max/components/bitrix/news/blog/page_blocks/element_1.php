@@ -2,6 +2,7 @@
 	"bitrix:news.detail",
 	"news",
 	Array(
+		'HIDE_NOT_AVAILABLE_LINKED' => $arParams['HIDE_NOT_AVAILABLE'],
 		"S_ASK_QUESTION" => $arParams["S_ASK_QUESTION"],
 		"S_ORDER_SERVISE" => $arParams["S_ORDER_SERVISE"],
 		"T_GALLERY" => $arParams["T_GALLERY"],

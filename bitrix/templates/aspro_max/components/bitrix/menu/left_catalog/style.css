@@ -294,3 +294,23 @@ body.menu-hovered .wrapper1 .header_wrap #header {
     width: auto !important;
   }
 }
+
+#header:after {
+  --transition-duration: 0.2s;
+  --transition-delay: 0.2s;
+  background-color: transparent;
+  bottom: 0;
+  content: "";
+  display: block;
+  left: 0;
+  pointer-events: none;
+  position: fixed;
+  right: 0;
+  top: 0;
+  transform: translate3d(0, 0, 0);
+  transition: all var(--transition-duration) ease-in;
+  z-index: 4;
+}
+body.menu-hovered #header:has(.dark_overlay):after {
+  background: rgba(0, 0, 0, 0.6);
+}

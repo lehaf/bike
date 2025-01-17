@@ -140,6 +140,10 @@
     height: 100%;
 }
 
+.property .darken {
+    word-break: break-word;
+}
+
 @media screen and (max-width: 991px){
     .bx-no-touch .services_buy_block--abs {
         margin-top: 15px;

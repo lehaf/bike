@@ -103,7 +103,7 @@ if ($normalCount > 0):
 										<div class="name">
 											<?if(strlen($arItem["DETAIL_PAGE_URL"]) > 0):?><a href="<?=$arItem["DETAIL_PAGE_URL"]?>"><?endif;?><?=$arItem["NAME"]?><?if (strlen($arItem["DETAIL_PAGE_URL"]) > 0):?></a><?endif;?>
 										</div>
-										<?if($bPropsColumn && $arItem["PROPS"] && !$arItem["SKU_DATA"]):?>
+										<?if($bPropsColumn && $arItem["PROPS"]):?>
 											<div class="props">
 												<?foreach ($arItem["PROPS"] as $val) {
 														if (is_array($arItem["SKU_DATA"])) {

@@ -13,7 +13,9 @@ if ($oidParam = $arParams["SKU_DETAIL_ID"]) {
 }
 ?>
 
-<div class="main-catalog-wrapper details js_wrapper_items flexbox<?= $arTheme["SIDE_MENU"]["VALUE"] === 'LEFT' ? ' flexbox--row-reverse' : ' flexbox--row' ; ?> flexbox--justify-space-between flexbox--align-start flexbox--gap flexbox--gap-32" >
+<?$bShowCollapsedBlock = \CMax::GetFrontParametrValue('SHOW_COLLAPSED_BLOCK') === 'Y';?>
+<?$bShowTableOneColumn = \CMax::GetFrontParametrValue('SHOW_TABLE_CHARACTERISTICS_ONE_COLUMN') === 'Y';?>
+<div class="main-catalog-wrapper details js_wrapper_items flexbox<?= $arTheme["SIDE_MENU"]["VALUE"] === 'LEFT' ? ' flexbox--row-reverse' : ' flexbox--row' ; ?> flexbox--justify-space-between flexbox--align-start flexbox--gap flexbox--gap-32 <?=$bShowCollapsedBlock ? ' show-collapsed' : ''?> <?=$bShowTableOneColumn ? ' show-one-column' : ''?>">
 	<div class="section-content-wrapper <?CMax::ShowPageProps("WITH_LEFT_BLOCK")?>">
 		<?CMax::AddMeta(
 			array(
@@ -21,10 +23,10 @@ if ($oidParam = $arParams["SKU_DETAIL_ID"]) {
 				'og:image' => (($arElement['PREVIEW_PICTURE'] || $arElement['DETAIL_PICTURE']) ? CFile::GetPath(($arElement['PREVIEW_PICTURE'] ? $arElement['PREVIEW_PICTURE'] : $arElement['DETAIL_PICTURE'])) : false),
 			)
 		);?>
-		<?$sViewElementTemplate = ($arParams["ELEMENT_TYPE_VIEW"] == "FROM_MODULE" ? $arTheme["CATALOG_PAGE_DETAIL"]["VALUE"] : $arParams["ELEMENT_TYPE_VIEW"]);?>
 		<?$hide_left_block = ($arTheme["LEFT_BLOCK_CATALOG_DETAIL"]["VALUE"] == "Y" ? "N" : "Y");
 
 		//set offer view type
+		$typeDetail = '';
 		$typeTmpDetail = $typeTmpPictureDetail = 0;
 		if($arSection['UF_ELEMENT_DETAIL'])
 			$typeTmpDetail = $arSection['UF_ELEMENT_DETAIL'];
@@ -67,10 +69,10 @@ if ($oidParam = $arParams["SKU_DETAIL_ID"]) {
 			if($arType = $rsTypes->GetNext()){
 				$typeDetail = $arType['XML_ID'];
 			}
-			if($typeDetail){
-				$sViewElementTemplate = $typeDetail;
-			}
 		}
+		$optionValueViewDetail = $typeDetail ?: ($arParams["ELEMENT_TYPE_VIEW"] == "FROM_MODULE" ? $arTheme["CATALOG_PAGE_DETAIL"]["VALUE"] : $arParams["ELEMENT_TYPE_VIEW"]);
+		$sViewElementTemplate = Aspro\Functions\CAsproMax::processRetriveOptionValue('CATALOG_PAGE_DETAIL', $optionValueViewDetail);
+
 		if($typeTmpPictureDetail){
 			$rsTypes = CUserFieldEnum::GetList(array(), array("ID" => $typeTmpPictureDetail));
 			if($arType = $rsTypes->GetNext()){
@@ -80,15 +82,6 @@ if ($oidParam = $arParams["SKU_DETAIL_ID"]) {
 				$sViewPictureDetail = $typePictureDetail;
 			}
 		}
-
-        /* set force CATALOG_PAGE_DETAIL from theme */
-        if (
-			class_exists('\Aspro\Functions\CAsproMaxCustom') &&
-			method_exists('\Aspro\Functions\CAsproMaxCustom', 'setPageDetail')
-		) {
-			$sViewElementTemplate = \Aspro\Functions\CAsproMaxCustom::setPageDetail($sViewElementTemplate);
-		}
-        /* */
 		?>
 
 		<?if($arParams["USE_SHARE"] == "Y" && $arElement):?>

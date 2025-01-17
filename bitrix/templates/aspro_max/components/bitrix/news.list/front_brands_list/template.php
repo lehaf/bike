@@ -21,7 +21,7 @@ $arParams['NARROW'] = $arParams['NARROW'] ?? 'N';
 			<div class="row">
 				<div class="col-md-3">
 					<?if($arParams['TITLE_BLOCK'] || $arParams['TITLE_BLOCK_ALL']):?>
-						<h3><?=$arParams['TITLE_BLOCK'];?></h3>
+						<?=Aspro\Functions\CAsproMax::showTitleH($arParams['TITLE_BLOCK']);?>
 						<?// intro text?>
 						<?if($arParams['INCLUDE_FILE']):?>
 							<div class="text_before_items font_xs">

@@ -65,24 +65,26 @@ $(document).ready(function () {
     var _this = $(this),
       menu = _this.parent().find("> .dropdown-select__list");
 
-    menu.stop().slideToggle(300);
-    _this.toggleClass('dropdown-select__title--opened');
+    BX.onCustomEvent("onCloseDropDown");
+
+   _this.toggleClass("dropdown-select__title--opened", menu.is(":hidden"));
+    menu.stop().slideToggle();
   });
 
   // close select
   $("html, body").on("mousedown", function (e) {
-    if (typeof e.target.className == "string" && e.target.className.indexOf("adm") < 0) {
+    if (e.target.className.toString().indexOf("adm") < 0) {
       e.stopPropagation();
       if (!$(e.target).closest(".dropdown-select").length) {
         BX.onCustomEvent("onCloseDropDown");
       }
-
     }
   });
-  BX.addCustomEvent("onCloseDropDown", () => {
-    $(".dropdown-select .dropdown-select__title").removeClass('dropdown-select__title--opened');
+
+  BX.addCustomEvent("onCloseDropDown", function () {
+    $(".dropdown-select .dropdown-select__title").removeClass("dropdown-select__title--opened");
     $(".dropdown-select__list:visible").stop().slideUp();
-  })
+  });
   /**/
 
   /*side head block*/
@@ -110,7 +112,7 @@ $(document).ready(function () {
           if (typeof window["stickySidebar"] !== "undefined") {
             window["stickySidebar"].updateSticky();
           }
-        }
+        },
       });
     }
   });

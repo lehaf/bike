@@ -48,7 +48,7 @@ if (typeof updateBasketInfoServices === 'undefined') {
         }
     });
     
-    function updateBasketInfoServices (refreshBasket){
+    let updateBasketInfoServices = function  (refreshBasket){
         if(refreshBasket === undefined)
             refreshBasket = true;
     

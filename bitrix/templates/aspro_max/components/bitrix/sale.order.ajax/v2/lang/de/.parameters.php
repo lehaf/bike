@@ -147,4 +147,5 @@ $MESS["DATA_LAYER_NAME"] = "Name des Datencontainers";
 $MESS["BRAND_PROPERTY"] = "Eigenschaft, die den Namen der Handelsmarke enthдlt";
 $MESS["PAY_SYSTEM_PAYABLE_ERROR_TEXT"] = "Benachrichtigungstext, der angezeigt wird, wenn die Bestellung nicht bezahlt werden kann";
 $MESS["PAY_SYSTEM_PAYABLE_ERROR_DEFAULT"] = "Sie werden die Bestellung bezahlen kцnnen, nachdem wir feststellen, dass die von Ihnen bestellte Produkte am Lager sind. Wird Ihre Bestellung erfьllt, erhalten Sie eine E-Mail mit Zahlungsanweisungen. Sie werden dann die Bestellung innerhalb Ihres Accounts abschlieЯen kцnnen.";
+$MESS["SHOW_IMAGES"] = "Bilder von Lieferdiensten und Zahlungssystemen anzeigen";
 ?>

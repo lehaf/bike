@@ -1,6 +1,8 @@
 <?
 global $arTheme, $arRegion;
 $logoClass = ($arTheme['COLORED_LOGO']['VALUE'] !== 'Y' ? '' : ' colored');
+$arShowSites = \Aspro\Functions\CAsproMax::getShowSites();
+
 ?>
 <div class="maxwidth-theme">
 	<div class="logo-row v2 margin0 menu-row">
@@ -47,7 +49,6 @@ $logoClass = ($arTheme['COLORED_LOGO']['VALUE'] !== 'Y' ? '' : ' colored');
 			</div>	
 			<div class="header__top-item">
 				<div class="line-block line-block--40 line-block--40-1200 flexbox--justify-end">
-					<?$arShowSites = \Aspro\Functions\CAsproMax::getShowSites();?>
 					<?$countSites = count($arShowSites);?>
 					<?if ($countSites > 1) :?>
 						<div class="line-block__item no-shrinked">
@@ -56,6 +57,7 @@ $logoClass = ($arTheme['COLORED_LOGO']['VALUE'] !== 'Y' ? '' : ' colored');
 									array(
 										"COMPONENT_TEMPLATE" => ".default",
 										"PATH" => SITE_DIR."/include/header_include/site.selector.php",
+										"SITE_LIST" => $arShowSites,
 										"AREA_FILE_SHOW" => "file",
 										"AREA_FILE_SUFFIX" => "",
 										"AREA_FILE_RECURSIVE" => "Y",

@@ -258,16 +258,12 @@ if($this->StartResultCache(false, array(($arParams["CACHE_GROUPS"]==="N"? false:
 		if($arRegion)
 		{
 			$arParams["USE_REGION"] = "Y";
-			if($arRegion['LIST_STORES'])
-			{
-				if(reset($arRegion['LIST_STORES']) != 'component')
-					$arParams['STORES'] = array_values($arRegion['LIST_STORES']);
+			if ($arRegion['LIST_STORES']) {
+				$arParams['STORES'] = array_values($arRegion['LIST_STORES']);
 			}
 
-			if($arRegion['LIST_PRICES'])
-			{
-				if(reset($arRegion['LIST_PRICES']) != 'component')
-					$arParams['PRICE_CODE'] = array_keys($arRegion['LIST_PRICES']);
+			if ($arRegion['LIST_PRICES']) {
+				$arParams['PRICE_CODE'] = array_keys($arRegion['LIST_PRICES']);
 			}
 			$arParams["PRICE_CODE_IDS"] = $arRegion["LIST_PRICES"];
 

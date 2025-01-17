@@ -31,12 +31,12 @@ $arTemplateParameters= Array(
 		"TYPE" => "CHECKBOX",
 		"DEFAULT" => "N",
 	),
-	"WIDE_FIRST_BLOCK" => array(
+	/* "WIDE_FIRST_BLOCK" => array(
 		"NAME" => GetMessage("T_WIDE_FIRST_BLOCK"),
 		"TYPE" => "CHECKBOX",
 		"DEFAULT" => "N",
 		"REFRESH" => "Y",
-	),
+	), */
 	"LINE_ELEMENT_COUNT" => array(
 		"NAME" => GetMessage("T_LINE_ELEMENT_COUNT"),
 		"TYPE" => "LIST",

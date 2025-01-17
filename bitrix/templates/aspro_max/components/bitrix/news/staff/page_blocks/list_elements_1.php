@@ -6,7 +6,6 @@
 		"SHOW_SECTION_PREVIEW_DESCRIPTION" => $arParams["SHOW_SECTION_PREVIEW_DESCRIPTION"],
 		"VIEW_TYPE" => $arParams["VIEW_TYPE"],
 		"SHOW_TABS" => $arParams["SHOW_TABS"],
-		"IMAGE_POSITION" => $arParams["IMAGE_POSITION"],
 		"IBLOCK_TYPE"	=>	$arParams["IBLOCK_TYPE"],
 		"IBLOCK_ID"	=>	$arParams["IBLOCK_ID"],
 		"NEWS_COUNT"	=>	$arParams["NEWS_COUNT"],

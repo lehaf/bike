@@ -789,3 +789,10 @@ if ($arCurrentValues['USE_CUSTOM_ERROR_MESSAGES'] == 'Y')
 		"PARENT" => "ERROR_MESSAGE_SETTINGS"
 	);
 }
+
+$arTemplateParameters["SHOW_IMAGES"] =  array(
+	"NAME" => GetMessage("SHOW_IMAGES"),
+	"TYPE" => "CHECKBOX",
+	"DEFAULT" => 'N',
+	"PARENT" => "VISUAL"
+);

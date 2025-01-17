@@ -8,9 +8,10 @@
 	$bRightBanner = $bRightSide && $RightContent == 'BANNER';
 	$bRightBrand = $bRightSide && $RightContent == 'BRANDS';
 	$classMenuPosition = $arTheme["MENU_POSITION"]["VALUE"] == 'COMBINED' ? 'm_line' : 'm_' . strtolower($arTheme["MENU_POSITION"]["VALUE"]);
+	$bShowOverlay = $arTheme["DARK_HOVER_OVERLAY"]["VALUE"] === 'Y' ?: false;
 
 	?>
-	<div class="menu_top_block catalog_block">
+	<div class="menu_top_block catalog_block <?=$bShowOverlay ? 'dark_overlay' : ''?>">
 		<ul class="menu dropdown">
 			<?foreach( $arResult as $key => $arItem ){?>
 				<li class="full <?=($arItem["CHILD"] ? "has-child" : "");?> <?=($arItem["SELECTED"] ? "current opened" : "");?> <?=$classMenuPosition?> v_<?=strtolower($arTheme["MENU_TYPE_VIEW"]["VALUE"]);?>">

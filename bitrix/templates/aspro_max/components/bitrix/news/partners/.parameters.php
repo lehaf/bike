@@ -36,6 +36,8 @@ if(\Bitrix\Main\Loader::includeModule('iblock'))
 	while($arRes = $db_iblock->Fetch()) $arIBlocks[$arRes["ID"]] = $arRes["NAME"]." [".$arRes["CODE"]."]";
 
 	$arTypesEx = CIBlockParameters::GetIBlockTypes(Array("-"=>" "));
+	$request = \Bitrix\Main\Application::getInstance()->getContext()->getRequest();
+	$siteId = $request->get("src_site") ?? $request->get("site");
 }
 
 $arPrice = array();
@@ -138,7 +140,7 @@ $arPageBlocksParams = array();
 if(\Bitrix\Main\Loader::includeModule('aspro.max')){
 	$arPageBlocks = CMax::GetComponentTemplatePageBlocks(__DIR__);
 	$arPageBlocksParams = CMax::GetComponentTemplatePageBlocksParams($arPageBlocks, ['ELEMENTS' => ['REFRESH' => 'Y']]);
-
+	$arCurrentValues['SECTION_ELEMENTS_TYPE_VIEW'] = $arCurrentValues['SECTION_ELEMENTS_TYPE_VIEW'] === 'FROM_MODULE' ? CMax::GetFrontParametrValue('PARTNERS_PAGE', $siteId) : $arCurrentValues['SECTION_ELEMENTS_TYPE_VIEW'];
 	CMax::AddComponentTemplateModulePageBlocksParams(__DIR__, $arPageBlocksParams); // add option value FROM_MODULE
 }
 
@@ -619,6 +621,33 @@ $arTemplateParameters = array_merge($arPageBlocksParams, array(
 	),
 ));
 
+if (strpos($arCurrentValues['SECTION_ELEMENTS_TYPE_VIEW'], 'list_elements_1') !== false ||
+	strpos($arCurrentValues['SECTION_ELEMENTS_TYPE_VIEW'], 'list_elements_3') !== false) {
+	$arTemplateParameters = array_merge($arTemplateParameters, array(
+		'COUNT_IN_LINE' => array(
+			'PARENT' => 'LIST_SETTINGS',
+			'NAME' => GetMessage('COUNT_IN_LINE'),
+			'TYPE' => 'STRING',
+			'DEFAULT' => '3',
+		),
+	));
+}
+
+if (strpos($arCurrentValues['SECTION_ELEMENTS_TYPE_VIEW'], 'list_elements_2') !== false) {
+	$arTemplateParameters = array_merge($arTemplateParameters, array(
+		'IMAGE_POSITION' => array(
+			'PARENT' => 'LIST_SETTINGS',
+			'SORT' => 250,
+			'NAME' => GetMessage('IMAGE_POSITION'),
+			'TYPE' => 'LIST',
+			'VALUES' => array(
+				'left' => GetMessage('IMAGE_POSITION_LEFT'),
+				'right' => GetMessage('IMAGE_POSITION_RIGHT'),
+			),
+			'DEFAULT' => 'left',
+		),
+	));
+}
 
 if(is_array($arCurrentValues["SORT_BUTTONS"])){
 	if (in_array("PRICE", $arCurrentValues["SORT_BUTTONS"])){
@@ -732,23 +761,6 @@ if(strpos($viewTemplate, 'with_group') !== false){
 		"TYPE" => "LIST",
 		"VALUES" => array("FROM_MODULE" => GetMessage("FROM_MODULE_PARAMS"),"1" => GetMessage("T_FULL"), "2" => GetMessage("T_TYPE_LEFT_BLOCK_2"), "3" => GetMessage("T_TYPE_LEFT_BLOCK_3"), "4" => GetMessage("T_TYPE_LEFT_BLOCK_4")),
 		"DEFAULT" => "FROM_MODULE",
-	);
-	$arTemplateParameters['IMAGE_POSITION'] = array(
-		'PARENT' => 'LIST_SETTINGS',
-		'SORT' => 250,
-		'NAME' => GetMessage('IMAGE_POSITION'),
-		'TYPE' => 'LIST',
-		'VALUES' => array(
-			'left' => GetMessage('IMAGE_POSITION_LEFT'),
-			'right' => GetMessage('IMAGE_POSITION_RIGHT'),
-		),
-		'DEFAULT' => 'left',
-	);
-	$arTemplateParameters['COUNT_IN_LINE'] = array(
-		'PARENT' => 'LIST_SETTINGS',
-		'NAME' => GetMessage('COUNT_IN_LINE'),
-		'TYPE' => 'STRING',
-		'DEFAULT' => '3',
 	);
 	$arTemplateParameters["SHOW_SORT_IN_FILTER"] = Array(
 		"NAME" => GetMessage("SHOW_SORT_IN_FILTER"),

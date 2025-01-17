@@ -11,6 +11,8 @@ use Bitrix\Main\Web\Json,
 if (!Loader::includeModule('iblock'))
 	return;
 $catalogIncluded = Loader::includeModule('catalog');
+$request = \Bitrix\Main\Application::getInstance()->getContext()->getRequest();
+$siteId = $request->get("src_site") ?? $request->get("site");
 
 $arGalleryType = array('big' => GetMessage('GALLERY_BIG'), 'small' => GetMessage('GALLERY_SMALL'));
 
@@ -19,6 +21,7 @@ $arPageBlocksParams = array();
 if(\Bitrix\Main\Loader::includeModule('aspro.max')){
 	$arPageBlocks = CMax::GetComponentTemplatePageBlocks(__DIR__);
 	$arPageBlocksParams = CMax::GetComponentTemplatePageBlocksParams($arPageBlocks);
+	$arCurrentValues['SECTION_ELEMENTS_TYPE_VIEW'] = $arCurrentValues['SECTION_ELEMENTS_TYPE_VIEW'] === 'FROM_MODULE' ? CMax::GetFrontParametrValue('PROJECTS_PAGE', $siteId) : $arCurrentValues['SECTION_ELEMENTS_TYPE_VIEW'];
 	CMax::AddComponentTemplateModulePageBlocksParams(__DIR__, $arPageBlocksParams); // add option value FROM_MODULE
 }
 
@@ -128,30 +131,6 @@ $arTemplateParameters = array_merge($arPageBlocksParams, array(
 		'TYPE' => 'CHECKBOX',
 		'DEFAULT' => 'N',
 	),
-	'SHOW_FILTER_DATE' => array(
-		'PARENT' => 'LIST_SETTINGS',
-		'NAME' => GetMessage('SHOW_FILTER_DATE'),
-		'TYPE' => 'CHECKBOX',
-		'DEFAULT' => 'Y',
-	),
-	'IMAGE_POSITION' => array(
-		'PARENT' => 'LIST_SETTINGS',
-		'SORT' => 250,
-		'NAME' => GetMessage('IMAGE_POSITION'),
-		'TYPE' => 'LIST',
-		'VALUES' => array(
-			'left' => GetMessage('IMAGE_POSITION_LEFT'),
-			'right' => GetMessage('IMAGE_POSITION_RIGHT'),
-		),
-		'DEFAULT' => 'left',
-	),
-	'LINE_ELEMENT_COUNT_LIST' => array(
-		'PARENT' => 'LIST_SETTINGS',
-		'SORT' => 700,
-		'NAME' => GetMessage('T_LINE_ELEMENT_COUNT_LIST'),
-		'TYPE' => 'STRING',
-		'DEFAULT' => 3,
-	),
 	'SHOW_MAX_ELEMENT' => array(
 		'PARENT' => 'DETAIL_SETTINGS',
 		'SORT' => 600,
@@ -241,56 +220,6 @@ $arTemplateParameters = array_merge($arPageBlocksParams, array(
 		'TYPE' => 'CHECKBOX',
 		'DEFAULT' => 'N',
 	),
-	"SHOW_BORDER_ELEMENT" => array(
-		"PARENT" => "LIST_SETTINGS",
-		'NAME' => GetMessage('T_SHOW_BORDER_ELEMENT'),
-		'TYPE' => 'CHECKBOX',
-		'DEFAULT' => 'N',
-	),
-	"USE_BG_IMAGE_ALTERNATE" => Array(
-		"PARENT" => "LIST_SETTINGS",
-		"NAME" => GetMessage("T_USE_BG_IMAGE_ALTERNATE"),
-		"TYPE" => "CHECKBOX",
-		"DEFAULT" => "N",
-	),
-	"BG_POSITION" => Array(
-		"PARENT" => "LIST_SETTINGS",
-		"NAME" => GetMessage("BG_POSITION_NAME"),
-		"TYPE" => "LIST",
-		"VALUES" => array(
-			"top left" => GetMessage("TOP_LEFT"),
-			"top center" => GetMessage("TOP_CENTER"),
-			"top right" => GetMessage("TOP_RIGHT"),
-			"center left" => GetMessage("CENTER_LEFT"),
-			"center" => GetMessage("CENTER_CENTER"),
-			"center right" => GetMessage("CENTER_RIGHT"),
-			"bottom left" => GetMessage("BOTTOM_LEFT"),
-			"bottom center" => GetMessage("BOTTOM_CENTER"),
-			"bottom right" => GetMessage("BOTTOM_RIGHT")
-		),
-		"DEFAULT" => "",
-	),
-	"TYPE_IMG" => Array(
-		"PARENT" => "LIST_SETTINGS",
-		"NAME" => GetMessage("TYPE_IMG_NAME"),
-		"TYPE" => "LIST",
-		"VALUES" => array("md" => GetMessage("MD_IMG"), "lg" => GetMessage("BIG_IMG")),
-		"DEFAULT" => "lg",
-	),
-	"SIZE_IN_ROW" => Array(
-		"PARENT" => "LIST_SETTINGS",
-		"NAME" => GetMessage("SIZE_IN_ROW_NAME"),
-		"TYPE" => "LIST",
-		"VALUES" => array( 4 => 4, 3 => 3, 2 => 2),
-		"DEFAULT" => 4,
-	),
-	"TITLE_SHOW_FON" => Array(
-		"PARENT" => "LIST_SETTINGS",
-		"NAME" => GetMessage("TITLE_SHOW_FON_NAME"),
-		"TYPE" => "CHECKBOX",
-		"DEFAULT" => "Y",
-		//'HIDDEN' => ((isset($arCurrentValues['FON_BLOCK_2_COLS']) && $arCurrentValues['FON_BLOCK_2_COLS'] == 'Y') ? 'N' : 'Y'),
-	),
     	"SIDE_LEFT_BLOCK" => Array(
 		"PARENT" => "BASE",
 		"NAME" => GetMessage("SIDE_LEFT_BLOCK_NAME"),
@@ -305,12 +234,7 @@ $arTemplateParameters = array_merge($arPageBlocksParams, array(
 		"VALUES" => array("FROM_MODULE" => GetMessage("FROM_MODULE_PARAMS"),"1" => GetMessage("T_FULL"), "2" => GetMessage("T_TYPE_LEFT_BLOCK_2"), "3" => GetMessage("T_TYPE_LEFT_BLOCK_3"), "4" => GetMessage("T_TYPE_LEFT_BLOCK_4")),
 		"DEFAULT" => "FROM_MODULE",
 	),
-	"ALL_BLOCK_BG" => Array(
-		"PARENT" => "LIST_SETTINGS",
-		"NAME" => GetMessage("ALL_BLOCK_BG_NAME"),
-		"TYPE" => "CHECKBOX",
-		"DEFAULT" => "N",
-	),
+
 	"SHOW_PROJECTS_MAP" => Array(
 		"PARENT" => "LIST_SETTINGS",
 		"NAME" => GetMessage("SHOW_PROJECTS_MAP_TITLE"),
@@ -682,6 +606,49 @@ $arTemplateParameters = array_merge($arPageBlocksParams, array(
 		"ADDITIONAL_VALUES" => "Y",
 	),
 ));
+
+if (strpos($arCurrentValues['SECTION_ELEMENTS_TYPE_VIEW'], 'list_elements_1') !== false) {
+	$arTemplateParameters = array_merge($arTemplateParameters, array(
+		'IMAGE_POSITION' => array(
+			'PARENT' => 'LIST_SETTINGS',
+			'SORT' => 250,
+			'NAME' => GetMessage('IMAGE_POSITION'),
+			'TYPE' => 'LIST',
+			'VALUES' => array(
+				'left' => GetMessage('IMAGE_POSITION_LEFT'),
+				'right' => GetMessage('IMAGE_POSITION_RIGHT'),
+			),
+			'DEFAULT' => 'left',
+		),
+	));
+}
+if (strpos($arCurrentValues['SECTION_ELEMENTS_TYPE_VIEW'], 'list_elements_2') !== false) {
+	$arTemplateParameters = array_merge($arTemplateParameters, array(
+		"SIZE_IN_ROW" => Array(
+			"PARENT" => "LIST_SETTINGS",
+			"NAME" => GetMessage("SIZE_IN_ROW_NAME"),
+			"TYPE" => "LIST",
+			"VALUES" => array( 4 => 4, 3 => 3, 2 => 2),
+			"DEFAULT" => 4,
+		),
+	));
+}
+if (strpos($arCurrentValues['SECTION_ELEMENTS_TYPE_VIEW'], 'list_elements_3') !== false) {
+	$arTemplateParameters = array_merge($arTemplateParameters, array(
+		"USE_BG_IMAGE_ALTERNATE" => Array(
+			"PARENT" => "LIST_SETTINGS",
+			"NAME" => GetMessage("T_USE_BG_IMAGE_ALTERNATE"),
+			"TYPE" => "CHECKBOX",
+			"DEFAULT" => "N",
+		),
+		"TITLE_SHOW_FON" => Array(
+			"PARENT" => "LIST_SETTINGS",
+			"NAME" => GetMessage("TITLE_SHOW_FON_NAME"),
+			"TYPE" => "CHECKBOX",
+			"DEFAULT" => "Y",			
+		),
+	));
+}
 $arTemplateParameters["SORT_REGION_PRICE"] = Array(
 	"SORT"=>200,
 	"NAME" => GetMessage("SORT_REGION_PRICE"),

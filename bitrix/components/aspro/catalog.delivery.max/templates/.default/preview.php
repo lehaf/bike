@@ -35,11 +35,20 @@ foreach($arResult['DELIVERY'] as $arDelivery){
 		}
 	}
 }
+
+$locationName = $arResult['LOCATION'] && $arResult['LOCATION']['ID'] ? $arResult['LOCATION']['LOCATION_NAME'] : '';
+$locationNameAccusative = Aspro\Max\Morphy::getLocationAccusative($locationName);
 ?>
 <div id="catalog-delivery-preview-<?=$arResult['RAND']?>" class="catalog-delivery-preview">
 	<div class="catalog-delivery-preview-title font_sxs <?=($arMinPriceByParent ? 'darken' : '')?>"><?=str_replace(
-		array('#LOCATION_NAME#'),
-		array($arResult['LOCATION'] && $arResult['LOCATION']['ID'] ? '<span class="catalog-delivery-preview-title-city"><span>'.$arResult['LOCATION']['LOCATION_NAME'].'</span></span>' : ''),
+		array(
+			'#LOCATION_NAME#',
+			'#LOCATION_NAME_ACCUSATIVE#',
+		),
+		array(
+			$locationName ? '<span class="catalog-delivery-preview-title-city"><span>'.$locationName.'</span></span>' : '',
+			$locationNameAccusative ? '<span class="catalog-delivery-preview-title-city"><span>'.$locationNameAccusative.'</span></span>' : '',
+		),
 		$arResult['MESSAGES']['PREVIEW_TITLE']
 	)?><?=(!$arMinPriceByParent ? '&nbsp;<span class="catalog-delivery-preview-title-price">'.($minPrice > 0 ? Loc::getMessage('CD_T_FROM_PRICE', array('#PRICE_FORMATTED#' => $minPriceFormatted)) : Loc::getMessage('CD_T_DELIVERY_PRICE_FREE')).'</span>' : '')?></div>
 	<?if($arMinPriceByParent):?>

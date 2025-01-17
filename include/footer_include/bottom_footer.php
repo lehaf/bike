@@ -2,6 +2,16 @@
 global $APPLICATION, $arRegion, $arSite, $arTheme, $bIndexBot, $is404, $isForm, $isIndex;
 $arExt = [];
 
+$APPLICATION->IncludeComponent(
+    "aspro:theme.max", 
+    ".default", 
+    array(
+        'SHOW_TEMPLATE' => 'Y'
+    ),
+    false, 
+	array('HIDE_ICONS' => 'Y')
+);
+
 if (CMax::IsOrderPage()) {
 	$arExt[] = 'order_actions';
 }

@@ -35,7 +35,7 @@ $arParams['SHOW_DETAIL_LINK'] = $arParams['SHOW_DETAIL_LINK'] ?? 'Y';
 					<div class="row">
 						<div class="col-md-3">
 							<?if($arParams['TITLE_BLOCK'] || $arParams['TITLE_BLOCK_ALL']):?>
-								<h3><?=$arParams['TITLE_BLOCK'];?></h3>
+								<?=Aspro\Functions\CAsproMax::showTitleH($arParams['TITLE_BLOCK']);?>
 								<?// intro text?>
 								<?if($arParams['INCLUDE_FILE']):?>
 									<div class="text_before_items font_xs">
@@ -67,7 +67,7 @@ $arParams['SHOW_DETAIL_LINK'] = $arParams['SHOW_DETAIL_LINK'] ?? 'Y';
 						<div class="col-md-9">
 			<?else:?>
 				<div class="top_block clearfix">
-					<h3 class="pull-left"><?=$arParams['TITLE_BLOCK'];?></h3>
+				<?=Aspro\Functions\CAsproMax::showTitleH($arParams['TITLE_BLOCK'], 'pull-left');?>
 					<?if($arParams['SHOW_SUBSCRIBE'] == 'Y' && $arParams['TITLE_SUBSCRIBE']):?>
 						<span class="pull-left subscribe">
 							<span class="font_upper muted dark_link animate-load" data-event="jqm" data-param-type="subscribe" data-name="subscribe">
@@ -317,8 +317,8 @@ $arParams['SHOW_DETAIL_LINK'] = $arParams['SHOW_DETAIL_LINK'] ?? 'Y';
 					</div>
 				<?endif;?>
 			<?endif;?>
-
-			<?if($arParams['HALF_BLOCK'] == 'Y' && $arParams['IS_AJAX'] != 'Y'):?>
+				<?// close the div if there is only one element?>
+			<?if($arParams['HALF_BLOCK'] == 'Y' && $arParams['IS_AJAX'] != 'Y' && count($arResult["ITEMS"])>1):?>
 					</div>
 				</div>
 			<?endif;?>

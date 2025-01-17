@@ -40,7 +40,8 @@ $this->setFrameMode(true);?>
 							<div class="with-text-block-wrapper">
 								<div class="row">
 									<div class="col-md-3">
-										<h3><?=($arResult['TITLE'] ? $arResult['TITLE'] : \Bitrix\Main\Localization\Loc::getMessage('TITLE'));?></h3>
+									<?$titleText = ($arResult['TITLE'] ? $arResult['TITLE'] : \Bitrix\Main\Localization\Loc::getMessage('TITLE'));?>
+									<?=Aspro\Functions\CAsproMax::showTitleH($titleText);?>
 										<?// intro text?>
 										<?if($arParams['INCLUDE_FILE']):?>
 											<div class="text_before_items font_sm">
@@ -60,7 +61,8 @@ $this->setFrameMode(true);?>
 									<div class="col-md-9 vk_body">
 						<?else:?>
 							<div class="top_block">
-								<h3><?=($arResult['TITLE'] ? $arResult['TITLE'] : \Bitrix\Main\Localization\Loc::getMessage('TITLE'));?></h3>
+									<?$titleText = ($arResult['TITLE'] ? $arResult['TITLE'] : \Bitrix\Main\Localization\Loc::getMessage('TITLE'));?>
+									<?=Aspro\Functions\CAsproMax::showTitleH($titleText);?>
 								<a class="pull-right font_upper muted" href="<?= $sGroupLink; ?>" target="_blank">
 									<?=CMax::showIconSvg("resume", SITE_TEMPLATE_PATH."/images/svg/social/vk_main.svg", "", "inline", true, false);?>
 									<span><?=($arResult['ALL_TITLE'] ?: \Bitrix\Main\Localization\Loc::getMessage('VK_ALL_ITEMS'));?></span>

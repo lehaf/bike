@@ -11,7 +11,7 @@
 		"IBLOCK_ID" => "26",
 		"SECTION_ID" => "",
 		"SECTION_CODE" => "",
-		"TABS_CODE" => "HIT",
+		"HIT_PROP" => "HIT",
 		"SECTION_USER_FIELDS" => array(
 			0 => "",
 			1 => "",

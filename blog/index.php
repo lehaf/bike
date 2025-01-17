@@ -1,6 +1,8 @@
 <?
 require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
-$APPLICATION->SetTitle("Блог");
+$APPLICATION->SetPageProperty("HIDE_LEFT_BLOCK", "Y");
+$APPLICATION->SetPageProperty("title", "11");
+$APPLICATION->SetTitle("Новости и анонсы");
 ?>
 <?$APPLICATION->IncludeComponent(
 	"bitrix:news", 
@@ -8,7 +10,7 @@ $APPLICATION->SetTitle("Блог");
 	array(
 		"IBLOCK_TYPE" => "aspro_max_content",
 		"IBLOCK_ID" => "17",
-		"NEWS_COUNT" => "6",
+		"NEWS_COUNT" => "12",
 		"USE_SEARCH" => "N",
 		"USE_RSS" => "Y",
 		"USE_RATING" => "N",
@@ -64,9 +66,9 @@ $APPLICATION->SetTitle("Блог");
 		),
 		"DETAIL_PROPERTY_CODE" => array(
 			0 => "LINK_GOODS",
-			1 => "FORM_QUESTION",
-			2 => "FORM_ORDER",
-			3 => "LINK_SERVICES",
+			1 => "LINK_SERVICES",
+			2 => "FORM_QUESTION",
+			3 => "FORM_ORDER",
 			4 => "PHOTOS",
 			5 => "DOCUMENTS",
 			6 => "",
@@ -171,7 +173,7 @@ $APPLICATION->SetTitle("Блог");
 		"SIZE_IN_ROW" => "3",
 		"TITLE_SHOW_FON" => "Y",
 		"SIDE_LEFT_BLOCK" => "RIGHT",
-		"TYPE_LEFT_BLOCK" => "4",
+		"TYPE_LEFT_BLOCK" => "1",
 		"SIDE_LEFT_BLOCK_DETAIL" => "FROM_MODULE",
 		"TYPE_LEFT_BLOCK_DETAIL" => "FROM_MODULE",
 		"IBLOCK_LINK_NEWS_ID" => "20",
@@ -199,6 +201,37 @@ $APPLICATION->SetTitle("Блог");
 		"IBLOCK_LINK_PARTNERS_ID" => "23",
 		"BLOCK_PARTNERS_NAME" => "Партнеры",
 		"DETAIL_LINKED_GOODS_SLIDER" => "Y",
+		"SHOW_DISCOUNT_PERCENT" => "N",
+		"SHOW_DISCOUNT_TIME" => "Y",
+		"SHOW_MEASURE" => "N",
+		"USE_SUBSCRIBE_IN_TOP" => "N",
+		"TAGS_SECTION_COUNT" => "",
+		"DISPLAY_LINKED_PAGER" => "Y",
+		"MAX_GALLERY_ITEMS" => "5",
+		"SHOW_GALLERY_GOODS" => "Y",
+		"HIDE_NOT_AVAILABLE_OFFERS" => "N",
+		"ADD_DETAIL_TO_SLIDER" => "Y",
+		"SHOW_ONE_CLICK_BUY" => "Y",
+		"SHOW_OLD_PRICE" => "N",
+		"SHOW_RATING" => "Y",
+		"DISPLAY_WISH_BUTTONS" => "Y",
+		"STIKERS_PROP" => "-",
+		"SALE_STIKER" => "-",
+		"SHOW_SECTIONS_FILTER" => "Y",
+		"LINKED_PROPERTY_CODE" => array(
+			0 => "",
+			1 => "",
+		),
+		"SHOW_COUNT_ELEMENTS" => "Y",
+		"LINKED_ELEMENT_TAB_SORT_FIELD" => "sort",
+		"LINKED_ELEMENT_TAB_SORT_ORDER" => "asc",
+		"LINKED_ELEMENT_TAB_SORT_FIELD2" => "id",
+		"LINKED_ELEMENT_TAB_SORT_ORDER2" => "desc",
+		"SORT_REGION_PRICE" => "BASE",
+		"SECTIONS_TAGS_DEPTH_LEVEL" => "2",
+		"IBLOCK_CATALOG_TYPE" => "-",
+		"IBLOCK_CATALOG_ID" => "1",
+		"PRICE_VAT_INCLUDE" => "Y",
 		"SEF_URL_TEMPLATES" => array(
 			"news" => "",
 			"section" => "#SECTION_CODE#/",

@@ -297,7 +297,7 @@ footer .social-icons ul li a {
   border-radius: 3px;
   opacity: 0.5;
   border: 1px solid rgba(255, 255, 255, 0.2);
-  background: url(../images/svg/social.svg) 0 0 no-repeat;
+  background: url(../images/svg/social.svg?v=1) 0 0 no-repeat;
   transition: opacity 0.3s ease;
   -moz-transition: opacity 0.3s ease;
   -ms-transition: opacity 0.3s ease;
@@ -321,6 +321,9 @@ footer .social-icons ul li.telegram a {
 }
 footer .social-icons ul li.ytb a {
   background-position: -95px -518px;
+}
+footer .social-icons ul li.rtb a {
+  background-position: -612px -377px;
 }
 footer .social-icons ul li.odn a {
   background-position: -48px -377px;
@@ -374,6 +377,9 @@ footer .social-icons ul li.telegram a:hover {
 }
 footer .social-icons ul li.ytb a:hover {
   background-position: -94px -329px;
+}
+footer .social-icons ul li.rtb a:hover {
+  background-position: -611px -188px;
 }
 footer .social-icons ul li.odn a:hover {
   background-position: -47px -188px;
@@ -475,7 +481,7 @@ footer .pays i {
   display: inline-block;
   vertical-align: middle;
   margin: 3px 10px;
-  background: url("../images/svg/payment.svg") 0px 0px no-repeat;
+  background: url("../images/svg/payment.svg?v=1") 0px 0px no-repeat;
   opacity: 0.5;
 }
 footer .pays i:hover {
@@ -673,23 +679,30 @@ footer .light .pays i.halva {
 footer .pays i.halva:hover {
   background-position: -756px -199px;
 }
-footer .pays i.tinkoff {
-  width: 63px;
-  height: 16px;
-  background-position: -657px -300px;
+footer .pays i.t-bank {
+  width: 20px;
+  height: 21px;
+  background-position: -657px -297px;
 }
-footer .light .pays i.tinkoff {
-  background-position: -794px -199px;
-  background-position-x: var(--light, -794px) var(--dark, -657px);
-  background-position-y: var(--light, -199px) var(--dark, -300px);
+footer .pays i.t-bank:hover {
+  background-position: -794px -197px;
 }
-footer .pays i.tinkoff:hover {
-  background-position: -657px -300px;
+footer .pays i.unionpay {
+  width: 32px;
+  height: 21px;
+  background-position: -697px -297px;
 }
-footer .light .pays i.tinkoff:hover {
-  background-position: -794px -199px;
+footer .pays i.unionpay:hover {
+  background-position: -834px -197px;
 }
-
+footer .pays i.sbp {
+  width: 17px;
+  height: 21px;
+  background-position: -748px -297px;
+}
+footer .pays i.sbp:hover {
+  background-position: -885px -197px;
+}
 footer > div .maxwidth-theme {
   background: none;
 }
@@ -729,6 +742,9 @@ footer .light .social-icons ul li.telegram a:not(:hover) {
 }
 footer .light .social-icons ul li.ytb a:not(:hover) {
   background-position: -95px -706px;
+}
+footer .light .social-icons ul li.rtb a:not(:hover) {
+  background-position: -613px -564px;
 }
 footer .light .social-icons ul li.odn a:not(:hover) {
   background-position: -48px -565px;

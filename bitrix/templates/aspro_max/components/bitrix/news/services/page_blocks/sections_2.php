@@ -15,6 +15,7 @@
 		"SORT_ORDER2"	=>	$arParams["SORT_ORDER2"],
 		"FIELD_CODE"	=>	$arParams["LIST_FIELD_CODE"],
 		"PROPERTY_CODE"	=>	$arParams["LIST_PROPERTY_CODE"],
+		"SIZE_IN_ROW" => $arParams["LINE_ELEMENT_COUNT"],
 		"DISPLAY_PANEL"	=>	$arParams["DISPLAY_PANEL"],
 		"SET_TITLE"	=>	$arParams["SET_TITLE"],
 		"SET_STATUS_404" => $arParams["SET_STATUS_404"],

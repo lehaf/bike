@@ -9,58 +9,26 @@ $bRowProps = $arParams['SHOW_PROPS_TABLE'] == 'rows';
 $bColProps = $arParams['SHOW_PROPS_TABLE'] == 'cols';
 
 ?>
-<?if( $arResult["ITEMS"] && count( $arResult["ITEMS"] ) >= 1 ){?>
-	<?
-	$arTransferParams = array(
+<?if($arResult["ITEMS"] && count( $arResult["ITEMS"] ) >= 1){?>
+	<?$arConfigTransfer = array(
 		"ALT_TITLE_GET" => $arParams["ALT_TITLE_GET"],
-		"SHOW_ABSENT" => $arParams["SHOW_ABSENT"],
-		"HIDE_NOT_AVAILABLE_OFFERS" => $arParams["HIDE_NOT_AVAILABLE_OFFERS"],
-		"PRICE_CODE" => $arParams["PRICE_CODE"],
-		"OFFER_TREE_PROPS" => $arParams["OFFER_TREE_PROPS"],
-		"CACHE_TIME" => $arParams["CACHE_TIME"],
-		"CONVERT_CURRENCY" => $arParams["CONVERT_CURRENCY"],
-		"CURRENCY_ID" => $arParams["CURRENCY_ID"],
-		"OFFERS_SORT_FIELD" => $arParams["OFFERS_SORT_FIELD"],
-		"OFFERS_SORT_ORDER" => $arParams["OFFERS_SORT_ORDER"],
-		"OFFERS_SORT_FIELD2" => $arParams["OFFERS_SORT_FIELD2"],
-		"OFFERS_SORT_ORDER2" => $arParams["OFFERS_SORT_ORDER2"],
 		"LIST_OFFERS_LIMIT" => $arParams["OFFERS_LIMIT"],
-		"CACHE_GROUPS" => $arParams["CACHE_GROUPS"],
 		"LIST_OFFERS_PROPERTY_CODE" => $arParams["OFFERS_PROPERTY_CODE"],
-		"SHOW_DISCOUNT_TIME" => $arParams["SHOW_DISCOUNT_TIME"],
-		"SHOW_COUNTER_LIST" => $arParams["SHOW_COUNTER_LIST"],
-		"PRICE_VAT_INCLUDE" => $arParams["PRICE_VAT_INCLUDE"],
-		"USE_PRICE_COUNT" => $arParams["USE_PRICE_COUNT"],
-		"SHOW_MEASURE" => $arParams["SHOW_MEASURE"],
-		"SHOW_OLD_PRICE" => $arParams["SHOW_OLD_PRICE"],
-		"SHOW_DISCOUNT_PERCENT" => $arParams["SHOW_DISCOUNT_PERCENT"],
-		"SHOW_DISCOUNT_PERCENT_NUMBER" => $arParams["SHOW_DISCOUNT_PERCENT_NUMBER"],
-		"USE_REGION" => $arParams["USE_REGION"],
-		"STORES" => $arParams["STORES"],
-		"DEFAULT_COUNT" => $arParams["DEFAULT_COUNT"],
-		"BASKET_URL" => $arParams["BASKET_URL"],
-		"OFFERS_CART_PROPERTIES" => $arParams["OFFERS_CART_PROPERTIES"],
-		"PRODUCT_PROPERTIES" => $arParams["PRODUCT_PROPERTIES"],
-		"PARTIAL_PRODUCT_PROPERTIES" => $arParams["PARTIAL_PRODUCT_PROPERTIES"],
 		"ADD_PROPERTIES_TO_BASKET" => ($arParams["ADD_PROPERTIES_TO_BASKET"] != "N" ? "Y" : "N"),
-		"SHOW_DISCOUNT_TIME_EACH_SKU" => $arParams["SHOW_DISCOUNT_TIME_EACH_SKU"],
-		"SHOW_ARTICLE_SKU" => $arParams["SHOW_ARTICLE_SKU"],
-		"OFFER_ADD_PICT_PROP" => $arParams["OFFER_ADD_PICT_PROP"],
-		"PRODUCT_QUANTITY_VARIABLE" => $arParams["PRODUCT_QUANTITY_VARIABLE"],
-		"SHOW_ONE_CLICK_BUY" => $arParams["SHOW_ONE_CLICK_BUY"],
 		"DISPLAY_COMPARE" => $arParams["DISPLAY_COMPARE"],
 		"DISPLAY_WISH_BUTTONS" => $arParams["DISPLAY_WISH_BUTTONS"],
 		"MAX_GALLERY_ITEMS" => $arParams["MAX_GALLERY_ITEMS"],
 		"SHOW_GALLERY" => $arParams["SHOW_GALLERY"],
 		"SHOW_PROPS" => $arParams["SHOW_PROPS"],
 		"SHOW_POPUP_PRICE" => CMax::GetFrontParametrValue('SHOW_POPUP_PRICE'),
-		"ADD_PICT_PROP" => $arParams["ADD_PICT_PROP"],
 		"ADD_DETAIL_TO_SLIDER" => $arParams["ADD_DETAIL_TO_SLIDER"],
 		"DISPLAY_COMPARE" => CMax::GetFrontParametrValue('CATALOG_COMPARE'),
 		"IBINHERIT_TEMPLATES" => $arParams["IBINHERIT_TEMPLATES"] ?? [],
 		"IBLOCK_ID_PARENT" => $arParams["IBLOCK_ID"],
 		"IBLOCK_ID" => $arResult["SKU_IBLOCK_ID"],
 	);
+
+	$arTransferParams = \Aspro\Functions\CAsproMax::getTransferParams($arParams, $arConfigTransfer);
 
 	/* for stores filter for offers in js_item_detail */
 	$storesFilterForOffers = Aspro\Max\Stores\Property::getStoresFilterForOffers($arParams);
@@ -312,9 +280,8 @@ $bColProps = $arParams['SHOW_PROPS_TABLE'] == 'cols';
 				<?//$arAddToBasketData = $arItem['ADD_TO_BASKET_DATA'];?>
 				<div class="table-view__item item bordered box-shadow main_item_wrapper js-notice-block" id="<?=$this->GetEditAreaId($arItem['ID']);?>" data-id="<?=$arItem["ID"]?>" data-product_type="<?=$arItem["CATALOG_TYPE"]?>">
 					<?if (isset($arItem["OFFERS"]) && $bUseSkuProps):?>
-						<template class="offers-template-json">
-							<?=\Aspro\Max\Product\SkuTools::getOfferTreeJson($arItem["OFFERS"])?>
-						</template>
+						<?=\Aspro\Max\Product\SkuTools::getTemplateWithJsonOffers($arItem["OFFERS"])?>
+						
 						<?$bUseSelectOffer = true;?>
 					<?endif;?>
 					<?$bUseSelectOffer = true;?>
@@ -503,7 +470,7 @@ $bColProps = $arParams['SHOW_PROPS_TABLE'] == 'cols';
 										<?if(!$arItem["OFFERS"] || $arParams['TYPE_SKU'] !== 'TYPE_1' || !$bShowOfferTree):?>
 											<div class="small-block counter_wrapp <?=($arItem["OFFERS"] && $arParams["TYPE_SKU"] == "TYPE_1" && $bShowOfferTree ? 'woffers' : '')?> list clearfix n-mb">
 												<?if($arAddToBasketData["OPTIONS"]["USE_PRODUCT_QUANTITY_LIST"] && !count($arItem["OFFERS"]) && $arAddToBasketData["ACTION"] == "ADD" && $arAddToBasketData["CAN_BUY"]):?>
-													<?=\Aspro\Functions\CAsproMax::showItemCounter($arAddToBasketData, $arItem["ID"], $arItemIDs, $arParams, '', '', true);?>
+													<?=\Aspro\Functions\CAsproMax::showItemCounter($arAddToBasketData, $arItem["ID"], $arItemIDs, $arParams, 'sm', '', true);?>
 												<?endif;?>
 												<div id="<?=$arItemIDs["ALL_ITEM_IDS"]['BASKET_ACTIONS']; ?>" class="button_block <?=($arAddToBasketData['ACTION'] === 'OUT_OF_PRODUCTION' || in_array($arItem["ID"], $arParams["BASKET_ITEMS"]) || $arAddToBasketData["ACTION"] == "ORDER"|| $arAddToBasketData["ACTION"] == "SUBSCRIBE" || ($arAddToBasketData["ACTION"] == 'MORE' || !$arAddToBasketData["CAN_BUY"]) || !$arAddToBasketData["OPTIONS"]["USE_PRODUCT_QUANTITY_LIST"] ? "wide" : "");?>">
 													<!--noindex-->
@@ -544,7 +511,7 @@ $bColProps = $arParams['SHOW_PROPS_TABLE'] == 'cols';
 												<div class="offer_buy_block">
 													<div class="small-block counter_wrapp list clearfix ce_cmp_hidden">
 														<?if(($arAddToBasketData["OPTIONS"]["USE_PRODUCT_QUANTITY_LIST"] && $arAddToBasketData["ACTION"] == "ADD") && $arAddToBasketData["CAN_BUY"]):?>		
-															<?=\Aspro\Functions\CAsproMax::showItemCounter($arAddToBasketData, $arItem["OFFERS"][$arItem["OFFERS_SELECTED"]]["ID"], $arItemIDs, $arParams, '', '', true);?>
+															<?=\Aspro\Functions\CAsproMax::showItemCounter($arAddToBasketData, $arItem["OFFERS"][$arItem["OFFERS_SELECTED"]]["ID"], $arItemIDs, $arParams, 'sm', '', true);?>
 														<?endif;?>
 														<div id="<?=$arItemIDs["ALL_ITEM_IDS"]['BASKET_ACTIONS']; ?>" class="button_block <?=($arAddToBasketData['ACTION'] === 'OUT_OF_PRODUCTION' || ($arAddToBasketData["ACTION"] == "ORDER"/*&& !$arItem["CAN_BUY"]*/)  || !$arAddToBasketData["CAN_BUY"] || !$arAddToBasketData["OPTIONS"]["USE_PRODUCT_QUANTITY_LIST"] || $arAddToBasketData["ACTION"] == "SUBSCRIBE" ? "wide" : "");?>">
 															<!--noindex-->

@@ -1,22 +1,29 @@
 <?
 $aMenuLinks = Array(
 	Array(
+		"О проекте", 
+		"/company/", 
+		Array(), 
+		Array(), 
+		"" 
+	),
+	Array(
 		"Акции", 
 		"/sale/", 
 		Array(), 
-		Array("ICON"=> "icon_discount"), 
+		Array("ICON"=>"icon_discount"), 
+		"" 
+	),
+	Array(
+		"Новости", 
+		"/blog/", 
+		Array(), 
+		Array(), 
 		"" 
 	),
 	Array(
 		"Услуги", 
 		"/services/", 
-		Array(), 
-		Array(), 
-		"" 
-	),
-	Array(
-		"Блог", 
-		"/blog/", 
 		Array(), 
 		Array(), 
 		"" 
@@ -31,13 +38,6 @@ $aMenuLinks = Array(
 	Array(
 		"Как купить", 
 		"/help/", 
-		Array(), 
-		Array(), 
-		"" 
-	),
-	Array(
-		"Компания", 
-		"/company/", 
 		Array(), 
 		Array(), 
 		"" 

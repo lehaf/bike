@@ -49,14 +49,14 @@ $MESS['CD_P_MESS_DELIVERY_PREVIEW_MORE_TITLE_TITLE'] = 'Текст ссылки 
 
 $MESS['CD_P_MESS_DELIVERY_PAGE_TITLE_DEFAULT'] = 'Расчет доставки';
 $MESS['MESS_DELIVERY_PAGE_TITLE_TIP'] = 'Расчет доставки';
-$MESS['CD_P_MESS_DELIVERY_DETAIL_TITLE_DEFAULT'] = 'Стоимость доставки <span>в </span>#LOCATION_NAME#';
-$MESS['MESS_DELIVERY_DETAIL_TITLE_TIP'] = 'Стоимость доставки &lt;span&gt;в &lt;/span&gt;#LOCATION_NAME#';
+$MESS['CD_P_MESS_DELIVERY_DETAIL_TITLE_DEFAULT'] = 'Стоимость доставки <span>в </span>#LOCATION_NAME_ACCUSATIVE#';
+$MESS['MESS_DELIVERY_DETAIL_TITLE_TIP'] = 'Стоимость доставки &lt;span&gt;в &lt;/span&gt;#LOCATION_NAME_ACCUSATIVE#';
 $MESS['CD_P_MESS_DELIVERY_CALC_ERROR_TITLE_DEFAULT'] = 'Не удалось рассчитать стоимость доставки.';
 $MESS['MESS_DELIVERY_CALC_ERROR_TITLE_TIP'] = 'Не удалось рассчитать стоимость доставки.';
 $MESS['CD_P_MESS_DELIVERY_CALC_ERROR_TEXT_DEFAULT'] = 'После оформления заказа менеджер магазина свяжется с вами и уточнит информацию по доставке.';
 $MESS['MESS_DELIVERY_CALC_ERROR_TEXT_TIP'] = 'После оформления заказа менеджер магазина свяжется с вами и уточнит информацию по доставке.';
-$MESS['CD_P_MESS_DELIVERY_PREVIEW_TITLE_DEFAULT'] = 'Доставка в #LOCATION_NAME#';
-$MESS['MESS_DELIVERY_PREVIEW_TITLE_TIP'] = 'Доставка в #LOCATION_NAME#';
+$MESS['CD_P_MESS_DELIVERY_PREVIEW_TITLE_DEFAULT'] = 'Доставка в #LOCATION_NAME_ACCUSATIVE#';
+$MESS['MESS_DELIVERY_PREVIEW_TITLE_TIP'] = 'Доставка в #LOCATION_NAME_ACCUSATIVE#';
 $MESS['CD_P_MESS_DELIVERY_PREVIEW_MORE_TITLE_DEFAULT'] = 'Подробнее';
 $MESS['MESS_DELIVERY_PREVIEW_MORE_TITLE_TIP'] = 'Подробнее';
 ?>

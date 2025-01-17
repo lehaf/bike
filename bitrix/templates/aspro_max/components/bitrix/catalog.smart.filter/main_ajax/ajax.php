@@ -1,12 +1,11 @@
 <?if(!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true)die();?>
 <?
 if(CMax::isSmartSeoInstalled() && $arResult && class_exists(\Aspro\Smartseo\General\Smartseo::class)) {
-	$url = \Aspro\Smartseo\General\Smartseo::getUrlByReal($arResult['FILTER_AJAX_URL'], SITE_ID);
+	$url = \Aspro\Smartseo\General\Smartseo::getUrlByReal(htmlspecialcharsback($arResult['FILTER_AJAX_URL']), SITE_ID);
 
 	if($url) {
 		$arResult['FILTER_AJAX_URL'] = $url;
 		$arResult['SEF_SET_FILTER_URL'] = $url;
-		$arResult['FILTER_URL'] = $url;
 		$arResult['FILTER_URL'] = $url;
 		$arResult['JS_FILTER_PARAMS']['SEF_SET_FILTER_URL'] = $url;
 	}

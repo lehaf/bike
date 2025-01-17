@@ -3,7 +3,7 @@ use CMax as Solution;
 ?>
 <div id="basket_preload">
     <? include_once("action_basket.php"); ?>
-    <? $arParams = Solution::unserialize(urldecode($_REQUEST["PARAMS"])); ?>
+    <?$arParams = json_decode($_REQUEST["PARAMS"]); ?>
 
     <? $APPLICATION->IncludeComponent("bitrix:sale.basket.basket.line", "normal", $arParams, false, array("HIDE_ICONS" => "Y")); ?>
 </div>
