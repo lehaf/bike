@@ -171,7 +171,7 @@ class CreateElement extends \CBitrixComponent
                             if ($field["PROPERTY_TYPE"] === "L") {
                                 $linkElements = \Bitrix\Iblock\PropertyEnumerationTable::getList([
                                     "filter" => ["=PROPERTY_ID" => $field["ID"]],
-                                    "order" => ["SORT" => "ASC"],
+                                    "order" => ["SORT" => "ASC", "ID" => 'DESC'],
                                     'cache' => [
                                         'ttl' => 36000000,
                                         'cache_joins' => true
