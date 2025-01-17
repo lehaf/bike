@@ -135,8 +135,8 @@ if (!empty($fileData)) {
                                 $updateElements[] = setElementsPropsFromParser($val, $propsListInfo);
                                 $elementId = array_search($val[2], $siteElementsNumbers, true);
                                 $element = setElementsPropsFromParser($val, $propsListInfo);
-                                pr(['edit_' . $elementId => $element]);
                                 $newElement = editElement($element['fields'] ?? [], $elementId, $element['product']);
+                                pr(['edit_' . $elementId => $element]);
                             }
 
                             $fileElementsNumbers[] = $val[2];
@@ -445,7 +445,7 @@ function convertRace(int $race, string $unit): float
 function editElement(array $data, int $elementId, array $productInfo): array
 {
     $iblockClass = \Bitrix\Iblock\Iblock::wakeUp(CATALOG_IBLOCK_ID)->getEntityDataClass();
-    $element = $iblockClass::getByPrimary($elementId, ['select' => array_keys($data)])->fetchObject();
+    $element = $iblockClass::getByPrimary($elementId)->fetchObject();
     $elementPhotos = $iblockClass::getByPrimary($elementId, ['select' => ['MORE_PHOTO', 'PREVIEW_PICTURE']])->fetchObject();
 
     $delPhotos = [];
@@ -505,7 +505,6 @@ function editElement(array $data, int $elementId, array $productInfo): array
 //
 //            $data[$prop] = $fileId;
 //        }
-
             $isUserProp = in_array($prop, $notUserProps);
 
             if (!$isUserProp) {
@@ -521,7 +520,6 @@ function editElement(array $data, int $elementId, array $productInfo): array
                     continue;
                 }
             }
-
             if (is_array($item)) {
                 foreach ($item as $value) {
                     $propertyValues = $element->get($prop);
