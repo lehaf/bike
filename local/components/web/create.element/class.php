@@ -114,7 +114,7 @@ class CreateElement extends \CBitrixComponent
                             'IBLOCK_ID' => $this->arParams["IBLOCK_ID"] ?? 0,
                             'ID' => $sectionPropsId
                         ],
-                        'order' => ['SORT' => 'ASC']
+                        'order' => ['SORT' => 'ASC', 'ID' => 'DESC']
                     ])->fetchAll();
 
                     if (!empty($properties)) {
