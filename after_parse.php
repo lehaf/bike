@@ -382,7 +382,10 @@ function createElement(array $data): array
 //
 //            $data[$prop] = $fileId;
 //        }
-        if(!in_array($prop, $notUserProps)) {
+
+        $isUserProp = in_array($prop, $notUserProps);
+
+        if (!$isUserProp) {
             $property = \Bitrix\Iblock\PropertyTable::getList([
                 'filter' => [
                     'IBLOCK_ID' => CATALOG_IBLOCK_ID,
@@ -390,18 +393,19 @@ function createElement(array $data): array
                 ],
                 'select' => ['ID', 'PROPERTY_TYPE'],
             ])->fetch();
-            if($property['ID']) {
-                if (is_array($item)) {
-                    foreach ($item as $value) {
-                        $newElement->addTo($prop, new \Bitrix\Iblock\ORM\PropertyValue($value));
-                    }
-                } else {
-                    $newElement->set($prop, $item);
-                }
+
+            if (!$property['ID']) {
+                continue; // Если свойство не найдено, завершаем обработку
             }
         }
 
-
+        if (is_array($item)) {
+            foreach ($item as $value) {
+                $newElement->addTo($prop, new \Bitrix\Iblock\ORM\PropertyValue($value));
+            }
+        } else {
+            $newElement->set($prop, $item);
+        }
     }
 
     $newItemId = $newElement->save();
@@ -502,7 +506,9 @@ function editElement(array $data, int $elementId, array $productInfo): array
 //            $data[$prop] = $fileId;
 //        }
 
-            if(!in_array($prop, $notUserProps)) {
+            $isUserProp = in_array($prop, $notUserProps);
+
+            if (!$isUserProp) {
                 $property = \Bitrix\Iblock\PropertyTable::getList([
                     'filter' => [
                         'IBLOCK_ID' => CATALOG_IBLOCK_ID,
@@ -510,22 +516,25 @@ function editElement(array $data, int $elementId, array $productInfo): array
                     ],
                     'select' => ['ID', 'PROPERTY_TYPE'],
                 ])->fetch();
-                if($property['ID']) {
-                    if (is_array($item)) {
-                        foreach ($item as $value) {
-                            $propertyValues = $element->get($prop);
-                            // Удаляем все существующие значения
-                            foreach ($propertyValues as $val) {
-                                $propertyValues->remove($val);
-                            }
 
-                            $element->addTo($prop, new \Bitrix\Iblock\ORM\PropertyValue($value));
-
-                        }
-                    } else {
-                        $element->set($prop, $item);
-                    }
+                if (!$property['ID']) {
+                    continue;
                 }
+            }
+
+            if (is_array($item)) {
+                foreach ($item as $value) {
+                    $propertyValues = $element->get($prop);
+                    // Удаляем все существующие значения
+                    foreach ($propertyValues as $val) {
+                        $propertyValues->remove($val);
+                    }
+
+                    $element->addTo($prop, new \Bitrix\Iblock\ORM\PropertyValue($value));
+
+                }
+            } else {
+                $element->set($prop, $item);
             }
         }
     }
