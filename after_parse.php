@@ -3,7 +3,7 @@ ini_set('max_execution_time', 123456);
 
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
-$file = IOFactory::load("motoMini.csv");
+$file = IOFactory::load("motoTest.csv");
 
 $fileData = $file->getActiveSheet()->toArray();
 unset($fileData[0]);
@@ -116,27 +116,27 @@ if (!empty($fileData)) {
                             $val["SECTION_ID"] = $subSect->getId();
 
                             if (!in_array($val[2], $siteElementsNumbers)) {
-//                                $addElements[] = setElementsPropsFromParser($val, $propsListInfo);
-                                $element = setElementsPropsFromParser($val, $propsListInfo);
-                                pr(['add' => $element]);
-                                $newElement = createElement($element['fields'] ?? []);
-                                pr(['newElem' => $newElement]);
-
-                                if (\Bitrix\Main\Loader::includeModule('sale') && $newElement["STATUS"] === "OK") {
-                                    $catalogIblock = \Bitrix\Catalog\CatalogIblockTable::getList([
-                                        'filter' => ['=IBLOCK_ID' => CATALOG_IBLOCK_ID],
-                                    ])->fetchObject();
-
-                                    if ($catalogIblock) {
-                                        $newProduct = createProduct($newElement["ID"], $element['product']);
-                                    }
-                                }
+                                $addElements[] = setElementsPropsFromParser($val, $propsListInfo);
+//                                $element = setElementsPropsFromParser($val, $propsListInfo);
+//                                pr(['add' => $element]);
+//                                $newElement = createElement($element['fields'] ?? []);
+//                                pr(['newElem' => $newElement]);
+//
+//                                if (\Bitrix\Main\Loader::includeModule('sale') && $newElement["STATUS"] === "OK") {
+//                                    $catalogIblock = \Bitrix\Catalog\CatalogIblockTable::getList([
+//                                        'filter' => ['=IBLOCK_ID' => CATALOG_IBLOCK_ID],
+//                                    ])->fetchObject();
+//
+//                                    if ($catalogIblock) {
+//                                        $newProduct = createProduct($newElement["ID"], $element['product']);
+//                                    }
+//                                }
                             } else {
                                 $updateElements[] = setElementsPropsFromParser($val, $propsListInfo);
-                                $elementId = array_search($val[2], $siteElementsNumbers, true);
-                                $element = setElementsPropsFromParser($val, $propsListInfo);
-                                $newElement = editElement($element['fields'] ?? [], $elementId, $element['product']);
-                                pr(['edit_' . $elementId => $element]);
+//                                $elementId = array_search($val[2], $siteElementsNumbers, true);
+//                                $element = setElementsPropsFromParser($val, $propsListInfo);
+//                                $newElement = editElement($element['fields'] ?? [], $elementId, $element['product']);
+//                                pr(['edit_' . $elementId => $element]);
                             }
 
                             $fileElementsNumbers[] = $val[2];
@@ -153,6 +153,7 @@ if (!empty($fileData)) {
                 deleteElements($elemId);
             }
         }
+        pr($addElements);
 
 
 //        if (!empty($addElements)) {
@@ -240,7 +241,7 @@ function setElementsPropsFromParser($elem, array $propsInfo): array
 
     $fields = [
         "IS_AV" => 'Да',
-        "NAME" => "$elem[12] $elem[5] $elem[6], $elem[7] г.",
+        "NAME" => "$elem[5] $elem[6], $elem[7] г.",
         "PREVIEW_PICTURE" => $previewImg,
         "DETAIL_PICTURE" => $previewImg,
         "DETAIL_TEXT" => $elem[18],
