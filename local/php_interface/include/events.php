@@ -3,8 +3,8 @@
 use Bitrix\Iblock\SectionTable;
 
 AddEventHandler("main", "OnBeforeUserAdd", ["CustomEvents", "OnBeforeUserAddHandler"]);
-//AddEventHandler("iblock", "OnBeforeIBlockSectionAdd", ["CustomEvents", "OnBeforeIBlockSectionAddHandler"]);
-//AddEventHandler("iblock", "OnBeforeIBlockSectionUpdate", ["CustomEvents", "OnBeforeIBlockSectionUpdateHandler"]);
+AddEventHandler("iblock", "OnBeforeIBlockSectionAdd", ["CustomEvents", "OnBeforeIBlockSectionAddHandler"]);
+AddEventHandler("iblock", "OnBeforeIBlockSectionUpdate", ["CustomEvents", "OnBeforeIBlockSectionUpdateHandler"]);
 AddEventHandler("main", "OnBeforeUserUpdate", Array("CustomEvents", "OnBeforeUserUpdateHandler"));
 class CustomEvents
 {
@@ -46,7 +46,7 @@ class CustomEvents
             ];
             $sectionId = $bs->Add($fields);
             if ($sectionId) {
-                \Bitrix\Main\Diag\Debug::dumpToFile($sectionId);
+//                \Bitrix\Main\Diag\Debug::dumpToFile($sectionId);
 
                 $arFields['UF_PARTS_SECTION'] = $sectionId;
             }
@@ -56,7 +56,7 @@ class CustomEvents
 
     public static function OnBeforeIBlockSectionUpdateHandler(&$arFields)
     {
-        if (!empty($arFields['UF_PARTS_SECTION'])) {
+        if (!empty($arFields['UF_PARTS_SECTION']) && (int)$arFields['IBLOCK_SECTION_ID'] !== TRANSPORT_SECTION_ID) {
             $bs = new CIBlockSection();
             $fields = [
                 "NAME" => $arFields['NAME'], // Название нового раздела
@@ -65,7 +65,6 @@ class CustomEvents
             ];
             $bs->Update($arFields['UF_PARTS_SECTION'], $fields);
         }
-//        \Bitrix\Main\Diag\Debug::dumpToFile($parentSection);
     }
 
     public static function OnBeforeUserUpdateHandler(&$arFields) {
