@@ -3,7 +3,7 @@ ini_set('max_execution_time', 123456);
 
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
-$file = IOFactory::load("motoTest.csv");
+$file = IOFactory::load("motoMini.csv");
 
 $fileData = $file->getActiveSheet()->toArray();
 unset($fileData[0]);
@@ -52,7 +52,9 @@ if (!empty($fileData)) {
         "race_unit",
         "country",
         "contact_person",
-        "phone"
+        "phone",
+        "color",
+        "saller"
     ];
 
     if (!empty($types)) {
@@ -116,27 +118,26 @@ if (!empty($fileData)) {
                             $val["SECTION_ID"] = $subSect->getId();
 
                             if (!in_array($val[2], $siteElementsNumbers)) {
-                                $addElements[] = setElementsPropsFromParser($val, $propsListInfo);
-//                                $element = setElementsPropsFromParser($val, $propsListInfo);
-//                                pr(['add' => $element]);
-//                                $newElement = createElement($element['fields'] ?? []);
-//                                pr(['newElem' => $newElement]);
-//
-//                                if (\Bitrix\Main\Loader::includeModule('sale') && $newElement["STATUS"] === "OK") {
-//                                    $catalogIblock = \Bitrix\Catalog\CatalogIblockTable::getList([
-//                                        'filter' => ['=IBLOCK_ID' => CATALOG_IBLOCK_ID],
-//                                    ])->fetchObject();
-//
-//                                    if ($catalogIblock) {
-//                                        $newProduct = createProduct($newElement["ID"], $element['product']);
-//                                    }
-//                                }
+//                                $addElements[] = setElementsPropsFromParser($val, $propsListInfo);
+                                $element = setElementsPropsFromParser($val, $propsListInfo);
+                                $newElement = createElement($element['fields'] ?? []);
+                                pr(['newElem' => $newElement]);
+
+                                if (\Bitrix\Main\Loader::includeModule('sale') && $newElement["STATUS"] === "OK") {
+                                    $catalogIblock = \Bitrix\Catalog\CatalogIblockTable::getList([
+                                        'filter' => ['=IBLOCK_ID' => CATALOG_IBLOCK_ID],
+                                    ])->fetchObject();
+
+                                    if ($catalogIblock) {
+                                        $newProduct = createProduct($newElement["ID"], $element['product']);
+                                    }
+                                }
                             } else {
-                                $updateElements[] = setElementsPropsFromParser($val, $propsListInfo);
-//                                $elementId = array_search($val[2], $siteElementsNumbers, true);
-//                                $element = setElementsPropsFromParser($val, $propsListInfo);
-//                                $newElement = editElement($element['fields'] ?? [], $elementId, $element['product']);
-//                                pr(['edit_' . $elementId => $element]);
+//                                $updateElements[] = setElementsPropsFromParser($val, $propsListInfo);
+                                $elementId = array_search($val[2], $siteElementsNumbers, true);
+                                $element = setElementsPropsFromParser($val, $propsListInfo);
+                                $newElement = editElement($element['fields'] ?? [], $elementId, $element['product']);
+                                pr(['edit_' . $elementId => $element]);
                             }
 
                             $fileElementsNumbers[] = $val[2];
@@ -153,7 +154,7 @@ if (!empty($fileData)) {
                 deleteElements($elemId);
             }
         }
-        pr($addElements);
+//        pr($addElements);
 
 
 //        if (!empty($addElements)) {
@@ -238,6 +239,14 @@ function setElementsPropsFromParser($elem, array $propsInfo): array
     unset($images[0]);
 
     $raceUnit = (trim($elem[14]) === 'моточасов') ? 'мото ч.' : trim($elem[14]);
+    $phones = explode("||", $elem[19]);
+    $formatPhones = [];
+    if(!empty($phones)) {
+        foreach ($phones as $phone) {
+            $formatPhones[] = formatPhoneNumber($phone);
+        }
+    }
+
 
     $fields = [
         "IS_AV" => 'Да',
@@ -250,7 +259,7 @@ function setElementsPropsFromParser($elem, array $propsInfo): array
 //        "MORE_PHOTO" => $images,
 
         "complect_" . $elem[1] => explode("||", $elem[15]), // комплектация (надо создать)
-        "phone" => explode("||", $elem[19]), // телефон
+        "phone" => $formatPhones, // телефон
         "type_" . $elem[1] => trim($elem[12]), // тип (надо создать)
         "motor_type_" . $elem[1] => trim($elem[9]), // такт
         "cylinders_count_" . $elem[1] => trim($elem[10]), // количество цилиндров
@@ -265,6 +274,9 @@ function setElementsPropsFromParser($elem, array $propsInfo): array
         "race_km" => convertRace(trim($elem[13]), $raceUnit),
         "country" => trim($elem[16]), // город
         "contact_person" => trim($elem[20]), // имя
+
+        "color" => "Чёрный",
+        "saller" => "Частное лицо"
     ];
 
     $productInfo = [
@@ -275,6 +287,31 @@ function setElementsPropsFromParser($elem, array $propsInfo): array
     return ['fields' => $fields, 'product' => $productInfo];
 }
 
+function formatPhoneNumber($phoneNumber) : string
+{
+    // Убираем лишние символы (например, пробелы или тире) и приводим к единому виду
+    $phoneNumber = preg_replace('/\D/', '', $phoneNumber);
+
+    // Проверяем, начинается ли номер с "+"
+    if (!str_starts_with($phoneNumber, '375')) {
+        return 'Неверный формат номера. Номер должен начинаться с 375.';
+    }
+
+    // Проверяем длину номера после приведения к формату
+    if (strlen($phoneNumber) !== 12) {
+        return 'Неверная длина номера. Ожидается 12 цифр.';
+    }
+
+    // Разбиваем номер на части
+    $countryCode = substr($phoneNumber, 0, 3); // Код страны
+    $areaCode = substr($phoneNumber, 3, 2);   // Код оператора
+    $part1 = substr($phoneNumber, 5, 3);      // Первая часть номера
+    $part2 = substr($phoneNumber, 8, 2);      // Вторая часть номера
+    $part3 = substr($phoneNumber, 10, 2);     // Третья часть номера
+
+    // Форматируем номер
+    return "+$countryCode ($areaCode) $part1-$part2-$part3";
+}
 function convertElementFields(array $props, array $propsInfo): array
 {
     $listProps = array_keys($propsInfo);
@@ -345,6 +382,7 @@ function createElement(array $data): array
         "PREVIEW_TEXT",
         "DETAIL_PICTURE",
         "DETAIL_TEXT",
+        "DETAIL_TEXT_TYPE",
         "CODE",
         "MORE_PHOTO",
     ];
@@ -425,6 +463,7 @@ function createElement(array $data): array
         foreach ($newItemId->getErrors() as $error) {
             $result[$error->getField()->getName()] = $error->getMessage();
         }
+        \Bitrix\Main\Diag\Debug::dumpToFile(['errors' => $result]);
     }
 
     return $result ?? [];
@@ -487,6 +526,7 @@ function editElement(array $data, int $elementId, array $productInfo): array
             "PREVIEW_TEXT",
             "DETAIL_PICTURE",
             "DETAIL_TEXT",
+            "DETAIL_TEXT_TYPE",
             "CODE",
             "MORE_PHOTO",
         ];
@@ -521,16 +561,16 @@ function editElement(array $data, int $elementId, array $productInfo): array
                     continue;
                 }
             }
+
             if (is_array($item)) {
+                $element->fill($prop);
+                $propertyValues = $element->get($prop);
+                // Удаляем все существующие значения
+                foreach ($propertyValues as $val) {
+                    $propertyValues->remove($val);
+                }
                 foreach ($item as $value) {
-                    $propertyValues = $element->get($prop);
-                    // Удаляем все существующие значения
-                    foreach ($propertyValues as $val) {
-                        $propertyValues->remove($val);
-                    }
-
                     $element->addTo($prop, new \Bitrix\Iblock\ORM\PropertyValue($value));
-
                 }
             } else {
                 $element->set($prop, $item);
