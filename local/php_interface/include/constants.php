@@ -9,6 +9,7 @@ const PRODUCTS_SECTION_ID = 10691;
 const TIRES_SECTION_ID = 10692;
 const SERVICES_SECTION_ID = 10693;
 const GARAGES_SECTION_ID = 10683;
+const RENT_SECTION_ID = 14953;
 
 //список разделов в различных шаблонах (для catalog.section)
 const SECTION_TYPE_1 = [10694, 10063, 7540, 9007, 10536, 10682]; //мототранспорт
