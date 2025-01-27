@@ -34,13 +34,12 @@
 
 
 .filter-compact-block .row-border {
-	margin: 0;
+	margin: 11px 0 0;
 	border: none;
 }
 
 .filter-compact-block .row-border .flex-row {
 	margin: 0;
-	margin-bottom: 10px;
 }
 
 .choices__list--dropdown.is-active {
@@ -53,4 +52,11 @@
 
 .bx_filter.compact .bx_filter_parameters_box > .bx_filter_parameters_box_title:not(.filter_title) > .svg-inline-down {
 	top: 4px !important;
+}
+
+@media screen and (max-width: 767px) {
+	.filter-compact-block .row-border {
+		margin-bottom: 11px;
+	}
+
 }

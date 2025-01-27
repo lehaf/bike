@@ -16,92 +16,92 @@ if ($arResult["ITEMS"]) {
     <? global $filter_exists; ?>
     <? $filter_exists = "filter_exists"; ?>
     <? $bActiveFilter = \Aspro\Functions\CAsproMax::checkActiveFilterPage($arParams["SEF_RULE_FILTER"]); ?>
-    <div class="bx_filter bx_filter_vertical compact swipeignore <?= (isset($arResult['EMPTY_ITEMS']) ? 'empty-items' : ''); ?>">
-        <div class="bx_filter_section clearfix">
-            <form id="countryFilter" class="row-border" data-name="<?=$arParams['FILTER_NAME']?>">
-                <div class="form-row flex-row location-group-select">
-                    <div class="form-row__col-30 <?= ($_GET[$arParams['FILTER_NAME'] . '_country']) ? 'is-active' : '' ?>">
-                        <div class="form-group custom-select-inner form-group-custom-select">
-                            <div class="form-row">
-                                <select name="<?= $arParams['FILTER_NAME'] ?>_country"
-                                        class="select-type  custom-select-list iks-ignore" id="country">
-                                    <option value="" selected>
-                                        Страна
-                                    </option>
-                                    <option value="reset">
-                                        Сбросить
-                                    </option>
-                                    <?php foreach ($arResult['COUNTRIES'] as $country): ?>
-                                        <option
-                                                value="<?= $country['ID'] ?>"
-                                            <?=($_GET[$arParams['FILTER_NAME'] . '_country'] === $country['ID']) ? 'selected' : ''?>
-                                        >
-                                            <?= $country['NAME_RU'] ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-row__col-30 select-region">
-                        <div class="form-group custom-select-inner form-group-custom-select">
-                            <div class="form-row">
-                                <select name="<?= $arParams['FILTER_NAME'] ?>_region"
-                                        class="select-type  custom-select-list iks-ignore" id="region"
-                                        data-select="region-list"
-                                    <?=($_GET[$arParams['FILTER_NAME'] . '_country']) ? '' : 'disabled'?>
+    <form id="countryFilter" class="row-border" data-name="<?=$arParams['FILTER_NAME']?>">
+        <div class="form-row flex-row location-group-select">
+            <div class="form-row__col-30 <?= ($_GET[$arParams['FILTER_NAME'] . '_country']) ? 'is-active' : '' ?>">
+                <div class="form-group custom-select-inner form-group-custom-select">
+                    <div class="form-row">
+                        <select name="<?= $arParams['FILTER_NAME'] ?>_country"
+                                class="select-type  custom-select-list iks-ignore" id="country">
+                            <option value="" selected>
+                                Страна
+                            </option>
+                            <option value="reset">
+                                Сбросить
+                            </option>
+                            <?php foreach ($arResult['COUNTRIES'] as $country): ?>
+                                <option
+                                        value="<?= $country['ID'] ?>"
+                                    <?=($_GET[$arParams['FILTER_NAME'] . '_country'] === $country['ID']) ? 'selected' : ''?>
                                 >
-                                    <option value="" selected>
-                                        Область
-                                    </option>
-                                    <option value="reset">
-                                        Сбросить
-                                    </option>
-                                    <?php if(!empty($arResult['REGIONS'])):?>
-                                        <?php foreach ($arResult['REGIONS'] as $region): ?>
-                                            <option
-                                                    value="<?= $region['ID'] ?>"
-                                                <?=($_GET[$arParams['FILTER_NAME'] . '_region'] === $region['ID']) ? 'selected' : ''?>
-                                            >
-                                                <?= $region['NAME'] ?>
-                                            </option>
-                                        <?php endforeach; ?>
-                                    <?php endif;?>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-row__col-30 select-city">
-                        <div class="form-group custom-select-inner form-group-custom-select">
-                            <div class="form-row">
-                                <select name="<?= $arParams['FILTER_NAME'] ?>_city" class="select-type custom-select-list iks-ignore"
-                                        id="city"
-                                        data-select="city-list"
-                                    <?=($_GET[$arParams['FILTER_NAME'] . '_region']) ? '' : 'disabled'?>
-                                >
-                                    <option value="">
-                                        Город
-                                    </option>
-                                    <option value="reset">
-                                        Сбросить
-                                    </option>
-                                    <?php if(!empty($arResult['CITIES'])):?>
-                                        <?php foreach ($arResult['CITIES'] as $city): ?>
-                                            <option
-                                                    value="<?= $city['ID'] ?>"
-                                                <?=($_GET[$arParams['FILTER_NAME'] . '_city'] === $city['ID']) ? 'selected' : ''?>
-                                            >
-                                                <?= $city['NAME'] ?>
-                                            </option>
-                                        <?php endforeach; ?>
-                                    <?php endif;?>
-                                </select>
-                            </div>
-                        </div>
+                                    <?= $country['NAME_RU'] ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
                 </div>
-            </form>
+            </div>
+            <div class="form-row__col-30 select-region">
+                <div class="form-group custom-select-inner form-group-custom-select">
+                    <div class="form-row">
+                        <select name="<?= $arParams['FILTER_NAME'] ?>_region"
+                                class="select-type  custom-select-list iks-ignore" id="region"
+                                data-select="region-list"
+                            <?=($_GET[$arParams['FILTER_NAME'] . '_country']) ? '' : 'disabled'?>
+                        >
+                            <option value="" selected>
+                                Область
+                            </option>
+                            <option value="reset">
+                                Сбросить
+                            </option>
+                            <?php if(!empty($arResult['REGIONS'])):?>
+                                <?php foreach ($arResult['REGIONS'] as $region): ?>
+                                    <option
+                                            value="<?= $region['ID'] ?>"
+                                        <?=($_GET[$arParams['FILTER_NAME'] . '_region'] === $region['ID']) ? 'selected' : ''?>
+                                    >
+                                        <?= $region['NAME'] ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            <?php endif;?>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row__col-30 select-city">
+                <div class="form-group custom-select-inner form-group-custom-select">
+                    <div class="form-row">
+                        <select name="<?= $arParams['FILTER_NAME'] ?>_city" class="select-type custom-select-list iks-ignore"
+                                id="city"
+                                data-select="city-list"
+                            <?=($_GET[$arParams['FILTER_NAME'] . '_region']) ? '' : 'disabled'?>
+                        >
+                            <option value="">
+                                Город
+                            </option>
+                            <option value="reset">
+                                Сбросить
+                            </option>
+                            <?php if(!empty($arResult['CITIES'])):?>
+                                <?php foreach ($arResult['CITIES'] as $city): ?>
+                                    <option
+                                            value="<?= $city['ID'] ?>"
+                                        <?=($_GET[$arParams['FILTER_NAME'] . '_city'] === $city['ID']) ? 'selected' : ''?>
+                                    >
+                                        <?= $city['NAME'] ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            <?php endif;?>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
 
+    <div class="bx_filter bx_filter_vertical compact swipeignore <?= (isset($arResult['EMPTY_ITEMS']) ? 'empty-items' : ''); ?>">
+        <div class="bx_filter_section clearfix">
             <form name="<? echo $arResult["FILTER_NAME"] . "_form" ?>" action="<? echo $arResult["FORM_ACTION"] ?>"
                   method="get" class="smartfilter">
                 <div class="bx_filter_parameters_box title">
