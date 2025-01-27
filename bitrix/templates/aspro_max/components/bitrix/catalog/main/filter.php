@@ -26,7 +26,6 @@
 	$FILTER_NAME = (string)$arParams["FILTER_NAME"];
 
 	if($ajax || $_GET[$FILTER_NAME . '_country']) {
-		\Bitrix\Main\Diag\Debug::dumpToFile($_GET);
 		$cities = Filter::getCitiesFilterId($_GET, $FILTER_NAME);
 		if (!empty($cities)) {
 			$smartPreFilter['=PROPERTY_' . Filter::getPropertyId($arParams['IBLOCK_ID'], 'country')] = $cities;
@@ -58,7 +57,7 @@
 			'CURRENCY_ID' => $arParams['CURRENCY_ID'],
 			'DISPLAY_ELEMENT_COUNT' => $arParams['DISPLAY_ELEMENT_COUNT'],
 			"INSTANT_RELOAD" => "Y",
-			"VIEW_MODE" => strtolower($viewFilter),
+			"VIEW_MODE" => strtolower($arTheme["FILTER_VIEW"]["VALUE"]),
 			"SEF_MODE" => (strlen($arResult["URL_TEMPLATES"]["smart_filter"]) ? "Y" : "N"),
 			"SEF_RULE" => $arResult["FOLDER"].$arResult["URL_TEMPLATES"]["smart_filter"],
 			"SMART_FILTER_PATH" => $arResult["VARIABLES"]["SMART_FILTER_PATH"],

@@ -101,7 +101,7 @@
 	$MESS["BIGDATA_SET_COUNT_BOTTOM_TEXT"] = "Установить другое количество персональных рекомендаций для вида снизу";
 	$MESS["BIGDATA_COUNT_TEXT"] = "Количество персональных рекомендаций";
 	$MESS["BIGDATA_COUNT_TEXT_BOTTOM"] = "Количество персональных рекомендаций снизу";
-	
+
 
 	$MESS["SORT_BUTTONS"] = "Кнопки сортировки";
 	$MESS["SORT_BUTTONS_SORT"] = "по индексу сортировки";
@@ -384,14 +384,15 @@
 	$MESS["RECOMEND_IN_SEARCH_COUNT_TITLE"] = "Количество элементов в блоке \"Рекомендуем\"";
 
 	$MESS["SORT_BUTTONS_CUSTOM"] = "по умолчанию";
-    $MESS["SORT_BUTTONS_DATE_CREATE"] = "по дате создания";
+	$MESS["SORT_BUTTONS_DATE_CREATE"] = "по дате создания";
+
 
 	$MESS["CP_BC_TPL_PRODUCT_BLOCK_BUY_SERVICES"] = "Дополнительные услуги";
 	$MESS["TAB_BUY_SERVICES_NAME_TITLE"] = "Заголовок блока \"Дополнительные услуги\"";
 	$MESS["COUNT_SERVICES_IN_ANNOUNCE"] = "Количество дополнительных услуг сверху";
 	$MESS["SHOW_ALL_SERVICES_IN_SLIDE"] = "Показывать остальные услуги в анонсе";
 
-	$MESS["DISPLAY_LINKED_PAGER_TITLE"] = "Отображать кнопку показать еще для связанных товаров"; 
+	$MESS["DISPLAY_LINKED_PAGER_TITLE"] = "Отображать кнопку показать еще для связанных товаров";
 	$MESS["DISPLAY_LINKED_ELEMENT_SLIDER_CROSSLINK_TITLE"] = "Количество элементов получаемых для перекрестных продаж";
 	$MESS["DETAIL_SET_PRODUCT_TITLE"] = "Заголовок блока \"Модули\"";
 	$MESS["DETAIL_SET_PRODUCT_VALUE"] = "Собрать комплект";
@@ -400,8 +401,16 @@
 	$MESS["VISIBLE_PROP_WITH_OFFER"] = "Учитывать свойства торговых предложений при выводе свойств сверху";
 	$MESS["USE_LANDINGS_GROUP_TITLE"] = "Группировать посадочные страницы";
 	$MESS["LANDINGS_GROUP_FROM_SEO_TITLE"] = "Брать названия групп посадочных страниц из SEO";
-	
+
 	$MESS['T_SHOW_KIT_ALL'] = "Загружать все товары комплекта сразу";
 
 	$MESS["T_USE_COMPARE_GROUP"] = "Использовать группировку на странице сравнения";
+
+    $MESS["T_PS_NAME_OF_CUSTOM_DETAIL_BLOCK"] = "Заголовок блока";
+    $MESS["T_PS_CUSTOM_DETAIL_BLOCKS"] = "Пользовательские блоки и табы";
+    $MESS["T_PS_ICON_OF_CUSTOM_DETAIL_IS_TAB"] = "Является табом";
+    $MESS["T_PS_DSC_OF_CUSTOM_DETAIL_CODE"] = "Код блока: ";
+    $MESS["T_PS_URL_OF_CUSTOM_DETAIL_LINK"] = "Путь к файлу";
+    $MESS["CUSTOM_PROPERTY_DATA"] = "Свойства для пользовательских блоков";
+    $MESS["CUSTOM_PROPERTY_DATA_TIP"] = "Выбирать нужно только те свойства которые будут использоваться в пользовательских блоках. Данные добавляются в \$templateData['CUSTOM_BLOCKS_DATA']['PROPERTIES'].";
 ?>

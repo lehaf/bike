@@ -6,6 +6,8 @@ global $USER_FIELD_MANAGER;
 use Bitrix\Main\Loader;
 use Bitrix\Main\ModuleManager;
 use Bitrix\Main\Web\Json;
+use Bitrix\Main\Localization\Loc;
+use Aspro\Max\Product\Blocks;
 
 $request = \Bitrix\Main\Application::getInstance()->getContext()->getRequest();
 $siteId = $request->get("src_site") ?? $request->get("site");
@@ -70,7 +72,7 @@ $arPrice  = array_merge(array("MINIMUM_PRICE"=>GetMessage("SORT_PRICES_MINIMUM_P
 
 
 
-$arProperty_S = $arProperty_XL = array();
+$arPropertyAll = $arProperty_S = $arProperty_XL = array();
 if (0 < intval($arCurrentValues['IBLOCK_ID']))
 {
 	$rsProp = CIBlockProperty::GetList(Array("sort"=>"asc", "name"=>"asc"), Array("IBLOCK_ID"=>$arCurrentValues["IBLOCK_ID"], "ACTIVE"=>"Y"));
@@ -80,8 +82,10 @@ if (0 < intval($arCurrentValues['IBLOCK_ID']))
 			$arProperty_S[$arr["CODE"]] = "[".$arr["CODE"]."] ".$arr["NAME"];
 		elseif($arr["MULTIPLE"] == "Y" && $arr["PROPERTY_TYPE"] == "L")
 			$arProperty_XL[$arr["CODE"]] = "[".$arr["CODE"]."] ".$arr["NAME"];
-		
+
 		$arPropertySort[$arr['CODE']] = "[".$arr["CODE"]."] ".$arr['NAME'];
+
+        $arPropertyAll[$arr['CODE']] = "[".$arr["CODE"]."] ".$arr['NAME'];
 	}
 }
 
@@ -140,6 +144,13 @@ foreach($arUserFields as $FIELD_NAME=>$arUserField) {
 	if($arUserField["USER_TYPE"]["BASE_TYPE"]=="string")
 		{ $arUserFields_S[$FIELD_NAME] = $arUserField["LIST_COLUMN_LABEL"]? $arUserField["LIST_COLUMN_LABEL"]: $FIELD_NAME; }
 }
+
+// ADD CUSTOM BLOCKS
+$arCurrentValues['CUSTOM_DETAIL_BLOCKS'] = $arCurrentValues['CUSTOM_DETAIL_BLOCKS'] ?? '';
+$blocksObj = new Blocks($siteId, $arCurrentValues['CUSTOM_DETAIL_BLOCKS']);
+$curBlockList = implode(',', array_keys($blocksObj->customBlocks));
+$customTabsParam = Blocks::formatForOrder($blocksObj->getTabs());
+$customBlocksParam = Blocks::formatForOrder($blocksObj->getBlocks());
 
 $arTemplateParametersParts = array();
 
@@ -585,8 +596,8 @@ $arTemplateParametersParts[] = array(
 			"DEFAULT" => "Y",
 			"PARENT" => "DETAIL_SETTINGS",
 	),
-	"DISPLAY_LINKED_PAGER" => Array( 
-		"NAME" => GetMessage("DISPLAY_LINKED_PAGER_TITLE"), 
+	"DISPLAY_LINKED_PAGER" => Array(
+		"NAME" => GetMessage("DISPLAY_LINKED_PAGER_TITLE"),
 		"TYPE" => "CHECKBOX",
 		"DEFAULT" => "Y",
 		"PARENT" => "DETAIL_SETTINGS",
@@ -721,7 +732,7 @@ $arTemplateParametersParts[] = array(
 if($arCurrentValues["DISPLAY_LINKED_PAGER"] !== 'N') {
 	$arTemplateParametersParts[] = Array(
 		"DISPLAY_LINKED_ELEMENT_SLIDER_CROSSLINK" => Array(
-			"NAME" => GetMessage("DISPLAY_LINKED_ELEMENT_SLIDER_CROSSLINK_TITLE"), 
+			"NAME" => GetMessage("DISPLAY_LINKED_ELEMENT_SLIDER_CROSSLINK_TITLE"),
 			"TYPE" => "STRING",
 			"PARENT" => "DETAIL_SETTINGS",
 		),
@@ -872,9 +883,9 @@ if(CMax::GetFrontParametrValue('REVIEWS_VIEW') == 'EXTENDED' && Loader::includeM
 			"MULTIPLE" => "Y",
 			"SIZE" => 3,
 			"VALUES" => array(
-				"PHOTO" => GetMessage("FILTER_BUTTONS_PHOTO"), 
-				"RATING" => GetMessage("FILTER_BUTTONS_RATING"), 
-				"TEXT" => GetMessage("FILTER_BUTTONS_TEXT"), 
+				"PHOTO" => GetMessage("FILTER_BUTTONS_PHOTO"),
+				"RATING" => GetMessage("FILTER_BUTTONS_RATING"),
+				"TEXT" => GetMessage("FILTER_BUTTONS_TEXT"),
 			),
 		),
 		'REAL_CUSTOMER_TEXT' => array(
@@ -1512,7 +1523,7 @@ if (ModuleManager::isModuleInstalled("sale"))
 					"REFRESH" => "Y",
 				)
 			);
-		
+
 			if ($arCurrentValues['BIGDATA_SET_COUNT_BOTTOM'] !== "N") {
 				$arTemplateParametersParts[]=array(
 					'BIGDATA_COUNT_BOTTOM' => array(
@@ -1522,20 +1533,74 @@ if (ModuleManager::isModuleInstalled("sale"))
 						'DEFAULT' => 10,
 					)
 				);
-	
+
 			};
-		}	
+		}
 	}
 }
+
+$arTemplateParametersParts[] = [
+    "CUSTOM_PROPERTY_DATA" => Array(
+		// "SORT" => 100,
+		"NAME" => GetMessage("CUSTOM_PROPERTY_DATA"),
+		"TYPE" => "LIST",
+		"VALUES" => $arPropertyAll,
+		"DEFAULT" => [],
+		"PARENT" => "DETAIL_SETTINGS",
+		"MULTIPLE" => "Y",
+		"SIZE" => 8,
+        // "ADDITIONAL_VALUES" => "Y",
+	),
+];
+
+$arTemplateParametersParts[] = array(
+	'CUSTOM_DETAIL_BLOCKS' => array(
+		'PARENT' => 'DETAIL_SETTINGS',
+		'NAME' => Loc::getMessage('T_PS_CUSTOM_DETAIL_BLOCKS'),
+		'TYPE' => 'CUSTOM',
+		'JS_FILE' => \Bitrix\Main\Page\Asset::getInstance()->getFullAssetPath('/bitrix/js/aspro.max/settings/custom_sorted_blocks/script.min.js'),
+		'JS_EVENT' => 'initCustomSortedBlocks',
+		'JS_DATA' => str_replace('\'', "\"", CUtil::PhpToJSObject(
+			[
+				'checkable' => true,
+				'sortable' => false,
+                'showPropsAlways' => true,
+                'disableAdd' => true,
+				'header' => [
+					'code' => 'name',
+					'title' => 	Loc::getMessage('T_PS_NAME_OF_CUSTOM_DETAIL_BLOCK'),
+                    'allowEmpty' => true
+				],
+				'props' => [
+                    [
+                        'code' => 'is_tab',
+                        'title' =>     Loc::getMessage('T_PS_ICON_OF_CUSTOM_DETAIL_IS_TAB'),
+                        'type' => 'checkbox',
+                    ],
+                    [
+                        'code' => 'id',
+						'title' =>   Loc::getMessage('T_PS_DSC_OF_CUSTOM_DETAIL_CODE'),
+                        'type' => 'note',
+                        // 'rand' => true,
+                    ],
+                ],
+				'currentValue' => $curBlockList,
+			]
+		)),
+		'DEFAULT' => '',
+		'REFRESH' => 'Y',
+	)
+);
+
 
 $arTemplateParametersParts[] = array(
 	'DETAIL_BLOCKS_ORDER' => array(
 		'PARENT' => 'DETAIL_SETTINGS',
 		'NAME' => GetMessage('CP_BC_TPL_PRODUCT_BLOCKS_ORDER'),
 		'TYPE' => 'CUSTOM',
-		'JS_FILE' => CatalogSectionComponent::getSettingsScript('/bitrix/components/bitrix/catalog.section', 'dragdrop_order'),
+		'JS_FILE' => \Bitrix\Main\Page\Asset::getInstance()->getFullAssetPath('/bitrix/js/aspro.max/settings/dragdrop_order/script.min.js'),
 		'JS_EVENT' => 'initDraggableOrderControl',
-		'JS_DATA' => Json::encode(array(
+		'JS_DATA' => Json::encode(array_merge(array(
 			'complect' => GetMessage('CP_BC_TPL_PRODUCT_BLOCK_COMPLECT'),
 			'nabor' => GetMessage('CP_BC_TPL_PRODUCT_BLOCK_NABOR'),
 			'offers' => GetMessage('CP_BC_TPL_PRODUCT_BLOCK_OFFERS'),
@@ -1548,7 +1613,7 @@ $arTemplateParametersParts[] = array(
 			'goods' => GetMessage('CP_BC_TPL_PRODUCT_BLOCK_GOODS'),
 			'gifts' => GetMessage('CP_BC_TPL_PRODUCT_BLOCK_GIFTS'),
 			'modules' => GetMessage('CP_BC_TPL_PRODUCT_BLOCK_MODULES'),
-		)),
+		), $customBlocksParam)),
 		'DEFAULT' => 'complect,nabor,offers,tabs,services,news,blog,staff,vacancy,gifts,goods'
 	)
 );
@@ -1557,9 +1622,9 @@ $arTemplateParametersParts[] = array(
 		'PARENT' => 'DETAIL_SETTINGS',
 		'NAME' => GetMessage('CP_BC_TPL_PRODUCT_BLOCKS_TAB_ORDER'),
 		'TYPE' => 'CUSTOM',
-		'JS_FILE' => CatalogSectionComponent::getSettingsScript('/bitrix/components/bitrix/catalog.section', 'dragdrop_order'),
+		'JS_FILE' => \Bitrix\Main\Page\Asset::getInstance()->getFullAssetPath('/bitrix/js/aspro.max/settings/dragdrop_order/script.min.js'),
 		'JS_EVENT' => 'initDraggableOrderControl',
-		'JS_DATA' => Json::encode(array(
+		'JS_DATA' => Json::encode(array_merge(array(
 			'desc' => GetMessage('CP_BC_TPL_PRODUCT_BLOCK_DESC'),
 			'char' => GetMessage('CP_BC_TPL_PRODUCT_BLOCK_CHAR'),
 			'buy' => GetMessage('CP_BC_TPL_PRODUCT_BLOCK_HOW_BUY'),
@@ -1570,7 +1635,7 @@ $arTemplateParametersParts[] = array(
 			'reviews' => GetMessage('CP_BC_TPL_PRODUCT_BLOCK_REVIEWS'),
 			'custom_tab' => GetMessage('CP_BC_TPL_PRODUCT_BLOCK_CUSTOM_TABS'),
 			'buy_services' => GetMessage('CP_BC_TPL_PRODUCT_BLOCK_BUY_SERVICES'),
-		)),
+		), $customTabsParam)),
 		'DEFAULT' => 'desc,char,buy,payment,delivery,video,stores,reviews,custom_tab,buy_services,modules'
 	)
 );
@@ -1579,9 +1644,9 @@ $arTemplateParametersParts[] = array(
 		'PARENT' => 'DETAIL_SETTINGS',
 		'NAME' => GetMessage('CP_BC_TPL_PRODUCT_BLOCKS_ALL_ORDER'),
 		'TYPE' => 'CUSTOM',
-		'JS_FILE' => CatalogSectionComponent::getSettingsScript('/bitrix/components/bitrix/catalog.section', 'dragdrop_order'),
+		'JS_FILE' => \Bitrix\Main\Page\Asset::getInstance()->getFullAssetPath('/bitrix/js/aspro.max/settings/dragdrop_order/script.min.js'),
 		'JS_EVENT' => 'initDraggableOrderControl',
-		'JS_DATA' => Json::encode(array(
+		'JS_DATA' => Json::encode(array_merge(array(
 			'complect' => GetMessage('CP_BC_TPL_PRODUCT_BLOCK_COMPLECT'),
 			'nabor' => GetMessage('CP_BC_TPL_PRODUCT_BLOCK_NABOR'),
 			'offers' => GetMessage('CP_BC_TPL_PRODUCT_BLOCK_OFFERS'),
@@ -1603,11 +1668,7 @@ $arTemplateParametersParts[] = array(
 			'gifts' => GetMessage('CP_BC_TPL_PRODUCT_BLOCK_GIFTS'),
 			'buy_services' => GetMessage('CP_BC_TPL_PRODUCT_BLOCK_BUY_SERVICES'),
 			'modules' => GetMessage('CP_BC_TPL_PRODUCT_BLOCK_MODULES'),
-			/*
-			'comments' => GetMessage('CP_BC_TPL_PRODUCT_BLOCK_COMMENTS'),
-			'faq' => GetMessage('CP_BC_TPL_PRODUCT_BLOCK_FAQ'),
-			*/
-		)),
+		), $customBlocksParam, $customTabsParam)),
 		'DEFAULT' => 'complect,nabor,offers,desc,char,buy,payment,delivery,video,stores,buy_services,modules,custom_tab,services,news,reviews,blog,staff,vacancy,gifts,goods'
 	)
 );
@@ -1621,7 +1682,7 @@ if (ModuleManager::isModuleInstalled("sale"))
 			'TYPE' => 'CHECKBOX',
 			'DEFAULT' => 'N',
 			'REFRESH' => 'Y'
-		)		
+		)
 	);
 	if (isset($arCurrentValues['USE_BIG_DATA_IN_SEARCH']) && $arCurrentValues['USE_BIG_DATA_IN_SEARCH'] == 'Y')
 	{
