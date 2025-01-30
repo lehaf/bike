@@ -2,7 +2,7 @@ $(document).on('ajaxSuccess', function (event, xhr, settings) {
     const [path, queryString] = settings.url.split("?");
     if (queryString) {
         const queryParams = new URLSearchParams(queryString);
-        if (queryParams.get('display') || queryParams.get('linerow')) {
+        if (queryParams.get('display') || queryParams.get('linerow') || queryParams.get('sort')) {
             init();
         }
     }
@@ -81,6 +81,15 @@ function init() {
 
             let displayBtns = document.querySelectorAll('a.controls-view__link');
             displayBtns.forEach(btn => {
+               setCountryFilterUrl(btn)
+            })
+
+            let filterSortItems = document.querySelectorAll('.filter-panel__sort a.dropdown-select__list-link');
+            filterSortItems.forEach(item => {
+                setCountryFilterUrl(item)
+            })
+
+            function setCountryFilterUrl (btn) {
                 let url = window.location.pathname;
                 let queryString = btn.href.split('?')[1];
                 let params = new URLSearchParams(queryString);
@@ -88,7 +97,7 @@ function init() {
 
                 btn.setAttribute('data-url', url + modifiedParamsUrl);
                 btn.href = url + modifiedParamsUrl;
-            })
+            }
 
             document.querySelector('.ajax_load').classList.add('loading-state');
             fetch(url, {
@@ -98,7 +107,10 @@ function init() {
             }).then(data => {
                 let tmpBlock = document.createElement('div');
                 tmpBlock.innerHTML = data;
-                document.querySelector('.bx_filter_parameters').innerHTML = tmpBlock.querySelector('.bx_filter_parameters').innerHTML;
+                console.log(tmpBlock);
+                if(document.querySelector('.bx_filter_parameters')) {
+                    document.querySelector('.bx_filter_parameters').innerHTML = tmpBlock.querySelector('.bx_filter_parameters').innerHTML;
+                }
                 document.querySelector('.inner_wrapper').innerHTML = tmpBlock.querySelector('.inner_wrapper').innerHTML;
                 history.pushState(null, null, url);
                 document.querySelector('.ajax_load').classList.remove('loading-state');
