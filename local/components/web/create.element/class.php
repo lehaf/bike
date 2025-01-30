@@ -878,11 +878,11 @@ class CreateElement extends \CBitrixComponent
     }
 
     private function checkFields(array $data) : array {
+        Debug::dumpToFile($data);
+
         if(!$data["POST"]["IBLOCK_SECTION_ID"]) {
             if(isset($data["POST"]["SUBSECTION"])) {
                 $errors["SUBSECTION"] = "Данной модели не существует";
-            } else {
-                $data["POST"]["IBLOCK_SECTION_ID"] = $data['GET']['type'];
             }
         }
 

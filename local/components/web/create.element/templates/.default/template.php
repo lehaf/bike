@@ -18,6 +18,7 @@ use \Bitrix\Main\Page\Asset;
 <?php
 Asset::getInstance()->addCss("https://cdn.jsdelivr.net/npm/choices.js@9.0.1/public/assets/styles/choices.min.css");
 Asset::getInstance()->addCss(SITE_TEMPLATE_PATH . '/css/catalog/filter.css', ['GROUP' => 1000]);
+Asset::getInstance()->addCss(SITE_TEMPLATE_PATH . '/css/catalog/tmpStyle.css', ['GROUP' => 1000]);
 Asset::getInstance()->addJs(SITE_TEMPLATE_PATH . '/js/custom/main.js', ['GROUP' => 1000]);
 
 $lastSectKey = (!empty($arResult["CUSTOM_SECTIONS"])) ? array_key_last($arResult["CUSTOM_SECTIONS"]) : "";
@@ -36,7 +37,6 @@ if ($_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {
 }
 $notEmptyBlocks = ['NAME', 'MODEL', 'PRICE', 'CATEGORY', 'SUBCATEGORY', 'PHOTO', 'OTHER_FIELDS'];
 $notShowLabel = ['PRICE_TYPE'];
-
 ?>
     <div class="steps-content" data-iblock="<?= $arParams['IBLOCK_ID'] ?>" <?= $showCategories ?> >
         <?php if (isset($_GET['type'])): ?>
@@ -46,7 +46,7 @@ $notShowLabel = ['PRICE_TYPE'];
                         <?php foreach ($arResult['SORT_SHOW_FIELDS'] as $key => $block): ?>
                             <?php $class = '';
                             $class .= ($key === $firstFieldKey) ? 'active' : '';
-                            $class .= ($key === 'OTHER_FIELDS' || $key === 'PHOTO') ? ' step-form__inner--big' : '';
+                            $class .= ($key === 'OTHER_FIELDS' || $key === 'PHOTO' || $key === 'SERVICE_NAME') ? ' step-form__inner--big' : '';
                             $class .= ($key === 'FIELDS') ? ' fields' : '';
                             ?>
                             <?php if ($key === 'MODEL' && empty($arResult['CATEGORIES'])) continue; ?>
@@ -745,9 +745,10 @@ $notShowLabel = ['PRICE_TYPE'];
                                     <div class="form-group">
                                         <label for="nameText" class="form-group__label">Название товара/услуги<span>*</span></label>
                                         <div class="form-row form-row--rel">
-                                        <textarea name="NAME" class="custom-textarea check-block"
-                                                  placeholder="Введите название товара/услуги" id="nameText"
-                                                  maxlength="2000"><?= $arResult['ELEMENT_PROPS']['NAME'] ?></textarea>
+                                            <textarea name="NAME" class="custom-textarea check-block"
+                                                      placeholder="Введите название товара/услуги" id="nameText"
+                                                      maxlength="2000"><?= $arResult['ELEMENT_PROPS']['NAME'] ?>
+                                            </textarea>
                                             <div class="textarea-info">
                                                 Символов&nbsp;
                                                 <div class="textarea-info__number">
@@ -762,6 +763,92 @@ $notShowLabel = ['PRICE_TYPE'];
                                     </div>
                                     <?php endif;?>
                                 <?php endif; ?>
+
+                                <?php if ($key === 'SERVICE_NAME'):?>
+                                    <div class="product-name">
+                                        <div class="form-group">
+                                            <label for="name"
+                                                   class="form-group__label"><?= ((int)$_GET['type'] === SERVICES_SECTION_ID) ? 'Поиск категории' : 'Название товара/услуги<span>*</span>'?></label>
+                                            <div class="form-row">
+                                                <input type="text"
+                                                       class="custom-input <?= ((int)$_GET['type'] === SERVICES_SECTION_ID) ? '' : 'check-block'?>"
+                                                       placeholder="Название товара/услуги"
+                                                       id="productName"
+                                                       name="<?= ((int)$_GET['type'] === SERVICES_SECTION_ID) ? 'SEARCH' : 'NAME'?>"
+                                                       value=""
+                                                >
+                                                <div class="error-form">Необходимо заполнить
+                                                    «Название товара/услуги»
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="categories">
+                                        <div class="categories-title">
+                                            Возможные категории
+                                        </div>
+                                        <div class="categories-list">
+                                        </div>
+                                    </div>
+                                    <div class="form-wrapper" id="categorySelection" name="IBLOCK_SECTION_ID">
+                                        <div class="category-selection"
+                                            <?=($arResult['ELEMENT_PROPS']['IBLOCK_SECTION_ID']) ? 'style="display: none;"' : ''?>
+                                        >
+                                            <div class="category-selection-main">
+                                                <h3 class="category-title">Выбор категории</h3>
+                                                <ul class="category-list category-list--selection">
+                                                    <?php foreach ($arResult['CATEGORIES'] as $index => $category) : ?>
+                                                        <li class="category-list__item <?= ($index === 0) ? 'is-active' : '' ?>"
+                                                            data-announcement-category="<?= $category['ID'] ?>">
+                                                            <a href="#"><?= $category['NAME'] ?></a>
+                                                        </li>
+                                                    <?php endforeach; ?>
+                                                </ul>
+                                            </div>
+                                            <div class="category-selection-subcategory">
+                                                <h3 class="category-title">Подкатегории выбранной категории</h3>
+                                                <div class="category-selection-content">
+                                                    <?php if (!empty($arResult['SUBSECTIONS'])): ?>
+                                                        <?php foreach ($arResult['SUBSECTIONS'] as $parentSectionId => $subsection): ?>
+                                                            <div class="category-selection-content__item <?= ((int)$parentSectionId === (int)$arResult['CATEGORIES'][0]['ID'] ) ? 'is-active' : '' ?>"
+                                                                 data-announcement-category="<?= $parentSectionId ?>">
+                                                                <ul class="category-selection-list">
+                                                                    <?php foreach ($subsection as $section): ?>
+                                                                        <li class="category-selection-list__item"
+                                                                            data-id="<?= $section['ID'] ?>"
+                                                                        >
+                                                                            <?= $section['NAME'] ?>
+                                                                        </li>
+                                                                    <?php endforeach; ?>
+                                                                </ul>
+                                                            </div>
+                                                        <?php endforeach; ?>
+                                                    <?php endif; ?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="error-form">Необходимо заполнить «Категория»</div>
+
+                                        <div class="category-selection-ready  <?=($arResult['ELEMENT_PROPS']['IBLOCK_SECTION_ID']) ? 'active' : ''?>"
+                                             data-category="<?=($arResult['ELEMENT_PROPS']['IBLOCK_SECTION_ID']) ?: ''?>"
+                                        >
+                                            <h3 class="category-title">Выбор категории</h3>
+                                            <div class="category-selection-ready__main" id="category-select">
+                                                <?=($arResult['ELEMENT_PROPS']['IBLOCK_SECTION_NAME'] && $arResult['ELEMENT_PROPS']['SECTION_NAME']) ? $arResult['ELEMENT_PROPS']['SECTION_NAME'] . ' - ' . $arResult['ELEMENT_PROPS']['IBLOCK_SECTION_NAME'] : ''?>
+                                            </div>
+                                            <div class="category-selection-ready-btn">
+                                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"
+                                                     xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M15.1361 2.01852L13.9995 0.881646C13.4302 0.316893 12.661 0 11.8592 0C11.0575 0 10.2882 0.316893 9.71896 0.881646L1.65778 8.94456C1.26165 9.34566 0.982872 9.84758 0.85166 10.3959L0.0455416 13.7742C-0.0226873 14.0744 -0.0141351 14.3869 0.0704069 14.6829C0.154949 14.9788 0.31275 15.2487 0.529213 15.4675C0.746218 15.6865 1.01591 15.8461 1.31237 15.9308C1.60883 16.0155 1.9221 16.0226 2.22206 15.9512L5.5997 15.1449C6.14789 15.0137 6.6497 14.7349 7.05071 14.3386L15.1119 6.27573C15.3934 5.99487 15.6168 5.66121 15.7692 5.29388C15.9216 4.92654 16 4.53274 16 4.13503C16 3.73732 15.9216 3.34353 15.7692 2.97619C15.6168 2.60885 15.3934 2.27519 15.1119 1.99433L15.1361 2.01852ZM6.22041 13.5001C5.98097 13.741 5.67971 13.9112 5.3498 13.9919L1.97216 14.7982C1.87211 14.82 1.76822 14.8167 1.66977 14.7885C1.57131 14.7604 1.48134 14.7083 1.40788 14.637C1.33715 14.5631 1.28549 14.4731 1.2574 14.3747C1.2293 14.2764 1.22562 14.1727 1.24666 14.0726L2.05278 10.6942C2.13383 10.3661 2.30078 10.0656 2.53645 9.82342L9.00958 3.30052L12.7177 7.00946L6.22041 13.5001ZM14.2816 5.43719L13.5722 6.14673L9.89631 2.44585L10.6057 1.73632C10.9472 1.39609 11.4095 1.20506 11.8915 1.20506C12.3734 1.20506 12.8358 1.39609 13.1772 1.73632L14.2816 2.89737C14.6217 3.2389 14.8127 3.70134 14.8127 4.18341C14.8127 4.66548 14.6217 5.12791 14.2816 5.46944V5.43719Z"
+                                                          fill="#ED1C24"/>
+                                                </svg>
+                                                Изменить подкатегорию
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                <?php endif;?>
 
                                 <?php if ($key !== $arResult['LAST_FIELD']): ?>
                                     <?= nextBtnTemplate() ?>

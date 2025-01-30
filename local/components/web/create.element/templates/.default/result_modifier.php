@@ -52,6 +52,33 @@ if ($_GET['type']) {
         '=IBLOCK_SECTION_ID' => $arParams['SECTION_ID'],
     ]);
 
+    if((int)$_GET['type'] === SERVICES_SECTION_ID || (int)$_GET['type'] === PRODUCTS_SECTION_ID){
+        $entity = \Bitrix\Iblock\Model\Section::compileEntityByIblock(CATALOG_IBLOCK_ID);
+        $subsections = $entity::getList([
+            "select" => ['ID', 'CODE', 'NAME', 'IBLOCK_SECTION_ID'],
+            "filter" => [
+                '=IBLOCK_SECTION_ID' => array_column($arResult['CATEGORIES'], 'ID'),
+            ],
+            "order" => ['SORT' => 'ASC'],
+            'cache' => [
+                'ttl' => 36000000,
+                'cache_joins' => true
+            ],
+        ])->fetchAll();
+
+        $arResult['SUBSECTIONS'] = [];
+        if(!empty($subsections)){
+            foreach ($subsections as $subsection) {
+                if(!isset($arResult['SUBSECTIONS'][$subsection['IBLOCK_SECTION_ID']])){
+                    $arResult['SUBSECTIONS'][$subsection['IBLOCK_SECTION_ID']] = [];
+                }
+                $arResult['SUBSECTIONS'][$subsection['IBLOCK_SECTION_ID']][] = $subsection;
+            }
+        }
+    }
+
+
+
     if($arResult['SORT_SHOW_FIELDS']['PRICE']) {
         $priceTypes = ['auction', 'exchange', 'contract_price'];
         $arResult['SORT_SHOW_FIELDS']['PRICE']['PRICE_TYPE_ROW'] = array_filter($arResult['SORT_SHOW_FIELDS']['PRICE']['FIELDS'], function($value) use ($priceTypes) {
@@ -61,6 +88,8 @@ if ($_GET['type']) {
             return unsetPriceType($value, $priceTypes);
         });
     }
+
+
 }
 
 if(empty($arResult['ELEMENT_FIELDS'])) {
@@ -101,7 +130,6 @@ if(empty($arResult['ELEMENT_COUNTRY'])) {
     }
 
     $arResult['USER_LOCATION'] = $userLocation;
-
 }
 
 function getPriceType($value, $priceTypes) {

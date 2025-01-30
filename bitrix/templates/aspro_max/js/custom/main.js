@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if(this.id === 'power') {
             parent = this.closest('.form-col');
         }
-        parent.querySelector('.error-form').classList.remove('show');
+        parent.querySelector('.error-form')?.classList.remove('show');
     });
     $(".custom-input.number").on('input', function () {
         this.value = this.value.replace(/[^0-9]/g, '');
@@ -916,6 +916,7 @@ document.addEventListener("DOMContentLoaded", () => {
         let listCheck = parent.find(".check-block");
         // $(".error-form").removeClass("show");
         // $(".error").removeClass("error");
+
         if (listCheck.length) {
             $.each(listCheck, function (i, el) {
                 let tagName = el.tagName.toLowerCase();
@@ -929,8 +930,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     } else {
                         el.classList.add("error");
                     }
+
                     let parent = el.closest(".form-col") || el.closest(".form-group");
-                    parent.querySelector(".error-form").classList.add("show");
+                    parent.querySelector(".error-form")?.classList.add("show");
+
                     return false
                 } else if (listCheck.length === i + 1) {
                     flag = true
@@ -941,6 +944,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 flag = false;
             }
         } else flag = true
+
+        if(document.querySelector('#categorySelection')) {
+            let isCheckCategory = document.querySelector('.category-selection-ready.active');
+            if(!isCheckCategory) {
+                document.querySelector('#categorySelection').classList.add('error');
+                document.querySelector('#categorySelection .error-form').classList.add('show');
+                flag = false;
+            }
+        }
 
         if (flag) {
             parent.next().show();
@@ -972,7 +984,7 @@ document.addEventListener("DOMContentLoaded", () => {
             let formData = new FormData(event.target);
             formData.append('ajax', 'Y');
             formData.append('action', 'add');
-            console.log(params);
+
             if (params['element']) {
                 formData.set('action', params['action']);
             }
@@ -1001,11 +1013,16 @@ document.addEventListener("DOMContentLoaded", () => {
             // formData.append('NAME', 'test');
 
             let sectId = document.querySelector("[name='SUBCATEGORY']") || document.querySelector("[name='CATEGORY']");
+            let sectIdServices = document.querySelector('.category-selection-ready');
+
             if (sectId) {
                 if (sectId.value.length !== 0) {
                     formData.append('sectionId', sectId.value);
                 }
                 formData.append("IBLOCK_SECTION_ID", sectId.value);
+            } else if (sectIdServices) {
+                formData.append('sectionId', sectIdServices.getAttribute('data-category'));
+                formData.append("IBLOCK_SECTION_ID", sectIdServices.getAttribute('data-category'));
             }
 
             let subSect = document.querySelector("[name='SUBSECT']:checked");
@@ -1049,7 +1066,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                         $("#stepForm").removeClass('blur');
                         let hiddenElem = document.querySelector('.error-form.show');
-                        hiddenElem.scrollIntoView({block: "center", behavior: "smooth"});
+                        hiddenElem?.scrollIntoView({block: "center", behavior: "smooth"});
                     }
                 })
                 .catch(error => console.error('Ошибка:', error));
@@ -1249,6 +1266,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (element) {
                 let tagName = element.tagName;
+
+                if (element.id === 'categorySelection') {
+                    element.querySelector('.error-form')?.classList.add('show');
+                    element.classList.add("error");
+
+                    continue;
+                }
                 let parentElement = element.closest('.form-col') || element.closest('.form-group:not(.form-group--tel)') || element.closest('.form-row');
 
                 if (tagName === "SELECT") {
@@ -1282,4 +1306,133 @@ document.addEventListener("DOMContentLoaded", () => {
             }).catch((error) => console.log(error));
         }
     })
+
+
+
+
+
+    const categoryListItem = document.querySelectorAll(".category-list__item--pop-up");
+    const categoryBlockList = document.querySelectorAll(".category-content");
+
+    function removeActive(arr, active, data, dataName) {
+        arr.forEach((el) => {
+            let dataContentBlock = el.getAttribute(dataName);
+            el.classList.remove(active)
+            if (dataContentBlock === data) {
+                el.classList.add("is-active")
+            }
+        })
+    }
+
+    if (categoryListItem) {
+        categoryListItem.forEach((el) => {
+            el.addEventListener("click", () => {
+                event.preventDefault()
+                let dataValue = el.getAttribute("data-category")
+
+                removeActive(categoryListItem, "is-active");
+                removeActive(categoryBlockList, "is-active", dataValue,"data-category");
+                el.classList.add("is-active")
+
+
+            })
+        })
+    }
+
+    const categoryForm = document.querySelectorAll(".category-selection-main .category-list__item");
+    const categoryFormSelected = document.querySelectorAll(".category-selection-content__item");
+    const categoryFormSelectedContent = document.querySelector(".category-selection-content");
+    const categorySelectionReady = document.querySelector(".category-selection-ready")
+    let formCategorySelectedItem = document.querySelector(".category-selection-ready__main")
+
+    if (categoryForm) {
+        categoryForm.forEach((el) => {
+            el.addEventListener("click", () => {
+                event.preventDefault()
+                let dataValue = el.getAttribute("data-announcement-category")
+
+                removeActive(categoryForm, "is-active");
+                removeActive(categoryFormSelected, "is-active", dataValue, "data-announcement-category");
+                el.classList.add("is-active")
+
+            })
+        })
+
+
+        if(categoryFormSelectedContent){
+            categoryFormSelectedContent.addEventListener("click",(event)=>{
+                event.preventDefault();
+                let target = event.target;
+                let numberTab = target.closest(".category-selection-content__item").getAttribute("data-announcement-category");
+                let categoryItem = document.querySelector(`.category-list__item[data-announcement-category="${numberTab}"]`);
+
+                if(target.closest(".category-selection-list__item")){
+                    $(".category-selection-list__item").removeClass("active");
+                    let text = target.closest(".category-selection-list__item").innerText;
+                    $(".category-selection").hide(600)
+                    $('html, body').animate({
+                        scrollTop: $("#categorySelection").offset().top - 120
+                    }, 1000);
+                    categorySelectionReady.classList.add("active");
+                    categorySelectionReady.setAttribute('data-category', target.closest(".category-selection-list__item").getAttribute('data-id'));
+                    formCategorySelectedItem.innerHTML = categoryItem.innerText + ' - '+  text;
+                    target.classList.add("active");
+
+                    document.querySelector('#categorySelection')?.classList.remove('error');
+                    document.querySelector('#categorySelection .error-form')?.classList.remove('show');
+
+                    getFields(target.getAttribute('data-id'));
+                }
+            })
+        }
+
+        $(".category-selection-ready-btn").on("click", (event)=>{
+            categorySelectionReady.classList.remove("active");
+            categorySelectionReady.setAttribute('data-category', '');
+            $(".category-selection").show(600)
+        })
+    }
+
+    $("#productName").on("keyup" , function (){
+        if($(this).val().length > 2){
+            getSubSectionsMatch('getServiceSubcategories', $(this).val(), params['type']);
+        }else{
+            $(".categories").slideUp()
+        }
+    })
+
+
+    function getSubSectionsMatch(action, checkString, type) {
+        fetch('/ajax/create_element.php', {
+            method: 'POST',
+            body: new URLSearchParams({action: action, query: checkString, type: type}),
+            headers: {'X-Requested-With': 'XMLHttpRequest'}
+        }).then(res => {
+            return res.json();
+        }).then(data => {
+            if(data.length !== 0) {
+                $(".categories").slideDown();
+                let elementsListContainer = $('.categories-list'); // Используем jQuery для выборки контейнера
+                elementsListContainer.empty(); // Очищаем содержимое контейнера перед добавлением новых элементов
+
+                data.forEach(elem => {
+                    let elemContainer = $('<div></div>'); // Создаем новый div с помощью jQuery
+                    elemContainer.addClass('categories-list__el'); // Добавляем класс
+                    elemContainer.attr('data-id', elem['ID']); // Устанавливаем атрибут data-id
+                    elemContainer.attr('data-parent', elem['PARENT_ID']); // Устанавливаем атрибут data-id
+                    elemContainer.html(elem['NAME']); // Вставляем текст в элемент
+                    elementsListContainer.append(elemContainer); // Добавляем элемент в контейнер
+                });
+
+                $(".categories-list__el").on("click" , function (){
+                    let test = document.querySelector(`.category-selection-list__item[data-id="${this.getAttribute('data-id')}"]`);
+                    let test1 = document.querySelector(`.category-list__item[data-announcement-category="${this.getAttribute('data-parent')}"]`);
+                    test1?.click();
+                    test?.click();
+                })
+            } else {
+                $(".categories").slideUp()
+            }
+        }).catch((error) => console.log(error));
+    }
 })
