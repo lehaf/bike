@@ -1,6 +1,8 @@
 <?php
 
 use web\CreateElement;
+use Bitrix\Main\Application;
+
 
 require($_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/prolog_before.php");
 if (isset($_POST['action'])) {
@@ -110,5 +112,65 @@ if (isset($_POST['action'])) {
         ])->fetch();
         $result = ($element) ? ['status' => 'ERROR', 'ERRORS' => ['exp_id' => 'Объявление с таким артиклом уже существует']] : ['status' => 'OK'];
         echo json_encode($result);
+    } elseif($_POST['action'] === 'getServiceSubcategories') {
+        $searchQuery = $_POST['query'];
+
+        $obSearch = new CSearchTitle;
+        $obSearch->Search(
+            $searchQuery,
+            10,
+            [
+                '=MODULE_ID' => 'iblock',
+                '=PARAM2' => CATALOG_IBLOCK_ID, // ID инфоблока
+                '%ITEM_ID' => 'S',
+                'CHECK_DATES' => 'Y',
+                'STEMMING' => false
+            ],
+            false,
+            []
+        );
+
+
+
+        $result = [];
+        if ($obSearch->errorno!=0) {
+            $result[] = ['error' => $obSearch->error];
+        } else {
+            while ($res = $obSearch->GetNext()) {
+                $result[] = substr($res['ITEM_ID'], 1);
+            }
+        }
+
+        $sections = \Bitrix\Iblock\SectionTable::getList([
+            'filter' => [
+                'IBLOCK_ID' => CATALOG_IBLOCK_ID,
+                'ID' => $result, // Поиск по вхождению в название
+                '!=ID' => $_POST['type'],
+                '!=IBLOCK_SECTION_ID' => $_POST['type'],
+            ],
+            'select' => ['ID', 'NAME', 'LEFT_MARGIN', 'RIGHT_MARGIN', 'IBLOCK_SECTION_ID']
+        ])->fetchAll();
+
+        $allParents = [];
+        foreach ($sections as $section) {
+            $secondLevelParent = \Bitrix\Iblock\SectionTable::getList([
+                'filter' => [
+                    '<=LEFT_MARGIN' => $section['LEFT_MARGIN'], // Родитель должен быть слева от текущего раздела
+                    '>=RIGHT_MARGIN' => $section['RIGHT_MARGIN'], // И справа от текущего
+                    'IBLOCK_ID' => CATALOG_IBLOCK_ID, // Указываем инфоблок
+                    '=DEPTH_LEVEL' => [1, 2],
+                ],
+                'select' => ['ID'],
+                'order' => ['DEPTH_LEVEL' => 'DESC'],
+                'limit' => 2
+            ])->fetchAll();
+            $parentIds = array_column($secondLevelParent, 'ID');
+
+            if(in_array($_POST['type'], $parentIds)) {
+                $resultFilter[] = array_merge($section, ['PARENT_ID' => $secondLevelParent[0]['ID']]);
+            }
+        }
+
+        echo json_encode($resultFilter ?? []);
     }
 }
