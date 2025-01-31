@@ -359,7 +359,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     stepFormInner.append($(data).filter('.step-form__btn'));
                     stepFormInner.find('.step-form__btn:not(.step-form__btn-submit)').on("click", stepBtn);
                 }
-
             } else {
                 if ($('.fields').length === 0) {
                     stepFormInner.after('<div class="step-form__inner fields"></div>');
@@ -377,6 +376,15 @@ document.addEventListener("DOMContentLoaded", () => {
             const selectList = document.querySelectorAll(".fields .custom-select");
             setSelect(selectList);
             setColor();
+
+            let allCheck = document.querySelectorAll('input[type=radio], input[type=checkbox]');
+            allCheck.forEach(check => {
+                check.addEventListener('change', () => {
+                    if(check.checked) {
+                        check.closest('.form-group').querySelector('.error-form').classList.remove('show');
+                    }
+                })
+            })
             $('#stepForm').removeClass('blur');
 
         }).catch((error) => console.log(error));
@@ -683,6 +691,9 @@ document.addEventListener("DOMContentLoaded", () => {
         if (val.length <= maxLength) {
             $(this).next().find(".textarea-info__number").text(val.length)
         }
+        let $parent = $(this).closest('.form-group');
+        $parent.find('.error-form').removeClass('show');
+        $(this).removeClass('error');
     })
 
     $(".custom-textarea").on('keyup', function () {
@@ -1169,12 +1180,11 @@ document.addEventListener("DOMContentLoaded", () => {
         const searchInput = document.querySelector("#mapInput");
 
         var map = new ymaps.Map('map', {
-                center: [55.70, 37.56],
-                zoom: 12,
-                controls: ['zoomControl'],
-                behaviors: ['drag'],
-            }
-        );
+            center: [55.70, 37.56],
+            zoom: 12,
+            controls: ['zoomControl'],
+            behaviors: ['drag'],
+        });
 
         var searchControl = new ymaps.control.SearchControl({
             options: {
@@ -1184,50 +1194,98 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
         map.controls.add(searchControl);
-        // var suugestView = new ymaps.SuggestView(searchInput);
 
-        searchInput.addEventListener("input", function () {
-            let inputValue =this.value.trim();
-            let coords = inputValue.split(',').map(function (item) {
-                return parseFloat(item.trim());
-            });
-            map.setCenter(coords);
-            //
-            searchControl.search(this.value);
-            searchControl.events.add('load', function (event) {
-                if (!event.get('skip') && searchControl.getResultsCount()) {
-                    searchControl.showResult(0);
-                }
-            });
-        })
+        // Используем встроенный механизм подсказок Яндекса
+        var suggestView = new ymaps.SuggestView(searchInput);
 
-        if(params['element']) {
-            let inputValue = searchInput.value.trim();
-            if(inputValue.length !== 0) {
-                let coordinates = inputValue.split(',').map(function (item) {
-                    return parseFloat(item.trim());
+        suggestView.events.add("select", function (event) {
+            let selectedAddress = event.get("item").value;
+
+            searchControl.search(selectedAddress);
+            searchControl.events.add("resultshow", function (e) {
+                let index = e.get("index");
+                searchControl.getResult(index).then(function (res) {
+                    let coords = res.geometry.getCoordinates();
+                    map.setCenter(coords, 15);
+                    addPlacemark(coords, selectedAddress);
                 });
+            });
+        });
 
-                var myPlacemark = new ymaps.Placemark(coordinates);
-                // Получение адреса по координатам
-                ymaps.geocode(coordinates).then(function (res) {
-                    var address = res.geoObjects.get(0).properties.get('text'); // Получаем полный адрес
-                    const parts = address.split(',').map(part => part.trim());
-                    const city = parts[0]; // Город
-                    const street = parts[1] ? parts[1] + ',' + (parts[2] ? ' ' + parts[2] : '') : '';
-
-                    // Форматируем содержимое балуна
-                    var balloonContent = '<strong>' + street + '</strong><br><small>' + city + '</small>';
-                    myPlacemark.properties.set('balloonContent', balloonContent); // Устанавливаем отформатированное содержимое в балун
-
-                    // Открываем балун с адресом
-                    map.geoObjects.add(myPlacemark);
-                    myPlacemark.balloon.open();
-                });
-            }
+        function addPlacemark(coords, address) {
+            map.geoObjects.removeAll();
+            let placemark = new ymaps.Placemark(coords, {
+                balloonContent: address
+            }, {
+                preset: "islands#redDotIcon"
+            });
+            map.geoObjects.add(placemark);
         }
-
     }
+
+    // function init() {
+    //     const searchInput = document.querySelector("#mapInput");
+    //
+    //     var map = new ymaps.Map('map', {
+    //             center: [55.70, 37.56],
+    //             zoom: 12,
+    //             controls: ['zoomControl'],
+    //             behaviors: ['drag'],
+    //         }
+    //     );
+    //
+    //     var searchControl = new ymaps.control.SearchControl({
+    //         options: {
+    //             provider: 'yandex#search',
+    //             noPlacemark: true,
+    //             noSelect: true,
+    //         }
+    //     });
+    //     map.controls.add(searchControl);
+    //     // var suugestView = new ymaps.SuggestView(searchInput);
+    //
+    //     searchInput.addEventListener("input", function () {
+    //         let inputValue =this.value.trim();
+    //         let coords = inputValue.split(',').map(function (item) {
+    //             return parseFloat(item.trim());
+    //         });
+    //         map.setCenter(coords);
+    //         //
+    //         searchControl.search(this.value);
+    //         searchControl.events.add('load', function (event) {
+    //             if (!event.get('skip') && searchControl.getResultsCount()) {
+    //                 searchControl.showResult(0);
+    //             }
+    //         });
+    //     })
+    //
+    //     if(params['element']) {
+    //         let inputValue = searchInput.value.trim();
+    //         if(inputValue.length !== 0) {
+    //             let coordinates = inputValue.split(',').map(function (item) {
+    //                 return parseFloat(item.trim());
+    //             });
+    //
+    //             var myPlacemark = new ymaps.Placemark(coordinates);
+    //             // Получение адреса по координатам
+    //             ymaps.geocode(coordinates).then(function (res) {
+    //                 var address = res.geoObjects.get(0).properties.get('text'); // Получаем полный адрес
+    //                 const parts = address.split(',').map(part => part.trim());
+    //                 const city = parts[0]; // Город
+    //                 const street = parts[1] ? parts[1] + ',' + (parts[2] ? ' ' + parts[2] : '') : '';
+    //
+    //                 // Форматируем содержимое балуна
+    //                 var balloonContent = '<strong>' + street + '</strong><br><small>' + city + '</small>';
+    //                 myPlacemark.properties.set('balloonContent', balloonContent); // Устанавливаем отформатированное содержимое в балун
+    //
+    //                 // Открываем балун с адресом
+    //                 map.geoObjects.add(myPlacemark);
+    //                 myPlacemark.balloon.open();
+    //             });
+    //         }
+    //     }
+    //
+    // }
 
     function getLocationPromise(flag, action, id) {
         return new Promise((resolve, reject) => {
@@ -1355,6 +1413,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 removeActive(categoryFormSelected, "is-active", dataValue, "data-announcement-category");
                 el.classList.add("is-active")
 
+                if (window.innerWidth <= 1020){
+                    document.querySelector('.category-selection-subcategory')?.scrollIntoView({block: "center", behavior: "smooth"});
+                }
             })
         })
 
