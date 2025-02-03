@@ -861,6 +861,11 @@ textarea.custom-textarea:focus {
     height: 244px;
 }
 
+.location-desc {
+    margin: 0 0 0 10px;
+    color: #989898;
+}
+
 .ymaps-2-1-79-map-bg {
     height: 100%;
 }
@@ -893,7 +898,7 @@ textarea.custom-textarea:focus {
 }
 
 .form-group--map-search .custom-input {
-    max-width: 305px;
+    max-width: 505px;
 }
 
 .ymaps-2-1-79-controls__control_toolbar,

@@ -555,25 +555,25 @@ $notShowLabel = ['PRICE_TYPE'];
                                                                    class="form-group__label"><?= $field['NAME'] ?><?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? '<span>*</span>' : '' ?></label>
                                                             <input type="text"
                                                                    class="custom-input <?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? 'check-block' : '' ?>"
-                                                                   placeholder="[Широта, долгота]" id="mapInput"
+                                                                   placeholder="Например: Минск Карла Маркса 10" id="mapInput"
                                                                    autocomplete="off"
                                                                    name="SEARCH_ADDRESS"
                                                                    value="<?= $arResult['ELEMENT_FIELDS']['location'] ?>"
                                                             >
                                                             <input type="hidden"
                                                                    id="map_location"
-                                                                   placeholder="[Широта, долгота]" id="mapInput"
                                                                    autocomplete="off"
                                                                    name="<?= $field['CODE'] ?>"
                                                                    value="<?= $arResult['ELEMENT_FIELDS']['location'] ?>"
                                                             >
+                                                            <p class="location-desc">Вводите адрес по-русски. Указывайте номер дома, если таковой имеется.</p>
                                                         </div>
-                                                        <p class="description-text">
-                                                            Координаты задаются в виде [широта, долгота] через запятую,
-                                                            без пробела, в градусах с десятичной
-                                                            дробной частью, не более 7 знаков после точки.<br>
-                                                            <span class="map-example">Пример: 55.777044,37.555554</span>
-                                                        </p>
+<!--                                                        <p class="description-text">-->
+<!--                                                            Координаты задаются в виде [широта, долгота] через запятую,-->
+<!--                                                            без пробела, в градусах с десятичной-->
+<!--                                                            дробной частью, не более 7 знаков после точки.<br>-->
+<!--                                                            <span class="map-example">Пример: 55.777044,37.555554</span>-->
+<!--                                                        </p>-->
                                                         <div id="map"></div>
                                                         <?php break; ?>
                                                     <?php endif; ?>
