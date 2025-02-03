@@ -10,7 +10,7 @@ use \Bitrix\Main\Page\Asset;
 
 ?>
     <script src="https://cdn.jsdelivr.net/npm/choices.js@9.0.1/public/assets/scripts/choices.min.js"></script>
-    <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&amp;apikey=e2caa9ca-c646-4d64-b8c9-bbe9b1227165"
+    <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&apikey=4535c715-1fd8-4d4a-87bb-8313fe9f8f1b&suggest_apikey=e69e7cac-7b28-48b3-be09-dba3b9e6e1f4"
             type="text/javascript"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery.maskedinput@1.4.1/src/jquery.maskedinput.min.js"
             type="text/javascript"></script>
@@ -206,6 +206,29 @@ $notShowLabel = ['PRICE_TYPE'];
                                     <?php endif; ?>
                                 <?php endif; ?>
 
+                                <?php if ($key === 'NAME'): ?>
+                                    <div class="form-group">
+                                        <label for="nameText" class="form-group__label">Название товара/услуги<span>*</span></label>
+                                        <div class="form-row form-row--rel">
+                                        <input name="NAME" class="custom-input check-block"
+                                                type="text"
+                                                  placeholder="Введите название товара/услуги"
+                                                  id="nameText"
+                                                  maxlength="80"
+                                        ><?= $arResult['ELEMENT_PROPS']['NAME']?></input>
+<!--                                            <div class="textarea-info">-->
+<!--                                                Символов&nbsp;-->
+<!--                                                <div class="textarea-info__number">-->
+<!--                                                    0-->
+<!--                                                </div>-->
+<!--                                                <div class="textarea-info__full">-->
+<!--                                                    /2000-->
+<!--                                                </div>-->
+<!--                                            </div>-->
+                                        </div>
+                                        <div class="error-form">Необходимо заполнить «Название товара/услуги»</div>
+                                    </div>
+                                <?php endif; ?>
 
                                 <?php if (!empty($block['FIELDS'])): ?>
                                     <?php if ($key === 'TECHNICAL'): ?>
@@ -534,6 +557,13 @@ $notShowLabel = ['PRICE_TYPE'];
                                                                    class="custom-input <?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? 'check-block' : '' ?>"
                                                                    placeholder="[Широта, долгота]" id="mapInput"
                                                                    autocomplete="off"
+                                                                   name="SEARCH_ADDRESS"
+                                                                   value="<?= $arResult['ELEMENT_FIELDS']['location'] ?>"
+                                                            >
+                                                            <input type="hidden"
+                                                                   id="map_location"
+                                                                   placeholder="[Широта, долгота]" id="mapInput"
+                                                                   autocomplete="off"
                                                                    name="<?= $field['CODE'] ?>"
                                                                    value="<?= $arResult['ELEMENT_FIELDS']['location'] ?>"
                                                             >
@@ -687,29 +717,6 @@ $notShowLabel = ['PRICE_TYPE'];
                                             <?php endif; ?>
                                         <?php endforeach; ?>
                                     <?php endif; ?>
-                                <?php endif; ?>
-
-                                <?php if ($key === 'NAME'): ?>
-                                    <div class="form-group">
-                                        <label for="nameText" class="form-group__label">Название товара/услуги<span>*</span></label>
-                                        <div class="form-row form-row--rel">
-                                        <textarea name="NAME" class="custom-textarea check-block"
-                                                  placeholder="Введите название товара/услуги"
-                                                  id="nameText"
-                                                  maxlength="2000"
-                                        ><?= $arResult['ELEMENT_PROPS']['NAME']?></textarea>
-                                            <div class="textarea-info">
-                                                Символов&nbsp;
-                                                <div class="textarea-info__number">
-                                                    0
-                                                </div>
-                                                <div class="textarea-info__full">
-                                                    /2000
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="error-form">Необходимо заполнить «Название товара/услуги»</div>
-                                    </div>
                                 <?php endif; ?>
 
                                 <?php if ($key === 'CATEGORY'): ?>
