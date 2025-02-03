@@ -276,6 +276,7 @@ class CreateElement extends \CBitrixComponent
             if (empty($this->errors)) {
                 $data["POST"]["NAME"] = $this->setName($data);
                 $data["POST"]["USER"] = \Bitrix\Main\Engine\CurrentUser::get()->getId();
+                $data["POST"]["IBLOCK_SECTION_ID"] = (isset($data["POST"]["IBLOCK_SECTION_ID"])) ? $data["POST"]["IBLOCK_SECTION_ID"] : $_GET['type'];
 
                 if(isset($data["POST"]["exp_id"]) && empty($data["POST"]["exp_id"])){
                     do {
@@ -474,6 +475,7 @@ class CreateElement extends \CBitrixComponent
 
     private function createElement(array $data): array
     {
+        \Bitrix\Main\Diag\Debug::dumpToFile($data);
         $iblockClass = \Bitrix\Iblock\Iblock::wakeUp($this->arParams["IBLOCK_ID"])->getEntityDataClass();
         $newElement = $iblockClass::createObject();
         $newElement->setId(0);
@@ -877,9 +879,11 @@ class CreateElement extends \CBitrixComponent
         return $convertUrl;
     }
 
-    private function checkFields(array $data) : array {
-        Debug::dumpToFile($data);
+    private function checkIblockSectionId(array $data)
+    {
 
+    }
+    private function checkFields(array $data) : array {
         if(!$data["POST"]["IBLOCK_SECTION_ID"]) {
             if(isset($data["POST"]["SUBSECTION"])) {
                 $errors["SUBSECTION"] = "Данной модели не существует";
