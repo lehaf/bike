@@ -341,7 +341,7 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>`
     }
 
-    function getFields(sectId, target) {
+    function getFields(sectId) {
         $('#stepForm').addClass('blur');
         fetch(window.location.href, {
             method: 'POST',
@@ -811,8 +811,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 files.push(imgFile);
             }
             $("#inputFile").change();
-            console.log(images);
         }).catch((error) => console.log(error));
+
+        let categoryElementServices = document.querySelector('.category-selection-ready.active');
+        if(categoryElementServices) {
+            getFields(categoryElementServices.getAttribute('data-category'));
+        } else {
+            let categoryElement = document.querySelector("select[name=SUBCATEGORY]") || document.querySelector("select[name=CATEGORY]");
+            if (categoryElement) getFields(categoryElement.getAttribute('data-el'));
+        }
     }
 
 
@@ -1201,25 +1208,39 @@ document.addEventListener("DOMContentLoaded", () => {
         suggestView.events.add("select", function (event) {
             let selectedAddress = event.get("item").value;
 
-            searchControl.search(selectedAddress);
-            searchControl.events.add("resultshow", function (e) {
-                let index = e.get("index");
-                searchControl.getResult(index).then(function (res) {
-                    let coords = res.geometry.getCoordinates();
-                    map.setCenter(coords, 15);
-                    addPlacemark(coords, selectedAddress);
-                });
+            ymaps.geocode(selectedAddress).then(function (res) {
+                let coords = res.geoObjects.get(0).geometry.getCoordinates();
+                document.querySelector('#map_location').value = coords.join(',');
+
+                map.setCenter(coords, 15);
+                addPlacemark(coords, selectedAddress);
+            }).catch(function (err) {
+                console.error('Ошибка геокодирования: ', err.message);  // Логируем ошибку
             });
         });
 
+            if(params['element']) {
+                let selectedCoords = document.querySelector('#map_location').value;
+                let coordsArray = selectedCoords.split(',').map(Number);
+
+                ymaps.geocode(selectedCoords).then(function (res) {
+                    let address = res.geoObjects.get(0).getAddressLine();
+                    searchInput.value = address;
+                    map.setCenter(coordsArray, 15);
+                    addPlacemark(coordsArray, address);
+                }).catch(function (err) {
+                    console.error('Ошибка геокодирования: ', err.message);  // Логируем ошибку
+                });
+            }
+
         function addPlacemark(coords, address) {
-            map.geoObjects.removeAll();
+            map.geoObjects.removeAll();  // Удаляем все маркеры
             let placemark = new ymaps.Placemark(coords, {
                 balloonContent: address
             }, {
                 preset: "islands#redDotIcon"
             });
-            map.geoObjects.add(placemark);
+            map.geoObjects.add(placemark);  // Добавляем новый маркер
         }
     }
 
