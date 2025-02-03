@@ -475,7 +475,6 @@ class CreateElement extends \CBitrixComponent
 
     private function createElement(array $data): array
     {
-        \Bitrix\Main\Diag\Debug::dumpToFile($data);
         $iblockClass = \Bitrix\Iblock\Iblock::wakeUp($this->arParams["IBLOCK_ID"])->getEntityDataClass();
         $newElement = $iblockClass::createObject();
         $newElement->setId(0);
