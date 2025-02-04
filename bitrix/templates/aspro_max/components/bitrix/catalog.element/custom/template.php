@@ -741,7 +741,7 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']) + $offerPropCount;
                     <? $bShowPropsBlock = ($arResult["OFFERS"] && $showCustomOffer) || ($arResult["SIZE_PATH"]) || (($arResult['DISPLAY_PROPERTIES'] || $arResult['OFFER_PROP']) && $arParams['VISIBLE_PROP_COUNT'] > 0); ?>
                     <div class="main-block-card flexbox flexbox--row flex-wrap align-items-normal <?= !$bShowPropsBlock ? 'justify-center' : '' ?>">
                         <? if ($bShowPropsBlock): ?>
-                            <div class="product-chars flex-50">
+                            <div class="product-chars">
 
                                 <? //sales?>
                                 <div class="js-sales"></div>
