@@ -354,7 +354,10 @@ class CreateElement extends \CBitrixComponent
                                                     $arFile,
                                                     $arResizeOptions,
                                                     BX_RESIZE_IMAGE_PROPORTIONAL, // Пропорциональный ресайз
-                                                    true // Сохраняем пропорции
+                                                    true,
+                                                    [],
+                                                    false,
+                                                    80
                                                 );
 
                                                 if ($resizedImage) {
