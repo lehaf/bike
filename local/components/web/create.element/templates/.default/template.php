@@ -789,7 +789,7 @@ $notShowLabel = ['PRICE_TYPE'];
                                                        placeholder="Название товара/услуги"
                                                        id="productName"
                                                        name="<?= ((int)$_GET['type'] === SERVICES_SECTION_ID) ? 'SEARCH' : 'NAME'?>"
-                                                       value=""
+                                                       value="<?=($arResult['ELEMENT_PROPS']['NAME'])?>"
                                                 >
                                                 <div class="error-form">Необходимо заполнить
                                                     «Название товара/услуги»
