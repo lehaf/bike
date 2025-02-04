@@ -45,7 +45,7 @@ class CreateElement extends \CBitrixComponent
     {
         $request = \Bitrix\Main\Context::getCurrent()->getRequest();
 
-        if ($request->isAjaxRequest() && $request->getPost('sectionId')) {
+        if (($request->isAjaxRequest() && $request->getPost('sectionId')) || $this->elementId !== 0) {
             $arParams['SECTION_ID'] = (int)$request->getPost('sectionId');
         }
 
@@ -119,8 +119,9 @@ class CreateElement extends \CBitrixComponent
 
                     if (!empty($properties)) {
                         $sectId = (!isset($this->arParams['PARENT_SECTION_ID'])) ? ["SECTION_ID" => $this->arParams['SECTION_ID']] : [
-                            "PARENT_SECTION_ID" => $this->arParams['PARENT_SECTION_ID'], "SECTION_ID" => $this->arParams['SECTION_ID']
+                            "FIRST_LEVEL_PARENT_ID" => $this->arParams['FIRST_LEVEL_PARENT_ID'] , "PARENT_SECTION_ID" => $this->arParams['PARENT_SECTION_ID'], "SECTION_ID" => $this->arParams['SECTION_ID']
                         ];
+
                         $this->requiredFields = $this->getRequiredFields($sectId);
 
                         foreach ($properties as $field) {
@@ -335,13 +336,47 @@ class CreateElement extends \CBitrixComponent
                                     $arFile['MODULE_ID'] = 'iblock';
 
                                     if ($arFile) {
-                                        $filesId[] = \CFile::SaveFile($arFile, "images");
+                                        $fileId = \CFile::SaveFile($arFile, "images");
+                                        if ($fileId) {
+                                            $arFile = \CFile::GetFileArray($fileId);
+
+                                            $imageWidth = $arFile["WIDTH"];
+                                            $imageHeight = $arFile["HEIGHT"];
+                                            $maxWidth = 1200;
+                                            $maxHeight = 1200;
+
+                                            if ($imageWidth > $maxWidth || $imageHeight > $maxHeight) {
+                                                $arResizeOptions = array(
+                                                    "width" => $maxWidth,
+                                                    "height" => $maxHeight,
+                                                );
+                                                $resizedImage = \CFile::ResizeImageGet(
+                                                    $arFile,
+                                                    $arResizeOptions,
+                                                    BX_RESIZE_IMAGE_PROPORTIONAL, // Пропорциональный ресайз
+                                                    true // Сохраняем пропорции
+                                                );
+
+                                                if ($resizedImage) {
+                                                    // Сохраняем уменьшенную картинку
+                                                    $resizedFile = \CFile::MakeFileArray($_SERVER['DOCUMENT_ROOT'] . $resizedImage['src']);
+                                                    $resizedFile['MODULE_ID'] = 'iblock';
+
+                                                    // Сохраняем уменьшенное изображение
+                                                    $resizedFileId = \CFile::SaveFile($resizedFile, "images");
+
+                                                    \CFile::Delete($fileId);
+                                                    $fileId = $resizedFileId;
+                                                }
+                                            }
+
+                                        }
+                                        $filesId[] = $fileId;
                                     }
 
                                     if (!empty($filesId)) {
                                         unlink($filePath);
                                     }
-
                                 }
                             }
 
@@ -877,11 +912,6 @@ class CreateElement extends \CBitrixComponent
         }
         return $convertUrl;
     }
-
-    private function checkIblockSectionId(array $data)
-    {
-
-    }
     private function checkFields(array $data) : array {
         if(!$data["POST"]["IBLOCK_SECTION_ID"]) {
             if(isset($data["POST"]["SUBSECTION"])) {
@@ -920,6 +950,7 @@ class CreateElement extends \CBitrixComponent
                 $errors[$field] = $errorMessage;
             }
         }
+
 
         foreach ($this->userProps as $prop => $value) {
             if (empty($data['POST'][$prop]) && $value['CUSTOM_IS_REQUIRED'] === "Y") {
