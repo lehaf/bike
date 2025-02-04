@@ -1,4 +1,10 @@
 document.addEventListener("DOMContentLoaded", () => {
+    document.querySelector("#stepForm").addEventListener("keypress", function (event) {
+        if (event.key === "Enter" && event.target.tagName !== "TEXTAREA") {
+            event.preventDefault();
+        }
+    });
+
     let params = window
         .location
         .search
