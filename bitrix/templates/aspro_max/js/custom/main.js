@@ -812,9 +812,11 @@ document.addEventListener("DOMContentLoaded", () => {
             return res.json();
         }).then(async data => {
             for (const img of data) {
-                let imgBlob = await getFileBlob(img);
-                let imgFile = new File([imgBlob], img.split('/').pop(), {type: imgBlob.type});
-                files.push(imgFile);
+                if(img) {
+                    let imgBlob = await getFileBlob(img);
+                    let imgFile = new File([imgBlob], img.split('/').pop(), {type: imgBlob.type});
+                    files.push(imgFile);
+                }
             }
             $("#inputFile").change();
         }).catch((error) => console.log(error));
