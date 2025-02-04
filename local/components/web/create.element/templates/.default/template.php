@@ -215,7 +215,8 @@ $notShowLabel = ['PRICE_TYPE'];
                                                   placeholder="Введите название товара/услуги"
                                                   id="nameText"
                                                   maxlength="80"
-                                        ><?= $arResult['ELEMENT_PROPS']['NAME']?></input>
+                                               value="<?= $arResult['ELEMENT_PROPS']['NAME']?>"
+                                        />
 <!--                                            <div class="textarea-info">-->
 <!--                                                Символов&nbsp;-->
 <!--                                                <div class="textarea-info__number">-->
@@ -676,7 +677,10 @@ $notShowLabel = ['PRICE_TYPE'];
                                                     <?php endif; ?>
                                                     <div class="form-group">
                                                         <label for="<?= $field['CODE'] ?>"
-                                                               class="form-group__label"><?= $field['NAME'] ?><?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? '<span>*</span>' : '' ?></label>
+                                                               class="form-group__label">
+                                                            <?= $field['NAME'] ?><?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? '<span>*</span>' : '' ?>
+
+                                                        </label>
                                                         <div class="form-row">
                                                             <input type="text"
                                                                    class="custom-input <?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? 'check-block' : '' ?>"
@@ -685,6 +689,9 @@ $notShowLabel = ['PRICE_TYPE'];
                                                                    name="<?= $field['CODE'] ?>"
                                                                    value="<?= ($field['CODE'] === 'contact_person' && empty($arResult['ELEMENT_FIELDS'])) ? $arResult['USER_PROFILE']['name'] : $arResult['ELEMENT_FIELDS'][$field['CODE']] ?>"
                                                             >
+                                                            <?php if($field['CODE'] === 'exp_id'):?>
+                                                                <span style="font-size: 12px; color: #989898">Ваш артикул или автоматическое создание</span>
+                                                            <?php endif;?>
                                                         </div>
                                                         <div class="error-form">Необходимо заполнить
                                                             «<?= $field['NAME'] ?>»
