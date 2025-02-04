@@ -842,7 +842,7 @@ $notShowLabel = ['PRICE_TYPE'];
                                         >
                                             <h3 class="category-title">Выбор категории</h3>
                                             <div class="category-selection-ready__main" id="category-select">
-                                                <?=($arResult['ELEMENT_PROPS']['IBLOCK_SECTION_NAME'] && $arResult['ELEMENT_PROPS']['SECTION_NAME']) ? $arResult['ELEMENT_PROPS']['SECTION_NAME'] . ' - ' . $arResult['ELEMENT_PROPS']['IBLOCK_SECTION_NAME'] : ''?>
+                                                <?=($arResult['ELEMENT_PROPS']['IBLOCK_SECTION_NAME'] && $arResult['ELEMENT_PROPS']['SECTION_NAME']) ? $arResult['ELEMENT_PROPS']['SECTION_NAME'] . ' / ' . $arResult['ELEMENT_PROPS']['IBLOCK_SECTION_NAME'] : ''?>
                                             </div>
                                             <div class="category-selection-ready-btn">
                                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none"

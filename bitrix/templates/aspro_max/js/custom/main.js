@@ -1465,7 +1465,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     }, 1000);
                     categorySelectionReady.classList.add("active");
                     categorySelectionReady.setAttribute('data-category', target.closest(".category-selection-list__item").getAttribute('data-id'));
-                    formCategorySelectedItem.innerHTML = categoryItem.innerText + ' - '+  text;
+                    formCategorySelectedItem.innerHTML = categoryItem.innerText + ' / '+  text;
                     target.classList.add("active");
 
                     document.querySelector('#categorySelection')?.classList.remove('error');
