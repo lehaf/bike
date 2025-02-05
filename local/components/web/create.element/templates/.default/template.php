@@ -179,12 +179,13 @@ $notShowLabel = ['PRICE_TYPE'];
                                 <?php endif; ?>
 
                                 <?php if ($key === 'OTHER_FIELDS'): ?>
+                                <?php $textareaText = str_replace('<br>', "\n", $arResult['ELEMENT_PROPS']['DETAIL_TEXT']);?>
                                     <div class="form-group">
                                         <div class="form-row">
                                         <textarea name="DETAIL_TEXT" class="custom-textarea"
                                                   placeholder="Введите описание" id="adDescription" maxlength="2000"
                                                   data-text="ad-description"
-                                        ><?= $arResult['ELEMENT_PROPS']['DETAIL_TEXT'] ?></textarea>
+                                        ><?= $textareaText ?></textarea>
                                             <div class="textarea-info">
                                                 Символов&nbsp;
                                                 <div class="textarea-info__number">

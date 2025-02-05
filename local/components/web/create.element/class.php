@@ -521,6 +521,7 @@ class CreateElement extends \CBitrixComponent
         $newElement->set("ACTIVE_FROM", date('d.m.Y H:i:s'));
         $newElement->set("SEARCHABLE_CONTENT", strtoupper($data["NAME"]["VALUE"]));
         $newElement->set("CREATED_BY", $data["USER"]["VALUE"]);
+        $newElement->set("DETAIL_TEXT_TYPE", "html");
 
         $userBrand = \Bitrix\Main\UserTable::getList([
             'select' => ['UF_BRAND_ID'],
@@ -570,6 +571,9 @@ class CreateElement extends \CBitrixComponent
                     $newElement->addTo($prop, new PropertyValue($value));
                 }
             } else {
+                if($prop === 'DETAIL_TEXT') {
+                    $item['VALUE'] = nl2br($item['VALUE'], false);
+                }
                 $newElement->set($prop, $item["VALUE"]);
 //                if ($prop === "IBLOCK_SECTION_ID") {
 //                    $newElement->set("IN_SECTIONS", "Y");
@@ -631,6 +635,7 @@ class CreateElement extends \CBitrixComponent
 
         $currentDate = new \DateTime();
         $element->set("TIMESTAMP_X", $currentDate->format('d.m.Y H:i:s'));
+        $element->set("DETAIL_TEXT_TYPE", 'html');
 
         if (!empty($data)) {
             foreach ($this->staticProps as $prop) {
@@ -646,6 +651,10 @@ class CreateElement extends \CBitrixComponent
                             $element->addTo($prop, new PropertyValue($value));
                         }
                     } else {
+                        if($prop === 'DETAIL_TEXT') {
+                            $data[$prop]['VALUE'] = nl2br($data[$prop]['VALUE'], false);
+                        }
+
                         $element->set($prop, $data[$prop]['VALUE']);
                     }
                 }
