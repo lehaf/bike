@@ -533,7 +533,6 @@ class CreateElement extends \CBitrixComponent
             $newElement->set("BRAND", $userBrand['UF_BRAND_ID']);
             $userType = 'legal';
         } else {
-            $newElement->set("saller", "legal");
             $userType = 'fis';
         }
 
