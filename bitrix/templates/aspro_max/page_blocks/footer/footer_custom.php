@@ -129,7 +129,7 @@ $bPrintButton = isset($arTheme['PRINT_BUTTON']) ? ($arTheme['PRINT_BUTTON']['VAL
                                 </div>
 
                                 <div class="col-md-12 col-sm-12" style="margin-top: 30px">
-                                    <div class="footer-info copy font_xs">
+                                    <div class="footer-info copy font_xxs">
                                         <?$APPLICATION->IncludeFile(SITE_DIR."include/footer/footer_info.php", Array(), Array(
                                                 "MODE" => "php",
                                                 "NAME" => "info",
