@@ -19,8 +19,8 @@ $logoClass = ($arTheme['COLORED_LOGO']['VALUE'] !== 'Y' ? '' : ' colored');
 				<div class="left_menu_block">
 					<div class="logo_block flexbox flexbox--row align-items-normal">
 						<div class="logo<?=$logoClass?>">
-							<?=CMax::ShowBufferedLogo();?>
-						</div>
+                            <?=CMax::ShowBufferedFixedLogo();?>
+                        </div>
 						<div class="top-description addr">
 							<?$APPLICATION->IncludeFile(SITE_DIR."include/top_page/slogan.php", array(), array(
 									"MODE" => "html",
@@ -78,21 +78,21 @@ $logoClass = ($arTheme['COLORED_LOGO']['VALUE'] !== 'Y' ? '' : ' colored');
 				<div class="right_menu_block">
 					<div class="contact_wrap">
 						<div class="info">
-							<div class="phone blocks">
-								<div class="">
-									<?CMax::ShowHeaderPhones('white sm', true);?>
-								</div>
-								<div class="callback_wrap">
-									<span class="callback-block animate-load font_upper colored" data-event="jqm" data-param-form_id="CALLBACK" data-name="callback"><?=GetMessage("S_CALLBACK")?></span>
-								</div>
-							</div>
-							<div class="question_button_wrapper">
-								<span class="btn btn-lg btn-transparent-border-color btn-wide animate-load colored_theme_hover_bg-el" data-event="jqm" data-param-form_id="ASK" data-name="ask">
-									<?=GetMessage('ASK')?>
-								</span>
-							</div>
+<!--							<div class="phone blocks">-->
+<!--								<div class="">-->
+<!--									--><?//CMax::ShowHeaderPhones('white sm', true);?>
+<!--								</div>-->
+<!--								<div class="callback_wrap">-->
+<!--									<span class="callback-block animate-load font_upper colored" data-event="jqm" data-param-form_id="CALLBACK" data-name="callback">--><?php //=GetMessage("S_CALLBACK")?><!--</span>-->
+<!--								</div>-->
+<!--							</div>-->
+<!--							<div class="question_button_wrapper">-->
+<!--								<span class="btn btn-lg btn-transparent-border-color btn-wide animate-load colored_theme_hover_bg-el" data-event="jqm" data-param-form_id="ASK" data-name="ask">-->
+<!--									--><?php //=GetMessage('ASK')?>
+<!--								</span>-->
+<!--							</div>-->
 
-							<div class="person_wrap">
+							<div class="person_wrap person_wrap--custom">
 								<?
 								// show cabinet item
 								CMax::showCabinetLink(true, true, 'big');
@@ -114,8 +114,8 @@ $logoClass = ($arTheme['COLORED_LOGO']['VALUE'] !== 'Y' ? '' : ' colored');
 							</div>
 						<?endif;?>
 
-						<?=CMax::showEmail('email blocks color-theme-hover')?>
-						<?=CMax::showAddress('address blocks')?>
+<!--						--><?php //=CMax::showEmail('email blocks color-theme-hover')?>
+<!--						--><?php //=CMax::showAddress('address blocks')?>
 						<div class="social-block">
 							<?$APPLICATION->IncludeComponent(
 								"aspro:social.info.max",
@@ -136,3 +136,7 @@ $logoClass = ($arTheme['COLORED_LOGO']['VALUE'] !== 'Y' ? '' : ' colored');
 		</div>
 	</div>
 </div>
+<script>
+    let basketItem = document.querySelector('.person_wrap--custom .menu.middle > ul > li.counters');
+    basketItem?.remove();
+</script>
