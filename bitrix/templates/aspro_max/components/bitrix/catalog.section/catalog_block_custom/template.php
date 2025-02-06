@@ -356,7 +356,7 @@
                         <div class="sa_block " data-fields='<?= Json::encode($arParams["FIELDS"]) ?>'
                              data-stores='<?= Json::encode($arParams["STORES"]) ?>'
                              data-user-fields='<?= Json::encode($arParams["USER_FIELDS"]) ?>'>
-                            <?php if (array_intersect($arResult['LEVEL_PARENTS'], SECTION_TYPE_4) && !empty($arItem['PROPERTIES']['status']['VALUE_XML_ID'])): ?>
+                            <?php if (!empty($arItem['PROPERTIES']['status']['VALUE_XML_ID'])): ?>
                                 <div class="item-stock">
                                     <span class="icon <?= $arItem['PROPERTIES']['status']['VALUE_XML_ID'] ?>"></span>
                                     <span class="value font_sxs"><?= $arItem['PROPERTIES']['status']['VALUE'] ?></span>

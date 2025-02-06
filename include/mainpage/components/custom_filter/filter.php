@@ -9,6 +9,7 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
 <?php
 $rsSections = getSections([
     '=IBLOCK_SECTION_ID' => TRANSPORT_SECTION_ID,
+    '=ACTIVE' => 'Y',
 ]);
 
 $parentSectionCode = Bitrix\Iblock\SectionTable::getList([
