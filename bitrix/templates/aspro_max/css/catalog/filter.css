@@ -667,7 +667,7 @@ input[type="radio"] {
     background: #f8f8f8;
     border-radius: 100%;
     left: 0;
-    top: 50%;
+    top: 46%;
     transform: translate(0, -50%);
     transition: .3s;
 }
