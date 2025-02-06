@@ -78,25 +78,26 @@ $bPrintButton = isset($arTheme['PRINT_BUTTON']) ? ($arTheme['PRINT_BUTTON']['VAL
 										</div>
 									</div>
 								<?endif;?>
-								<div class="col-md-12 col-sm-12">
-									<div class="phone blocks">
-										<div class="inline-block">
-											<?CMax::ShowHeaderPhones('white sm', true);?>
-										</div>
-										<?$callbackExploded = explode(',', $arTheme['SHOW_CALLBACK']['VALUE']);
-										if( in_array('FOOTER', $callbackExploded) ):?>
-											<div class="inline-block callback_wrap">
-												<span class="callback-block animate-load colored" data-event="jqm" data-param-form_id="CALLBACK" data-name="callback"><?=GetMessage("CALLBACK")?></span>
-											</div>
-										<?endif;?>
-									</div>
-								</div>
-								<div class="col-md-12 col-sm-12">
-									<?=CMax::showEmail('email blocks')?>
-								</div>
-								<div class="col-md-12 col-sm-12">
-									<?=CMax::showAddress('address blocks')?>
-								</div>
+<!--								<div class="col-md-12 col-sm-12">-->
+<!--									<div class="phone blocks">-->
+<!--										<div class="inline-block">-->
+<!--											--><?//CMax::ShowHeaderPhones('white sm', true);?>
+<!--										</div>-->
+<!--										--><?//$callbackExploded = explode(',', $arTheme['SHOW_CALLBACK']['VALUE']);
+//										if( in_array('FOOTER', $callbackExploded) ):?>
+<!--											<div class="inline-block callback_wrap">-->
+<!--												<span class="callback-block animate-load colored" data-event="jqm" data-param-form_id="CALLBACK" data-name="callback">--><?php //=GetMessage("CALLBACK")?><!--</span>-->
+<!--											</div>-->
+<!--										--><?//endif;?>
+<!--									</div>-->
+<!--								</div>-->
+<!--								<div class="col-md-12 col-sm-12">-->
+<!--									--><?php //=CMax::showEmail('email blocks')?>
+<!--								</div>-->
+<!--								<div class="col-md-12 col-sm-12">-->
+<!--									--><?php //=CMax::showAddress('address blocks')?>
+<!--								</div>-->
+
                                 <div class="col-md-12 col-sm-12" style="margin-top: 30px">
                                     <div class="confidentiality">
                                         <?=CMax::showIconSvg('privacy_policy', SITE_TEMPLATE_PATH.'/images/svg/privacy_policy.svg')?>
@@ -121,6 +122,17 @@ $bPrintButton = isset($arTheme['PRINT_BUTTON']) ? ($arTheme['PRINT_BUTTON']['VAL
                                         <?$APPLICATION->IncludeFile(SITE_DIR."include/footer/confidentiality2.php", Array(), Array(
                                                 "MODE" => "php",
                                                 "NAME" => "onfidentiality",
+                                                "TEMPLATE" => "include_area.php",
+                                            )
+                                        );?>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12 col-sm-12" style="margin-top: 30px">
+                                    <div class="footer-info copy font_xs">
+                                        <?$APPLICATION->IncludeFile(SITE_DIR."include/footer/footer_info.php", Array(), Array(
+                                                "MODE" => "php",
+                                                "NAME" => "info",
                                                 "TEMPLATE" => "include_area.php",
                                             )
                                         );?>
