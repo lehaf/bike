@@ -721,19 +721,28 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']) + $offerPropCount;
                             </div>
 
                         </div>
-                        <?php if (!empty($arResult['CITY'])): ?>
-                            <div class="_location-product">
-                                <svg width="12" height="14" viewBox="0 0 12 14" fill="none"
-                                     xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M6.00217 0C2.69349 0 0 2.5937 0 5.7694C0 7.59837 0.980934 9.52699 2.92624 11.4889C3.80708 12.3779 4.77653 13.1745 5.81928 13.8664C5.92482 13.956 6.07953 13.956 6.18506 13.8664C7.22781 13.1745 8.19725 12.3779 9.0781 11.4889C11.0234 9.52693 12.0043 7.59831 12.0043 5.7694C12.0043 2.59373 9.31087 0 6.00217 0ZM6.00217 13.2014C5.0544 12.5364 0.66506 9.3441 0.66506 5.7694C0.66506 2.95949 3.05931 0.66506 6.00217 0.66506C8.94509 0.665176 11.3393 2.95955 11.3393 5.7694C11.3393 9.32747 6.94988 12.5364 6.00217 13.2014Z"
-                                          fill="#666666"/>
-                                    <path d="M6.00147 3.1084C5.40176 3.1084 4.82663 3.34673 4.40259 3.77076C3.97847 4.19476 3.74023 4.77001 3.74023 5.36963C3.74023 5.96934 3.97845 6.54447 4.40259 6.9686C4.8266 7.3926 5.40173 7.63084 6.00147 7.63084C6.60121 7.63084 7.17631 7.39262 7.60034 6.9686C8.02447 6.54447 8.2627 5.96934 8.2627 5.36963C8.2627 4.77004 8.02449 4.19479 7.60034 3.77076C7.17634 3.34675 6.60121 3.1084 6.00147 3.1084ZM6.00147 6.96575C5.57815 6.96575 5.1721 6.79758 4.87277 6.49825C4.57343 6.19891 4.40527 5.79287 4.40527 5.36954C4.40527 4.94622 4.57343 4.5403 4.87277 4.24096C5.1721 3.94162 5.57815 3.77346 6.00147 3.77346C6.42479 3.77346 6.83083 3.94163 7.13017 4.24096C7.42951 4.5403 7.59767 4.94622 7.59767 5.36954C7.59767 5.79287 7.4295 6.19891 7.13017 6.49825C6.83083 6.79758 6.42479 6.96575 6.00147 6.96575Z"
-                                          fill="#666666"/>
-                                </svg>
+                        <div class="_info-product _info-product--bottom">
+                            <?php if (!empty($arResult['CITY'])): ?>
+                                <div class="_location-product">
+                                    <svg width="12" height="14" viewBox="0 0 12 14" fill="none"
+                                         xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M6.00217 0C2.69349 0 0 2.5937 0 5.7694C0 7.59837 0.980934 9.52699 2.92624 11.4889C3.80708 12.3779 4.77653 13.1745 5.81928 13.8664C5.92482 13.956 6.07953 13.956 6.18506 13.8664C7.22781 13.1745 8.19725 12.3779 9.0781 11.4889C11.0234 9.52693 12.0043 7.59831 12.0043 5.7694C12.0043 2.59373 9.31087 0 6.00217 0ZM6.00217 13.2014C5.0544 12.5364 0.66506 9.3441 0.66506 5.7694C0.66506 2.95949 3.05931 0.66506 6.00217 0.66506C8.94509 0.665176 11.3393 2.95955 11.3393 5.7694C11.3393 9.32747 6.94988 12.5364 6.00217 13.2014Z"
+                                              fill="#666666"/>
+                                        <path d="M6.00147 3.1084C5.40176 3.1084 4.82663 3.34673 4.40259 3.77076C3.97847 4.19476 3.74023 4.77001 3.74023 5.36963C3.74023 5.96934 3.97845 6.54447 4.40259 6.9686C4.8266 7.3926 5.40173 7.63084 6.00147 7.63084C6.60121 7.63084 7.17631 7.39262 7.60034 6.9686C8.02447 6.54447 8.2627 5.96934 8.2627 5.36963C8.2627 4.77004 8.02449 4.19479 7.60034 3.77076C7.17634 3.34675 6.60121 3.1084 6.00147 3.1084ZM6.00147 6.96575C5.57815 6.96575 5.1721 6.79758 4.87277 6.49825C4.57343 6.19891 4.40527 5.79287 4.40527 5.36954C4.40527 4.94622 4.57343 4.5403 4.87277 4.24096C5.1721 3.94162 5.57815 3.77346 6.00147 3.77346C6.42479 3.77346 6.83083 3.94163 7.13017 4.24096C7.42951 4.5403 7.59767 4.94622 7.59767 5.36954C7.59767 5.79287 7.4295 6.19891 7.13017 6.49825C6.83083 6.79758 6.42479 6.96575 6.00147 6.96575Z"
+                                              fill="#666666"/>
+                                    </svg>
 
-                                <?= $arResult['CITY']; ?>
-                            </div>
-                        <?php endif; ?>
+                                    <?= $arResult['CITY']; ?>
+                                </div>
+                            <?php endif; ?>
+                            <? //stock?>
+                            <?php if (!empty($arResult['PROPERTIES']['status']['VALUE_XML_ID'])): ?>
+                                <div class="item-stock">
+                                    <span class="icon <?= $arResult['PROPERTIES']['status']['VALUE_XML_ID'] ?>"></span>
+                                    <span class="value font_sxs"><?= $arResult['PROPERTIES']['status']['VALUE'] ?></span>
+                                </div>
+                            <?php endif; ?>
+                        </div>
                     </div>
 
 
@@ -948,8 +957,7 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']) + $offerPropCount;
                                                             <? endif; ?>
                                                         <? elseif (isset($arResult["PRICES"]) && !empty($arResult['PRICES_CUST'])): ?>
                                                             <div class="price_matrix_wrapper">
-                                                                <?php $priceClasses = (in_array($arResult['PARENT_SECTION'], SECTION_TYPE_4)) ? 'price--left' : '' ?>
-                                                                <div class="price font-bold font_mxs price--center <?= $priceClasses ?>">
+                                                                <div class="price font-bold font_mxs price--center">
                                                                     <?php if (!empty($arResult['PROPERTIES']['contract_price']['VALUE'])): ?>
                                                                         <?= Loc::getMessage("CONTRACT_PRICE") ?>
                                                                     <?php else: ?>
@@ -958,8 +966,7 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']) + $offerPropCount;
                                                                 </div>
                                                             </div>
                                                             <?php if (!empty($arResult['PRICES_CUST']['CONVERT']) && empty($arResult['PROPERTIES']['contract_price']['VALUE'])): ?>
-                                                                <?php $currencyClasses = (in_array($arResult['PARENT_SECTION'], SECTION_TYPE_4)) ? 'price-currency--left' : '' ?>
-                                                                <div class="price-currency <?= $currencyClasses ?>">
+                                                                <div class="price-currency">
                                                                     <?php foreach ($arResult['PRICES_CUST']['CONVERT'] as $price): ?>
                                                                         <div class="price-currency__i">
                                                                             ≈ <?= $price ?></div>
@@ -968,6 +975,14 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']) + $offerPropCount;
                                                             <?php endif; ?>
                                                         <? endif; ?>
                                                     <? endif; ?>
+                                                </div>
+                                                <?php else:?>
+                                                <div class="cost prices detail">
+                                                    <div class="price_matrix_wrapper">
+                                                        <div class="price font-bold font_mxs price--center">
+                                                            <?=GetMessage('NOT_PRICE')?>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                                 <?php endif;?>
 
@@ -1022,13 +1037,6 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']) + $offerPropCount;
                                                     </script>
                                                 <? endif; ?>
 
-                                                <? //stock?>
-                                                <?php if (in_array($arResult['PARENT_SECTION'], SECTION_TYPE_4) && !empty($arResult['PROPERTIES']['status']['VALUE_XML_ID'])): ?>
-                                                    <div class="item-stock">
-                                                        <span class="icon <?= $arResult['PROPERTIES']['status']['VALUE_XML_ID'] ?>"></span>
-                                                        <span class="value font_sxs"><?= $arResult['PROPERTIES']['status']['VALUE'] ?></span>
-                                                    </div>
-                                                <?php endif; ?>
                                                 <div class="prices_block-btn" data-event="call-form"
                                                      data-el="<?= $arResult['ID'] ?>">
                                                     Показать телефон
@@ -1194,6 +1202,8 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']) + $offerPropCount;
     </div>
 
     <?php if (!empty($arResult['LOCATION_PROPERTY'])): ?>
+        <div class="ordered-block__title option-font-bold font_lg" style="margin-top: 45px">Мы на карте</div>
+
         <div id="map"></div>
         <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&amp;apikey=e2caa9ca-c646-4d64-b8c9-bbe9b1227165"
                 type="text/javascript"></script>
