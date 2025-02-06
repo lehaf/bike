@@ -443,7 +443,7 @@ $parentsId[] = $arResult["VARIABLES"]["SECTION_ID"];
             $SMART_FILTER_SORT = $arSort;
             ?>
             <?php
-            $customSections = array_merge(SECTION_TYPE_1, SECTION_TYPE_2);
+            $customSections = array_merge(SECTION_TYPE_1, SECTION_TYPE_2, SECTION_TYPE_3, SECTION_TYPE_4);
             ?>
             <?php $customClass = (array_intersect($parentsId, $customSections)) ? '_custom' : ''; ?>
 
