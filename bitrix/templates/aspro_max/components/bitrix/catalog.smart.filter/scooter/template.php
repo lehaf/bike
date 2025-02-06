@@ -622,7 +622,7 @@ $price = $arResult['ITEMS']['BASE'];
             <!--            тип покупателя-->
             <?php if (!empty($arResult['ITEMS']['saller']['VALUES'])): ?>
                 <div class="form-row__col-30">
-                    <div class="form-row form-row-radio-block">
+                    <div class="form-row form-row-radio-block form-row--s">
                         <?php $curSaller = current($arResult['ITEMS']['saller']['VALUES']) ?>
                         <div class="form-col grow-1">
                             <input
@@ -701,7 +701,7 @@ $price = $arResult['ITEMS']['BASE'];
                 </div>
             <?php endif; ?>
 
-            <div class="form-row__col-30">
+            <div class="form-row__col">
                 <div class="form-row form-row-checkbox selection-block-checkbox-row">
                     <!--                    обмен-->
                     <?php if (!empty($arResult['ITEMS']['exchange']['VALUES'])): ?>

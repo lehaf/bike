@@ -637,7 +637,7 @@ $price = $arResult['ITEMS']['BASE'];
             </div>
 
             <!--                коробка-->
-            <?php if (!empty($arResult['ITEMS']['transmission']['VALUES'])): ?>
+            <?php if (!empty($arResult['ITEMS']['transmission_' . $sectCode]['VALUES'])): ?>
                 <div class="form-row__col-30 <?= ($arResult['ITEMS']['transmission_' . $sectCode]['HAS_CHECKED']) ? 'store-active' : '' ?>">
                     <div class="custom-select-inner form-group-custom-select">
                         <div class="custom-select--multiple">
@@ -734,7 +734,7 @@ $price = $arResult['ITEMS']['BASE'];
             <!--            тип продавца-->
             <?php if (!empty($arResult['ITEMS']['saller']['VALUES'])): ?>
                 <div class="form-row__col-30">
-                    <div class="form-row form-row-radio-block">
+                    <div class="form-row form-row-radio-block form-row--s">
                         <?php $curSaller = current($arResult['ITEMS']['saller']['VALUES']) ?>
                         <div class="form-col grow-1">
                             <input
@@ -767,7 +767,7 @@ $price = $arResult['ITEMS']['BASE'];
                 </div>
             <?php endif; ?>
             <div class="form-row__col-30">
-                <div class="form-row form-row-checkbox selection-block-checkbox-row">
+                <div class="form-row form-row-checkbox selection-block-checkbox-row selection-block-checkbox-row--s">
                     <!--                    обмен-->
                     <?php if (!empty($arResult['ITEMS']['exchange']['VALUES'])): ?>
                         <div class="col">

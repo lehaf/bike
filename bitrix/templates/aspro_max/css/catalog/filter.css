@@ -870,12 +870,12 @@ textarea.custom-textarea:focus {
     height: 100%;
 }
 
-.description-text {
-    font-weight: 400;
-    font-size: 14px;
-    color: #333;
-    margin-bottom: 20px;
-}
+/*.description-text {*/
+/*    font-weight: 400;*/
+/*    font-size: 14px;*/
+/*    color: #333;*/
+/*    margin-bottom: 20px;*/
+/*}*/
 
 .map-example {
     font-weight: 600;
@@ -1619,6 +1619,10 @@ input[type="file"] {
     justify-content: end;
 }
 
+.form-row--s label.radio-block__label {
+    padding: 10px 0;
+}
+
 .parameters-btn-inner {
     display: flex;
     align-items: center;
@@ -2045,6 +2049,10 @@ input[type="file"] {
 
     .custom-input {
         padding: 10px 20px;
+    }
+
+    .selection-block-checkbox-row--s {
+        gap: 10px;
     }
 }
 
@@ -2586,9 +2594,6 @@ body.no-scroll{
   }
 }
 
-
-
-
 .categories{
     display: none;
     margin: 20px 0;
@@ -2820,3 +2825,4 @@ li.category-selection-list__item::before {
         padding: 18px 30px;
     }
 }
+
