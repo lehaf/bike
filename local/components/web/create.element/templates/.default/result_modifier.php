@@ -8,6 +8,7 @@ if (!empty($sections)) {
         if (is_array($section)) {
             $rsSection = getSections([
                 '=ID' => $section,
+                'ACTIVE' => 'Y',
             ]);
             if (!empty($rsSection)) {
                 foreach ($rsSection as $sect) {
@@ -17,6 +18,7 @@ if (!empty($sections)) {
         } else {
             $rsSection = getSections([
                 '=IBLOCK_SECTION_ID' => $section,
+                'ACTIVE' => 'Y',
             ]);
 
             if (!empty($rsSection)) {
@@ -28,7 +30,6 @@ if (!empty($sections)) {
 
 //разделение свойств по блокам
 if ($_GET['type']) {
-    $arResult['TEST'] = $arResult['SHOW_FIELDS'];
     $sectId = (!isset($arParams['PARENT_SECTION_ID'])) ? ["SECTION_ID" => $arParams['SECTION_ID']] : [
         "PARENT_SECTION_ID" => $arParams['PARENT_SECTION_ID'], "SECTION_ID" => $arParams['SECTION_ID']
     ];
@@ -59,7 +60,7 @@ if ($_GET['type']) {
             "filter" => [
                 '=IBLOCK_SECTION_ID' => array_column($arResult['CATEGORIES'], 'ID'),
             ],
-            "order" => ['SORT' => 'ASC'],
+            "order" => ['SORT' => 'ASC', 'ID' => 'DESC'],
             'cache' => [
                 'ttl' => 36000000,
                 'cache_joins' => true
