@@ -27,3 +27,7 @@ if ($_GET[$FILTER_NAME . '_mark']) {
 if ($_GET[$FILTER_NAME . '_article']) {
     $GLOBALS[$FILTER_NAME]['=PROPERTY_' . Filter::getPropertyId($arParams['IBLOCK_ID'], 'article_part')] = $_GET[$FILTER_NAME . '_article'];
 }
+
+if ($_GET[$FILTER_NAME . '_exp_id']) {
+    $GLOBALS[$FILTER_NAME]['=PROPERTY_' . Filter::getPropertyId($arParams['IBLOCK_ID'], 'exp_id')] = $_GET[$FILTER_NAME . '_exp_id'];
+}

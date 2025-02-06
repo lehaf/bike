@@ -221,6 +221,10 @@ class Filter
             if ($searchParams[$filterName . '_article']) {
                 $arrParams['=PROPERTY_' . self::getPropertyId($iblockId, 'article_part')] = $searchParams[$filterName . '_article'];
             }
+
+            if ($searchParams[$filterName . '_exp_id']) {
+                $arrParams['=PROPERTY_' . self::getPropertyId($iblockId, 'exp_id')] = $searchParams[$filterName . '_exp_id'];
+            }
         }
 
         $arrParams['IBLOCK_ID'] = $iblockId;

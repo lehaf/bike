@@ -361,14 +361,14 @@ $price = $arResult['ITEMS']['BASE'];
 
     <!--    артикул-->
     <div class="form-row flex-row">
-        <div class="form-row__col-30">
+        <div class="form-row__col">
             <div class="form-row__col">
                 <input
                         type="text"
                         name="<?= $arParams['FILTER_NAME'] ?>_article"
                         value="<?= $_GET[$arParams['FILTER_NAME'] . '_article'] ?>"
                         class="custom-input input-change left-input"
-                        placeholder="Артикул"
+                        placeholder="Оригинальный номер"
                 >
                 <span class="reset-input">
                         <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -378,8 +378,28 @@ $price = $arResult['ITEMS']['BASE'];
                     </span>
             </div>
         </div>
+        <div class="form-row__col">
+            <div class="form-row__col">
+                <input
+                        type="text"
+                        name="<?= $arParams['FILTER_NAME'] ?>_exp_id"
+                        value="<?= $_GET[$arParams['FILTER_NAME'] . '_exp_id'] ?>"
+                        class="custom-input input-change left-input"
+                        placeholder="Артикул объявления"
+                >
+                <span class="reset-input">
+                        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M8.98109 1.35706L1.69526 8.64289M9.03313 8.69493L1.64322 1.30502" stroke="#ED1C24" stroke-width="1.4"
+      stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+                    </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-row flex-row">
         <?php if (!empty($arResult['ITEMS']['saller']['VALUES'])): ?>
-            <div class="form-row__col-30">
+            <div class="form-row__col">
                 <div class="form-row form-row-radio-block">
                     <?php $curSaller = current($arResult['ITEMS']['saller']['VALUES']) ?>
                     <div class="form-col grow-1">
@@ -412,7 +432,7 @@ $price = $arResult['ITEMS']['BASE'];
                 </div>
             </div>
         <?php endif; ?>
-        <div class="form-row__col-30">
+        <div class="form-row__col">
             <div class="form-row form-row-checkbox selection-block-checkbox-row">
                 <div class="col">
                     <input type="checkbox" class="input-checkbox" name="<?= $arParams['FILTER_NAME'] ?>_photo"
