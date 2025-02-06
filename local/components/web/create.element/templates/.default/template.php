@@ -791,6 +791,7 @@ $notShowLabel = ['PRICE_TYPE'];
                                                        id="productName"
                                                        name="<?= ((int)$_GET['type'] === SERVICES_SECTION_ID) ? 'SEARCH' : 'NAME'?>"
                                                        value="<?=(((int)$_GET['type'] !== SERVICES_SECTION_ID) ? $arResult['ELEMENT_PROPS']['NAME'] : '')?>"
+                                                        maxlength="80"
                                                 >
                                                 <div class="error-form">Необходимо заполнить
                                                     «Название товара/услуги»

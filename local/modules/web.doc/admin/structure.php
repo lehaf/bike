@@ -23,6 +23,22 @@ $APPLICATION->SetAdditionalCSS("/bitrix/css/" . $mid . "/style.css");
     <p>bitrix/templates/aspro_max/components/bitrix/catalog/main/lang/ru/section.php - название пункта на странице каталога</p>
     <p>bitrix/templates/aspro_max/components/bitrix/catalog/main/.parameters.php - добавлен пункт для сортировки по DATE_CREATE в параметр SORT_BUTTONS</p>
     <p>bitrix/templates/aspro_max/components/bitrix/catalog/main/sort.php - добавлена логика для корректного отображения нового пункта сортировки "Дата создания" (DATE_CREATE)</p>
+
+    <p style="margin-top: 15px">Файлы для отображения фильтра по городам в каталоге:</p>
+    <p>bitrix/templates/aspro_max/components/bitrix/catalog/main/filter.php - генерирует путь на новый шаблон фильтра main_compact_ajax_custom</p>
+</div>
+
+<div style="margin-bottom: 30px">
+    <p>Файлы для изменения сортировки в каталоге (по дате создания):</p>
+    <p>bitrix/templates/aspro_max/components/bitrix/catalog/main/lang/ru/.parameters.php - название пункта в настройках компонента</p>
+    <p>bitrix/templates/aspro_max/components/bitrix/catalog/main/lang/ru/section.php - название пункта на странице каталога</p>
+    <p>bitrix/templates/aspro_max/components/bitrix/catalog/main/.parameters.php - добавлен пункт для сортировки по DATE_CREATE в параметр SORT_BUTTONS</p>
+    <p>bitrix/templates/aspro_max/components/bitrix/catalog/main/sort.php - добавлена логика для корректного отображения нового пункта сортировки "Дата создания" (DATE_CREATE)</p>
+</div>
+
+<div style="margin-bottom: 30px">
+    <p>Файл для изменения слова "товаров" на "объявлений" в выводе подразделов в каталоге: bitrix/templates/aspro_max/components/bitrix/catalog.section.list/sections_list/lang/ru/template.php</>
+    <p>В нем изменить $MESS["COUNT_ELEMENTS_TITLE"], $MESS["COUNT_ELEMENTS_TITLE_2"], $MESS["COUNT_ELEMENTS_TITLE_3"] на необходимые значения</p>
 </div>
 
 <div style="margin-bottom: 50px">
@@ -44,22 +60,6 @@ $APPLICATION->SetAdditionalCSS("/bitrix/css/" . $mid . "/style.css");
     </pre>
 </div>
 
-<div style="margin-bottom: 50px">
-    Для отображения кнопок "Регистрация как ФИЗ лицо", "Регистрация как Юр. лицо" в форме авторизации:
-    В файле <i>bitrix/templates/aspro_max/components/bitrix/system.auth.form/main/template.php</i> вместо кода
-    <pre>
-        <?= htmlspecialchars('<a href="<?= $arResult[\'AUTH_REGISTER_URL\']; ?>" rel="nofollow" class="btn btn-transparent-border-color btn-lg pull-right register" tabindex="6"><?= GetMessage(\'AUTH_REGISTER_NEW\') ?></a>') ?>
-    </pre>
-
-    вставить код:
-    <pre>
-        <?= htmlspecialchars('<div class="pull-right" style="width: max-content;display: flex;flex-direction: column; gap: 10px">
-             <a href="<?= $arResult[\'AUTH_REGISTER_URL\']; ?>" rel="nofollow" class="btn btn-transparent-border-color btn-lg pull-right register" tabindex="6"><?= GetMessage(\'AUTH_REGISTER_FIS\') ?></a>
-             <a href="/info/faq/?tab=accordion34_10" rel="nofollow" class="btn btn-transparent-border-color btn-lg pull-right register" tabindex="6"><?= GetMessage(\'AUTH_REGISTER_LEGAL\') ?></a>
-         </div>')?>
-
-    </pre>
-</div>
 
 <div style="margin-bottom: 50px">
     Для отображения открытого аккордиона на странице /info/faq/ при нажатии на кнопку "Регистрация как Юр. лицо" в форме авторизации:
@@ -86,6 +86,15 @@ $APPLICATION->SetAdditionalCSS("/bitrix/css/" . $mid . "/style.css");
     после тега div, имеющего класс 'js_wrapper_items'.
 </div>
 
+
+<div style="margin-bottom: 50px">
+    Для отображения фильтра по городам в списке объявлений  рублях. Сумма в иностранной валюте (после знака ≈) указана как эквивалент для определения стоимости (цены) в белорусских рублях по курсу НБРБ или определённому рекламодателем (заказчиком)." в выбранном разделе:
+    В файл <i>bitrix/templates/aspro_max/components/bitrix/catalog/main/section.php</i> добавить код:
+    <pre>
+        @include_once($_SERVER['DOCUMENT_ROOT'] . '/include/section_info.php');
+    </pre>
+    после тега div, имеющего класс 'js_wrapper_items'.
+</div>
 
 
 
