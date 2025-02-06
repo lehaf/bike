@@ -645,6 +645,10 @@ input[type="radio"] {
     color: #d2020a;
 }
 
+.brand-list--model .brand-list__el {
+    padding: 9px 5px;
+}
+
 .radio-mini__label {
     position: relative;
     font-weight: 400;

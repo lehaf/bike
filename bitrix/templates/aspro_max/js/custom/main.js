@@ -553,8 +553,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             if (flag) {
                 brandBlock.innerHTML = brandBlock.innerHTML + templateBrandsBtn("Все марки");
-            } else {
-                brandBlock.innerHTML = brandBlock.innerHTML + templateNotBrands("Нет моей марки")
             }
         }
 
@@ -571,7 +569,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         brandBlock.innerHTML = brandBlock.innerHTML + itemBrand;
                     }
                 }
-                brandBlock.innerHTML = brandBlock.innerHTML + templateNotBrands("Нет моей марки");
+                brandBlock.innerHTML = brandBlock.innerHTML;
                 brandModalInput.setAttribute("disabled", true);
                 $('#modelBlock').removeClass('active');
                 modelBlock.innerHTML = "";
@@ -596,10 +594,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     getCategories('getModels', 'categories', content.getAttribute('data-id'));
                     brandInput.classList.remove('error');
                     brandBlock.closest('.form-row').querySelector('.error-form').classList.remove('show');
-                } else if (noMark) {
-                    brandInput.value = "Нет моей марки"
-                    // $("#brandBlock").removeClass("active");
-                    // brandModalInput.removeAttribute("disabled")
                 }
 
                 if (target.closest(".brand-list__el__btn")) {
@@ -622,8 +616,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             if (flag) {
                 modelBlock.innerHTML = modelBlock.innerHTML + templateBrandsBtn("Все марки");
-            } else {
-                modelBlock.innerHTML = modelBlock.innerHTML + templateNotBrands("Нет моей марки")
             }
         }
     }
@@ -641,7 +633,6 @@ document.addEventListener("DOMContentLoaded", () => {
                         modelBlock.innerHTML = modelBlock.innerHTML + itemBrand;
                     }
                 }
-                modelBlock.innerHTML = modelBlock.innerHTML + templateNotBrands("Нет моей марки");
             })
         }
 
@@ -663,10 +654,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     $("#modelBlock").removeClass("active");
                     brandModalInput.classList.remove('error');
                     modelBlock.closest('.form-row').querySelector('.error-form').classList.remove('show');
-                    // brandModification.removeAttribute("disabled")
-                } else if (noMark) {
-                    brandModalInput.value = "Нет моей модели"
-                    // $("#modelBlock").removeClass("active");
                     // brandModification.removeAttribute("disabled")
                 }
 
@@ -769,6 +756,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function readerImgFile(imgList) {
 
+        console.log(imgList);
         if (imgList.length !== 0) {
             imgList.forEach((file) => {
 
