@@ -19,7 +19,9 @@ $logoClass = ($arTheme['COLORED_LOGO']['VALUE'] !== 'Y' ? '' : ' colored');
 				<div class="left_menu_block">
 					<div class="logo_block flexbox flexbox--row align-items-normal">
 						<div class="logo<?=$logoClass?>">
-                            <img src="<?=SITE_TEMPLATE_PATH?>/images/logoCustom.png" alt="">
+                            <a href="/">
+                                <img src="<?=SITE_TEMPLATE_PATH?>/images/logoCustom.png" alt="">
+                            </a>
                         </div>
 						<div class="top-description addr">
 							<?$APPLICATION->IncludeFile(SITE_DIR."include/top_page/slogan.php", array(), array(
