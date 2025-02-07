@@ -287,4 +287,9 @@ body .mega-menu table .dropdown-menu {
     height: 40px;
     padding: 0;
   }
+
+  #mobileheader .svg.svg-inline-burger path,
+  #mobileheader .svg.svg-inline-close path{
+    fill: #ffffff;
+  }
 }
