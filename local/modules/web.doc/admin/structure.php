@@ -17,26 +17,20 @@ $APPLICATION->SetAdditionalCSS("/bitrix/css/" . $mid . "/style.css");
 
 </div>
 <h3 style="color: red">Если слетит после обновления аспро, то перезалить следующие файлы:</h3>
-<div style="margin-bottom: 30px">
-    <p>Файлы для изменения сортировки в каталоге (по дате создания):</p>
+<div style="margin-bottom: 50px">
+    <p>Файлы для изменения сортировки (по дате создания) в каталоге:</p>
     <p>bitrix/templates/aspro_max/components/bitrix/catalog/main/lang/ru/.parameters.php - название пункта в настройках компонента</p>
     <p>bitrix/templates/aspro_max/components/bitrix/catalog/main/lang/ru/section.php - название пункта на странице каталога</p>
     <p>bitrix/templates/aspro_max/components/bitrix/catalog/main/.parameters.php - добавлен пункт для сортировки по DATE_CREATE в параметр SORT_BUTTONS</p>
     <p>bitrix/templates/aspro_max/components/bitrix/catalog/main/sort.php - добавлена логика для корректного отображения нового пункта сортировки "Дата создания" (DATE_CREATE)</p>
+</div>
 
-    <p style="margin-top: 15px">Файлы для отображения фильтра по городам в каталоге:</p>
+<div style="margin-bottom: 50px">
+    <p>Файлы для отображения фильтра по городам в каталоге шин, услуг, гаражей:</p>
     <p>bitrix/templates/aspro_max/components/bitrix/catalog/main/filter.php - генерирует путь на новый шаблон фильтра main_compact_ajax_custom</p>
 </div>
 
-<div style="margin-bottom: 30px">
-    <p>Файлы для изменения сортировки в каталоге (по дате создания):</p>
-    <p>bitrix/templates/aspro_max/components/bitrix/catalog/main/lang/ru/.parameters.php - название пункта в настройках компонента</p>
-    <p>bitrix/templates/aspro_max/components/bitrix/catalog/main/lang/ru/section.php - название пункта на странице каталога</p>
-    <p>bitrix/templates/aspro_max/components/bitrix/catalog/main/.parameters.php - добавлен пункт для сортировки по DATE_CREATE в параметр SORT_BUTTONS</p>
-    <p>bitrix/templates/aspro_max/components/bitrix/catalog/main/sort.php - добавлена логика для корректного отображения нового пункта сортировки "Дата создания" (DATE_CREATE)</p>
-</div>
-
-<div style="margin-bottom: 30px">
+<div style="margin-bottom: 50px">
     <p>Файл для изменения слова "товаров" на "объявлений" в выводе подразделов в каталоге: bitrix/templates/aspro_max/components/bitrix/catalog.section.list/sections_list/lang/ru/template.php</>
     <p>В нем изменить $MESS["COUNT_ELEMENTS_TITLE"], $MESS["COUNT_ELEMENTS_TITLE_2"], $MESS["COUNT_ELEMENTS_TITLE_3"] на необходимые значения</p>
 </div>
@@ -86,17 +80,9 @@ $APPLICATION->SetAdditionalCSS("/bitrix/css/" . $mid . "/style.css");
     после тега div, имеющего класс 'js_wrapper_items'.
 </div>
 
-
 <div style="margin-bottom: 50px">
-    Для отображения фильтра по городам в списке объявлений  рублях. Сумма в иностранной валюте (после знака ≈) указана как эквивалент для определения стоимости (цены) в белорусских рублях по курсу НБРБ или определённому рекламодателем (заказчиком)." в выбранном разделе:
-    В файл <i>bitrix/templates/aspro_max/components/bitrix/catalog/main/section.php</i> добавить код:
-    <pre>
-        @include_once($_SERVER['DOCUMENT_ROOT'] . '/include/section_info.php');
-    </pre>
-    после тега div, имеющего класс 'js_wrapper_items'.
+    Для корректного отображения бургер-меню на десктопе (без корзины, кнопок "Заказать звонок" и "Задать вопрос", без адреса и email) необходимо перезалить файл <i>bitrix/templates/aspro_max/page_blocks/mega_menu_1.php</i> из бэкапа
 </div>
-
-
 
 <h3>Кроны</h3>
 <div>
