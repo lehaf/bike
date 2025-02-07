@@ -13,6 +13,13 @@ $logoClass = ($arTheme['COLORED_LOGO']['VALUE'] !== 'Y' ? '' : ' colored');
         </div>
     </div>
     <div class="right-icons pull-right">
+        <div class="pull-right">
+            <div class="wrap_icon">
+                <button class="top-btn inline-search-show twosmallfont">
+                    <?=CMax::showIconSvg("search", SITE_TEMPLATE_PATH."/images/svg/Search.svg");?>
+                </button>
+            </div>
+        </div>
         <div class="wrap_icon wrap_cabinet">
             <div class="auth_wr_inner ">
                 <a rel="nofollow" title="admin" class="personal-link dark-color logined" href="/personal/">

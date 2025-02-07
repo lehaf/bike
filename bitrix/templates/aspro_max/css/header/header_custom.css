@@ -127,7 +127,18 @@ body .basket-link .js-basket-block{
 .auth_wr_inner .personal-link{
   display: flex;
   align-items: center;
-  padding: 4px 15px;
+    /*padding: 4px 15px;*/
+}
+#mobileheader .svg-inline-search svg path {
+  fill: #ffffff;
+}
+
+#mobileheader .svg-inline-search svg {
+  margin-top: 5px;
+}
+
+#mobileheader .right-icons a:not(:hover) .svg, #mobileheader .top-btn:not(:hover) .svg {
+  opacity: 1;
 }
 
 .logo_and_menu-row .wrap_icon .name{
@@ -215,7 +226,6 @@ div.header-v27.new-header  .logo_and_menu-row .wrap_icon .name {
 
 div.header-v27.new-header .auth_wr_inner:hover .name {
   color: rgba(255, 255, 255, 0.7) !important;
-
 }
 
 div.header-v27.new-header div.auth_wr_inner.with_dropdown i.svg svg use {
@@ -269,6 +279,7 @@ body .mega-menu table .dropdown-menu {
   #mobileheader .right-icons{
     display: flex;
     align-items: center;
+    gap: 15px;
   }
 
   .add-announcement{
