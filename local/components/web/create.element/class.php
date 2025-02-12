@@ -558,8 +558,8 @@ class CreateElement extends \CBitrixComponent
         $arTransParams = array(
             "max_len" => 250,
             "change_case" => 'L',
-            "replace_space" => '_',
-            "replace_other" => '_',
+            "replace_space" => '-',
+            "replace_other" => '-',
             "delete_repeat_replace" => true
         );
         $newElement->set("CODE", \CUtil::translit($data["NAME"]["VALUE"], "ru", $arTransParams));
@@ -626,8 +626,8 @@ class CreateElement extends \CBitrixComponent
         $arTransParams = array(
             "max_len" => 250,
             "change_case" => 'L',
-            "replace_space" => '_',
-            "replace_other" => '_',
+            "replace_space" => '-',
+            "replace_other" => '-',
             "delete_repeat_replace" => true
         );
         $element->set("CODE", \CUtil::translit($data["NAME"]["VALUE"], "ru", $arTransParams));
