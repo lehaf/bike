@@ -2,10 +2,13 @@
 
 use classes\Filter;
 
-$arResult['SECTION']['CODE'] = \Bitrix\Iblock\SectionTable::getList([
+$entity = \Bitrix\Iblock\Model\Section::compileEntityByIblock(CATALOG_IBLOCK_ID);
+$sectInfo = $entity::getList([
     'filter' => ['=ID' => $arResult['SECTION']['ID']],
-    'select' => ['CODE'] // Получаем только ID и CODE
-])->fetch()['CODE'];
+    'select' => ['CODE', 'UF_SECTION_CODE'] // Получаем только ID и CODE
+])->fetch();
+
+$arResult['SECTION']['CODE'] = (!empty($sectInfo['UF_SECTION_CODE']) ? $sectInfo['UF_SECTION_CODE'] : $sectInfo['CODE']);
 
 if(!empty($arResult["ITEMS"])) {
     $newItems = [];

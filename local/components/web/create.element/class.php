@@ -832,18 +832,24 @@ class CreateElement extends \CBitrixComponent
 
     private function setName(array $data): string
     {
-        $section = SectionTable::getById($data['GET']['type'])->fetch();
+        $entity = \Bitrix\Iblock\Model\Section::compileEntityByIblock(CATALOG_IBLOCK_ID);
+
+        $section = $entity::getList([
+            'filter' => ['=ID' => $data['GET']['type']],
+            'select' => ['ID','CODE', 'UF_SECTION_CODE', 'IBLOCK_SECTION_ID'] // Получаем только ID и CODE
+        ])->fetch();
+        $sectCode = (!empty($section['UF_SECTION_CODE'])) ? $section['UF_SECTION_CODE'] : $section['CODE'];
         $name = $data["POST"]["NAME"] ?? "";
 
         if(empty($name)) {
             if ((int)$section["IBLOCK_SECTION_ID"] === TRANSPORT_SECTION_ID) {
-                $type = $this->getCheckProperty('type_' . $section['CODE'], $data);
+                $type = $this->getCheckProperty('type_' . $sectCode, $data);
                 $year = $this->getCheckProperty('year', $data);
 
                 $name = $type . ' ' . $data["POST"]["SECTION"] . ' ' . $data["POST"]["SUBSECTION"];
                 if (!empty($data["POST"]["year"])) $name .= ', ' . $year . ' г.';
             } elseif ((int)$section["IBLOCK_SECTION_ID"] === PARTS_SECTION_ID) {
-                $type = $this->getCheckProperty('type_' . $section['CODE'], $data);
+                $type = $this->getCheckProperty('type_' . $sectCode, $data);
                 $year = $this->getCheckProperty('year', $data);
 
                 $name = $type . ' к ' . $data["POST"]["SECTION"] . ' ' . $data["POST"]["SUBSECTION"];
