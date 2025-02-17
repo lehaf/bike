@@ -84,6 +84,10 @@ $APPLICATION->SetAdditionalCSS("/bitrix/css/" . $mid . "/style.css");
     Для корректного отображения бургер-меню на десктопе (без корзины, кнопок "Заказать звонок" и "Задать вопрос", без адреса и email) необходимо перезалить файл <i>bitrix/templates/aspro_max/page_blocks/mega_menu_1.php</i> из бэкапа
 </div>
 
+<div style="margin-bottom: 50px">
+    Для кастомизации карточек блока "Ранее вы смотрели" необходимо в файлу <i>include/footer/comp_viewed.php</i> установить шаблон main_horizontal_custom для компонета aspro:catalog.viewed.max (расположен в bitrix/templates/aspro_max/components/aspro/catalog.viewed.max/main_horizontal_custom/)
+</div>
+
 <h3>Кроны</h3>
 <div>
     <div style="margin-bottom: 30px">
