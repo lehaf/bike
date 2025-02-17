@@ -8,22 +8,38 @@ use Bitrix\Currency\CurrencyManager;
 ?>
 <?php
 //получение разделов в табах
-$productsSections = [TIRES_SECTION_ID, PRODUCTS_SECTION_ID, SERVICES_SECTION_ID, GARAGES_SECTION_ID];
+$productsSections = [TIRES_SECTION_ID, PRODUCTS_SECTION_ID, SERVICES_SECTION_ID, GARAGES_SECTION_ID, RENT_SECTION_ID];
 $sections = [TRANSPORT_SECTION_ID, PARTS_SECTION_ID, $productsSections];
 $arResult['PRODUCT_SECTIONS'] = [PRODUCTS_SECTION_ID, SERVICES_SECTION_ID];
 $sectionsTabs = [];
 if (!empty($sections)) {
+    $entity = \Bitrix\Iblock\Model\Section::compileEntityByIblock(CATALOG_IBLOCK_ID);
+
     foreach ($sections as $key => $section) {
         if (is_array($section)) {
-            $rsSection = getSections([
-                '=IBLOCK_ID' => $arParams['IBLOCK_ID'],
-                '=ID' => $section,
-            ]);
+            $rsSection = $entity::getList([
+                "select" => ['ID', 'CODE', 'NAME', 'UF_SECTION_CODE'],
+                "filter" => ['=ID' => $section,],
+                "order" => ['SORT' => 'ASC'],
+                'cache' => [
+                    'ttl' => 36000000,
+                    'cache_joins' => true
+                ],
+            ])->fetchAll();
+//            $rsSection = getSections([
+//                '=IBLOCK_ID' => $arParams['IBLOCK_ID'],
+//                '=ID' => $section,
+//            ]);
         } else {
-            $rsSection = getSections([
-                '=IBLOCK_ID' => $arParams['IBLOCK_ID'],
-                '=IBLOCK_SECTION_ID' => $section,
-            ]);
+            $rsSection = $entity::getList([
+                "select" => ['ID', 'CODE', 'NAME', 'UF_SECTION_CODE'],
+                "filter" => ['=IBLOCK_SECTION_ID' => $section],
+                "order" => ['SORT' => 'ASC'],
+                'cache' => [
+                    'ttl' => 36000000,
+                    'cache_joins' => true
+                ],
+            ])->fetchAll();
         }
         //количество элементов
         if (!empty($rsSection)) {
