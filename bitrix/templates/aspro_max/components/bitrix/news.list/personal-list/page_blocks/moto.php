@@ -1,4 +1,4 @@
-<?php $sectionCode = $arResult['SECTIONS'][$activeSect]['UF_SECTION_CODE'] ?>
+<?php $sectionCode = (!empty($arResult['SECTIONS'][$activeSect]['UF_SECTION_CODE'])) ? $arResult['SECTIONS'][$activeSect]['UF_SECTION_CODE'] : $arResult['SECTIONS'][$activeSect]['CODE']?>
 <div class="advert-list" data-iblock="<?= $arParams['IBLOCK_ID'] ?>">
     <?php foreach ($arResult["ITEMS"] as $arItem): ?>
         <?php
