@@ -177,15 +177,16 @@ if (isset($isAjaxFilter) && $isAjaxFilter == "Y") {
 } ?>
 <!--фильтр для мототранспортра-->
 <?php
+$entity = \Bitrix\Iblock\Model\Section::compileEntityByIblock(CATALOG_IBLOCK_ID);
 $currentSection = \Bitrix\Iblock\SectionTable::getRowById($arResult["VARIABLES"]["SECTION_ID"]);
-$secondLevelParent = \Bitrix\Iblock\SectionTable::getList([
+$secondLevelParent = $entity::getList([
     'filter' => [
         '<=LEFT_MARGIN' => $currentSection['LEFT_MARGIN'], // Родитель должен быть слева от текущего раздела
         '>=RIGHT_MARGIN' => $currentSection['RIGHT_MARGIN'], // И справа от текущего
         'IBLOCK_ID' => CATALOG_IBLOCK_ID, // Указываем инфоблок
         '=DEPTH_LEVEL' => [1, 2] // Ищем только раздел второго уровня
     ],
-    'select' => ['ID', 'CODE', 'DEPTH_LEVEL', 'IBLOCK_SECTION_ID'],
+    'select' => ['ID', 'CODE', 'DEPTH_LEVEL', 'IBLOCK_SECTION_ID', 'UF_SECTION_CODE'],
     'order' => ['DEPTH_LEVEL' => 'DESC'],
     'limit' => 2
 ])->fetchAll();
@@ -199,7 +200,7 @@ $parentsId[] = $arResult["VARIABLES"]["SECTION_ID"];
 ?>
 <?php if (array_intersect($parentsId, array_merge(SECTION_TYPE_1, SECTION_TYPE_2))): ?>
     <?php if ($itemsCnt): ?>
-        <?php $filterTemplate = (array_intersect($parentsId, SECTION_TYPE_2)) ? 'part' : $secondLevelParent[0]['CODE'] ?>
+        <?php $filterTemplate = (array_intersect($parentsId, SECTION_TYPE_2)) ? 'part' : $secondLevelParent[0]['UF_SECTION_CODE'] ?>
         <?php
         $APPLICATION->IncludeComponent(
             "bitrix:catalog.smart.filter",

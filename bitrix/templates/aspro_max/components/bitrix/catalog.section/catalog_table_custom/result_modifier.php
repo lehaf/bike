@@ -7,6 +7,13 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED!==true) die();
 /** @var CBitrixComponentTemplate $this */
 /** @var array $arParams */
 /** @var array $arResult */
+$entity = \Bitrix\Iblock\Model\Section::compileEntityByIblock(CATALOG_IBLOCK_ID);
+$sectInfo = $entity::getList([
+    'filter' => ['=ID' => $arParams['SECTION_ID']],
+    'select' => ['CODE', 'UF_SECTION_CODE'] // Получаем только ID и CODE
+])->fetch();
+$arResult['SECTION_CODE'] = (!empty($sectInfo['UF_SECTION_CODE'])) ? $sectInfo['UF_SECTION_CODE'] : $sectInfo['CODE'];
+
 $arDefaultParams = array(
 	'TYPE_SKU' => 'N',
 	'OFFER_TREE_PROPS' => array('-'),

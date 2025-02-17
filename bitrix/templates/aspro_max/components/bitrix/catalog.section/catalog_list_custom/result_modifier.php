@@ -19,6 +19,13 @@ $arDefaultParams = array(
 );
 $arParams = array_merge($arDefaultParams, $arParams);
 
+$entity = \Bitrix\Iblock\Model\Section::compileEntityByIblock(CATALOG_IBLOCK_ID);
+$sectInfo = $entity::getList([
+    'filter' => ['=ID' => $arParams['SECTION_ID']],
+    'select' => ['CODE', 'UF_SECTION_CODE'] // Получаем только ID и CODE
+])->fetch();
+$arResult['SECTION_CODE'] = (!empty($sectInfo['UF_SECTION_CODE'])) ? $sectInfo['UF_SECTION_CODE'] : $sectInfo['CODE'];
+
 if (isset($arParams['STORES'])) {
     foreach ($arParams['STORES'] as $key => $store) {
         if (!$store) {

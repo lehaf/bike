@@ -265,8 +265,8 @@
                                 <!--блок под названием-->
                                 <?php if (array_intersect($arResult['LEVEL_PARENTS'], SECTION_TYPE_1)): ?>
                                     <div class="description__name-product">
-                                        <?= $arItem['PROPERTIES']['type_' . $arParams['SECTION_CODE']]['VALUE'] ?>
-                                        <?= (!empty($arItem['PROPERTIES']['exp_id']['VALUE']) && !empty($arItem['PROPERTIES']['type_' . $arParams['SECTION_CODE']]['VALUE'])) ? '|' : ''?>
+                                        <?= $arItem['PROPERTIES']['type_' . $arResult['SECTION_CODE']]['VALUE'] ?>
+                                        <?= (!empty($arItem['PROPERTIES']['exp_id']['VALUE']) && !empty($arItem['PROPERTIES']['type_' . $arResult['SECTION_CODE']]['VALUE'])) ? '|' : ''?>
                                         <?php if (!empty($arItem['PROPERTIES']['exp_id']['VALUE'])): ?>
                                            <?= Loc::getMessage('ARTICLE_FULL'); ?>
                                             : <?= $arItem['PROPERTIES']['exp_id']['VALUE']; ?>
@@ -355,24 +355,24 @@
                                                     </div>
                                                 <?php endif; ?>
 
-                                                <?php if (!empty($arItem['PROPERTIES']['cycles_number_' . $arParams['SECTION_CODE']]['VALUE'])): ?>
+                                                <?php if (!empty($arItem['PROPERTIES']['cycles_number_' . $arResult['SECTION_CODE']]['VALUE'])): ?>
                                                     <div class="product-description__i">
-                                                        <?= $arItem['PROPERTIES']['cycles_number_' . $arParams['SECTION_CODE']]['VALUE_ENUM'] ?>
-                                                        <?= getPluralForm($arItem['PROPERTIES']['cycles_number_' . $arParams['SECTION_CODE']]['VALUE_ENUM'], ['такт', 'такта', 'тактов']) ?>
+                                                        <?= $arItem['PROPERTIES']['cycles_number_' . $arResult['SECTION_CODE']]['VALUE_ENUM'] ?>
+                                                        <?= getPluralForm($arItem['PROPERTIES']['cycles_number_' . $arResult['SECTION_CODE']]['VALUE_ENUM'], ['такт', 'такта', 'тактов']) ?>
                                                     </div>
                                                 <?php endif; ?>
                                             </div>
                                             <div class="product-description__el truncated">
-                                                <?php if (!empty($arItem['PROPERTIES']['cylinders_count_' . $arParams['SECTION_CODE']]['VALUE'])): ?>
+                                                <?php if (!empty($arItem['PROPERTIES']['cylinders_count_' . $arResult['SECTION_CODE']]['VALUE'])): ?>
                                                     <div class="product-description__i">
-                                                        <?= $arItem['PROPERTIES']['cylinders_count_' . $arParams['SECTION_CODE']]['VALUE_ENUM'] ?>
-                                                        <?= getPluralForm($arItem['PROPERTIES']['cylinders_count_' . $arParams['SECTION_CODE']]['VALUE_ENUM'], ['цилиндр', 'цилиндра', 'цилиндров']) ?>
+                                                        <?= $arItem['PROPERTIES']['cylinders_count_' . $arResult['SECTION_CODE']]['VALUE_ENUM'] ?>
+                                                        <?= getPluralForm($arItem['PROPERTIES']['cylinders_count_' . $arResult['SECTION_CODE']]['VALUE_ENUM'], ['цилиндр', 'цилиндра', 'цилиндров']) ?>
                                                     </div>
                                                 <?php endif; ?>
 
-                                                <?php if (!empty($arItem['PROPERTIES']['cylinder_place_' . $arParams['SECTION_CODE']]['VALUE'])): ?>
+                                                <?php if (!empty($arItem['PROPERTIES']['cylinder_place_' . $arResult['SECTION_CODE']]['VALUE'])): ?>
                                                     <div class="product-description__i">
-                                                        <?= $arItem['PROPERTIES']['cylinder_place_' . $arParams['SECTION_CODE']]['VALUE_ENUM'] ?>
+                                                        <?= $arItem['PROPERTIES']['cylinder_place_' . $arResult['SECTION_CODE']]['VALUE_ENUM'] ?>
                                                     </div>
                                                 <?php endif; ?>
                                             </div>
@@ -386,7 +386,7 @@
                                         </div>
                                         <div class="product-description__right">
                                             <div class="product-description__el">
-                                                <div class="product-description__i"><?= $arItem['PROPERTIES']['count_door_' . $arParams['SECTION_CODE']]['VALUE_ENUM'] ?></div>
+                                                <div class="product-description__i"><?= $arItem['PROPERTIES']['count_door_' . $arResult['SECTION_CODE']]['VALUE_ENUM'] ?></div>
                                             </div>
                                             <div class="product-description__el">
                                                 <div class="product-description__i"><?= $arItem['PROPERTIES']['color']['VALUE_ENUM'] ?></div>
