@@ -7,13 +7,15 @@ if ($bHeaderStickyMenu || $bHeaderStickyMenuSm) {
     }
 }
 
-if ((int)$arSection["ID"] === TRANSPORT_SECTION_ID) {
-    LocalRedirect($_SERVER['REQUEST_URI'] . 'bike/', true, '301 Moved Permanently');
-    exit();
-}
 
-if ((int)$arSection["ID"] === ALL_PARTS_SECTION) {
-    LocalRedirect($_SERVER['REQUEST_URI'] . 'zapchasti_mototsikly/', true, '301 Moved Permanently');
+if ((int)$arSection["ID"] === TRANSPORT_SECTION_ID || (int)$arSection["ID"] === ALL_PARTS_SECTION) {
+    $entity = \Bitrix\Iblock\Model\Section::compileEntityByIblock(CATALOG_IBLOCK_ID);
+    $sectCode = $entity::getList([
+        "select" => ['CODE'],
+        "filter" => ['IBLOCK_SECTION_ID' => $arSection['ID']],
+        "order" => ['SORT' => 'ASC'],
+    ])->fetch()['CODE'];
+    LocalRedirect($_SERVER['REQUEST_URI'] . $sectCode . '/', true, '301 Moved Permanently');
     exit();
 }
 
