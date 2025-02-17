@@ -23,7 +23,7 @@ $arViewedIDs=CMax::getViewedProducts((int)CSaleBasket::GetBasketUserID(false), S
 			<div class="wrapper_inner">
 				<?$APPLICATION->IncludeComponent(
 					"aspro:catalog.viewed.max",
-					"main_horizontal",
+					"main_horizontal_custom",
 					array(
 						"TITLE_BLOCK" => GetMessage('VIEWED_BEFORE'),
 						"SHOW_MEASURE" => "Y",
