@@ -29,7 +29,11 @@ document.addEventListener("DOMContentLoaded", () => {
         parent.querySelector('.error-form')?.classList.remove('show');
     });
     $(".custom-input.number").on('input', function () {
-        this.value = this.value.replace(/[^0-9]/g, '');
+        this.value = this.value.replace(/[^0-9.,]/g, '') // Разрешаем цифры, запятую и точку
+            .replace(/[,\.]{2,}/g, '') // Убираем повторяющиеся запятые/точки
+            .replace(/([,\.])(?=.*\1)/g, '')
+            .replace(',', '.');
+        // this.value = this.value.replace(/[^0-9]/g, '');
     });
 
     let selectTypes = [];//new
@@ -976,9 +980,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const squareProduct = function (a, b) {
         if (a.val() && b.val()) {
-            return a.val().replace(/\D+$/, '') * b.val().replace(/\D+$/, '');
+            return (parseFloat(a.val().replace(/\D+$/, '')) * parseFloat(b.val().replace(/\D+$/, ''))).toFixed(2);
+            ;
         }
-
     }
 
     let imgList = document.querySelectorAll(".step-category__el__img img");
