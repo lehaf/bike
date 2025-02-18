@@ -51,11 +51,11 @@
 								<div class="block-item__cost cost prices clearfix">
                                     <div class="price_matrix_wrapper ">
                                         <div class="price font-bold font_mxs" data-currency="BYN" data-value="1">
-                                            <span class="values_wrapper">
+                                            <span class="values_wrapper" style="display: flex; flex-wrap: wrap">
                                                 <?php if (!empty($arItem['PROPERTIES']['contract_price']['VALUE'])): ?>
                                                     <?= Loc::getMessage("CONTRACT_PRICE") ?>
-                                                <?php else: ?>
-                                                    <?= $arItem['PRICES_CUST']['BASE'] ?> ≈ <?=$arItem['PRICES_CUST']['CONVERT']['USD']?>
+                                                <?php elseif (!empty($arItem['PRICES_CUST']['BASE'])): ?>
+                                                    <?= $arItem['PRICES_CUST']['BASE'] ?> <span class="price-currency__i"> ≈ <?=$arItem['PRICES_CUST']['CONVERT']['USD']?> </span>
                                                 <?php endif; ?>
                                             </span>																											</div>
                                     </div>
