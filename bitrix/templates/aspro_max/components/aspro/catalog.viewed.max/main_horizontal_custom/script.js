@@ -105,8 +105,8 @@ showViewedItems = function (lastViewedTime, bShowMeasure, $viewedSlider, rate) {
                             "</div>"
                           : '<div class="price only_price">' +
                                 (info.IS_CONTRACT_PRICE === 'Y' ? "Договорная"
-                                    : item.MIN_PRICE.PRINT_DISCOUNT_VALUE + " ≈ "
-                                + info.CONVERT_PRICE) +
+                                    : (info.CONVERT_PRICE ? item.MIN_PRICE.PRINT_DISCOUNT_VALUE + "<span> ≈ "
+                                        + info.CONVERT_PRICE + "</span>" : " ")) +
                             "</div>"
                         : ""
                       : '<div class="price only_price">' + $viewedEmptyPriceText + "</div>") +

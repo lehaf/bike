@@ -31,6 +31,10 @@
   margin: 3px 0px 0px;
   font-weight: bold;
 }
+.viewed_product_block .viewed-wrapper .cost .price span{
+  font-size: smaller;
+  font-weight: normal;
+}
 .viewed_product_block .viewed-wrapper .block-item {
   background: none;
 }
@@ -48,7 +52,6 @@
   overflow: hidden;
   text-overflow: ellipsis;
   display: flex;
-  align-items: center;
   word-break: break-word;
 }
 .viewed_product_block .viewed-wrapper .block-item__title > a {
