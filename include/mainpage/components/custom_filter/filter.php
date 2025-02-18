@@ -7,10 +7,19 @@ if (!defined('B_PROLOG_INCLUDED') || B_PROLOG_INCLUDED !== true) {
 }
 ?>
 <?php
-$rsSections = getSections([
-    '=IBLOCK_SECTION_ID' => TRANSPORT_SECTION_ID,
-    '=ACTIVE' => 'Y',
-]);
+$entity = \Bitrix\Iblock\Model\Section::compileEntityByIblock(CATALOG_IBLOCK_ID);
+$rsSections = $entity::getList([
+    "select" => ['ID', 'CODE', 'NAME', 'UF_SECTION_CODE'],
+    "filter" => [
+        '=IBLOCK_SECTION_ID' => TRANSPORT_SECTION_ID,
+        '=ACTIVE' => 'Y',
+    ],
+    "order" => ['SORT' => 'ASC'],
+    'cache' => [
+        'ttl' => 36000000,
+        'cache_joins' => true
+    ],
+])->fetchAll();
 
 $parentSectionCode = Bitrix\Iblock\SectionTable::getList([
     'filter' => ['=ID' => TRANSPORT_SECTION_ID], // Условие: ID раздела
@@ -18,7 +27,7 @@ $parentSectionCode = Bitrix\Iblock\SectionTable::getList([
 ])->fetch()['CODE'];
 
 $sectionId = $rsSections[0]['ID'];
-$template = $rsSections[0]['CODE'];
+$template = (!empty($rsSections[0]['UF_SECTION_CODE'])) ? $rsSections[0]['UF_SECTION_CODE']: $rsSections[0]['CODE'];
 $ajax = false;
 if ($_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') $ajax = true;
 ?>
