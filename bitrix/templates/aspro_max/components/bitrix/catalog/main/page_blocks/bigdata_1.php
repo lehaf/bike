@@ -1,6 +1,6 @@
 
 <?global $arBigData;?>
-<?$APPLICATION->IncludeComponent("bitrix:catalog.section", "bigdata", array(
+<?$APPLICATION->IncludeComponent("bitrix:catalog.section", "bigdata_custom", array(
 	"USE_REGION" => $arParams["USE_REGION"],
 	"STORES" => $arParams['STORES'],
 	"PRODUCT_ROW_VARIANTS" => "[{'VARIANT':'5','BIG_DATA':true}]",
