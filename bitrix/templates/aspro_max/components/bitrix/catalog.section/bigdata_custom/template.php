@@ -55,7 +55,7 @@
                                                 <?php if (!empty($arItem['PROPERTIES']['contract_price']['VALUE'])): ?>
                                                     <?= Loc::getMessage("CONTRACT_PRICE") ?>
                                                 <?php else: ?>
-                                                    <?= $arItem['PRICES_CUST']['BASE'] ?>
+                                                    <?= $arItem['PRICES_CUST']['BASE'] ?> ≈ <?=$arItem['PRICES_CUST']['CONVERT']['USD']?>
                                                 <?php endif; ?>
                                             </span>																											</div>
                                     </div>
