@@ -84,7 +84,7 @@ else{
 		"ORDER_REFRESH_PRICES" => "N",
 		"ORDER_DISALLOW_CANCEL" => "N",
 		"SHOW_ADS_PAGE" => "Y",
-		"PATH_TO_ADS" => SITE_DIR."personal/ads/",
+		"PATH_TO_ADS" => SITE_DIR."personal/obyavleniya/",
 		"SEF_URL_TEMPLATES" => array(
 			"index" => "index.php",
 			"orders" => "orders/",

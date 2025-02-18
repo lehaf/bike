@@ -21,7 +21,7 @@ if ($arParams['SHOW_ADS_PAGE'] === 'Y') {
     ])->getCount();
 
     $availablePages[] = array(
-        "path" => $arResult['PATH_TO_ADS'] ?? SITE_DIR . 'personal/ads/',
+        "path" => $arResult['PATH_TO_ADS'] ?? SITE_DIR . 'personal/obyavleniya/',
         "name" => Loc::getMessage("SPS_ADS_PAGE_NAME") . ' (' . $elementCount . ')',
         //CMax::showIconSvg("cat_icons light-ignore", $arImg["src"]);
         //"icon" => '<i class="cur_orders"></i>'

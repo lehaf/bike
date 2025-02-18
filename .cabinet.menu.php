@@ -14,7 +14,7 @@ $aMenuLinks = Array(
     ),
     Array(
         "Мои объявления " . '(' . $elementCount . ')',
-        SITE_DIR."/personal/ads/",
+        SITE_DIR."/personal/obyavleniya/",
         Array(),
         Array(),
         "\$GLOBALS['USER']->IsAuthorized()"
