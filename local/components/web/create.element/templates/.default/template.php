@@ -16,10 +16,12 @@ use \Bitrix\Main\Page\Asset;
             type="text/javascript"></script>
 
 <?php
-Asset::getInstance()->addCss("https://cdn.jsdelivr.net/npm/choices.js@9.0.1/public/assets/styles/choices.min.css");
-Asset::getInstance()->addCss(SITE_TEMPLATE_PATH . '/css/catalog/filter.css', ['GROUP' => 1000]);
-Asset::getInstance()->addCss(SITE_TEMPLATE_PATH . '/css/catalog/tmpStyle.css', ['GROUP' => 1000]);
-Asset::getInstance()->addJs(SITE_TEMPLATE_PATH . '/js/custom/main.js', ['GROUP' => 1000]);
+$this->addExternalCss(SITE_TEMPLATE_PATH . "/css/choices.min.css", ['GROUP' => 1]);
+$this->addExternalCss(SITE_TEMPLATE_PATH . '/css/catalog/filter.css', ['GROUP' => 1000]);
+$this->addExternalCss(SITE_TEMPLATE_PATH . '/css/catalog/tmpStyle.css', ['GROUP' => 1000]);
+
+$this->addExternalJs(SITE_TEMPLATE_PATH . '/js/choices.min.js', ['GROUP' => 1]);
+$this->addExternalJs(SITE_TEMPLATE_PATH . '/js/custom/main.js', ['GROUP' => 1000]);
 
 $lastSectKey = (!empty($arResult["CUSTOM_SECTIONS"])) ? array_key_last($arResult["CUSTOM_SECTIONS"]) : "";
 

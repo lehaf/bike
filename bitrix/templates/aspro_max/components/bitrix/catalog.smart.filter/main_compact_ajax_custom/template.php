@@ -3,13 +3,12 @@ $this->setFrameMode(true);
 
 use \Bitrix\Main\Localization\Loc;
 
-\Bitrix\Main\Page\Asset::getInstance()->addCss("https://cdn.jsdelivr.net/npm/choices.js@9.0.1/public/assets/styles/choices.min.css");
-\Bitrix\Main\Page\Asset::getInstance()->addCss(SITE_TEMPLATE_PATH . "/css/catalog/filter.css", ['GROUP' => 1000]);
+$this->addExternalCss(SITE_TEMPLATE_PATH . "/css/choices.min.css", ['GROUP' => 1]);
+$this->addExternalCss(SITE_TEMPLATE_PATH . "/css/catalog/filter.css", ['GROUP' => 1000]);
 
-\Bitrix\Main\Page\Asset::getInstance()->addJs("https://cdn.jsdelivr.net/npm/choices.js@9.0.1/public/assets/scripts/choices.min.js");
-\Bitrix\Main\Page\Asset::getInstance()->addJs(SITE_TEMPLATE_PATH . "/js/custom/mainLocationFilter.js", ['GROUP' => 1000]);
-//\Bitrix\Main\Page\Asset::getInstance()->addJs(SITE_TEMPLATE_PATH . "/js/catalog/filter.js", ['GROUP' => 2000]);
-//\Bitrix\Main\Page\Asset::getInstance()->addJs(SITE_TEMPLATE_PATH . "/js/catalog/filter-action.js", ['GROUP' => 3000]);?>
+$this->addExternalJs(SITE_TEMPLATE_PATH . "/js/choices.min.js", ['GROUP' => 1]);
+$this->addExternalJs(SITE_TEMPLATE_PATH . "/js/custom/mainLocationFilter.js", ['GROUP' => 1000]);
+?>
 <?php
 if ($arResult["ITEMS"]) {
     ?>
