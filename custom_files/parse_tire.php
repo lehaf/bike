@@ -3,7 +3,7 @@ ini_set('max_execution_time', 123456);
 
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
-$file = IOFactory::load("tire.csv");
+$file = IOFactory::load("tireMini.csv");
 
 $fileData = $file->getActiveSheet()->toArray();
 unset($fileData[0]);
@@ -126,6 +126,7 @@ function setElementsPropsFromParser($elem, array $propsInfo): array
         "category_tire" => "продать",
         "state" => "новая",
         "BRAND" => 49865,
+        "USER" => 14,
 
 
         "phone" => ["+375 (29) 544-33-33"],
