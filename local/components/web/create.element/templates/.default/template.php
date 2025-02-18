@@ -9,7 +9,6 @@ $this->setFrameMode(true);
 use \Bitrix\Main\Page\Asset;
 
 ?>
-    <script src="https://cdn.jsdelivr.net/npm/choices.js@9.0.1/public/assets/scripts/choices.min.js"></script>
     <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&apikey=4535c715-1fd8-4d4a-87bb-8313fe9f8f1b&suggest_apikey=e69e7cac-7b28-48b3-be09-dba3b9e6e1f4"
             type="text/javascript"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery.maskedinput@1.4.1/src/jquery.maskedinput.min.js"
