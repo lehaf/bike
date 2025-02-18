@@ -97,11 +97,9 @@ showViewedItems = function (lastViewedTime, bShowMeasure, $viewedSlider, rate) {
                       ? item.MIN_PRICE && item.MIN_PRICE.PRINT_DISCOUNT_VALUE !== undefined
                         ? item.MIN_PRICE.VALUE * 1 > item.MIN_PRICE.DISCOUNT_VALUE * 1
                           ? '<div class="price only_price">' +
-                            (bWithOffers ? BX.message("CATALOG_FROM_VIEWED") + " " : "") +
-                            item.MIN_PRICE.PRINT_DISCOUNT_VALUE +
-                            (bShowMeasure && !bWithOffers && item.CATALOG_MEASURE_NAME.length
-                              ? "/" + item.CATALOG_MEASURE_NAME
-                              : "") +
+                                (info.IS_CONTRACT_PRICE === 'Y' ? "Договорная"
+                                    : (info.CONVERT_PRICE ? item.MIN_PRICE.PRINT_DISCOUNT_VALUE + "<span> ≈ "
+                                        + info.CONVERT_PRICE + "</span>" : " "))  +
                             "</div>"
                           : '<div class="price only_price">' +
                                 (info.IS_CONTRACT_PRICE === 'Y' ? "Договорная"
