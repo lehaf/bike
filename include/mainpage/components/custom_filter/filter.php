@@ -36,7 +36,10 @@ if ($_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') $ajax = true;
         <div class="advert-tabs">
             <?php foreach ($rsSections as $index => $section): ?>
                 <a href="" class="advert-tabs__item <?= ($index === 0) ? 'active' : '' ?>"
-                   data-id="<?= $section['ID'] ?>" data-type="<?= (!empty($section['UF_SECTION_CODE'])) ? $section['UF_SECTION_CODE'] : $section['CODE'] ?>">
+                   data-id="<?= $section['ID'] ?>"
+                   data-type="<?= (!empty($section['UF_SECTION_CODE'])) ? $section['UF_SECTION_CODE'] : $section['CODE'] ?>"
+                    data-code="<?=$section['CODE']?>"
+                >
                     <?= $section['NAME'] ?>
                 </a>
             <?php endforeach; ?>

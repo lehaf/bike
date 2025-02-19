@@ -395,7 +395,7 @@ AjaxFilter.prototype.submit = function () {
 
     if(tabsFilter) {
         let activeTab = document.querySelector('.advert-tabs__item.active');
-        let activeSection = activeTab.getAttribute('data-type');
+        let activeSection = activeTab.getAttribute('data-code');
         let parentSection = tabsFilter.getAttribute('data-sect');
         window.location.href = '/catalog/' + parentSection + '/' + activeSection + url;
     } else {
