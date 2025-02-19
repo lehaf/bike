@@ -187,7 +187,25 @@ if (!empty($arResult['ITEMS'])) {
 
     //получение дерева разделов (для секции товаров)
     if (in_array((int)$_GET['section'], $arResult['PRODUCT_SECTIONS'])) {
-        $sectionTree = buildSectionTreeFromItems($arResult['ITEMS'], $arParams['IBLOCK_ID']);
+        $entityCatalog = \Bitrix\Iblock\Iblock::wakeUp($arParams['IBLOCK_ID'])->getEntityDataClass();
+        $allRecords = [];
+
+        $allChildSections = getChildSections((int)$_GET['section'], $arParams['IBLOCK_ID']);
+        $records = $entityCatalog::getList([
+            'select' => ['ID', 'IBLOCK_SECTION_ID'], // Укажите нужные поля
+            'filter' => [
+                '=IBLOCK_ID' => $arParams['IBLOCK_ID'],
+                '=ACTIVE' => 'Y',
+                '=USER.VALUE' => \Bitrix\Main\Engine\CurrentUser::get()->getId(),
+                '=IBLOCK_SECTION_ID' => $allChildSections
+            ]
+        ]);
+
+        while ($row = $records->fetch()) {
+            $allRecords[] = $row;
+        }
+
+        $sectionTree = buildSectionTreeFromItems($allRecords, $arParams['IBLOCK_ID']);
         updateElementCounts($sectionTree);
 
         $arResult['SECTION_TREE'] = $sectionTree[$_GET['section']]['CHILDREN'];
@@ -283,6 +301,22 @@ function updateElementCounts(array &$tree): void
             }
         }
     }
+}
+
+function getChildSections($parentId, $iblockId) {
+    $childSections = [];
+
+    $result = \Bitrix\Iblock\SectionTable::getList([
+        'select' => ['ID'],
+        'filter' => ['IBLOCK_ID' => $iblockId, 'IBLOCK_SECTION_ID' => $parentId]
+    ]);
+
+    while ($section = $result->fetch()) {
+        $childSections[] = $section['ID'];
+        $childSections = array_merge($childSections, getChildSections($section['ID'], $iblockId));
+    }
+
+    return $childSections;
 }
 
 function findSectionRecursive($sections, $targetSectionId) : ?string

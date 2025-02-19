@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setItems();
         setMenuItems();
         setSelect();
-        productsTabs();
+        // productsTabs();
         updateCategorySelect();
         updateProducts();
         upperAds();
@@ -63,6 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                     tab.classList.add('active');
 
+                    [...searchParams.keys()].forEach(key => searchParams.delete(key));
                     searchParams.set('section', tab.getAttribute('data-sect'));
                     window.history.pushState({}, '', `${url.pathname}?${searchParams.toString()}`);
                     getAds(url.href);
@@ -468,7 +469,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (activeTab) {
                         activeTab.classList.remove('selected');
                     }
-                    console.log(newUrl);
+
                     tab.classList.add('selected');
                     getProducts(newUrl);
                 })
@@ -496,18 +497,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function getProducts(url) {
         let listBlock = document.querySelector('.product-advert');
-        listBlock.style.filter = 'blur(5px)';
+        document.querySelector('.product-block').style.filter = 'blur(5px)';
         fetch(url, {
             method: 'GET',
             headers: {'X-Requested-With': 'XMLHttpRequest'}
         }).then(res => {
             return res.text();
         }).then(data => {
-            listBlock.innerHTML = data;
-            listBlock.removeAttribute('style');
+            let tmpDiv = document.createElement('div');
+            tmpDiv.innerHTML = data;
+            let newPagination = tmpDiv.querySelector('.module-pagination');
+            let newItems = tmpDiv.querySelectorAll('.product-advert__item');
+
+            if(newPagination) {
+                document.querySelector('.module-pagination').innerHTML = newPagination.innerHTML;
+            }else {
+                document.querySelector('.module-pagination')?.remove();
+            }
+
+            listBlock.innerHTML = "";
+            newItems.forEach(item => {
+                listBlock.appendChild(item);
+            })
+            // listBlock.innerHTML = data;
+            document.querySelector('.product-block').removeAttribute('style');
             setItems();
             upperAds();
             checkedAllItems();
+            if (window.innerWidth <= 1020){
+                document.querySelector('.product-advert')?.scrollIntoView({block: "center", behavior: "smooth"});
+            }
         }).catch((error) => console.log(error));
     }
 
@@ -661,3 +680,11 @@ document.addEventListener('DOMContentLoaded', () => {
         `
     }
 })
+
+$('body').on('click', '.advert-info__btn-stats', function() {
+    $(this).toggleClass('active');
+
+    let $stat = $(this).closest('.product-advert__item').next('.product-advert__stat');
+
+    $stat.slideToggle();
+});

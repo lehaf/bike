@@ -97,18 +97,45 @@
                                 <a href="/<?=$arItem['DETAIL_PAGE_URL']?>" class="product-item__title">
                                     <?= $arItem['NAME'] ?>
                                 </a>
-                                <?php if($arItem['UP_DAYS']):?>
-                                <div class="advert-data__day">
-                                    <svg width="14" height="12" viewBox="0 0 14 12" fill="none"
-                                         xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M9.67075 9.71069H3.94756C3.63572 9.71069 3.37891 9.86765 3.37891 10.0351V10.9036C3.37891 11.0814 3.65406 11.2279 3.94756 11.2279H9.67075C9.98259 11.2279 10.2394 11.071 10.2394 10.9036V10.0351C10.2394 9.86765 9.98259 9.71069 9.67075 9.71069Z"
-                                              fill="#37C770"></path>
-                                        <path d="M13.5221 4.93926L7.26697 0.889811C7.04684 0.732856 6.58825 0.732856 6.34979 0.889811L0.0946302 4.93926C-0.125493 5.09621 0.057943 5.3578 0.443158 5.3578H3.37813V8.07836C3.37813 8.25624 3.65328 8.40274 3.94678 8.40274H9.66997C9.98181 8.40274 10.2386 8.24578 10.2386 8.07836V5.3578H13.1736C13.5772 5.3578 13.7606 5.09621 13.5221 4.93926Z"
-                                              fill="#37C770"></path>
-                                    </svg>
-                                    <span>Поднято:</span> <?=$arItem['UP_DAYS']?>
+                                <div style="font-size: 10px; margin-bottom: 5px"> Артикул : <?= $arItem['PROPERTIES']['exp_id']['VALUE'] ?></div>
+
+                                <div class="advert-info-card">
+                                    <div class="advert-info__btn-stats">
+                                        <svg width="11" height="12" viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M10.4267 11.646H0V11.9994H10.4267V11.646Z" fill="#505456"/>
+                                            <path d="M2.79474 7.29834H1.36328V11.8225H2.79474V7.29834Z" fill="#505456"/>
+                                            <path d="M2.95083 11.9996H1.18359V7.12207H2.9685V11.9996H2.95083ZM1.53704 11.6462H2.61505V7.47552H1.53704V11.6462Z" fill="#505456"/>
+                                            <path d="M9.18927 2.98682H7.75781V11.823H9.18927V2.98682Z" fill="#505456"/>
+                                            <path d="M9.34926 11.9992H7.58203V2.80957H9.36693V11.9992H9.34926ZM7.93548 11.6457H9.01349V3.16302H7.93548V11.6457Z" fill="#505456"/>
+                                            <path d="M5.99396 5.58496H4.5625V11.8233H5.99396V5.58496Z" fill="#505456"/>
+                                            <path d="M6.15004 11.9995H4.38281V5.40771H6.16772V11.9995H6.15004ZM4.73626 11.646H5.81427V5.76116H4.73626V11.646Z" fill="#505456"/>
+                                            <path d="M9.89472 0.603992L9.73047 0.291016L0.466358 5.15271L0.630605 5.46569L9.89472 0.603992Z" fill="#505456"/>
+                                            <path d="M8.99609 0.158691L9.84437 0.441448L9.57928 1.27205" fill="#505456"/>
+                                            <path d="M9.75824 1.32542L9.42246 1.23706L9.61686 0.547842L8.94531 0.335774L9.05135 0L10.0587 0.318102L9.75824 1.32542Z" fill="#505456"/>
+                                        </svg>
+                                        <span>
+                                            Статистика
+                                        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M4.92578 9L8.8229 4.3125H1.02867L4.92578 9Z" fill="#666666"/>
+                                        </svg>
+                                        </span>
+
+                                    </div>
+                                    <div class="publish-data__day"> <?= $arItem['FORMAT_ACTIVE_FROM'] ?></div>
+                                    <?php if($arItem['UP_DAYS']):?>
+                                        <div class="advert-data__day">
+                                            <svg width="14" height="12" viewBox="0 0 14 12" fill="none"
+                                                 xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M9.67075 9.71069H3.94756C3.63572 9.71069 3.37891 9.86765 3.37891 10.0351V10.9036C3.37891 11.0814 3.65406 11.2279 3.94756 11.2279H9.67075C9.98259 11.2279 10.2394 11.071 10.2394 10.9036V10.0351C10.2394 9.86765 9.98259 9.71069 9.67075 9.71069Z"
+                                                      fill="#37C770"></path>
+                                                <path d="M13.5221 4.93926L7.26697 0.889811C7.04684 0.732856 6.58825 0.732856 6.34979 0.889811L0.0946302 4.93926C-0.125493 5.09621 0.057943 5.3578 0.443158 5.3578H3.37813V8.07836C3.37813 8.25624 3.65328 8.40274 3.94678 8.40274H9.66997C9.98181 8.40274 10.2386 8.24578 10.2386 8.07836V5.3578H13.1736C13.5772 5.3578 13.7606 5.09621 13.5221 4.93926Z"
+                                                      fill="#37C770"></path>
+                                            </svg>
+                                            <span>Поднято:</span> <?=$arItem['UP_DAYS']?>
+                                        </div>
+                                    <?php endif;?>
                                 </div>
-                                <?php endif;?>
+
                             </div>
                         </div>
                         <div class="product-item-right">
@@ -194,10 +221,30 @@
                         </div>
                     </div>
                 </div>
+                <div class="product-advert__stat">
+                    <div class="product-statistics">
+                        <div class="product-statistics__el">
+                            <div class="product-statistics__el-num">196</div>
+                            <div class="product-statistics__el-text">просмотров объявления</div>
+                        </div>
+                        <div class="product-statistics__el">
+                            <div class="product-statistics__el-num">6 000</div>
+                            <div class="product-statistics__el-text">просмотров телефона</div>
+                        </div>
+                        <div class="product-statistics__el">
+                            <div class="product-statistics__el-num">6</div>
+                            <div class="product-statistics__el-text">пользователей добавлены в закладки</div>
+                        </div>
+                        <div class="product-statistics__el">
+                            <div class="product-statistics__el-num">6</div>
+                            <div class="product-statistics__el-text">дней в продаже</div>
+                        </div>
+                    </div>
+                </div>
             <?php endforeach; ?>
-            <?php if ($ajax === true && $_GET['subsection']) {
-                die();
-            } ?>
+<!--            --><?php //if ($ajax === true && $_GET['subsection']) {
+//                die();
+//            } ?>
         </div>
     </div>
 </div>
@@ -219,8 +266,8 @@ function renderSectionTree(array $sections): void
                         </svg>
                     </span>
                 <?php endif; ?>
-                <?= $section['NAME'] ?>
-                <span class="quantity">(<?= $section['ELEMENT_COUNT'] ?>)</span>
+                <?= $section['NAME'] ?>&nbsp;<span class="quantity">(<?= $section['ELEMENT_COUNT'] ?>)</span>
+
             </a>
             <?php if ($hasSubmenu): ?>
                 <ul class="submenu">

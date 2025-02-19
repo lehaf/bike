@@ -81,13 +81,11 @@ if ($_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') $ajax = true;
 <!--    </div>-->
 <!--</div>-->
 
-<!---->
-<?php //if ($arParams["DISPLAY_BOTTOM_PAGER"]): ?>
-<!--    <br/>--><?php //= $arResult["NAV_STRING"] ?>
-<?php //endif; ?>
+
+<?php if ($arParams["DISPLAY_BOTTOM_PAGER"]): ?>
+    <br/><?= $arResult["NAV_STRING"] ?>
+<?php endif; ?>
 <?php if ($ajax === true && $_GET['section'] && !$_GET['subsection'] && !$_GET['AJAX_REQUEST']) {
     die();
 } ?>
-
-<script src="https://cdn.jsdelivr.net/npm/choices.js@9.0.1/public/assets/scripts/choices.min.js"></script>
 
