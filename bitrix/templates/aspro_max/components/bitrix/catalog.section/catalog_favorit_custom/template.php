@@ -180,7 +180,11 @@ $arParams['SHOW_STORES_POPUP'] = (boolean)($arParams['SHOW_STORES_POPUP'] ?? fal
 									<?if($bUseSkuProps && $arItem["OFFERS"]):?>
 										<?\Aspro\Functions\CAsproMaxItem::showSectionGallery( array('ITEM' => $arItem["OFFERS"][$arItem["OFFERS_SELECTED"]]) );?>
 									<?else:?>
-										<?\Aspro\Functions\CAsproMaxItem::showSectionGallery( array('ITEM' => $arItem) );?>
+                                        <a href="<?= $arItem["DETAIL_PAGE_URL"] ?>"
+                                           class="thumb"><img class="img-responsive "
+                                                              src="<?= SITE_TEMPLATE_PATH ?>/images/empty_img_element.png"
+                                                              alt="<?= $arItem["NAME"] ?>"
+                                                              title="<?= $arItem["NAME"] ?>"/></a>
 									<?endif;?>
 								<?else:?>
 									<?\Aspro\Functions\CAsproMaxItem::showImg($arParams, $arItem);?>
