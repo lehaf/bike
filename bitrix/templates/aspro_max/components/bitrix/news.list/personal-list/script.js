@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setItems();
         setMenuItems();
         setSelect();
-        // productsTabs();
+        productsTabs();
         updateCategorySelect();
         updateProducts();
         upperAds();
@@ -508,18 +508,7 @@ document.addEventListener('DOMContentLoaded', () => {
             tmpDiv.innerHTML = data;
             let newPagination = tmpDiv.querySelector('.module-pagination');
             let newItems = tmpDiv.querySelectorAll('.product-advert__item');
-
-            if(newPagination) {
-                document.querySelector('.module-pagination').innerHTML = newPagination.innerHTML;
-            }else {
-                document.querySelector('.module-pagination')?.remove();
-            }
-
-            listBlock.innerHTML = "";
-            newItems.forEach(item => {
-                listBlock.appendChild(item);
-            })
-            // listBlock.innerHTML = data;
+            listBlock.innerHTML = data;
             document.querySelector('.product-block').removeAttribute('style');
             setItems();
             upperAds();

@@ -267,7 +267,7 @@
     color: #ed1c24;
 }
 
-.advert-item__status__content.checking span{
+span.moderation{
     display: flex;
     align-items: center;
     gap: 5px;
@@ -1142,6 +1142,14 @@ li.menu-item > a.selected{
     color: #8c8c8c;
     margin-bottom: 3px;
 }
+
+.product-item__name--flex{
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0 20px;
+}
+
 
 .product-item__title{
     font-weight: 600;

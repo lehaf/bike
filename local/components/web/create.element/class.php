@@ -29,8 +29,7 @@ class CreateElement extends \CBitrixComponent
         "USER"
     ];
 
-    private array $imageExtentions = ['jpg', 'png', 'jpeg', 'gif'];
-    private array $data = [];
+    private array $requestData = [];
 
     private array $errors = [];
     private array $userProps = [];
@@ -38,12 +37,37 @@ class CreateElement extends \CBitrixComponent
     private string $templateFolder = '';
 
     private array $requiredFields = [];
+    private int $elementId;
+    private array $section;
+    private int $userId;
+    
 
-    private int $elementId = 0;
+    private function getElementId() : int
+    {
+        return $this->requestData['GET']['element'] ?? 0;
+    }
 
+    private function getSection() : array
+    {
+        if($this->requestData['GET']['type']) {
+            $entity = \Bitrix\Iblock\Model\Section::compileEntityByIblock($this->arParams['IBLOCK_ID']);
+            $section = $entity::getList([
+                'filter' => ['=ID' => $this->requestData['GET']['type']],
+                'select' => ['ID', 'CODE', 'UF_SECTION_CODE', 'IBLOCK_SECTION_ID', 'UF_MODERATION'] // Получаем только ID и CODE
+            ])->fetch();
+        }
+
+        return $section ?? [];
+    }
+
+    private function getUserId() : ?int
+    {
+        return \Bitrix\Main\Engine\CurrentUser::get()->getId();
+    }
     public function onPrepareComponentParams($arParams)
     {
         $request = \Bitrix\Main\Context::getCurrent()->getRequest();
+        $this->elementId = $this->getElementId();
 
         if (($request->isAjaxRequest() && $request->getPost('sectionId')) || $this->elementId !== 0) {
             $arParams['SECTION_ID'] = (int)$request->getPost('sectionId');
@@ -87,7 +111,8 @@ class CreateElement extends \CBitrixComponent
     }
     public function executeComponent(): void
     {
-        if (!\Bitrix\Main\Engine\CurrentUser::get()->getId()) {
+        $this->userId = $this->getUserId();
+        if (!$this->userId) {
             $currentUrl = urlencode(Context::getCurrent()->getRequest()->getRequestUri());
             LocalRedirect($this->arParams['AUTH_LINK']);
             exit();
@@ -95,11 +120,12 @@ class CreateElement extends \CBitrixComponent
 
         if (!empty($this->arParams["IBLOCK_ID"]) && (int)$this->arParams["IBLOCK_ID"]) {
             $this->setApiCode();
-            $this->data = $this->setData();
-            $this->elementId = $this->data['GET']['element'] ?? 0;
+            $this->requestData = $this->getRequestData();
+            $this->elementId = $this->getElementId();
+            $this->section = $this->getSection();
 
             if ($this->arParams["IS_TEMPLATE_INCLUDE"] === "Y") {
-                if ($this->data['GET']['type']) {
+                if ($this->requestData['GET']['type']) {
                     $sectId = (!isset($this->arParams['PARENT_SECTION_ID'])) ? $this->arParams['SECTION_ID'] : [$this->arParams['PARENT_SECTION_ID'], $this->arParams['SECTION_ID']];
                     if ($this->arParams['FIRST_LEVEL_PARENT_ID']) $sectId[] = $this->arParams['FIRST_LEVEL_PARENT_ID'];
 
@@ -254,9 +280,9 @@ class CreateElement extends \CBitrixComponent
                 }
 
                 $this->templateFolder = $this->getPath() . '/templates/' . $this->getTemplateName();
-                if ($this->data['POST']['ajax'] === 'Y') {
+                if ($this->requestData['POST']['ajax'] === 'Y') {
                     $this->userProps = $this->arResult["SHOW_FIELDS"] ?? [];
-                    $this->ajaxPost($this->data);
+                    $this->ajaxPost($this->requestData);
                 }
 
                 $this->includeComponentTemplate();
@@ -271,22 +297,21 @@ class CreateElement extends \CBitrixComponent
     {
         ob_end_clean();
         if (!empty($data["POST"])) {
-            //раздел элемента
-            $this->errors = $this->checkFields($data);
+            $this->errors = $this->checkFields($data['POST']);
 
             if (empty($this->errors)) {
-                $data["POST"]["NAME"] = $this->setName($data);
-                $data["POST"]["USER"] = \Bitrix\Main\Engine\CurrentUser::get()->getId();
+                $data["POST"]["NAME"] = $this->setName($data["POST"]);
+                $data["POST"]["USER"] = $this->userId;
                 $data["POST"]["IBLOCK_SECTION_ID"] = (isset($data["POST"]["IBLOCK_SECTION_ID"])) ? $data["POST"]["IBLOCK_SECTION_ID"] : $_GET['type'];
 
                 if(isset($data["POST"]["exp_id"]) && empty($data["POST"]["exp_id"])){
                     do {
                         $randomNumber = mt_rand(100000, 999999);
-                        $entityElement = \Bitrix\Iblock\Iblock::wakeUp(CATALOG_IBLOCK_ID)->getEntityDataClass();
+                        $entityElement = \Bitrix\Iblock\Iblock::wakeUp($this->arParams['IBLOCK_ID'])->getEntityDataClass();
                         $elementExist = $entityElement::getList([
                             'select' => ['ID', 'NAME'],
                             'filter' => [
-                                'USER.VALUE' => \Bitrix\Main\Engine\CurrentUser::get()->getId(),
+                                'USER.VALUE' => $this->userId,
                                 'exp_id.VALUE' => $randomNumber
                             ]
                         ])->fetch();
@@ -487,7 +512,7 @@ class CreateElement extends \CBitrixComponent
         }
     }
 
-    private function setData(): array
+    private function getRequestData(): array
     {
         $request = \Bitrix\Main\Context::getCurrent()->getRequest();
         if ($this->arParams["IS_TEMPLATE_INCLUDE"] === "Y") {
@@ -511,6 +536,25 @@ class CreateElement extends \CBitrixComponent
         return $this->errors;
     }
 
+    private function getFieldEnumId(string $propertyCode, int $iblockId, array $enumFilter) : ?int
+    {
+        $property = \Bitrix\Iblock\PropertyTable::getList([
+            'filter' => [
+                'IBLOCK_ID' => $iblockId,
+                'CODE' => $propertyCode,
+            ],
+            'select' => ['ID'],
+        ])->fetch();
+
+        if($property['ID']) {
+            $filter = array_merge(['PROPERTY_ID' => $property['ID']], $enumFilter);
+            $enum = \Bitrix\Iblock\PropertyEnumerationTable::getList([
+                'filter' => $filter,
+                'select' => ['ID'],
+            ])->fetch();
+        }
+        return $enum['ID'] ?? null;
+    }
     private function createElement(array $data): array
     {
         $iblockClass = \Bitrix\Iblock\Iblock::wakeUp($this->arParams["IBLOCK_ID"])->getEntityDataClass();
@@ -523,9 +567,10 @@ class CreateElement extends \CBitrixComponent
         $newElement->set("CREATED_BY", $data["USER"]["VALUE"]);
         $newElement->set("DETAIL_TEXT_TYPE", "html");
 
+
         $userBrand = \Bitrix\Main\UserTable::getList([
             'select' => ['UF_BRAND_ID'],
-            'filter' => ['=ID' => \Bitrix\Main\Engine\CurrentUser::get()->getId()],
+            'filter' => ['=ID' => $this->userId],
         ])->fetch();
 
 
@@ -536,23 +581,13 @@ class CreateElement extends \CBitrixComponent
             $userType = 'fis';
         }
 
-        $property = \Bitrix\Iblock\PropertyTable::getList([
-            'filter' => [
-                'IBLOCK_ID' => CATALOG_IBLOCK_ID,
-                'CODE' => 'saller',
-            ],
-            'select' => ['ID'],
-        ])->fetch();
+        $enumId = $this->getFieldEnumId('saller', (int)$this->arParams['IBLOCK_ID'], ['XML_ID' => $userType]);
+        $newElement->set("saller", $enumId['ID']);
 
-        if($property['ID']) {
-            $enum = \Bitrix\Iblock\PropertyEnumerationTable::getList([
-                'filter' => [
-                    'PROPERTY_ID' => $property['ID'],
-                    'XML_ID' => $userType,
-                ],
-                'select' => ['ID'],
-            ])->fetch();
-            $newElement->set("saller", $enum['ID']);
+        if(!empty($this->section['UF_MODERATION'])) {
+            $moderationEnumId = $this->getFieldEnumId('IS_MODERATION', (int)$this->arParams['IBLOCK_ID'], ['XML_ID' => 'Y']);
+            $newElement->set("IS_MODERATION", $moderationEnumId);
+            $newElement->set("ACTIVE", false);
         }
 
         $arTransParams = array(
@@ -574,9 +609,6 @@ class CreateElement extends \CBitrixComponent
                     $item['VALUE'] = nl2br($item['VALUE'], false);
                 }
                 $newElement->set($prop, $item["VALUE"]);
-//                if ($prop === "IBLOCK_SECTION_ID") {
-//                    $newElement->set("IN_SECTIONS", "Y");
-//                }
             }
         }
 
@@ -635,6 +667,13 @@ class CreateElement extends \CBitrixComponent
         $currentDate = new \DateTime();
         $element->set("TIMESTAMP_X", $currentDate->format('d.m.Y H:i:s'));
         $element->set("DETAIL_TEXT_TYPE", 'html');
+
+
+        if(!empty($this->section['UF_MODERATION'])) {
+            $moderationEnumId = $this->getFieldEnumId('IS_MODERATION', (int)$this->arParams['IBLOCK_ID'], ['XML_ID' => 'Y']);
+            $element->set("IS_MODERATION", $moderationEnumId);
+            $element->set("ACTIVE", false);
+        }
 
         if (!empty($data)) {
             foreach ($this->staticProps as $prop) {
@@ -700,9 +739,9 @@ class CreateElement extends \CBitrixComponent
 
         if ($existingPrice) {
             PriceTable::update($existingPrice['ID'], [
-                "PRICE" => $this->data["POST"]["PRICE"] ?? 0,
-                "CURRENCY" => ($this->data["POST"]["CURRENCY"]) ?: 'RUB',
-                "PRICE_SCALE" => $this->data["POST"]["PRICE"] ?? 0
+                "PRICE" => $this->requestData["POST"]["PRICE"] ?? 0,
+                "CURRENCY" => ($this->requestData["POST"]["CURRENCY"]) ?: 'RUB',
+                "PRICE_SCALE" => $this->requestData["POST"]["PRICE"] ?? 0
             ]);
         }
 
@@ -710,7 +749,7 @@ class CreateElement extends \CBitrixComponent
 
         if ($newItemId->isSuccess()) {
             //сброс зависимостей для отображения корректных данных
-            $ipropValues = new \Bitrix\Iblock\InheritedProperty\ElementValues(CATALOG_IBLOCK_ID, $this->elementId);
+            $ipropValues = new \Bitrix\Iblock\InheritedProperty\ElementValues($this->arParams['IBLOCK_ID'], $this->elementId);
             $ipropValues->clearValues();
 
             $result = ["STATUS" => "OK", 'FORM' => $this->successFormTemplate(), 'action' => 'edit'];
@@ -730,9 +769,9 @@ class CreateElement extends \CBitrixComponent
             $price = PriceTable::add([
                 "PRODUCT_ID" => $product->getId(),
                 "CATALOG_GROUP_ID" => 1,
-                "PRICE" => $this->data["POST"]["PRICE"] ?? 0,
-                "CURRENCY" => ($this->data["POST"]["CURRENCY"]) ?: 'RUB',
-                "PRICE_SCALE" => $this->data["POST"]["PRICE"] ?? 0
+                "PRICE" => $this->requestData["POST"]["PRICE"] ?? 0,
+                "CURRENCY" => ($this->requestData["POST"]["CURRENCY"]) ?: 'RUB',
+                "PRICE_SCALE" => $this->requestData["POST"]["PRICE"] ?? 0
             ]);
 
             if ($price->isSuccess()) {
@@ -745,58 +784,6 @@ class CreateElement extends \CBitrixComponent
         }
 
         return $result;
-    }
-
-    private function imageCreateFromFile(string $filename, string $type): object
-    {
-
-        switch ($type) {
-            case 'image/jpeg':
-                return imagecreatefromjpeg($filename);
-                break;
-            case 'image/png':
-                return imagecreatefrompng($filename);
-                break;
-
-            case 'image/gif':
-                return imagecreatefromgif($filename);
-                break;
-
-            default:
-                throw new \InvalidArgumentException('File "' . $filename . '" is not valid jpg, png or gif image.');
-                break;
-        }
-    }
-
-    private function imageFile(string $file, string $newFileName, string $type): void
-    {
-        switch ($type) {
-            case 'image/jpeg':
-                imagejpeg($file, $newFileName);
-                break;
-            case 'image/png':
-                imagesavealpha($file, true);
-                imagepng($file, $newFileName, 0);
-                break;
-
-            case 'image/gif':
-                imagegif($file, $newFileName);
-                break;
-
-            default:
-                throw new \InvalidArgumentException('File is not valid jpg, png or gif image.');
-                break;
-        }
-
-    }
-
-    private function decodeImg(string $img): int
-    {
-        $data = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $img));
-        file_put_contents($_SERVER["DOCUMENT_ROOT"] . '/imgbs64.png', $data);
-        $arFile = \CFile::MakeFileArray($_SERVER["DOCUMENT_ROOT"] . "/imgbs64.png");
-        $fileId = \CFile::SaveFile($arFile, "iblock");
-        return $fileId;
     }
 
     private function successFormTemplate(): string
@@ -821,7 +808,7 @@ class CreateElement extends \CBitrixComponent
             $propertyValue = \Bitrix\Iblock\PropertyEnumerationTable::getList([
                 'filter' => [
                     'PROPERTY_ID' => $propertyId['ID'],
-                    'ID' => $data["POST"][$sectionCode]
+                    'ID' => $data[$sectionCode]
                 ],
                 'select' => ['VALUE'],
             ])->fetch();
@@ -832,35 +819,29 @@ class CreateElement extends \CBitrixComponent
 
     private function setName(array $data): string
     {
-        $entity = \Bitrix\Iblock\Model\Section::compileEntityByIblock(CATALOG_IBLOCK_ID);
-
-        $section = $entity::getList([
-            'filter' => ['=ID' => $data['GET']['type']],
-            'select' => ['ID','CODE', 'UF_SECTION_CODE', 'IBLOCK_SECTION_ID'] // Получаем только ID и CODE
-        ])->fetch();
-        $sectCode = (!empty($section['UF_SECTION_CODE'])) ? $section['UF_SECTION_CODE'] : $section['CODE'];
-        $name = $data["POST"]["NAME"] ?? "";
+        $sectCode = (!empty($this->section['UF_SECTION_CODE'])) ? $this->section['UF_SECTION_CODE'] : $this->section['CODE'];
+        $name = $data["NAME"] ?? "";
 
         if(empty($name)) {
-            if ((int)$section["IBLOCK_SECTION_ID"] === TRANSPORT_SECTION_ID) {
+            if ((int)$this->section["IBLOCK_SECTION_ID"] === TRANSPORT_SECTION_ID) {
                 $type = $this->getCheckProperty('type_' . $sectCode, $data);
                 $year = $this->getCheckProperty('year', $data);
 
-                $name = $type . ' ' . $data["POST"]["SECTION"] . ' ' . $data["POST"]["SUBSECTION"];
-                if (!empty($data["POST"]["year"])) $name .= ', ' . $year . ' г.';
-            } elseif ((int)$section["IBLOCK_SECTION_ID"] === PARTS_SECTION_ID) {
+                $name = $type . ' ' . $data["SECTION"] . ' ' . $data["SUBSECTION"];
+                if (!empty($data["year"])) $name .= ', ' . $year . ' г.';
+            } elseif ((int)$this->section["IBLOCK_SECTION_ID"] === PARTS_SECTION_ID) {
                 $type = $this->getCheckProperty('type_' . $sectCode, $data);
                 $year = $this->getCheckProperty('year', $data);
 
-                $name = $type . ' к ' . $data["POST"]["SECTION"] . ' ' . $data["POST"]["SUBSECTION"];
-                if (!empty($data["POST"]["year"])) $name .= ', ' . $year . ' г.';
-            } elseif ((int)$section["ID"] === GARAGES_SECTION_ID) {
+                $name = $type . ' к ' . $data["SECTION"] . ' ' . $data["SUBSECTION"];
+                if (!empty($data["year"])) $name .= ', ' . $year . ' г.';
+            } elseif ((int)$this->section["ID"] === GARAGES_SECTION_ID) {
                 $category = $this->getCheckProperty('category_garage', $data);
                 $type = $this->getCheckProperty('type_garage', $data);
                 $name = $category . ' ' . $type;
-            } elseif((int)$section["ID"] === SERVICES_SECTION_ID) {
-                $name = trim($data['POST']['contact_person']) ?? '';
-                $serviceSection = SectionTable::getById($data['POST']['IBLOCK_SECTION_ID'])->fetch();
+            } elseif((int)$this->section["ID"] === SERVICES_SECTION_ID) {
+                $name = trim($data['contact_person']) ?? '';
+                $serviceSection = SectionTable::getById($data['IBLOCK_SECTION_ID'])->fetch();
 
                 if($serviceSection) {
                     $name .= " | " . $serviceSection['NAME'];
@@ -901,6 +882,7 @@ class CreateElement extends \CBitrixComponent
         return $requiredFieldsId;
     }
 
+
     private function convertRace(int $race, string $unit): float
     {
         $motoHours = 1.2;
@@ -930,29 +912,45 @@ class CreateElement extends \CBitrixComponent
         return $convertUrl;
     }
     private function checkFields(array $data) : array {
-        if(!$data["POST"]["IBLOCK_SECTION_ID"]) {
+        $entityIblock= \Bitrix\Iblock\Iblock::wakeUp($this->arParams['IBLOCK_ID'])->getEntityDataClass();
+
+        if(!$data["IBLOCK_SECTION_ID"]) {
             if(isset($data["POST"]["SUBSECTION"])) {
                 $errors["SUBSECTION"] = "Данной модели не существует";
             }
         }
 
+        if(in_array($this->requestData['GET']['type'], [SERVICES_SECTION_ID])) {
+            $rsElements =  $entityIblock::getList([
+                'select' => ['ID'],
+                'filter' => ['=IBLOCK_SECTION_ID' => $data['IBLOCK_SECTION_ID'], '=USER.VALUE' => $this->userId]
+            ])->fetchAll();
+
+            if(!empty($rsElements)) {
+                $ids = array_column($rsElements, 'ID');
+                if(!in_array($this->elementId, $ids)) {
+                    $errors['IBLOCK_SECTION_ID'] = 'В данной категории уже есть объявление';
+                }
+            }
+        }
+
         $fieldsToCheck = [
-            "IBLOCK_SECTION_ID" => "Заполните поле",
+            "IBLOCK_SECTION_ID" => "Необходимо заполнить «Категория»",
             "CATEGORY" => "Необходимо заполнить «Категория»",
             "SUBCATEGORY" => "Необходимо заполнить «Подкатегория товара/услуги»",
             'exp_id' => "Объявление с таким артиклом уже существует"
         ];
 
+
         foreach ($fieldsToCheck as $field => $errorMessage) {
             if($field === 'exp_id') {
-                if(!empty($data["POST"][$field])) {
-                    $entityElement = \Bitrix\Iblock\Iblock::wakeUp(CATALOG_IBLOCK_ID)->getEntityDataClass();
-                    $element = $entityElement::getList([
+                if(!empty($data[$field])) {
+                    $element = $entityIblock::getList([
                         'select' => ['ID', 'NAME'],
                         'filter' => [
-                            '=USER.VALUE' => \Bitrix\Main\Engine\CurrentUser::get()->getId(),
-                            '=exp_id.VALUE' => $data["POST"][$field],
-                            '!=ID' => ($data["GET"]["action"] === "edit") ? $this->elementId : 0
+                            '=USER.VALUE' => $this->userId,
+                            '=exp_id.VALUE' => $data[$field],
+                            '!=ID' => ($this->requestData["GET"]["action"] === "edit") ? $this->elementId : 0
                         ]
                     ])->fetch();
 
@@ -963,18 +961,18 @@ class CreateElement extends \CBitrixComponent
                 continue;
             }
 
-            if (isset($data["POST"][$field]) && empty($data["POST"][$field])) {
+            if (isset($data[$field]) && empty($data[$field])) {
                 $errors[$field] = $errorMessage;
             }
         }
 
 
         foreach ($this->userProps as $prop => $value) {
-            if (empty($data['POST'][$prop]) && $value['CUSTOM_IS_REQUIRED'] === "Y") {
+            if (empty($data[$prop]) && $value['CUSTOM_IS_REQUIRED'] === "Y") {
                 $errors[$prop] = "Необходимо заполнить «" . $value['NAME'] . "»";
             }
         }
-        if (isset($data['POST']['PRICE']) && empty($data['POST']['PRICE'])) $errors['PRICE'] = "Необходимо заполнить «Цена»";
+        if (isset($data['PRICE']) && empty($data['PRICE'])) $errors['PRICE'] = "Необходимо заполнить «Цена»";
         return $errors ?? [];
     }
 }

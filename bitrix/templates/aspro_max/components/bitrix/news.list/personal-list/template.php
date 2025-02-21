@@ -57,35 +57,11 @@ if ($_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') $ajax = true;
     </div>
 <?php endif; ?>
 
-<?//if ($arParams["DISPLAY_BOTTOM_PAGER"]):?>
-<!--    --><?//if($arParams['IS_AJAX']):?>
-<!--        <div class="wrap_nav bottom_nav_wrapper">-->
-<!--    --><?//endif;?>
-<!--    --><?//$bHasNav = (strpos($arResult["NAV_STRING"], 'more_text_ajax') !== false);?>
-<!--    <div class="bottom_nav mobile_slider animate-load-state block-type--><?php //=($bHasNav ? '' : ' hidden-nav');?><!--" data-parent=".item-views" data-scroll-class=".swipeignore.mobile-overflow" data-append="--><?php //=($arParams['HALF_BLOCK'] != 'Y' ? '.items > .row' : '.items > .row > .item-wrapper.line_img .half-wrapper');?><!--" --><?php //=($arParams["IS_AJAX"] ? "style='display: none; '" : "");?>
-<!--        --><?//if ($bHasNav):?>
-<!--            --><?php //=CMax::showIconSvg('bottom_nav-icon colored_theme_svg', SITE_TEMPLATE_PATH.'/images/svg/mobileBottomNavLoader.svg');?>
-<!--            --><?php //=$arResult["NAV_STRING"]?>
-<!--        --><?//endif;?>
-<!--    </div>-->
-<!---->
-<!--    --><?//if($arParams['IS_AJAX']):?>
-<!--        </div>-->
-<!--    --><?//endif;?>
-<?//endif;?>
-<!--<div class="bottom_nav_wrapper">-->
-<!--    <div class="bottom_nav animate-load-state--><?php //=($arResult['NAV_STRING'] ? ' has-nav' : '');?><!--" --><?php //=($arParams['IS_AJAX'] ? "style='display: none; '" : "");?><!-- data-parent=".item-views" data-scroll-class=".swipeignore.mobile-overflow" data-append="--><?php //=($arParams['HALF_BLOCK'] != 'Y' ? '.items > .row' : '.items > .row > .item-wrapper.line_img .half-wrapper .mCSB_container');?><!--">
-<!--        --><?//if($arParams['DISPLAY_BOTTOM_PAGER']):?>
-<!--            --><?php //=$arResult['NAV_STRING']?>
-<!--        --><?//endif;?>
-<!--    </div>-->
-<!--</div>-->
-
-
 <?php if ($arParams["DISPLAY_BOTTOM_PAGER"]): ?>
     <br/><?= $arResult["NAV_STRING"] ?>
 <?php endif; ?>
 <?php if ($ajax === true && $_GET['section'] && !$_GET['subsection'] && !$_GET['AJAX_REQUEST']) {
     die();
 } ?>
+
 

@@ -89,10 +89,23 @@
                                 <img src="<?= $img ?>" alt="img">
                             </div>
                             <div class="product-item-text">
-                                <div class="product-item__name">
-                                    <?=(!empty($arItem['CURRENT_PRICE']) ? '<span style="color: #ed1c24; font-weight: bold">' . $arItem['CURRENT_PRICE'] . '</span>' . ' | '   : '')?>
-                                    <?=(!empty($arItem['CITY']) ? '<span style="font-weight: bold">' . $arItem['CITY'] . '</span>' . ' | '   : '')?>
-                                    <?= $arItem['SECTION_NAME'] ?>
+                                <div class="product-item__name product-item__name--flex">
+                                    <div>
+                                        <?=(!empty($arItem['CURRENT_PRICE']) ? '<span style="color: #ed1c24; font-weight: bold">' . $arItem['CURRENT_PRICE'] . '</span>' . ' | '   : '')?>
+                                        <?=(!empty($arItem['CITY']) ? '<span style="font-weight: bold">' . $arItem['CITY'] . '</span>' . ' | '   : '')?>
+                                        <?= $arItem['SECTION_NAME'] ?>
+                                    </div>
+
+                                    <?php if(!empty($arItem['PROPERTIES']['IS_MODERATION']['VALUE'])):?>
+                                    <span class="moderation">
+                                                <svg width="13" height="14" viewBox="0 0 13 14" fill="none"
+                                                     xmlns="http://www.w3.org/2000/svg">
+<path d="M6.5 0.5C2.91744 0.5 0 3.41744 0 7C0 10.5826 2.91744 13.5 6.5 13.5C10.0826 13.5 13 10.5826 13 7C13 3.41744 10.0826 0.5 6.5 0.5ZM5.44186 9.26744C5.44186 9.52442 5.24535 9.72093 4.98837 9.72093C4.7314 9.72093 4.53488 9.52442 4.53488 9.26744V4.73256C4.53488 4.47558 4.7314 4.27907 4.98837 4.27907C5.24535 4.27907 5.44186 4.47558 5.44186 4.73256V9.26744ZM8.46512 9.26744C8.46512 9.52442 8.2686 9.72093 8.01163 9.72093C7.75465 9.72093 7.55814 9.52442 7.55814 9.26744V4.73256C7.55814 4.47558 7.75465 4.27907 8.01163 4.27907C8.2686 4.27907 8.46512 4.47558 8.46512 4.73256V9.26744Z"
+      fill="#30A960"/>
+</svg>
+
+                                                На проверке у модератора</span>
+                                    <?php endif;?>
                                 </div>
                                 <a href="/<?=$arItem['DETAIL_PAGE_URL']?>" class="product-item__title">
                                     <?= $arItem['NAME'] ?>
@@ -139,6 +152,7 @@
                             </div>
                         </div>
                         <div class="product-item-right">
+                            <?php if(empty($arItem['PROPERTIES']['IS_MODERATION']['VALUE'])):?>
                             <div class="product-item-btn">
                                 <?php if(!$arItem['UP_TIME_LEFT']):?>
                                 <a href="#" class="advert-btn-up">
@@ -189,6 +203,7 @@
                                     </a>
                                 <?php endif; ?>
                             </div>
+                            <?php endif;?>
                             <div class="advert-edit">
                                 <a href="/add/?action=edit&type=<?= $_GET['section'] ?>&element=<?= $arItem['ID'] ?>" class="advert-edit__item">
                                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none"
@@ -242,9 +257,9 @@
                     </div>
                 </div>
             <?php endforeach; ?>
-<!--            --><?php //if ($ajax === true && $_GET['subsection']) {
-//                die();
-//            } ?>
+            <?php if ($ajax === true && $_GET['subsection']) {
+                die();
+            } ?>
         </div>
     </div>
 </div>

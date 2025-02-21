@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
+    console.log(document.querySelector("#stepForm"))
     document.querySelector("#stepForm").addEventListener("keypress", function (event) {
         if (event.key === "Enter" && event.target.tagName !== "TEXTAREA") {
             event.preventDefault();
@@ -1244,70 +1245,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // function init() {
-    //     const searchInput = document.querySelector("#mapInput");
-    //
-    //     var map = new ymaps.Map('map', {
-    //             center: [55.70, 37.56],
-    //             zoom: 12,
-    //             controls: ['zoomControl'],
-    //             behaviors: ['drag'],
-    //         }
-    //     );
-    //
-    //     var searchControl = new ymaps.control.SearchControl({
-    //         options: {
-    //             provider: 'yandex#search',
-    //             noPlacemark: true,
-    //             noSelect: true,
-    //         }
-    //     });
-    //     map.controls.add(searchControl);
-    //     // var suugestView = new ymaps.SuggestView(searchInput);
-    //
-    //     searchInput.addEventListener("input", function () {
-    //         let inputValue =this.value.trim();
-    //         let coords = inputValue.split(',').map(function (item) {
-    //             return parseFloat(item.trim());
-    //         });
-    //         map.setCenter(coords);
-    //         //
-    //         searchControl.search(this.value);
-    //         searchControl.events.add('load', function (event) {
-    //             if (!event.get('skip') && searchControl.getResultsCount()) {
-    //                 searchControl.showResult(0);
-    //             }
-    //         });
-    //     })
-    //
-    //     if(params['element']) {
-    //         let inputValue = searchInput.value.trim();
-    //         if(inputValue.length !== 0) {
-    //             let coordinates = inputValue.split(',').map(function (item) {
-    //                 return parseFloat(item.trim());
-    //             });
-    //
-    //             var myPlacemark = new ymaps.Placemark(coordinates);
-    //             // Получение адреса по координатам
-    //             ymaps.geocode(coordinates).then(function (res) {
-    //                 var address = res.geoObjects.get(0).properties.get('text'); // Получаем полный адрес
-    //                 const parts = address.split(',').map(part => part.trim());
-    //                 const city = parts[0]; // Город
-    //                 const street = parts[1] ? parts[1] + ',' + (parts[2] ? ' ' + parts[2] : '') : '';
-    //
-    //                 // Форматируем содержимое балуна
-    //                 var balloonContent = '<strong>' + street + '</strong><br><small>' + city + '</small>';
-    //                 myPlacemark.properties.set('balloonContent', balloonContent); // Устанавливаем отформатированное содержимое в балун
-    //
-    //                 // Открываем балун с адресом
-    //                 map.geoObjects.add(myPlacemark);
-    //                 myPlacemark.balloon.open();
-    //             });
-    //         }
-    //     }
-    //
-    // }
-
     function getLocationPromise(flag, action, id) {
         return new Promise((resolve, reject) => {
             getLocation(flag, action, id); // Вызов оригинальной функции
@@ -1348,6 +1285,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 if (element.id === 'categorySelection') {
                     element.querySelector('.error-form')?.classList.add('show');
+                    element.querySelector('.error-form').innerHTML = errors[key];
                     element.classList.add("error");
 
                     continue;

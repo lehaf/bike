@@ -37,6 +37,18 @@ $notShowLabel = ['PRICE_TYPE'];
             <div class="step">
                 <div class="wrapper">
                     <form action="#" class="step-form" method="post" id="stepForm">
+                        <?php if((int)$arParams['SECTION_ID'] === RENT_SECTION_ID):?>
+                        <?$APPLICATION->IncludeComponent(
+                            "bitrix:main.include",
+                            "",
+                            Array(
+                                "AREA_FILE_SHOW" => "file",
+                                "AREA_FILE_SUFFIX" => "inc",
+                                "EDIT_TEMPLATE" => "",
+                                "PATH" => "/include/add_page/top_text.php"
+                            )
+                        );?>
+                        <?php endif;?>
                         <?php foreach ($arResult['SORT_SHOW_FIELDS'] as $key => $block): ?>
                             <?php $class = '';
                             $class .= ($key === $firstFieldKey) ? 'active' : '';
@@ -838,7 +850,6 @@ $notShowLabel = ['PRICE_TYPE'];
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="error-form">Необходимо заполнить «Категория»</div>
 
                                         <div class="category-selection-ready  <?=($arResult['ELEMENT_PROPS']['IBLOCK_SECTION_ID']) ? 'active' : ''?>"
                                              data-category="<?=($arResult['ELEMENT_PROPS']['IBLOCK_SECTION_ID']) ?: ''?>"
@@ -856,6 +867,7 @@ $notShowLabel = ['PRICE_TYPE'];
                                                 Изменить подкатегорию
                                             </div>
                                         </div>
+                                        <div class="error-form">Необходимо заполнить «Категория»</div>
                                     </div>
 
                                 <?php endif;?>
