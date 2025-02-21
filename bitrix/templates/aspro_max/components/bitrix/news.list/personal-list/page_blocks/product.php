@@ -43,9 +43,6 @@
                     <option value="" selected>
                         Выберите действие
                     </option>
-                    <option value="category" data-action="category" data-show="select">
-                        Изменить категорию
-                    </option>
                     <option value="active" data-action="active" data-show="none">
                         Опубликовать
                     </option>
