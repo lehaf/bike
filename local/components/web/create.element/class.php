@@ -928,7 +928,7 @@ class CreateElement extends \CBitrixComponent
 
             if(!empty($rsElements)) {
                 $ids = array_column($rsElements, 'ID');
-                if(!in_array($this->elementId, $ids)) {
+                if(!in_array($this->elementId, $ids) || (in_array($this->elementId, $ids) && $this->requestData['GET']['action'] === "copy")) {
                     $errors['IBLOCK_SECTION_ID'] = 'В данной категории уже есть объявление';
                 }
             }
