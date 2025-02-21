@@ -12,10 +12,30 @@ $mid = 'web.doc';
 if (!$USER->IsAdmin() || !Loader::includeModule($mid)) return;
 $APPLICATION->SetAdditionalCSS("/bitrix/css/" . $mid . "/style.css");
 ?>
-<h2>Страница добавления объявления</h2>
+<h2>Модерация объявлений</h2>
 <div class="point">
-
+    <p>
+        Для того чтобы объявления из раздела перед публикацией отправлялось на модерацию, необходимо в разделе во
+        вкладке "Доп.поля" поставить галочку на "Отправлять на модерацию".
+    </p>
+    <img src="/bitrix/images/web.doc/img_mod_1.png" alt="">
+    <p>
+        Чтобы просмотреть в админке объявления, находящиеся на модерации необходимо перейти в <a
+                href="/bitrix/admin/iblock_element_admin.php?IBLOCK_ID=26&type=aspro_max_catalog&lang=ru&find_el_y=Y&clear_filter=Y&apply_filter=Y">Контент->Каталог->Каталог
+            товаров->Товары</a> или в <a
+                href="/bitrix/admin/cat_product_admin.php?IBLOCK_ID=26&type=aspro_max_catalog&lang=ru&find_section_section=-1">Магазин->Каталоги
+            товаров->Каталог товаров->Товары</a>. Там в поле "Фильтр + поиск" из списка фильтров выбрать "На модерации"
+        или добавить свойство "На модерации" в фильтр через кнопку "Добавить поле".
+    </p>
+    <div style="display: flex; gap: 0 10px">
+        <img src="/bitrix/images/web.doc/img_mod_2.png" alt="">
+        <img src="/bitrix/images/web.doc/img_mod_3.png" alt="">
+    </div>
+    <p>После успешного прохождения модерации у объявления нужно снять галочку "На модерации" и установить галочку "Активность"</p>
+    <img src="/bitrix/images/web.doc/img_mod_4.png" alt="">
 </div>
+
+<h2>Страница добавления объявления</h2>
 
 <p>Для отображения свойств необходимо добавить их к разделу и к необходимой “секции” на странице.</p>
 <h3>Добавление к разделу</h3>
