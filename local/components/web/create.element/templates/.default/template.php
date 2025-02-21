@@ -4,22 +4,15 @@ use Bitrix\Main\Localization\Loc;
 
 $this->setFrameMode(true);
 ?>
-<?php
-
-use \Bitrix\Main\Page\Asset;
-
-?>
     <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&apikey=4535c715-1fd8-4d4a-87bb-8313fe9f8f1b&suggest_apikey=e69e7cac-7b28-48b3-be09-dba3b9e6e1f4"
             type="text/javascript"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jquery.maskedinput@1.4.1/src/jquery.maskedinput.min.js"
-            type="text/javascript"></script>
-
 <?php
 $this->addExternalCss(SITE_TEMPLATE_PATH . "/css/choices.min.css", ['GROUP' => 1]);
 $this->addExternalCss(SITE_TEMPLATE_PATH . '/css/catalog/filter.css', ['GROUP' => 1000]);
 $this->addExternalCss(SITE_TEMPLATE_PATH . '/css/catalog/tmpStyle.css', ['GROUP' => 1000]);
 
 $this->addExternalJs(SITE_TEMPLATE_PATH . '/js/choices.min.js', ['GROUP' => 1]);
+$this->addExternalJs(SITE_TEMPLATE_PATH . '/js/jquery.maskedinput.min.js', ['GROUP' => 1]);
 $this->addExternalJs(SITE_TEMPLATE_PATH . '/js/custom/main.js', ['GROUP' => 1000]);
 
 $lastSectKey = (!empty($arResult["CUSTOM_SECTIONS"])) ? array_key_last($arResult["CUSTOM_SECTIONS"]) : "";
