@@ -30,6 +30,12 @@ if (!empty($sections)) {
 
 //разделение свойств по блокам
 if ($_GET['type']) {
+    $entity = \Bitrix\Iblock\Model\Section::compileEntityByIblock($arParams['IBLOCK_ID']);
+    $arResult['SECTION_CODE'] = $entity::getList([
+        'select' => ['UF_SECTION_CODE'],
+        'filter' => ['=ID' => $_GET['type']]
+    ])->fetch()['UF_SECTION_CODE'];
+
     $sectId = (!isset($arParams['PARENT_SECTION_ID'])) ? ["SECTION_ID" => $arParams['SECTION_ID']] : [
         "PARENT_SECTION_ID" => $arParams['PARENT_SECTION_ID'], "SECTION_ID" => $arParams['SECTION_ID']
     ];

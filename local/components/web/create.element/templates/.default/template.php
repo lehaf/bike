@@ -45,9 +45,21 @@ $notShowLabel = ['PRICE_TYPE'];
                                 "AREA_FILE_SHOW" => "file",
                                 "AREA_FILE_SUFFIX" => "inc",
                                 "EDIT_TEMPLATE" => "",
-                                "PATH" => "/include/add_page/top_text.php"
+                                "PATH" => "/include/add_page/top_text_" . $arResult['SECTION_CODE'] .".php"
                             )
                         );?>
+                        <?php endif;?>
+                        <?php if((int)$arParams['SECTION_ID'] === SERVICES_SECTION_ID):?>
+                            <?$APPLICATION->IncludeComponent(
+                                "bitrix:main.include",
+                                "",
+                                Array(
+                                    "AREA_FILE_SHOW" => "file",
+                                    "AREA_FILE_SUFFIX" => "inc",
+                                    "EDIT_TEMPLATE" => "",
+                                    "PATH" => "/include/add_page/top_text_services.php"
+                                )
+                            );?>
                         <?php endif;?>
                         <?php foreach ($arResult['SORT_SHOW_FIELDS'] as $key => $block): ?>
                             <?php $class = '';
