@@ -194,8 +194,6 @@ if (!empty($arResult['ITEMS'])) {
         $records = $entityCatalog::getList([
             'select' => ['ID', 'IBLOCK_SECTION_ID'], // Укажите нужные поля
             'filter' => [
-                '=IBLOCK_ID' => $arParams['IBLOCK_ID'],
-                '=ACTIVE' => 'Y',
                 '=USER.VALUE' => \Bitrix\Main\Engine\CurrentUser::get()->getId(),
                 '=IBLOCK_SECTION_ID' => $allChildSections
             ]
