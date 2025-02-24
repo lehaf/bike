@@ -119,9 +119,6 @@ list($bPhoneAuthSupported, $bPhoneAuthShow, $bPhoneAuthRequired, $bPhoneAuthUse)
 								?>
 								<input required type="text" name="NAME" maxlength="50" value="<?=implode(' ', $arName);?>" />
 							</div>
-							<div class="iblock text_block">
-								<?=GetMessage("PERSONAL_NAME_DESCRIPTION")?>
-							</div>
 						</div>
 					</div>
 				<?else:?>
@@ -177,9 +174,6 @@ list($bPhoneAuthSupported, $bPhoneAuthShow, $bPhoneAuthRequired, $bPhoneAuthUse)
 							?>
 							<input required type="tel" name="PERSONAL_PHONE" class="phone" maxlength="255" value="<?=$arResult["arUser"]["PERSONAL_PHONE"]?>" />
 						</div>
-						<div class="iblock text_block">
-							<?=GetMessage("PERSONAL_PHONE_DESCRIPTION")?>
-						</div>
 					</div>
 				</div>
 				<?if($arResult['PHONE_REGISTRATION']):?>
@@ -204,9 +198,12 @@ list($bPhoneAuthSupported, $bPhoneAuthShow, $bPhoneAuthRequired, $bPhoneAuthUse)
 <!--                страна, регион и город-->
                 <div class="form-control">
                     <div class="iblock label_block">
-                        <label>Местоположение<?=($arResult['PHONE_REQUIRED'] ? '<span class="star">*</span>' : '')?></label>
+                        <label><?=GetMessage('PERSONAL_LOCATION')?><?=($arResult['PHONE_REQUIRED'] ? '<span class="star">*</span>' : '')?></label>
                     </div>
-                    <div class="form-row flex-row location-group-select" style="margin-top: 0">
+                    <div class="text_block">
+                        <?=GetMessage('PERSONAL_LOCATION_DESCRIPTION')?>
+                    </div>
+                    <div class="form-row flex-row location-group-select">
                         <div class="form-row__col-30">
                             <div class="form-group custom-select-inner form-group-custom-select">
                                 <div class="form-row">
@@ -303,7 +300,6 @@ list($bPhoneAuthSupported, $bPhoneAuthShow, $bPhoneAuthRequired, $bPhoneAuthUse)
 					</div>
 				</div>
 			</form>
-			<?if($arResult["SOCSERV_ENABLED"]){ $APPLICATION->IncludeComponent("bitrix:socserv.auth.split", "main", array("SUFFIX"=>"form", "SHOW_PROFILES" => "Y","ALLOW_DELETE" => "Y"),false);}?>
 		<?endif;?>
 	</div>
 	<script>

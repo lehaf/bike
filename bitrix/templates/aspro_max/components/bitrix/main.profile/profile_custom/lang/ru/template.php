@@ -3,7 +3,8 @@ $MESS ['PERSONAL_DATA'] = "Персональные данные";
 $MESS ["PERSONAL_EMAIL"] = "E-mail";
 $MESS ["PERSONAL_LOGIN"] = "Логин";
 $MESS ["PERSONAL_NAME"] = "Имя";
-$MESS ["PERSONAL_FIO"] = "Фамилия Имя Отчество";
+$MESS ["PERSONAL_FIO"] = "Имя продавца / Название организации";
+$MESS ["PERSONAL_LOCATION"] = "Местоположение";
 $MESS ["PERSONAL_LASTNAME"] = "Фамилия";
 $MESS ["PERSONAL_SECONDNAME"] = "Отчество";
 $MESS ["PERSONAL_PHONE"] = "Телефон";
@@ -17,10 +18,11 @@ $MESS ["REQUIRED_FIELDS"] = "Обязательные поля";
 $MESS ["MAIN_ADD_TITLE"] = "Добавить";
 $MESS ["MAIN_SAVE_TITLE"] = "Сохранить изменения";
 
-$MESS ['PERSONAL_EMAIL_DESCRIPTION'] = "Для отправки уведомлений о статусе заказа. Используйте как логин для входа в личный кабинет";
+$MESS ['PERSONAL_EMAIL_DESCRIPTION'] = "Для отправки уведомлений. Используйте как логин для входа в личный кабинет";
 $MESS ['PERSONAL_EMAIL_SHORT_DESCRIPTION'] = "Для отправки уведомлений о статусе заказа";
 $MESS ["PERSONAL_NAME_DESCRIPTION"] = "Заполните, чтобы мы знали, как к вам обращаться";
 $MESS ["PERSONAL_PHONE_DESCRIPTION"] = "Необходим для уточнения деталей заказа";
+$MESS ["PERSONAL_LOCATION_DESCRIPTION"] = "Укажите ваше местоположение, чтобы пользователи из определенного региона/города могли найти ваши услуги или товары с помощью соответствующего фильтра";
 
 $MESS ["PROFILE_DATA_SAVED"] = "Изменения сохранены";
 $MESS ["REG_SHOW_HIDE"] = "Регистрационная информация";
