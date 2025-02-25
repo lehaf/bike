@@ -37,27 +37,10 @@ function init() {
 	addListener(regionEl, regionSelect, citySelect)
 	addListener(cityEl, citySelect, false)
 
-	// let filterName = document.querySelector('#countryFilter').getAttribute('data-name') || 'arFilter';
-	// if(params[filterName + '_country']) {
-	//     getLocation('getRegions', 'location', params[filterName + '_country']);
-	// }
-	// if(params[filterName + '_region']) {
-	//     getLocation('getCities', 'location', params[filterName + '_region']);
-	// }
-
-	let locationSelects = document.querySelectorAll('.row-border select');
-
-	locationSelects.forEach(select => {
-		select.addEventListener('change', () => {
-			let attribute = select.getAttribute("id");
-			if (attribute === "country") {
-				regionSelect.setChoiceByValue('');
-				citySelect.setChoiceByValue('');
-			} else if (attribute === "region") {
-				citySelect.setChoiceByValue('');
-			}
-		})
-	})
+	document.querySelector("form[name='form1']").addEventListener("submit", function() {
+		regionSelect.enable();
+		citySelect.enable();
+	});
 	function selectAdd(countryEl, regionEl) {
 		if (countryEl && regionEl) {
 			countryEl.onchange = () => {
@@ -86,7 +69,7 @@ function init() {
 				let textContent = event.target.textContent.replace(/\s+/g, '').toLowerCase();
 
 				if (textContent === "сбросить" || textContent === "любая") {
-					let attribute = el.getAttribute("id");
+					let attribute = el.id;
 					if (attribute === "country") {
 						regionSelect.setChoiceByValue('');
 						citySelect.setChoiceByValue('');
@@ -113,7 +96,6 @@ function init() {
 						selectClear.enable();
 					}
 					// this.closest(".form-row__col-30").classList.add("is-active");
-
 				}
 				$('.custom-select-inner:not(".select-no_reset") .choices__item--choice[data-id=2]').attr("data-value", "reset");
 			},
