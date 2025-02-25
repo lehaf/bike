@@ -20,13 +20,19 @@ if($arRegion){
 <?
 //set params for props from module
 \Aspro\Functions\CAsproMax::replacePropsParams($arParams);
+
+// add cacheable params
+TSolution\CacheableUrl::addParams([
+	'q',			// query to search
+	'section_id',	// filter results by section
+]);
 ?>
 
 <?$APPLICATION->SetTitle(GetMessage("CMP_TITLE"));?>
 <?$APPLICATION->IncludeComponent(
 	"bitrix:catalog.search",
-	"main",
-	Array(	
+	"main_custom",
+	Array(
 		"IBLOCK_TYPE" => $arParams["IBLOCK_TYPE"],
 		"IBLOCK_ID" => $arParams["IBLOCK_ID"],
 		"IBLOCK_TIZERS_ID" => $arParams["IBLOCK_TIZERS_ID"],

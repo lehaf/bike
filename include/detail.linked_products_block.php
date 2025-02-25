@@ -26,7 +26,7 @@ if($arRegion)
 <?if (!$arParams['OFFERS_PROPERTY_CODE']) $arParams['OFFERS_PROPERTY_CODE'] = $arParams['LIST_OFFERS_PROPERTY_CODE'] ;?>
 <?$APPLICATION->IncludeComponent(
 	"bitrix:catalog.section",
-	"catalog_block",
+	"catalog_block_custom",
 	array(
 		"COMPATIBLE_MODE" => "Y",
 		"IBLOCK_TYPE" => $arParams["IBLOCK_TYPE"],
@@ -135,7 +135,13 @@ if($arRegion)
 		"COMPOSITE_FRAME_MODE" => "A",
 		"REVIEWS_VIEW" => CMax::GetFrontParametrValue('REVIEWS_VIEW') == 'EXTENDED',
 		"SET_SKU_TITLE" => ((CMax::GetFrontParametrValue("TYPE_SKU") == "TYPE_1" && CMax::GetFrontParametrValue("CHANGE_TITLE_ITEM_LIST") == "Y") ? "Y" : ""),
-		"COMPOSITE_FRAME_TYPE" => "AUTO"
+		"COMPOSITE_FRAME_TYPE" => "AUTO",
+
+		'CURRENT_BASE_PAGE' => Aspro\Max\CacheableUrl::get(),
+        'PAGER_BASE_LINK' => Aspro\Max\CacheableUrl::get(),
+        'PAGER_BASE_LINK_ENABLE' => 'Y',
+
+		
 	),
 	false, array("HIDE_ICONS" => "Y")
 );?>

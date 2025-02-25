@@ -1,10 +1,17 @@
 <?
+$MESS["SECT_ORDER_desc"] = " (убывание)";
+$MESS["SECT_ORDER_asc"] = " (возрастание)";
+$MESS["SECT_ORDER_PROPERTY_LAST_RISE_desc"] = " (новые объявления)";
+$MESS["SECT_ORDER_PROPERTY_LAST_RISE_asc"] = " (старые объявления)";
+$MESS["SECT_ORDER_PRICE_desc"] = " (дорогие)";
+$MESS["SECT_ORDER_PRICE_asc"] = " (дешевые)";
 $MESS["CMP_TITLE"] = "Поиск";
 $MESS["SECT_SORT_SHOWS"] = "По популярности";
 $MESS["SECT_SORT_NAME"] = "По алфавиту";
 $MESS["SECT_SORT_PRICE"] = "По цене";
 $MESS["SECT_SORT_QUANTITY"] = "По наличию";
 $MESS["SECT_SORT_CATALOG_AVAILABLE"] = "По наличию";
+$MESS["SECT_SORT_PROPERTY_LAST_RISE"] = "Дата";
 $MESS["SECT_DISPLAY_LIST"] = "списком";
 $MESS["SECT_DISPLAY_TABLE"] = "таблицей";
 $MESS["SECT_DISPLAY_BLOCK"] = "плиткой";
