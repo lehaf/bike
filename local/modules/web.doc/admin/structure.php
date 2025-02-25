@@ -85,7 +85,24 @@ $APPLICATION->SetAdditionalCSS("/bitrix/css/" . $mid . "/style.css");
 </div>
 
 <div style="margin-bottom: 50px">
-    Для кастомизации карточек блока "Ранее вы смотрели" необходимо в файлу <i>include/footer/comp_viewed.php</i> установить шаблон main_horizontal_custom для компонета aspro:catalog.viewed.max (расположен в bitrix/templates/aspro_max/components/aspro/catalog.viewed.max/main_horizontal_custom/)
+    Для кастомизации карточек блока "Ранее вы смотрели" необходимо в файле <i>include/footer/comp_viewed.php</i> установить шаблон main_horizontal_custom для компонета aspro:catalog.viewed.max (расположен в bitrix/templates/aspro_max/components/aspro/catalog.viewed.max/main_horizontal_custom/)
+</div>
+<div style="margin-bottom: 50px">
+    Для отображения кастомных карточек товаров на странице бренда в файле <i>include/detail.linked_products_block.php</i> установить шаблон catalog_block_custom для компонета bitrix:catalog.section
+</div>
+<div style="margin-bottom: 50px">
+    <p>Для отображения кастомных карточек товаров на странице поиска в файле <i>bitrix/templates/aspro_max/components/bitrix/catalog/main/search.php</i> установить шаблон main_custom для компонета bitrix:catalog.search.</p>
+    <p>Также в языковой файл (<i>bitrix/templates/aspro_max/components/bitrix/catalog/main/lang/ru/search.php</i>) добавить следующие строки, чтобы корректно отображалась сортировка:</p>
+    <pre>
+        $MESS["SECT_ORDER_desc"] = " (убывание)";
+        $MESS["SECT_ORDER_asc"] = " (возрастание)";
+        $MESS["SECT_ORDER_PROPERTY_LAST_RISE_desc"] = " (новые объявления)";
+        $MESS["SECT_ORDER_PROPERTY_LAST_RISE_asc"] = " (старые объявления)";
+        $MESS["SECT_ORDER_PRICE_desc"] = " (дорогие)";
+        $MESS["SECT_ORDER_PRICE_asc"] = " (дешевые)";
+        $MESS["SECT_SORT_PROPERTY_LAST_RISE"] = "Дата";
+        $MESS["CMP_TITLE"] = "Поиск";
+    </pre>
 </div>
 
 <h3>Кроны</h3>
