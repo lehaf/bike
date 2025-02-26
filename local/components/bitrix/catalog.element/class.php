@@ -335,7 +335,7 @@ class CatalogElementComponent extends Element
             ['ID', 'ACTIVE', 'PROPERTY_USER']
         )->Fetch();
 
-        if($element['PROPERTY_USER_VALUE'] == \Bitrix\Main\Engine\CurrentUser::get()->getId()) {
+        if($element['PROPERTY_USER_VALUE'] == \Bitrix\Main\Engine\CurrentUser::get()->getId() || \Bitrix\Main\Engine\CurrentUser::get()->isAdmin()) {
             unset($filterFields['ACTIVE']);
         }
 
