@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-    console.log(document.querySelector("#stepForm"))
     document.querySelector("#stepForm").addEventListener("keypress", function (event) {
         if (event.key === "Enter" && event.target.tagName !== "TEXTAREA") {
             event.preventDefault();
@@ -123,7 +122,6 @@ document.addEventListener("DOMContentLoaded", () => {
             endPrice.setAttribute("data-text" , "USD");
             if(startPrice.value){
                 let sumStart = startPrice.value.slice(0,-5);
-                console.log(sumStart)
                 startPrice.value = sumStart + ", " + "USD";
             }
             if(endPrice.value){
@@ -563,7 +561,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         function inputBrand(objBrandsFull) {
             brandInput.addEventListener("input", function (event) {
-                console.log(this.value);
                 let value = this.value;
                 brandBlock.innerHTML = ""
                 for (let el in objBrandsFull) {
@@ -760,8 +757,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function readerImgFile(imgList) {
-
-        console.log(imgList);
         if (imgList.length !== 0) {
             imgList.forEach((file) => {
 
@@ -848,6 +843,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const dataName = target.closest(".preview-img").querySelector(".preview-remove").getAttribute("data-file");
             const selectedFile = fileListImg.find(file => file.name === dataName);
+
             if (selectedFile) {
                 fileListImg = fileListImg.filter(file => file !== selectedFile);
                 fileListImg.unshift(selectedFile);
@@ -1008,11 +1004,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 formData.set('action', params['action']);
             }
 
-            console.log(fileListImg);
-            let preview = fileListImg.shift();
+            let preview = fileListImg[0];
+            let fileListImgCopy = fileListImg.slice(1);
             formData.append('picture', preview);
 
-            fileListImg.forEach((img, key) => {
+            fileListImgCopy.forEach((img, key) => {
                 formData.append("MORE_PHOTO[" + key + "]", img);
             })
 
@@ -1124,19 +1120,6 @@ document.addEventListener("DOMContentLoaded", () => {
     // new code end
 
     if (params['element']) {
-        getLocationPromise('getRegions', 'location', countryEl.getAttribute('data-el'))
-            .then(() => {
-                return getLocationPromise('getCities', 'location', regionEl.getAttribute('data-el'));
-            })
-            .then(() => {
-                console.log('Все запросы завершены.');
-            })
-            .catch((error) => {
-                console.error('Ошибка:', error);
-            });
-        // getLocation('getRegions', 'location', countryEl.getAttribute('data-el'));
-        // getLocation('getCities', 'location', regionEl.getAttribute('data-el'));
-
         if (brandInput) {
             getCategories('getModels', 'categories', brandInput.getAttribute('data-el'));
         }

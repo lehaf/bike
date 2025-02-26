@@ -480,7 +480,6 @@ $notShowLabel = ['PRICE_TYPE'];
                                                                 <div class="form-row">
                                                                     <select name="COUNTRY"
                                                                             class="select-type  custom-select-list <?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? 'check-block' : '' ?>  country"
-                                                                        <?= ($arResult['ELEMENT_COUNTRY']) ? 'data-el=' . $arResult['ELEMENT_COUNTRY']['COUNTRY'] : '' ?>
                                                                             id="country">
                                                                         <option value="" selected>
                                                                             Страна
@@ -507,8 +506,7 @@ $notShowLabel = ['PRICE_TYPE'];
                                                                             class="select-type  custom-select-list <?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? 'check-block' : '' ?>  country"
                                                                             id="region"
                                                                             data-select="region-list"
-                                                                        <?= ($arResult['ELEMENT_COUNTRY']) ? 'data-el=' . $arResult['ELEMENT_COUNTRY']['REGION'] : '' ?>
-                                                                        <?=(!empty($arResult['USER_LOCATION']['UF_COUNTRY_ID'])) ? '' : 'disabled'?>
+                                                                        <?=(!empty($arResult['USER_LOCATION']['UF_COUNTRY_ID']) || !empty($arResult['ELEMENT_COUNTRY']['COUNTRY'])) ? '' : 'disabled'?>
                                                                     >
                                                                         <option value="" selected>
                                                                             Область
@@ -520,7 +518,7 @@ $notShowLabel = ['PRICE_TYPE'];
                                                                             <?php foreach ($arResult['REGIONS'] as $region): ?>
                                                                                 <option
                                                                                         value="<?= $region['ID'] ?>"
-                                                                                    <?=($arResult['USER_LOCATION']['UF_REGION_ID'] === $region['ID']) ? 'selected' : ''?>
+                                                                                    <?=($arResult['USER_LOCATION']['UF_REGION_ID'] === $region['ID'] || $arResult['ELEMENT_COUNTRY']['REGION'] === $region['ID']) ? 'selected' : ''?>
                                                                                 >
                                                                                     <?= $region['NAME'] ?>
                                                                                 </option>
@@ -540,8 +538,7 @@ $notShowLabel = ['PRICE_TYPE'];
                                                                             class="select-type  custom-select-list <?= ($field['CUSTOM_IS_REQUIRED'] === 'Y') ? 'check-block' : '' ?> country"
                                                                             id="city"
                                                                             data-select="city-list"
-                                                                        <?= ($arResult['ELEMENT_COUNTRY']) ? 'data-el=' . $arResult['ELEMENT_COUNTRY']['CITY'] : '' ?>
-                                                                        <?=(!empty($arResult['USER_LOCATION']['UF_REGION_ID'])) ? '' : 'disabled'?>
+                                                                        <?=(!empty($arResult['USER_LOCATION']['UF_REGION_ID']) || !empty($arResult['ELEMENT_COUNTRY']['REGION'])) ? '' : 'disabled'?>
                                                                             >
                                                                         <option value="" selected>
                                                                             Город
@@ -553,7 +550,7 @@ $notShowLabel = ['PRICE_TYPE'];
                                                                             <?php foreach ($arResult['CITIES'] as $city): ?>
                                                                                 <option
                                                                                         value="<?= $city['ID'] ?>"
-                                                                                    <?=($arResult['USER_LOCATION']['UF_CITY_ID'] === $city['ID']) ? 'selected' : ''?>
+                                                                                    <?=($arResult['USER_LOCATION']['UF_CITY_ID'] === $city['ID'] || $arResult['ELEMENT_COUNTRY']['CITY'] === $city['ID']) ? 'selected' : ''?>
                                                                                 >
                                                                                     <?= $city['NAME'] ?>
                                                                                 </option>

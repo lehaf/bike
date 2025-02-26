@@ -119,32 +119,31 @@ if(empty($arResult['ELEMENT_FIELDS'])) {
     ];
 }
 
-if(empty($arResult['ELEMENT_COUNTRY'])) {
-    $userLocation = \Bitrix\Main\UserTable::getList([
+if (empty($arResult['ELEMENT_COUNTRY'])) {
+    $arResult['USER_LOCATION'] = \Bitrix\Main\UserTable::getList([
         'select' => ['UF_COUNTRY_ID', 'UF_REGION_ID', 'UF_CITY_ID'],
         'filter' => ['ID' => \Bitrix\Main\Engine\CurrentUser::get()->getId()],
     ])->fetch();
-    if(!empty($userLocation['UF_COUNTRY_ID'])) {
-        $id = $userLocation['UF_COUNTRY_ID'];
-        $type = 'REGION';
-        $arResult['REGIONS'] = getLocations($type, $id);
-    }
 
-    if(!empty($userLocation['UF_REGION_ID'])) {;
-        $id = $userLocation['UF_REGION_ID'];
-        $type = 'CITY';
-        $arResult['CITIES'] = getLocations($type, $id);
-    }
-
-    $arResult['USER_LOCATION'] = $userLocation;
+    setLocations($arResult, $arResult['USER_LOCATION']['UF_COUNTRY_ID'], $arResult['USER_LOCATION']['UF_REGION_ID']);
+} else {
+    setLocations($arResult, $arResult['ELEMENT_COUNTRY']['COUNTRY'], $arResult['ELEMENT_COUNTRY']['REGION']);
 }
-
 function getPriceType($value, $priceTypes) {
     return in_array($value['CODE'], $priceTypes);
 }
 
 function unsetPriceType($value, $priceTypes) {
     return !in_array($value['CODE'], $priceTypes);
+}
+
+function setLocations(&$arResult, $countryId, $regionId) {
+    if ($countryId) {
+        $arResult['REGIONS'] = getLocations('REGION', $countryId);
+    }
+    if ($regionId) {
+        $arResult['CITIES'] = getLocations('CITY', $regionId);
+    }
 }
 
 ?>
