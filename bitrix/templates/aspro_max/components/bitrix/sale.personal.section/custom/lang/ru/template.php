@@ -1,5 +1,6 @@
 <?php
 $MESS["SPS_ADS_PAGE_NAME"] = "Мои объявления";
+$MESS["SPS_MODERATION_PAGE_NAME"] = "Модерация";
 $MESS["SPS_ACCOUNT_PAGE_NAME"] = "Личный счет";
 $MESS["SPS_PERSONAL_PAGE_NAME"] = "Личные данные";
 $MESS["SPS_PROFILE_PAGE_NAME"] = "Профили заказов";

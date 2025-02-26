@@ -13,6 +13,23 @@ $theme = Bitrix\Main\Config\Option::get("main", "wizard_eshop_bootstrap_theme_id
 
 $availablePages = array();
 
+
+if ($arParams['SHOW_MODERATION_PAGE'] === 'Y' && \Bitrix\Main\Engine\CurrentUser::get()->isAdmin()) {
+    $empty = \Bitrix\Iblock\Iblock::wakeUp(CATALOG_IBLOCK_ID)->getEntityDataClass();
+    $elementCount = $empty::getList([
+        'filter' => ['!=IS_MODERATION.VALUE' => false],
+        'count_total' => 1,
+    ])->getCount();
+
+    $availablePages[] = array(
+        "path" => $arResult['PATH_TO_MODERATION'] ?? SITE_DIR . 'personal/moderation/',
+        "name" => Loc::getMessage("SPS_MODERATION_PAGE_NAME") . ' (' . $elementCount . ')',
+        //CMax::showIconSvg("cat_icons light-ignore", $arImg["src"]);
+        //"icon" => '<i class="cur_orders"></i>'
+        "icon" => CMax::showIconSvg("cur_orders colored", SITE_TEMPLATE_PATH . '/images/svg/personal/recent_orders.svg')
+    );
+}
+
 if ($arParams['SHOW_ADS_PAGE'] === 'Y') {
     $empty = \Bitrix\Iblock\Iblock::wakeUp(CATALOG_IBLOCK_ID)->getEntityDataClass();
     $elementCount = $empty::getList([

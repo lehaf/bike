@@ -60,7 +60,7 @@ else{
 		"SHOW_ORDER_PAGE" => "N",
 		"SHOW_PRIVATE_PAGE" => "Y",
 		"SHOW_PROFILE_PAGE" => "N",
-		"SHOW_SUBSCRIBE_PAGE" => "Y",
+		"SHOW_SUBSCRIBE_PAGE" => "N",
 		"USER_PROPERTY_PRIVATE" => "",
 		"USE_AJAX_LOCATIONS_PROFILE" => "N",
 		"COMPONENT_TEMPLATE" => "custom",
@@ -84,7 +84,9 @@ else{
 		"ORDER_REFRESH_PRICES" => "N",
 		"ORDER_DISALLOW_CANCEL" => "N",
 		"SHOW_ADS_PAGE" => "Y",
+		"SHOW_MODERATION_PAGE" => "Y",
 		"PATH_TO_ADS" => SITE_DIR."personal/obyavleniya/",
+		"PATH_TO_MODERATION" => SITE_DIR."personal/moderation/",
 		"SEF_URL_TEMPLATES" => array(
 			"index" => "index.php",
 			"orders" => "orders/",

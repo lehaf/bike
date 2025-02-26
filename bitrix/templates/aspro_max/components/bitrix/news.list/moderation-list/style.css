@@ -16,6 +16,11 @@
     padding: 0 20px;
 }
 
+.custom-input {
+    width: 35vw;
+    padding: 5px;
+}
+
 .container_inner{
     display: flex;
     gap: 32px;
@@ -188,23 +193,14 @@
     border-bottom: 1px solid #ececec;
 }
 
-.advert-mod-error{
-    font-size: 13px;
-    color: red;
-    margin-bottom: 5px;
-}
-.advert-mod-error span{
-    font-weight: bold;
-}
-
 .advert-item__row{
     display: flex;
     gap: 27px;
 }
 
 .advert-item__photo{
-    width: 200px;
-    height: 200px;
+    width: 100px;
+    height: 100px;
     flex-shrink: 0;
 }
 
@@ -295,6 +291,7 @@ span.moderation{
 .advert-item__info{
     display: flex;
     justify-content: space-between;
+    align-items: center;
     flex-grow: 1;
 }
 
