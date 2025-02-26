@@ -152,7 +152,7 @@
                             </div>
                         </div>
                         <div class="product-item-right">
-                            <?php if(empty($arItem['PROPERTIES']['IS_MODERATION']['VALUE'])):?>
+                            <?php if(empty($arItem['PROPERTIES']['IS_MODERATION']['VALUE']) && empty($arItem['PROPERTIES']['MODERATION_ERROR']['VALUE'])):?>
                             <div class="product-item-btn">
                                 <?php if(!$arItem['UP_TIME_LEFT']):?>
                                 <a href="#" class="advert-btn-up">
