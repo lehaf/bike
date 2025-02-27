@@ -828,12 +828,14 @@ class CreateElement extends \CBitrixComponent
                 $year = $this->getCheckProperty('year', $data);
 
                 $name = $type . ' ' . $data["SECTION"] . ' ' . $data["SUBSECTION"];
+                if(!empty($data["MODEL_OTHER"])) $name .= ' ' . $data["MODEL_OTHER"];
                 if (!empty($data["year"])) $name .= ', ' . $year . ' г.';
             } elseif ((int)$this->section["IBLOCK_SECTION_ID"] === PARTS_SECTION_ID) {
                 $type = $this->getCheckProperty('type_' . $sectCode, $data);
                 $year = $this->getCheckProperty('year', $data);
 
                 $name = $type . ' к ' . $data["SECTION"] . ' ' . $data["SUBSECTION"];
+                if(!empty($data["MODEL_OTHER"])) $name .= ' ' . $data["MODEL_OTHER"];
                 if (!empty($data["year"])) $name .= ', ' . $year . ' г.';
             } elseif ((int)$this->section["ID"] === GARAGES_SECTION_ID) {
                 $category = $this->getCheckProperty('category_garage', $data);
