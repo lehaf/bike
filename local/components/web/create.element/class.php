@@ -300,7 +300,7 @@ class CreateElement extends \CBitrixComponent
             $this->errors = $this->checkFields($data['POST']);
 
             if (empty($this->errors)) {
-                $data["POST"]["NAME"] = $this->setName($data["POST"]);
+                $data["POST"]["NAME"] = $this->getName($data["POST"]);
                 $data["POST"]["USER"] = $this->userId;
                 $data["POST"]["IBLOCK_SECTION_ID"] = (isset($data["POST"]["IBLOCK_SECTION_ID"])) ? $data["POST"]["IBLOCK_SECTION_ID"] : $_GET['type'];
 
@@ -581,8 +581,8 @@ class CreateElement extends \CBitrixComponent
             $userType = 'fis';
         }
 
-        $enumId = $this->getFieldEnumId('saller', (int)$this->arParams['IBLOCK_ID'], ['XML_ID' => $userType]);
-        $newElement->set("saller", $enumId['ID']);
+        $enumId = $this->getFieldEnumId('saller', (int)$this->arParams['IBLOCK_ID'], ['XML_ID' => $userType]);;
+        $newElement->set("saller", $enumId);
 
         if(!empty($this->section['UF_MODERATION'])) {
             $moderationEnumId = $this->getFieldEnumId('IS_MODERATION', (int)$this->arParams['IBLOCK_ID'], ['XML_ID' => 'Y']);
@@ -817,7 +817,7 @@ class CreateElement extends \CBitrixComponent
         return $propertyValue['VALUE'] ?? "";
     }
 
-    private function setName(array $data): string
+    private function getName(array $data): string
     {
         $sectCode = (!empty($this->section['UF_SECTION_CODE'])) ? $this->section['UF_SECTION_CODE'] : $this->section['CODE'];
         $name = $data["NAME"] ?? "";
