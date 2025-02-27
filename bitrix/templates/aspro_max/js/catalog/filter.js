@@ -846,7 +846,7 @@ function initFilter() {
             position: 'bottom'
         });
 
-        item.closest('.custom-select--multiple')?.addEventListener('click', (event) => {
+        item.closest('.choices__inner')?.addEventListener('click', (event) => {
             if(event.target.closest('.choices').classList.contains('is-open')) {
                 selectMultiple.hideDropdown();
             }
