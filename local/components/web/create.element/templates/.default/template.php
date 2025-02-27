@@ -15,7 +15,7 @@ $this->addExternalJs(SITE_TEMPLATE_PATH . '/js/choices.min.js', ['GROUP' => 1]);
 $this->addExternalJs(SITE_TEMPLATE_PATH . '/js/jquery.maskedinput.min.js', ['GROUP' => 1]);
 $this->addExternalJs(SITE_TEMPLATE_PATH . '/js/custom/main.js', ['GROUP' => 1000]);
 
-$lastSectKey = (!empty($arResult["CUSTOM_SECTIONS"])) ? array_key_last($arResult["CUSTOM_SECTIONS"]) : "";
+$firstSectKey = (!empty($arResult["CUSTOM_SECTIONS"])) ? array_key_first($arResult["CUSTOM_SECTIONS"]) : "";
 
 $firstFieldKey = (!empty($arResult["SORT_SHOW_FIELDS"])) ? array_key_first($arResult["SORT_SHOW_FIELDS"]) : "";
 $showCategories = "";
@@ -901,13 +901,13 @@ $notShowLabel = ['PRICE_TYPE'];
                     <div class="wrapper">
                         <div class="step-category">
                             <?php foreach ($arResult["CUSTOM_SECTIONS"] as $key => $sections): ?>
-                                <div class="step-category-container <?= ($lastSectKey === $key) ? 'step-category-container--center' : ''; ?>">
+                                <div class="step-category-container <?= ($firstSectKey === $key) ? 'step-category-container--center' : ''; ?>">
                                     <div class="step-category__title">
                                         <?= Loc::getMessage($key) ?>
                                     </div>
-                                    <div class="step-category-inner <?= ($lastSectKey === $key) ? 'step-category-inner--center' : ''; ?>">
+                                    <div class="step-category-inner <?= ($firstSectKey === $key) ? 'step-category-inner--center' : ''; ?>">
                                         <?php foreach ($sections as $number => $sect): ?>
-                                            <a class="step-category__el <?= ($number === (count($sections) - 1) && $lastSectKey !== $key) ? 'step-category__el--center' : '' ?>"
+                                            <a class="step-category__el <?= ($number === (count($sections) - 1) && $firstSectKey !== $key) ? 'step-category__el--center' : '' ?>"
                                                data-id="<?= $sect["ID"] ?>"
                                                href="?type=<?= $sect["ID"] ?>"
                                             >

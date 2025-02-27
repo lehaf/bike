@@ -48,6 +48,10 @@ input[type='text'].choices__input:focus {
     padding: 23px;
 }
 
+.step-category-container:first-child {
+    width: 100%;
+}
+
 .step-category-inner {
     display: flex;
     flex-wrap: wrap;

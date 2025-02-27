@@ -639,22 +639,24 @@ $price = $arResult['ITEMS']['BASE'];
             <!--                коробка-->
             <?php if (!empty($arResult['ITEMS']['transmission_' . $sectCode]['VALUES'])): ?>
                 <div class="form-row__col-30 <?= ($arResult['ITEMS']['transmission_' . $sectCode]['HAS_CHECKED']) ? 'store-active' : '' ?>">
-                    <div class="custom-select-inner form-group-custom-select">
-                        <div class="custom-select--multiple">
-                            <select name="<?= current($arResult['ITEMS']['transmission_' . $sectCode]['VALUES'])['CONTROL_NAME_ALT'] ?>"
-                                    id="transmission" multiple>
-                                <option placeholder>Коробка</option>
-                                <option value="reset">Любая</option>
-                                <?php foreach ($arResult['ITEMS']['transmission_' . $sectCode]['VALUES'] as $ar): ?>
-                                    <option
-                                            id="<?= $ar['CONTROL_ID'] ?>"
-                                            value="<?= $ar["HTML_VALUE_ALT"] ?>"
-                                        <?= ($ar["CHECKED"]) ? 'selected' : '' ?>
-                                    >
-                                        <?= $ar["VALUE"] ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
+                    <div class="form-row__col">
+                        <div class="custom-select-inner form-group-custom-select">
+                            <div class="custom-select--multiple">
+                                <select name="<?= current($arResult['ITEMS']['transmission_' . $sectCode]['VALUES'])['CONTROL_NAME_ALT'] ?>"
+                                        id="transmission" multiple>
+                                    <option placeholder>Коробка</option>
+                                    <option value="reset">Любая</option>
+                                    <?php foreach ($arResult['ITEMS']['transmission_' . $sectCode]['VALUES'] as $ar): ?>
+                                        <option
+                                                id="<?= $ar['CONTROL_ID'] ?>"
+                                                value="<?= $ar["HTML_VALUE_ALT"] ?>"
+                                            <?= ($ar["CHECKED"]) ? 'selected' : '' ?>
+                                        >
+                                            <?= $ar["VALUE"] ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>
