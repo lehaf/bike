@@ -1927,9 +1927,9 @@ input[type="file"] {
 .is-active .custom-select--multiple .choices__input {
     opacity: 0;
     /*display: none;*/
-    max-width: 30%;
+    max-width: 0;
     min-width: initial !important;
-    width: initial !important;
+    width: 0 !important;
 }
 
 .custom-select--small .choices__input {
