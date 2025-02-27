@@ -300,7 +300,7 @@ class CreateElement extends \CBitrixComponent
             $this->errors = $this->checkFields($data['POST']);
 
             if (empty($this->errors)) {
-                $data["POST"]["NAME"] = $this->getName($data["POST"]);
+                $data["POST"]["NAME"] = $this->setName($data["POST"]);
                 $data["POST"]["USER"] = $this->userId;
                 $data["POST"]["IBLOCK_SECTION_ID"] = (isset($data["POST"]["IBLOCK_SECTION_ID"])) ? $data["POST"]["IBLOCK_SECTION_ID"] : $_GET['type'];
 
@@ -817,7 +817,7 @@ class CreateElement extends \CBitrixComponent
         return $propertyValue['VALUE'] ?? "";
     }
 
-    private function getName(array $data): string
+    private function setName(array $data): string
     {
         $sectCode = (!empty($this->section['UF_SECTION_CODE'])) ? $this->section['UF_SECTION_CODE'] : $this->section['CODE'];
         $name = $data["NAME"] ?? "";
