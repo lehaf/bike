@@ -873,7 +873,8 @@ function initFilter() {
                     selectMultiple.removeActiveItems();
                     selectMultiple.hideDropdown();
                     // cntParam(-1, this.closest(".form-row__col"));
-                    this.closest(".form-row__col").classList.remove("is-active");
+                    choices.classList.remove('is-dropdown-open');
+                    this.closest('.choices__inner').classList.remove("is-active");
                 })
             } else {
                 cntParam(1, this.closest(".form-row__col"));
