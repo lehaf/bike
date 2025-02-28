@@ -846,11 +846,13 @@ function initFilter() {
             position: 'bottom'
         });
 
-        let currentChoice = item.closest('.custom-select--multiple');
-        currentChoice?.addEventListener('mousedown', (event) => {
-            event.preventDefault();
-            if(currentChoice.querySelector('.choices').classList.contains('is-open')) {
+        let choices = item.closest('.choices__inner');
+        choices?.addEventListener('click', (event) => {
+            if(choices.classList.contains('is-dropdown-open')) {
+                choices.classList.remove('is-dropdown-open');
                 selectMultiple.hideDropdown();
+            } else {
+                choices.classList.add('is-dropdown-open');
             }
         })
 
