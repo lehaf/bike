@@ -847,7 +847,8 @@ function initFilter() {
         });
 
         item.closest('.choices__inner')?.addEventListener('click', (event) => {
-            if(event.target.closest('.choices').classList.contains('is-open')) {
+            console.log(event.currentTarget);
+            if(event.currentTarget.closest('.choices').classList.contains('is-open')) {
                 selectMultiple.hideDropdown();
             }
         })
