@@ -846,9 +846,9 @@ function initFilter() {
             position: 'bottom'
         });
 
-        let currentChoice = item.closest('.choices__inner');
+        let currentChoice = item.closest('.custom-select--multiple');
         currentChoice?.addEventListener('mousedown', (event) => {
-            if(currentChoice.closest('.choices').classList.contains('is-open')) {
+            if(currentChoice.querySelector('.choices').classList.contains('is-open')) {
                 selectMultiple.hideDropdown();
             }
         })
