@@ -525,7 +525,7 @@ function initFilter() {
     function previewFoundBrand() {
         foundBrandBlock.innerHTML = "";
         let text = document.querySelector('.found-brand').getAttribute('data-text');
-        console.log(text);
+        console.log(getUrlForCatalog());
         let index = 0;
         for (const brand of popularDataFoundBrand) {
             let pathName = (getUrlForCatalog().length !== 0) ? getUrlForCatalog() : window.location.pathname;
@@ -680,10 +680,11 @@ function initFilter() {
 
         if(tabsFilter) {
             let activeTab = document.querySelector('.advert-tabs__item.active');
-            let activeSection = activeTab.getAttribute('data-type');
+            let activeSection = activeTab.getAttribute('data-code');
             let parentSection = tabsFilter.getAttribute('data-sect');
             url = '/catalog/' + parentSection + '/' + activeSection + '/';
         }
+        console.log(url);
          return url;
     }
 
