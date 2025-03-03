@@ -14,8 +14,24 @@ $this->setFrameMode(true);
 
 use \Bitrix\Main\Page\Asset;
 ?>
+
+<?php
+$ajax = false;
+if ($_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') $ajax = true;
+?>
+<div class="advert-tabs">
+    <a href="?tab=moderation" data-sect="moderation"
+       class="advert-tabs__item <?=($_GET['tab'] === 'moderation') ? 'active' : ''?>">
+        На модерации (<?=$arResult['COUNT_MOD']?>)
+    </a>
+    <a href="?tab=list" data-sect="list"
+       class="advert-tabs__item <?=($_GET['tab'] === 'list') ? 'active' : ''?>">
+        На исправлении у пользователя (<?=$arResult['COUNT_MOD_1']?>)
+    </a>
+</div>
+<?php if($ajax && isset($_GET['tab'])) {ob_end_clean();}?>
+
 <?php if (!empty($arResult['ITEMS'])): ?>
-    <?php $sectionCode = (!empty($arResult['SECTIONS'][$activeSect]['UF_SECTION_CODE'])) ? $arResult['SECTIONS'][$activeSect]['UF_SECTION_CODE'] : $arResult['SECTIONS'][$activeSect]['CODE']?>
     <div class="advert-list" data-iblock="<?= $arParams['IBLOCK_ID'] ?>">
         <?php foreach ($arResult["ITEMS"] as $arItem): ?>
             <?php
@@ -54,9 +70,14 @@ use \Bitrix\Main\Page\Asset;
                                 </div>
                                 <div class="">
                                     <label for="">Текст ошибки:</label>
-                                    <input type="text" class="custom-input" value="<?=$arItem['PROPERTIES']['MODERATION_ERROR']['VALUE']?>">
+                                    <?php if($_GET['tab'] !== 'list'):?>
+                                        <input type="text" class="custom-input" value="<?=$arItem['PROPERTIES']['MODERATION_ERROR']['VALUE']?>">
+                                    <?php else:?>
+                                        <span><?=$arItem['PROPERTIES']['MODERATION_ERROR']['VALUE']?> </span>
+                                    <?php endif;?>
                                 </div>
                             </div>
+                            <?php if($_GET['tab'] !== 'list'):?>
                             <div class="advert-item__info__right">
                                 <div class="advert-edit">
                                     <a href="#" class="advert-btn-post" data-action="success">
@@ -67,13 +88,13 @@ use \Bitrix\Main\Page\Asset;
                                     </a>
                                 </div>
                             </div>
+                            <?php endif;?>
                         </div>
                     </div>
                 </div>
             </div>
         <?php endforeach; ?>
     </div>
-
 <?php else: ?>
     <div class="advert-empty">
         <p class="advert-empty__text">Нет объявлений на модерации</p>
@@ -83,5 +104,6 @@ use \Bitrix\Main\Page\Asset;
 <?php if ($arParams["DISPLAY_BOTTOM_PAGER"]): ?>
     <br/><?= $arResult["NAV_STRING"] ?>
 <?php endif; ?>
+<?php if($ajax && isset($_GET['tab'])) {die();}?>
 
 

@@ -7,6 +7,18 @@ use Bitrix\Currency\CurrencyManager;
 
 ?>
 <?php
+$filterModeration = [
+    '!=PROPERTY_IS_MODERATION' => false,
+    'ACTIVE' => ''
+];
+$filterModeration1 = [
+    '=PROPERTY_IS_MODERATION' => false,
+    '!=PROPERTY_MODERATION_ERROR' => false,
+    'ACTIVE' => ''
+];
+$arResult['COUNT_MOD'] = \CIBlockElement::GetList([], $filterModeration, []);
+$arResult['COUNT_MOD_1'] = \CIBlockElement::GetList([], $filterModeration1, []);
+
 if (!empty($arResult['ITEMS'])) {
     //получение доступных валют и цен
     $allPrices = getItemPrices(array_column($arResult['ITEMS'], 'ID'));
@@ -30,8 +42,5 @@ if (!empty($arResult['ITEMS'])) {
         ])->fetch();
         $item['DETAIL_PAGE_URL'] = CIBlock::ReplaceDetailUrl($rsItems['DETAIL_PAGE_URL'], $rsItems, false, 'E');
     }
-
 }
-
-
 ?>

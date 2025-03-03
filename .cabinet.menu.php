@@ -25,10 +25,10 @@ $aMenuLinks = Array(
 	),
 	Array(
 		"Модерация " . '(' . $elementModCount . ')',
-		"/personal/moderation/", 
+		"/personal/moderation/?tab=moderation",
 		Array(), 
 		Array(), 
-		"CSite::InGroup(array(1))" 
+		"CSite::InGroup(array(1,9))"
 	),
 	Array(
 		"Личный счет", 

@@ -7,10 +7,21 @@ if (!$USER->isAuthorized()) {
     ?>
     <?php
     global $filterModeration;
-	$filterModeration = [
-		'!=PROPERTY_IS_MODERATION' => false,
-		'ACTIVE' => ''
-	];
+	if(isset($_GET['tab'])) {
+		if($_GET['tab'] == 'moderation' ){
+			$filterModeration = [
+				'!=PROPERTY_IS_MODERATION' => false,
+				'ACTIVE' => ''
+			];
+		} elseif ($_GET['tab'] === 'list') {
+			$filterModeration = [
+				'=PROPERTY_IS_MODERATION' => false,
+				'!=PROPERTY_MODERATION_ERROR' => false,
+				'ACTIVE' => ''
+			];
+		}
+	}
+
     ?>
     <?$APPLICATION->IncludeComponent(
 	"bitrix:news.list", 
