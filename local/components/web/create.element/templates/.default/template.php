@@ -49,18 +49,6 @@ $notShowLabel = ['PRICE_TYPE'];
                             )
                         );?>
                         <?php endif;?>
-                        <?php if((int)$arParams['SECTION_ID'] === SERVICES_SECTION_ID):?>
-                            <?$APPLICATION->IncludeComponent(
-                                "bitrix:main.include",
-                                "",
-                                Array(
-                                    "AREA_FILE_SHOW" => "file",
-                                    "AREA_FILE_SUFFIX" => "inc",
-                                    "EDIT_TEMPLATE" => "",
-                                    "PATH" => "/include/add_page/top_text_services.php"
-                                )
-                            );?>
-                        <?php endif;?>
                         <?php foreach ($arResult['SORT_SHOW_FIELDS'] as $key => $block): ?>
                             <?php $class = '';
                             $class .= ($key === $firstFieldKey) ? 'active' : '';
@@ -811,6 +799,16 @@ $notShowLabel = ['PRICE_TYPE'];
                                                 <div class="error-form">Необходимо заполнить
                                                     «Название товара/услуги»
                                                 </div>
+                                                <?php $APPLICATION->IncludeComponent(
+                                                    "bitrix:main.include",
+                                                    "",
+                                                    Array(
+                                                        "AREA_FILE_SHOW" => "file",
+                                                        "AREA_FILE_SUFFIX" => "inc",
+                                                        "EDIT_TEMPLATE" => "",
+                                                        "PATH" => "/include/add_page/services_search_text.php"
+                                                    )
+                                                );?>
                                             </div>
                                         </div>
                                     </div>
