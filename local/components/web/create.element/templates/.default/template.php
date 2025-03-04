@@ -797,6 +797,16 @@ $notShowLabel = ['PRICE_TYPE'];
                                                 <div class="error-form">Необходимо заполнить
                                                     «Название товара/услуги»
                                                 </div>
+                                                <?php $APPLICATION->IncludeComponent(
+                                                    "bitrix:main.include",
+                                                    "",
+                                                    Array(
+                                                        "AREA_FILE_SHOW" => "file",
+                                                        "AREA_FILE_SUFFIX" => "inc",
+                                                        "EDIT_TEMPLATE" => "",
+                                                        "PATH" => "/include/add_page/services_search_text.php"
+                                                    )
+                                                );?>
                                             </div>
                                         </div>
                                     </div>
