@@ -455,7 +455,6 @@ function initFilter() {
             }
             container.classList.remove("active");
         }
-        console.log(cntParamСontent.textContent);
     });
 
     $(".save-list-btn").on("click", function () {
@@ -525,7 +524,6 @@ function initFilter() {
     function previewFoundBrand() {
         foundBrandBlock.innerHTML = "";
         let text = document.querySelector('.found-brand').getAttribute('data-text');
-        console.log(getUrlForCatalog());
         let index = 0;
         for (const brand of popularDataFoundBrand) {
             let pathName = (getUrlForCatalog().length !== 0) ? getUrlForCatalog() : window.location.pathname;
@@ -684,7 +682,6 @@ function initFilter() {
             let parentSection = tabsFilter.getAttribute('data-sect');
             url = '/catalog/' + parentSection + '/' + activeSection + '/';
         }
-        console.log(url);
          return url;
     }
 
@@ -1046,7 +1043,6 @@ function initFilter() {
     function activeItems() {
         let activeItem = document.querySelectorAll(".store-active");
         activeItem.forEach((el) => {
-            console.log(el);
             el.querySelector(".choices__inner").classList.add("is-active");
         })
     }

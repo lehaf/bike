@@ -29,7 +29,8 @@ $this->addExternalJs(SITE_TEMPLATE_PATH . "/js/catalog/filter-action.js", ['GROU
 $sectCode = $arResult['SECTION']['CODE'];
 $price = $arResult['ITEMS']['BASE'];
 ?>
-<form action="#" id="filter" class="selection-block" method="get" data-sect="<?= $arResult['SECTION']['ID'] ?>"
+<div class="empty loading-state"></div>
+<form action="#" id="filter" class="selection-block" style="display: none" method="get" data-sect="<?= $arResult['SECTION']['ID'] ?>"
       data-filter="<?= $arParams['FILTER_NAME'] ?>">
     <div class="form-header">
         <div class="save-inner">
@@ -639,23 +640,26 @@ $price = $arResult['ITEMS']['BASE'];
             <!--                коробка-->
             <?php if (!empty($arResult['ITEMS']['transmission_' . $sectCode]['VALUES'])): ?>
                 <div class="form-row__col-30 <?= ($arResult['ITEMS']['transmission_' . $sectCode]['HAS_CHECKED']) ? 'store-active' : '' ?>">
-                    <div class="custom-select-inner form-group-custom-select">
-                        <div class="custom-select--multiple">
-                            <select name="<?= current($arResult['ITEMS']['transmission_' . $sectCode]['VALUES'])['CONTROL_NAME_ALT'] ?>"
-                                    id="transmission" multiple>
-                                <option placeholder>Коробка</option>
-                                <option value="reset">Любая</option>
-                                <?php foreach ($arResult['ITEMS']['transmission_' . $sectCode]['VALUES'] as $ar): ?>
-                                    <option
-                                            id="<?= $ar['CONTROL_ID'] ?>"
-                                            value="<?= $ar["HTML_VALUE_ALT"] ?>"
-                                        <?= ($ar["CHECKED"]) ? 'selected' : '' ?>
-                                    >
-                                        <?= $ar["VALUE"] ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
+                    <div class="form-row__col">
+                        <div class="custom-select-inner form-group-custom-select">
+                            <div class="custom-select--multiple">
+                                <select name="<?= current($arResult['ITEMS']['transmission_' . $sectCode]['VALUES'])['CONTROL_NAME_ALT'] ?>"
+                                        id="transmission" multiple>
+                                    <option placeholder>Коробка</option>
+                                    <option value="reset">Любая</option>
+                                    <?php foreach ($arResult['ITEMS']['transmission_' . $sectCode]['VALUES'] as $ar): ?>
+                                        <option
+                                                id="<?= $ar['CONTROL_ID'] ?>"
+                                                value="<?= $ar["HTML_VALUE_ALT"] ?>"
+                                            <?= ($ar["CHECKED"]) ? 'selected' : '' ?>
+                                        >
+                                            <?= $ar["VALUE"] ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
                         </div>
+
                     </div>
                 </div>
             <?php endif; ?>
@@ -948,7 +952,7 @@ $price = $arResult['ITEMS']['BASE'];
     </div>
 </form>
 <?php if (!$arResult['ITEMS']['MODEL']): ?>
-    <div class="found-brand" data-text="<?=(!empty($arResult['ITEMS']['MARK']) ? 'Все модели' : 'Все марки')?>">
+    <div class="found-brand" style="display: none" data-text="<?=(!empty($arResult['ITEMS']['MARK']) ? 'Все модели' : 'Все марки')?>">
         <div class="found-brand-content" data-brand="<?= ($arResult['ITEMS']['MARK']) ?: $arResult['SECTION']['ID'] ?>">
             <?php foreach ($arResult['FOUND_BRANDS'] as $brand): ?>
                 <div class="found-brand__el">

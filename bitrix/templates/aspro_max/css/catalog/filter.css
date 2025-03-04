@@ -2598,6 +2598,11 @@ body.no-scroll{
     overflow: visible;
 }
 
+.empty.loading-state {
+    position: relative;
+    height: 150px;
+}
+
 @media (min-width: 1270px) and (max-width: 1450px) {
   .choices:after,
   .choices[data-type*=select-one]:after{

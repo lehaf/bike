@@ -88,7 +88,6 @@ function  initMainForFilter() {
             endPrice.setAttribute("data-text", "USD");
             if (startPrice.value) {
                 let sumStart = startPrice.value.slice(0, -5);
-                console.log(sumStart)
                 startPrice.value = sumStart + ", " + "USD";
             }
             if (endPrice.value) {

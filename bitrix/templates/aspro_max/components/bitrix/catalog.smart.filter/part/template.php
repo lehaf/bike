@@ -29,8 +29,8 @@ $this->addExternalJs(SITE_TEMPLATE_PATH . "/js/catalog/filter-action.js", ['GROU
 $sectCode = $arResult['SECTION']['CODE'];
 $price = $arResult['ITEMS']['BASE'];
 ?>
-
-<form action="#" id="filter" class="selection-block" method="get" data-sect="<?= $arResult['SECTION']['ID'] ?>"
+<div class="empty loading-state"></div>
+<form action="#" id="filter" style="display: none" class="selection-block" method="get" data-sect="<?= $arResult['SECTION']['ID'] ?>"
       data-filter="<?= $arParams['FILTER_NAME'] ?>">
     <div class="form-header">
         <div class="save-inner">

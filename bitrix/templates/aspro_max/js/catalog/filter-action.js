@@ -18,9 +18,6 @@ $(document).on('ajaxSuccess', function (event, xhr, settings) {
         document.querySelector('.js-load-wrapper .found-brand')?.remove();
     }
 })
-//загрузка страницы (прелоудер)
-let container = document.querySelector('.container');
-if (container) container.classList.add('loading-state');
 document.addEventListener('DOMContentLoaded', () => {
    initAjaxFilter();
 })
@@ -28,6 +25,10 @@ document.addEventListener('DOMContentLoaded', () => {
 function initAjaxFilter() {
     let form = document.querySelector('#filter');
     let foundBrands = document.querySelector('.found-brand');
+    document.querySelector('.empty.loading-state')?.remove();
+    form.style.display = 'block';
+    foundBrands.style.display = 'block';
+
     if (form) {
         let filter = new AjaxFilter(form);
         let isTabsFilter = form.closest('.filter-tabs-content');
@@ -471,7 +472,6 @@ AjaxFilter.prototype.activeNotify = function (notifyCheck) {
 
 AjaxFilter.prototype.addSearch = function (searchBlock) {
     this.generateFilterUrl();
-    console.log(searchBlock.querySelector('.search-popup__parameters'));
     let ajaxParams = {
         action: "addSearch",
         title: searchBlock.querySelector('.search-popup__mark').innerText || '',

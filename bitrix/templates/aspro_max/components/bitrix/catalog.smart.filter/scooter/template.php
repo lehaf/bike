@@ -29,8 +29,9 @@ $this->addExternalJs(SITE_TEMPLATE_PATH . "/js/catalog/filter-action.js", ['GROU
 $sectCode = $arResult['SECTION']['CODE'];
 $price = $arResult['ITEMS']['BASE'];
 ?>
+<div class="empty loading-state"></div>
 
-<form action="#" id="filter" class="selection-block" method="get" data-sect="<?= $arResult['SECTION']['ID'] ?>"
+<form action="#" id="filter" style="display: none" class="selection-block" method="get" data-sect="<?= $arResult['SECTION']['ID'] ?>"
       data-filter="<?= $arParams['FILTER_NAME'] ?>">
     <div class="form-header">
         <div class="save-inner">
@@ -901,7 +902,7 @@ $price = $arResult['ITEMS']['BASE'];
 </form>
 
 <?php if (!$arResult['ITEMS']['MODEL']): ?>
-    <div class="found-brand" data-text="<?=(!empty($arResult['ITEMS']['MARK']) ? 'Все модели' : 'Все марки')?>">
+    <div class="found-brand" style="display: none" data-text="<?=(!empty($arResult['ITEMS']['MARK']) ? 'Все модели' : 'Все марки')?>">
         <div class="found-brand-content" data-brand="<?= ($arResult['ITEMS']['MARK']) ?: $arResult['SECTION']['ID'] ?>">
             <?php foreach ($arResult['FOUND_BRANDS'] as $brand): ?>
                 <div class="found-brand__el">
