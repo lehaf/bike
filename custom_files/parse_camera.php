@@ -3,7 +3,7 @@ ini_set('max_execution_time', 123456);
 
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
-$file = IOFactory::load("tireNew.csv");
+$file = IOFactory::load("camers.csv");
 
 $fileData = $file->getActiveSheet()->toArray();
 unset($fileData[0]);
@@ -23,48 +23,29 @@ if (!empty($fileData)) {
 
     $propsNames = [
         "status",
-        "producer_tire",
-        "tire_length",
-        "tire_height",
+        "producer_camera",
         "diameter",
-        "transport_type",
-        "category_tire",
-        "state"
+        "transport_type_camera",
+        "category_part",
+        "state_product"
     ];
 
     $propsListInfo = getPropsInfo($propsNames);
 
     if (!empty($data)) {
         foreach ($data as $key => &$value) {
-            $articles = array_column($value, 0);
-            $existElements = $class::getList([
-                'select' => ['exp_id_' => 'exp_id.VALUE'],
-                'filter' => ['exp_id.VALUE' => $articles]
-            ])->fetchAll();
-            $existElements = array_column($existElements, 'exp_id_');
-            $newElements = array_diff($articles, $existElements);
             foreach ($value as $brand => $item) {
                 $element = setElementsPropsFromParser($item, $propsListInfo);
-                if(in_array($element['fields']['exp_id'], $existElements)) {
-                    $elementId = $class::getList([
-                        'select' => ['ID'],
-                        'filter' => ['exp_id.VALUE' => $element['fields']['exp_id'], 'USER.VALUE' => 14]
-                    ])->fetch()['ID'];
-                    pr(['update' => $elementId]);
+                $newElement = createElement($element['fields'] ?? []);
+                pr(['newElem' => $newElement]);
 
-                    updatePrice($elementId, $element['product']);
-                } else {
-                    $newElement = createElement($element['fields'] ?? []);
-                    pr(['newElem' => $newElement]);
+                if (\Bitrix\Main\Loader::includeModule('sale') && $newElement["STATUS"] === "OK") {
+                    $catalogIblock = \Bitrix\Catalog\CatalogIblockTable::getList([
+                        'filter' => ['=IBLOCK_ID' => CATALOG_IBLOCK_ID],
+                    ])->fetchObject();
 
-                    if (\Bitrix\Main\Loader::includeModule('sale') && $newElement["STATUS"] === "OK") {
-                        $catalogIblock = \Bitrix\Catalog\CatalogIblockTable::getList([
-                            'filter' => ['=IBLOCK_ID' => CATALOG_IBLOCK_ID],
-                        ])->fetchObject();
-
-                        if ($catalogIblock) {
-                            $newProduct = createProduct($newElement["ID"], $element['product']);
-                        }
+                    if ($catalogIblock) {
+                        $newProduct = createProduct($newElement["ID"], $element['product']);
                     }
                 }
             }
@@ -123,24 +104,22 @@ function getPropsInfo(array $props): array
 function setElementsPropsFromParser($elem, array $propsInfo): array
 {
 
-    $tireSection = 10692;
+    $tireSection = 17689;
     $fields = [
         "NAME" => $elem[1],
-        "PREVIEW_PICTURE" => $elem[8],
-        "DETAIL_PICTURE" => $elem[8],
+        "PREVIEW_PICTURE" => $elem[6],
+        "DETAIL_PICTURE" => $elem[6],
         "DETAIL_TEXT_TYPE" => "html",
         "IBLOCK_SECTION_ID" => $tireSection,
 //        "MORE_PHOTO" => $images,
 
         "exp_id" => trim($elem[0]),
         "status" => trim($elem[3]),
-        "producer_tire" => trim($elem[4]),
-        "tire_length" => trim($elem[5]),
-        "tire_height" => trim($elem[6]),
-        "diameter" => trim($elem[7]),
-        "transport_type" => ["мотоцикл"],
-        "category_tire" => "продать",
-        "state" => "новая",
+        "producer_camera" => trim($elem[4]),
+        "diameter" => trim($elem[5]),
+        "transport_type_camera" => "мотоцикл",
+        "category_part" => "продать",
+        "state_product" => "новый",
         "BRAND" => 49865,
         "USER" => 14,
 
@@ -293,26 +272,6 @@ function createElement(array $data): array
     return $result ?? [];
 }
 
-function updatePrice (int $elementId, array $productInfo): void {
-
-    $existingPrice = \Bitrix\Catalog\PriceTable::getList([
-        'filter' => [
-            'PRODUCT_ID' => $elementId,
-            'CATALOG_GROUP_ID' => 1,
-        ],
-    ])->fetch();
-
-    $price = round($productInfo["PRICE"] * 1.02, 2);
-    if ($existingPrice) {
-        \Bitrix\Catalog\PriceTable::update($existingPrice['ID'], [
-            "PRICE" => $price,
-            "CURRENCY" => ($productInfo["CURRENCY"]) ?: 'BYN',
-            "PRICE_SCALE" => $price
-        ]);
-    }
-}
-
-
 function resizeImage(string $filePath): ?int
 {
     $arFile = \CFile::MakeFileArray($filePath);
@@ -392,5 +351,3 @@ function createProduct(int $elementId, array $productInfo): array
 
     return $result;
 }
-
-
