@@ -104,7 +104,6 @@ if (isset($_POST['action']) && isset($_POST['elementsId'])) {
             if ($_POST['action'] == 'active') {
                 $result += [
                     'statusText' => 'Опубликовано',
-                    'statusDesc' => 'На проверке у модератора',
                     'btnText' => 'На паузу'
                 ];
             }
@@ -130,7 +129,7 @@ if (isset($_POST['action']) && isset($_POST['elementsId'])) {
                     $updateRes = $element->SetPropertyValuesEx($elementId, false, ['LAST_RISE' => $dateCreate]);
                 }
 
-                $result = $errors ?? 'success';
+                $result = $errors ?? ['status' => 'success', 'date' => convertDate($dateCreate, true)];
             }
             break;
     }

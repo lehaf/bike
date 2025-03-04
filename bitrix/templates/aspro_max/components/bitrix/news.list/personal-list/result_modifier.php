@@ -127,7 +127,7 @@ if (!empty($arResult['ITEMS'])) {
         ])->fetch()['NAME_RU'];
 
         //получение даты добавления в виде "7 сентября"
-        $item['FORMAT_ACTIVE_FROM'] = convertDate($item['ACTIVE_FROM'] ?? $item['DATE_CREATE']);
+        $item['FORMAT_ACTIVE_FROM'] = convertDate($item['ACTIVE_FROM'] ?? $item['DATE_CREATE'], true);
 
         //количество дней в продаже
         $startDate = new DateTime($item['DATE_CREATE']);
@@ -166,15 +166,7 @@ if (!empty($arResult['ITEMS'])) {
                 $intervalDays = $currentDay->diff($lastRiseDate);
                 $daysDiff = $intervalDays->days;
 
-                if ($interval->invert === 1) { // Если дата последнего поднятия раньше текущей даты
-                    if ($daysDiff === 0) {
-                        $item['UP_DAYS'] = "сегодня";
-                    } elseif ($daysDiff === 1) {
-                        $item['UP_DAYS'] = "вчера";
-                    } else {
-                        $item['UP_DAYS'] = $daysDiff . ' ' . getPluralForm($daysDiff, ['день', 'дня', 'дней']) . ' ' . "назад";
-                    }
-                }
+                $item['UP_DAYS'] = convertDate($item['PROPERTIES']['LAST_RISE']['VALUE'], true);
             }
         }
 
