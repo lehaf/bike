@@ -18,8 +18,7 @@ if (!empty($fileData)) {
 //        $data[$brand][] = $row;
 //    }
 
-    unset($fileData['Камеры для мотоциклов']);
-    unset($fileData['Ободные ленты']);
+    $skipped = ['Камеры для мотоциклов', 'Ободные ленты'];
 
     $propsNames = [
         "status",
@@ -46,6 +45,7 @@ if (!empty($fileData)) {
 
 //    pr($fileData);
     foreach ($fileData as $item) {
+        if(in_array(trim($item[4]), $skipped)) {continue;}
         $element = setElementsPropsFromParser($item, $propsListInfo);
         if(in_array($element['fields']['exp_id'], $add)) {
             $newElement = createElement($element['fields'] ?? []);
