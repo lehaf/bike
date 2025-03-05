@@ -101,6 +101,12 @@ $arComponentParameters = [
             "NAME" => "Сыылка после добавления",
             "TYPE" => "STRING",
             "DEFAULT" => "/",
+        ],
+        "PERSONAL_LINK" => [
+            "PARENT" => "BASE",
+            "NAME" => "Сыылка на личный кабинет",
+            "TYPE" => "STRING",
+            "DEFAULT" => "/personal",
         ]
     ],
 ];

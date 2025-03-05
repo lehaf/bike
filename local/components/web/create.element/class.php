@@ -113,7 +113,6 @@ class CreateElement extends \CBitrixComponent
     {
         $this->userId = $this->getUserId();
         if (!$this->userId) {
-            $currentUrl = urlencode(Context::getCurrent()->getRequest()->getRequestUri());
             LocalRedirect($this->arParams['AUTH_LINK']);
             exit();
         }
@@ -123,6 +122,16 @@ class CreateElement extends \CBitrixComponent
             $this->requestData = $this->getRequestData();
             $this->elementId = $this->getElementId();
             $this->section = $this->getSection();
+
+            if($this->elementId) {
+                $iblockClass = \Bitrix\Iblock\Iblock::wakeUp($this->arParams["IBLOCK_ID"])->getEntityDataClass();
+                $element = $iblockClass::getByPrimary($this->elementId, ['select' => ['USER']])->fetchObject();
+
+                if($this->userId !== (int)$element->getUser()->getValue()) {
+                    LocalRedirect($this->arParams['PERSONAL_LINK']);
+                    exit();
+                }
+            }
 
             if ($this->arParams["IS_TEMPLATE_INCLUDE"] === "Y") {
                 if ($this->requestData['GET']['type']) {
