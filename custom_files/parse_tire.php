@@ -13,13 +13,13 @@ $class = \Bitrix\Iblock\Iblock::wakeUp(CATALOG_IBLOCK_ID)->getEntityDataClass();
 if (!empty($fileData)) {
     $data = [];
 
-    foreach ($fileData as &$row) {
-        $brand = $row[4];
-        $data[$brand][] = $row;
-    }
+//    foreach ($fileData as &$row) {
+//        $brand = $row[4];
+//        $data[$brand][] = $row;
+//    }
 
-    unset($data['Камеры для мотоциклов']);
-    unset($data['Ободные ленты']);
+    unset($fileData['Камеры для мотоциклов']);
+    unset($fileData['Ободные ленты']);
 
     $propsNames = [
         "status",
@@ -33,41 +33,52 @@ if (!empty($fileData)) {
     ];
 
     $propsListInfo = getPropsInfo($propsNames);
+    $articles = array_column($fileData, 0);
+    $existElements = $class::getList([
+        'select' => ['exp_id_' => 'exp_id.VALUE'],
+        'filter' => ['USER.VALUE' => 14]
+    ])->fetchAll();
+    $existElements = array_column($existElements, 'exp_id_');
 
-    if (!empty($data)) {
-        foreach ($data as $key => &$value) {
-            $articles = array_column($value, 0);
-            $existElements = $class::getList([
-                'select' => ['exp_id_' => 'exp_id.VALUE'],
-                'filter' => ['exp_id.VALUE' => $articles]
-            ])->fetchAll();
-            $existElements = array_column($existElements, 'exp_id_');
-            $newElements = array_diff($articles, $existElements);
-            foreach ($value as $brand => $item) {
-                $element = setElementsPropsFromParser($item, $propsListInfo);
-                if(in_array($element['fields']['exp_id'], $existElements)) {
-                    $elementId = $class::getList([
-                        'select' => ['ID'],
-                        'filter' => ['exp_id.VALUE' => $element['fields']['exp_id'], 'USER.VALUE' => 14]
-                    ])->fetch()['ID'];
-                    pr(['update' => $elementId]);
+    $update = array_intersect($articles, $existElements); //обновить элементы
+    $add = array_diff($articles, $existElements); // добавить новые
+    $delete = array_diff($existElements, $articles); // удалить
 
-                    updatePrice($elementId, $element['product']);
-                } else {
-                    $newElement = createElement($element['fields'] ?? []);
-                    pr(['newElem' => $newElement]);
+//    pr($fileData);
+    foreach ($fileData as $item) {
+        $element = setElementsPropsFromParser($item, $propsListInfo);
+        if(in_array($element['fields']['exp_id'], $add)) {
+            $newElement = createElement($element['fields'] ?? []);
+            pr(['newElem' => $newElement]);
 
-                    if (\Bitrix\Main\Loader::includeModule('sale') && $newElement["STATUS"] === "OK") {
-                        $catalogIblock = \Bitrix\Catalog\CatalogIblockTable::getList([
-                            'filter' => ['=IBLOCK_ID' => CATALOG_IBLOCK_ID],
-                        ])->fetchObject();
+            if (\Bitrix\Main\Loader::includeModule('sale') && $newElement["STATUS"] === "OK") {
+                $catalogIblock = \Bitrix\Catalog\CatalogIblockTable::getList([
+                    'filter' => ['=IBLOCK_ID' => CATALOG_IBLOCK_ID],
+                ])->fetchObject();
 
-                        if ($catalogIblock) {
-                            $newProduct = createProduct($newElement["ID"], $element['product']);
-                        }
-                    }
+                if ($catalogIblock) {
+                    $newProduct = createProduct($newElement["ID"], $element['product']);
                 }
             }
+        } else {
+            $elementId = $class::getList([
+                'select' => ['ID'],
+                'filter' => ['exp_id.VALUE' => $element['fields']['exp_id'], 'USER.VALUE' => 14]
+            ])->fetch()['ID'];
+
+            pr(['update' => $elementId]);
+            updateElement($elementId, $element);
+        }
+    }
+
+    if(!empty($delete)) {
+        $elementDelete = $class::getList([
+            'select' => ['ID'],
+            'filter' => ['exp_id.VALUE' => $delete]
+        ])->fetchAll();
+        foreach ($elementDelete as $item) {
+            pr(['delete' => $item['ID']]);
+            deleteElements($item['ID']);
         }
     }
 }
@@ -165,6 +176,29 @@ function convertElementFields(array $props, array $propsInfo): array
     $listProps = array_keys($propsInfo);
 
     foreach ($props as $propCode => &$propValue) {
+        if($propCode === 'tire_length') {
+            $values = [
+                '3' => '3.00',
+                '4' => '4.00',
+                '5' => '5.00',
+                '6' => '6.00',
+                '7' => '7.00',
+                '8' => '8.00',
+                '9' => '9.00',
+                '10' => '10.00',
+                '11' => '11.00',
+                '12' => '12.00',
+                '13' => '13.00',
+                '14' => '14.00',
+                '15' => '15.00',
+                '16' => '16.00',
+                '18' => '18.00',
+                '20' => '20.00',
+                '22' => '22.00',
+                '24' => '24.00',
+            ];
+            $propValue = ($values[$propValue]) ?: $propValue;
+        }
         if (in_array($propCode, $listProps)) {
             if (is_array($propValue)) {
                 $values = [];
@@ -293,25 +327,57 @@ function createElement(array $data): array
     return $result ?? [];
 }
 
-function updatePrice (int $elementId, array $productInfo): void {
+function updateElement (int $elementId, array $elementInfo): void {
+
+    $iblockClass = \Bitrix\Iblock\Iblock::wakeUp(CATALOG_IBLOCK_ID)->getEntityDataClass();
+    $element = $iblockClass::getByPrimary($elementId)->fetchObject();
+    $element->set('status', $elementInfo['fields']['status']);
+    $element->set('tire_length', $elementInfo['fields']['tire_length']);
+    $element->save();
+
+    $ipropValues = new \Bitrix\Iblock\InheritedProperty\ElementValues(CATALOG_IBLOCK_ID, $elementId);
+    $ipropValues->clearValues();
 
     $existingPrice = \Bitrix\Catalog\PriceTable::getList([
         'filter' => [
             'PRODUCT_ID' => $elementId,
             'CATALOG_GROUP_ID' => 1,
-        ],
+        ]
     ])->fetch();
 
-    $price = round($productInfo["PRICE"] * 1.02, 2);
+    $price = round($elementInfo['product']["PRICE"] * 1.02, 2);
     if ($existingPrice) {
         \Bitrix\Catalog\PriceTable::update($existingPrice['ID'], [
             "PRICE" => $price,
-            "CURRENCY" => ($productInfo["CURRENCY"]) ?: 'BYN',
+            "CURRENCY" => ($elementInfo['product']["CURRENCY"]) ?: 'BYN',
             "PRICE_SCALE" => $price
         ]);
     }
 }
 
+function deleteElements(int $elementId): void
+{
+    $delPhotos = [];
+    $iblockClass = \Bitrix\Iblock\Iblock::wakeUp(CATALOG_IBLOCK_ID)->getEntityDataClass();
+    $element = $iblockClass::getList([
+        'filter' => ['ID' => $elementId],
+        'select' => ['MORE_PHOTO', 'PREVIEW_PICTURE']
+    ])->fetchObject();
+
+    foreach ($element->getMorePhoto()->getAll() as $photo) {
+        $delPhotos[] = $photo->getValue();
+    }
+    $delPhotos[] = $element->getPreviewPicture();
+
+    if (!empty($delPhotos)) {
+        foreach ($delPhotos as $photo) {
+            \CFile::Delete($photo);
+        }
+    }
+
+    $element = new CIBlockElement;
+    $element->Delete($elementId);
+}
 
 function resizeImage(string $filePath): ?int
 {
