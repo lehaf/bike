@@ -90,7 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
         $('.custom-select-inner .choices__item--choice[data-id=1]').hide();
 
     }
-
+    
     function listenerSelect(el, select) {
         el.addEventListener(
             'change',
@@ -937,7 +937,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 let tagName = el.tagName.toLowerCase();
                 if (this.classList.contains("form-checked")) {
                     flag = checkFormButton(el);
-                    if (!flag) return false
                 } else if (!el.value || el.value === "0") {
                     flag = false;
                     if (tagName === "select") {
@@ -949,7 +948,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     let parent = el.closest(".form-col") || el.closest(".form-group");
                     parent.querySelector(".error-form")?.classList.add("show");
 
-                    return false
                 } else if (listCheck.length === i + 1) {
                     flag = true
                 }
@@ -1096,6 +1094,8 @@ document.addEventListener("DOMContentLoaded", () => {
             if (e.target.checked) {
                 inputPrice.style.display = "none";
                 inputPrice.querySelector('input').value = 1;
+                inputPrice.querySelector('input').classList.remove('error');
+                inputPrice.querySelector('.error-form')?.classList.remove('show');
             } else {
                 inputPrice.style.display = "block";
                 inputPrice.querySelector('input').value = "";
