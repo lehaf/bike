@@ -238,21 +238,23 @@
                 </div>
                 <div class="product-advert__stat">
                     <div class="product-statistics">
+                        <?php $allShow = (!empty($arItem['PROPERTIES']['SHOW_ALL']['VALUE'])) ? $arItem['PROPERTIES']['SHOW_ALL']['VALUE'] : 0?>
+                        <?php $phoneShow = (!empty($arItem['PROPERTIES']['SHOW_PHONE']['VALUE'])) ? $arItem['PROPERTIES']['SHOW_PHONE']['VALUE'] : 0?>
                         <div class="product-statistics__el">
-                            <div class="product-statistics__el-num">196</div>
-                            <div class="product-statistics__el-text">просмотров объявления</div>
+                            <div class="product-statistics__el-num"><?=number_format($allShow, 0, '.', ' ')?></div>
+                            <div class="product-statistics__el-text"><?=getPluralForm($allShow, ['просмотр', 'просмотра', 'просмотров'])?> объявления</div>
                         </div>
                         <div class="product-statistics__el">
-                            <div class="product-statistics__el-num">6 000</div>
-                            <div class="product-statistics__el-text">просмотров телефона</div>
+                            <div class="product-statistics__el-num"><?=number_format($phoneShow, 0, '.', ' ')?></div>
+                            <div class="product-statistics__el-text"><?=getPluralForm($phoneShow, ['просмотр', 'просмотра', 'просмотров'])?> телефона</div>
                         </div>
                         <div class="product-statistics__el">
-                            <div class="product-statistics__el-num">6</div>
+                            <div class="product-statistics__el-num"><?=$arItem['FAVORIT_COUNT']?></div>
                             <div class="product-statistics__el-text">пользователей добавлены в закладки</div>
                         </div>
                         <div class="product-statistics__el">
-                            <div class="product-statistics__el-num">6</div>
-                            <div class="product-statistics__el-text">дней в продаже</div>
+                            <div class="product-statistics__el-num"><?= $arItem['DIFF_DAYS'] ?></div>
+                            <div class="product-statistics__el-text"><?= getPluralForm((int)$arItem['DIFF_DAYS'], ['день', 'дня', 'дней']) ?> в продаже</div>
                         </div>
                     </div>
                 </div>
