@@ -394,7 +394,10 @@
                     <? $itemSubTitle = ob_get_clean(); ?>
 
                     <? ob_start(); ?>
-                    <?php $isPriceContract = (!empty($arItem['PROPERTIES']['contract_price']['VALUE'])); ?>
+                    <?php $isPriceContract = (!empty($arItem['PROPERTIES']['contract_price']['VALUE']));
+                    $priceFrom = $arItem['PROPERTIES']['price_from']['VALUE'];
+                    $priceArendaUnit = $arItem['PROPERTIES']['arenda_unit']['VALUE'];
+                    ?>
                     <?php if (!empty($arItem['PRICES_CUST'])): ?>
                         <div class="cost prices clearfix<?= $arParams['TYPE_VIEW_BASKET_BTN'] === 'TYPE_2' && !$bBigBlock ? ' prices--with_icons_block' : '' ?>">
                             <div class="price_matrix_wrapper prices-row">
@@ -404,7 +407,7 @@
                                         <?php if ($isPriceContract): ?>
                                             Договорная
                                         <?php else: ?>
-                                            <?= $arItem['PRICES_CUST']['BASE'] ?>
+                                            <?=(!empty($priceFrom)) ? 'от ' : ''?><?= $arItem['PRICES_CUST']['BASE'] ?><?=(!empty($priceArendaUnit)) ? ' / ' . mb_strtolower($priceArendaUnit) : ''?>
                                         <?php endif; ?>
                                     </span>
                                 </span>

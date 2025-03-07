@@ -961,7 +961,9 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']) + $offerPropCount;
                                                                     <?php if (!empty($arResult['PROPERTIES']['contract_price']['VALUE'])): ?>
                                                                         <?= Loc::getMessage("CONTRACT_PRICE") ?>
                                                                     <?php else: ?>
+                                                                        <?=(!empty($arResult['PROPERTIES']['price_from']['VALUE'])) ? 'от' : ''?>
                                                                         <?= $arResult['PRICES_CUST']['BASE'] ?>
+                                                                        <?=(!empty($arResult['PROPERTIES']['arenda_unit']['VALUE'])) ? ' / ' .  mb_strtolower($arResult['PROPERTIES']['arenda_unit']['VALUE']) : ''?>
                                                                     <?php endif; ?>
                                                                 </div>
                                                             </div>

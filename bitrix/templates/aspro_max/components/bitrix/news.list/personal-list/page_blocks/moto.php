@@ -135,7 +135,11 @@
                             <?php if (!empty($arItem['PRICES'])): ?>
                                 <div class="advert-price">
                                     <div class="advert-price__title">
-                                        <?= (!empty($arItem['PROPERTIES']['contract_price']['VALUE'])) ? "Договорная" : $arItem['PRICES']['BASE'] ?>
+                                        <?php if(!empty($arItem['PROPERTIES']['contract_price']['VALUE'])):?>
+                                            Договорная
+                                        <?php else:?>
+                                            <?=(!empty($arItem['PROPERTIES']['price_from']['VALUE'])) ? 'от ' : ''?><?= $arItem['PRICES']['BASE']?><?=(!empty($arItem['PROPERTIES']['arenda_unit']['VALUE'])) ? ' / ' . mb_strtolower($arItem['PROPERTIES']['arenda_unit']['VALUE']) : ''?>
+                                        <?php endif;?>
                                     </div>
                                     <?php if (empty($arItem['PROPERTIES']['contract_price']['VALUE'])): ?>
                                         <div class="advert-price-list">

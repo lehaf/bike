@@ -87,7 +87,7 @@ if ($_GET['type']) {
 
 
     if($arResult['SORT_SHOW_FIELDS']['PRICE']) {
-        $priceTypes = ['auction', 'exchange', 'contract_price'];
+        $priceTypes = ['auction', 'exchange', 'contract_price', 'price_from'];
         $arResult['SORT_SHOW_FIELDS']['PRICE']['PRICE_TYPE_ROW'] = array_filter($arResult['SORT_SHOW_FIELDS']['PRICE']['FIELDS'], function($value) use ($priceTypes) {
             return getPriceType($value, $priceTypes);
         });

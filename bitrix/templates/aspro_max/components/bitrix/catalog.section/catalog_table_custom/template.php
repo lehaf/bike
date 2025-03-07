@@ -465,7 +465,9 @@ $bColProps = $arParams['SHOW_PROPS_TABLE'] == 'cols';
                                                 </div>
                                             <?php endif; ?>
                                             <?php if (!empty($arItem['PRICES_CUST'])): ?>
-                                                <?php $isPriceContract = (!empty($arItem['PROPERTIES']['contract_price']['VALUE'])); ?>
+                                                <?php $isPriceContract = (!empty($arItem['PROPERTIES']['contract_price']['VALUE']));
+                                                $priceFrom = $arItem['PROPERTIES']['price_from']['VALUE'];
+                                                $priceArendaUnit = $arItem['PROPERTIES']['arenda_unit']['VALUE'];?>
                                                 <div class="item-price">
                                                     <div class="cost prices clearfix">
                                                         <div class="price_matrix_wrapper ">
@@ -476,7 +478,7 @@ $bColProps = $arParams['SHOW_PROPS_TABLE'] == 'cols';
                                                                     <?php if ($isPriceContract): ?>
                                                                         Договорная
                                                                     <?php else: ?>
-                                                                        <?= $arItem['PRICES_CUST']['BASE'] ?>
+                                                                        <?=(!empty($priceFrom)) ? 'от ' : ''?><?= $arItem['PRICES_CUST']['BASE'] ?><?=(!empty($priceArendaUnit)) ? ' / ' . mb_strtolower($priceArendaUnit) : ''?>
                                                                     <?php endif; ?>
                                                                 </span>
                                                             </span>
