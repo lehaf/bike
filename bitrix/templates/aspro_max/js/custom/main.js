@@ -969,6 +969,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (flag) {
             parent.next().show();
+            let textarea =  parent.next().find('.custom-textarea');
+            if(textarea.length !== 0) {
+                let paddingTop = parseInt(textarea.css('padding-top'), 10);
+                let paddingBottom = parseInt(textarea.css('padding-bottom'), 10);
+                textarea.height(textarea[0].scrollHeight - paddingBottom - paddingTop);
+            }
+
             $(this).remove()
         }
     }

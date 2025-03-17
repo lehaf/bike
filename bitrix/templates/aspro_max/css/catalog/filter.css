@@ -799,6 +799,7 @@ input[type="radio"] {
     border-color: #ed1c24;
 }
 
+
 .custom-textarea {
     min-height: 125px;
     width: 100%;
@@ -808,6 +809,7 @@ input[type="radio"] {
     background: #fafafa;
     resize: none;
     transition: .3s;
+    box-sizing: border-box;
 }
 
 textarea.custom-textarea:focus {
@@ -819,7 +821,7 @@ textarea.custom-textarea:focus {
     width: calc(100% - 2px);
     left: 1px;
     right: 0;
-    bottom: 6px;
+    bottom: 1px;
     padding: 0 30px 20px 0;
     display: flex;
     justify-content: flex-end;
@@ -1372,7 +1374,7 @@ input[type="file"] {
     }
 
     .custom-textarea {
-        height: 149px;
+        height: 200px !important;
     }
 
     .form-row-radio-block {
@@ -2197,7 +2199,7 @@ input[type="file"] {
         column-count: 2;
     }
 
-    .step-form__inner .form-row-checkbox {
+    .step-form__inner .form-group .form-row-checkbox {
         column-count: 2;
     }
 
