@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
     $(".custom-input").on('input', function () {
         this.classList.remove("error");
         let parent = this.closest('.form-group');
-        if(this.id === 'power') {
+        if(this.id === 'power' || this.id === 'height' || this.id === 'length') {
             parent = this.closest('.form-col');
         }
         parent.querySelector('.error-form')?.classList.remove('show');
