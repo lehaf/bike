@@ -232,7 +232,7 @@ if (!empty($arResult['ITEMS'])){
         //получение города
         $arItem['CITY'] = getElementCity((int)$arItem['PROPERTIES']['country']['VALUE']);
 
-        $arItem['ACTIVE_ELEMENT_FROM'] = convertDate($arItem['ACTIVE_FROM'] ?? $arItem['DATE_CREATE'], true);
+        $arItem['ACTIVE_ELEMENT_FROM'] = convertDate($arItem['DATE_CREATE'], true);
 
         $itemPrices = $allPrices['prices'][$arItem['ID']];
         if ($itemPrices) {

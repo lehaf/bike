@@ -408,6 +408,10 @@ if ($_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') $ajax = true;
                                     <? $itemSaBlock = ob_get_clean(); ?>
 
                                     <? ob_start(); ?>
+                                    <div class="item-card-location__data"><?=$arItem['ACTIVE_ELEMENT_FROM']?></div>
+                                    <? $itemDate = ob_get_clean(); ?>
+
+                                    <? ob_start(); ?>
                                     <div class="item-title">
                                         <a href="<?= $arItem["DETAIL_PAGE_URL"] ?>"
                                            class="<?= $bBigBlock && $bFonImg ? '' : 'dark_link' ?> js-notice-block__title option-font-bold font_sm"><span><?= $elementName; ?></span></a>
@@ -727,6 +731,7 @@ if ($_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') $ajax = true;
                                                             <?= $itemTitle ?>
                                                             <?= $itemSubTitle ?>
                                                             <?= $itemSaBlock ?>
+                                                            <?= $itemDate ?>
                                                         </div>
                                                         <div class="item_info--bottom_block">
                                                             <?= $itemPrice ?>
