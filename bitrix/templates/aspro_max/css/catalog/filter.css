@@ -773,6 +773,7 @@ input[type="radio"] {
     min-height: 21px;
     transition: .3s;
     cursor: pointer;
+    break-inside: avoid;
 }
 
 .checkbox-label:before {
