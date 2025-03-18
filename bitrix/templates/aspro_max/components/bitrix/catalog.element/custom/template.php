@@ -694,7 +694,7 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']) + $offerPropCount;
                                                       fill="#666666"/>
                                             </svg>
                                             <div class="_info-product_el__text">
-                                                <?= $arResult['PROPERTIES']['exp_id']['VALUE'] ?>
+                                                Артикул: <?= $arResult['PROPERTIES']['exp_id']['VALUE'] ?>
                                             </div>
                                         </div>
                                     </div>

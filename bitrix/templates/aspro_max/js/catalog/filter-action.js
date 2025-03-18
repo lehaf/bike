@@ -27,7 +27,7 @@ function initAjaxFilter() {
     let foundBrands = document.querySelector('.found-brand');
     document.querySelector('.empty.loading-state')?.remove();
     form.style.display = 'block';
-    foundBrands.style.display = 'block';
+    if(foundBrands) foundBrands.style.display = 'block';
 
     if (form) {
         let filter = new AjaxFilter(form);
@@ -389,6 +389,7 @@ AjaxFilter.prototype.submit = function () {
         }, {});
 
     let url = this.generateUrl();
+    console.log(url)
     let catalog = document.querySelector('.inner_wrapper');
     if(catalog) catalog.classList.add('loading-state');
 

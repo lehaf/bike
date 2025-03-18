@@ -739,7 +739,7 @@ input[type="radio"] {
 #filter .form-row-checkbox {
     display: flex;
     flex-wrap: wrap;
-    gap: 15px;
+    /*gap: 15px;*/
     max-height: 260px;
 }
 
@@ -1374,7 +1374,7 @@ input[type="file"] {
     }
 
     .custom-textarea {
-        height: 200px !important;
+        height: 300px !important;
     }
 
     .form-row-radio-block {
@@ -2368,7 +2368,7 @@ input[type="file"] {
   .form-row-checkbox--selection.form-row-checkbox{
     max-height: initial;
     flex-direction: row;
-    gap: 10px 4.5%;
+    /*gap: 10px 4.5%;*/
   }
 }
 
