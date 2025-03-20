@@ -259,9 +259,9 @@
                     </div>
                 </div>
             <?php endforeach; ?>
-            <?php if ($ajax === true && $_GET['subsection']) {
-                die();
-            } ?>
+<!--            --><?php //if ($ajax === true && $_GET['subsection']) {
+//                die();
+//            } ?>
         </div>
     </div>
 </div>

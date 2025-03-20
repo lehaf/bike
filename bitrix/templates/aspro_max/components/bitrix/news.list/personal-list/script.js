@@ -22,6 +22,13 @@ document.addEventListener('DOMContentLoaded', () => {
             );
         let symbol = (params[''] === 'undefined') ? '?' : '&';
 
+        let exportBtn = document.querySelector('.export-link');
+        exportBtn?.addEventListener('click', (event) => {
+            event.preventDefault();
+            ajaxExport(exportBtn.href);
+        });
+
+
         setTabs();
         setItems();
         setMenuItems();
@@ -302,6 +309,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }).catch((error) => console.log(error));
     }
 
+    function ajaxExport(url) {
+        fetch(url, {
+            method: 'GET',
+            headers: {'X-Requested-With': 'XMLHttpRequest'}
+        }).then(res => {
+            return res.text();
+        }).then(data => {
+            console.log(data)
+        }).catch((error) => console.log(error));
+    }
+
     function templateStatusPause(text, desc) {
         return `<div class="advert-item__status__content__btn">
                             <svg width="6" height="6" viewBox="0 0 6 6" fill="none"
@@ -502,8 +520,12 @@ document.addEventListener('DOMContentLoaded', () => {
             let tmpDiv = document.createElement('div');
             tmpDiv.innerHTML = data;
             let newPagination = tmpDiv.querySelector('.module-pagination');
-            let newItems = tmpDiv.querySelectorAll('.product-advert__item');
-            listBlock.innerHTML = data;
+            tmpDiv.querySelector('.module-pagination')?.remove();
+            listBlock.innerHTML = tmpDiv.innerHTML;
+
+            let container = document.querySelector('.container');
+            container.querySelector('.module-pagination')?.remove();
+            if(newPagination)container.appendChild(newPagination);
             document.querySelector('.product-block').removeAttribute('style');
             setItems();
             upperAds();
