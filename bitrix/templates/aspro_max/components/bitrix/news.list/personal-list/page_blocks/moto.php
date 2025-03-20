@@ -65,7 +65,7 @@
 
                             <?php if(!empty($arItem['PROPERTIES']['MODERATION_ERROR']['VALUE']) && empty($arItem['PROPERTIES']['IS_MODERATION']['VALUE'])):?>
                                 <div class="advert-mod-error">
-                                    <span>Ошибка модерации:</span> <?=$arItem['PROPERTIES']['MODERATION_ERROR']['VALUE']?>
+                                    <span>Не прошло модерацию:</span> <?=$arItem['PROPERTIES']['MODERATION_ERROR']['VALUE']?>
                                 </div>
                             <?php endif;?>
 
