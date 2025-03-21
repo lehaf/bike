@@ -73,15 +73,15 @@ if (!empty($arResult['ITEMS'])) {
     $allPrices = getItemPrices(array_column($arResult['ITEMS'], 'ID'));
     foreach ($arResult['ITEMS'] as &$item) {
 
-        if ((int)$_GET['section'] === SERVICES_SECTION_ID) {
-            $nameParts = explode('|', $item['NAME']); // Разделяем по запятой
-
-            if (count($nameParts) > 1) {
-                $name = trim($nameParts[1]);
-                $fc = mb_strtoupper(mb_substr($name, 0, 1));
-                $item['NAME'] = $fc . mb_substr($name, 1);; // Преобразуем вторую часть
-            }
-        }
+//        if ((int)$_GET['section'] === SERVICES_SECTION_ID) {
+//            $nameParts = explode('|', $item['NAME']); // Разделяем по запятой
+//
+//            if (count($nameParts) > 1) {
+//                $name = trim($nameParts[1]);
+//                $fc = mb_strtoupper(mb_substr($name, 0, 1));
+//                $item['NAME'] = $fc . mb_substr($name, 1);; // Преобразуем вторую часть
+//            }
+//        }
 
         //получение ссылки на детальную страницу
         $rsItems = \Bitrix\Iblock\ElementTable::getList([

@@ -1600,7 +1600,7 @@ if('TYPE_1' == $arParams['TYPE_SKU'] && $arResult['OFFERS']){
 }
 
 if($arResult['PROPERTIES']['country']['VALUE']) $arResult['CITY'] = getElementCity($arResult['PROPERTIES']['country']['VALUE']);
-if($arResult["DATE_ACTIVE_FROM"]) $arResult['ACTIVE_FROM_DATE'] = convertDate($arResult["DATE_ACTIVE_FROM"]);
+if($arResult["DATE_ACTIVE_FROM"]) $arResult['ACTIVE_FROM_DATE'] = convertDate($arResult["PROPERTIES"]["LAST_RISE"]["VALUE"], true);
 
 $arResult['COMPLECT_PROPERTY'] = array_values(array_filter($arResult['DISPLAY_PROPERTIES'], function ($key) {
 	return strpos($key, 'complect_') !== false;

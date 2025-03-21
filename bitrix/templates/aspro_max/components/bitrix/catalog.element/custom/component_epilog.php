@@ -6,7 +6,6 @@ use Bitrix\Main\Loader,
     Bitrix\Main\Localization\Loc;
 
 global $arTheme, $arRegion;
-
 $arBlockOrder = explode(",", $arParams["DETAIL_BLOCKS_ORDER"]);
 $arTabOrder = explode(",", $arParams["DETAIL_BLOCKS_TAB_ORDER"]);
 
@@ -858,9 +857,6 @@ if ($bShowPropsTab && $arParams["PROPERTIES_DISPLAY_LOCATION"] != "TAB")
     <? elseif ($code == 'desc' && $bShowDetailTextTab): ?>
         <? if ($bShowDetailText): ?>
             <div class="ordered-block <?= $code ?>">
-                <div class="ordered-block__title option-font-bold font_lg">
-                    <?= ($arParams["T_DESC"] ? $arParams["T_DESC"] : Loc::getMessage("T_DESC")); ?>
-                </div>
                 <? $APPLICATION->ShowViewContent('PRODUCT_DETAIL_TEXT_INFO') ?>
             </div>
         <? endif; ?>

@@ -1195,13 +1195,18 @@ $iCountProps = count($arResult['DISPLAY_PROPERTIES']) + $offerPropCount;
 <? if ($arResult['DETAIL_TEXT'] || $bOfferDetailText || !empty($arResult['LOCATION_PROPERTY'])): ?>
     <? $templateData['DETAIL_TEXT'] = true; ?>
     <? $this->SetViewTarget('PRODUCT_DETAIL_TEXT_INFO'); ?>
-    <div class="content detail-text-wrap" itemprop="description">
-        <? if ($bOfferDetailText): ?>
-            <?= $arCurrentSKU["DETAIL_TEXT"]; ?>
-        <? else: ?>
-            <?= $arResult['DETAIL_TEXT']; ?>
-        <? endif; ?>
-    </div>
+    <?php if (!empty($arResult['DETAIL_TEXT'])): ?>
+        <div class="ordered-block__title option-font-bold font_lg">
+            <?= ($arParams["T_DESC"] ? $arParams["T_DESC"] : Loc::getMessage("T_DESC")); ?>
+        </div>
+        <div class="content detail-text-wrap" itemprop="description">
+            <? if ($bOfferDetailText): ?>
+                <?= $arCurrentSKU["DETAIL_TEXT"]; ?>
+            <? else: ?>
+                <?= $arResult['DETAIL_TEXT']; ?>
+            <? endif; ?>
+        </div>
+    <?php endif; ?>
 
     <?php if (!empty($arResult['LOCATION_PROPERTY'])): ?>
         <div class="ordered-block__title option-font-bold font_lg" style="margin-top: 45px">Мы на карте</div>
