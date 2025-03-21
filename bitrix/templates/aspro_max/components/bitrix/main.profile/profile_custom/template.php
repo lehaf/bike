@@ -122,14 +122,14 @@ list($bPhoneAuthSupported, $bPhoneAuthShow, $bPhoneAuthRequired, $bPhoneAuthUse)
 						</div>
 					</div>
 				<?else:?>
-					<div class="form-control">
-						<div class="wrap_md">
-							<div class="iblock label_block">
-								<label><?=GetMessage("PERSONAL_LASTNAME")?></label>
-								<input type="text" name="LAST_NAME" maxlength="50" value="<?=$arResult["arUser"]["LAST_NAME"];?>" />
-							</div>
-						</div>
-					</div>
+<!--					<div class="form-control">-->
+<!--						<div class="wrap_md">-->
+<!--							<div class="iblock label_block">-->
+<!--								<label>--><?php //=GetMessage("PERSONAL_LASTNAME")?><!--</label>-->
+<!--								<input type="text" name="LAST_NAME" maxlength="50" value="--><?php //=$arResult["arUser"]["LAST_NAME"];?><!--" />-->
+<!--							</div>-->
+<!--						</div>-->
+<!--					</div>-->
 					<div class="form-control">
 						<div class="wrap_md">
 							<div class="iblock label_block">
@@ -138,14 +138,14 @@ list($bPhoneAuthSupported, $bPhoneAuthShow, $bPhoneAuthRequired, $bPhoneAuthUse)
 							</div>
 						</div>
 					</div>
-					<div class="form-control">
-						<div class="wrap_md">
-							<div class="iblock label_block">
-								<label><?=GetMessage("PERSONAL_SECONDNAME")?></label>
-								<input type="text" name="SECOND_NAME" maxlength="50" value="<?=$arResult["arUser"]["SECOND_NAME"];?>" />
-							</div>
-						</div>
-					</div>
+<!--					<div class="form-control">-->
+<!--						<div class="wrap_md">-->
+<!--							<div class="iblock label_block">-->
+<!--								<label>--><?php //=GetMessage("PERSONAL_SECONDNAME")?><!--</label>-->
+<!--								<input type="text" name="SECOND_NAME" maxlength="50" value="--><?php //=$arResult["arUser"]["SECOND_NAME"];?><!--" />-->
+<!--							</div>-->
+<!--						</div>-->
+<!--					</div>-->
 				<?endif;?>
 				<div class="form-control">
 					<div class="wrap_md">

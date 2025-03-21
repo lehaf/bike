@@ -375,7 +375,10 @@
                     <? $itemSaBlock = ob_get_clean(); ?>
 
                     <? ob_start(); ?>
-                    <div class="item-card-location__data"><?=$arItem['ACTIVE_ELEMENT_FROM']?></div>
+                    <div class="item-card-location">
+                        <div class="item-card-location__city"><?=$arItem['CITY']?></div>
+                        <div class="item-card-location__data"><?=$arItem['ACTIVE_ELEMENT_FROM']?></div>
+                    </div>
                     <? $itemDate = ob_get_clean(); ?>
 
                     <? ob_start(); ?>

@@ -233,7 +233,8 @@ if (!empty($arResult['ITEMS'])){
 	$arNewItemsList = array();
 	foreach ($arResult['ITEMS'] as $key => $arItem)
 	{
-        $arItem['ACTIVE_ELEMENT_FROM'] = convertDate($arItem['DATE_CREATE'], true);
+        $arItem['ACTIVE_ELEMENT_FROM'] = convertDate($arItem['PROPERTIES']['LAST_RISE']['VALUE'], true);
+        $arItem['CITY'] = getElementCity((int)$arItem['PROPERTIES']['country']['VALUE']);
 
         //конвертация цены
         $itemPrices = $allPrices['prices'][$arItem['ID']];

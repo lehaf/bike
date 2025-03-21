@@ -16,7 +16,7 @@ use \Bitrix\Main\Config\Option;
 <?if(!$USER->IsAuthorized()):?>
 	<?
 	// default fields, that you can change
-	$arShowFields = array("LOGIN", "LAST_NAME", "NAME", "SECOND_NAME", "EMAIL", "PERSONAL_PHONE");
+	$arShowFields = array("LOGIN", "NAME", "EMAIL", "PERSONAL_PHONE");
 	$arRequiredFields = array("NAME");
 	$useBackUrl = 'Y';
 

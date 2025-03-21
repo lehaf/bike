@@ -2,7 +2,7 @@
 $MESS ['PERSONAL_DATA'] = "Персональные данные";
 $MESS ["PERSONAL_EMAIL"] = "E-mail";
 $MESS ["PERSONAL_LOGIN"] = "Логин";
-$MESS ["PERSONAL_NAME"] = "Имя";
+$MESS ["PERSONAL_NAME"] = "Имя продавца / Название организации";
 $MESS ["PERSONAL_FIO"] = "Имя продавца / Название организации";
 $MESS ["PERSONAL_LOCATION"] = "Местоположение";
 $MESS ["PERSONAL_LASTNAME"] = "Фамилия";
