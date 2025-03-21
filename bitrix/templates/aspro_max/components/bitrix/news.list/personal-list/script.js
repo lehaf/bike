@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function checkedAllItems () {
         let checkAllProducts = document.querySelector('#all-product-2');
-        let itemCheck = document.querySelectorAll('input.product-check');
+        let itemCheck = document.querySelectorAll('input.product-check:not([disabled])');
         if (checkAllProducts) {
             checkAllProducts.addEventListener('change', (event) => {
                 let isChecked = checkAllProducts.checked;

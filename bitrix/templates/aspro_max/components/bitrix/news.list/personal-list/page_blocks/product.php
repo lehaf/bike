@@ -76,7 +76,9 @@
                      data-id="<?= $arItem['ID'] ?>">
                     <div class="product-advert-check">
                         <input type="checkbox" id="product-<?= $arItem['ID'] ?>" class="product-check"
-                               data-id="<?= $arItem['ID'] ?>">
+                               data-id="<?= $arItem['ID'] ?>"
+                               <?=(!empty($arItem['PROPERTIES']['IS_MODERATION']['VALUE']) || !empty($arItem['PROPERTIES']['MODERATION_ERROR']['VALUE'])) ? 'disabled' : ''?>
+                        >
                         <label class="all-product-label" for="product-<?= $arItem['ID'] ?>"></label>
                     </div>
                     <div class="product-item-content">
