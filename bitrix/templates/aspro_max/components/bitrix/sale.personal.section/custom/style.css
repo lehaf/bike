@@ -77,3 +77,13 @@
   display: flex;
   flex-flow: row wrap;
 }
+
+.accent-text {
+  font-size: 1.1rem;
+  font-weight: 600;
+  width: fit-content;
+  padding: 10px 20px;
+  margin-bottom: 15px;
+  border-radius: 20px;
+  background: #ffebeb;
+}

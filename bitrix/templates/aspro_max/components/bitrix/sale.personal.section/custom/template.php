@@ -145,7 +145,11 @@ if (empty($availablePages)) {
     ShowError(Loc::getMessage("SPS_ERROR_NOT_CHOSEN_ELEMENT"));
 } else {
     ?>
-
+    <?php   $cabinetNumber = \Bitrix\Main\UserTable::getList([
+        'select' => ['UF_CABINET_NUMBER'],
+        'filter' => ['=ID' => \Bitrix\Main\Engine\CurrentUser::get()->getId()],
+    ])->fetch()['UF_CABINET_NUMBER'];?>
+    <div class="accent-text">Кабинет №<?=$cabinetNumber?></div>
     <div class="personal_wrapper">
         <div class="row sale-personal-section-row-flex">
             <?
