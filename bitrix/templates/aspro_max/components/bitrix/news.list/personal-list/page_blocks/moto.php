@@ -16,6 +16,10 @@
                         <div class="advert-item__info__left">
                             <a href="/<?= $arItem['DETAIL_PAGE_URL'] ?>"
                                class="advert-item__title"><?= $arItem['NAME'] ?></a>
+                            <?php if((int)$arResult['SECTIONS'][$activeSect]['ID'] === RENT_SECTION_ID):?>
+                            <p class="font_xs"><?=$arItem['SECTION_NAME']?></p>
+                            <?php endif;?>
+
 <!--                            --><?php //if((int)$arResult['SECTIONS'][$activeSect]['ID'] === SERVICES_SECTION_ID):?>
 <!--                                <p class="font_xs">--><?php //=$arItem['SECTIONS_CHAIN']?><!--</p>-->
 <!--                            --><?php //endif;?>
