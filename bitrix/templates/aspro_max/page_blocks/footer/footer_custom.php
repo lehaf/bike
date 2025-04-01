@@ -191,3 +191,14 @@ $bPrintButton = isset($arTheme['PRINT_BUTTON']) ? ($arTheme['PRINT_BUTTON']['VAL
 		</div>
 	</div>
 </div>
+<?php if (\Bitrix\Main\Engine\CurrentUser::get()->getId()): ?>
+    <script>
+        (function (w, d, u) {
+            var s = d.createElement('script');
+            s.async = true;
+            s.src = u + '?' + (Date.now() / 60000 | 0);
+            var h = d.getElementsByTagName('script')[0];
+            h.parentNode.insertBefore(s, h);
+        })(window, document, 'https://cdn-ru.bitrix24.by/b239605/crm/site_button/loader_9_kngxn7.js');
+    </script>
+<?php endif; ?>
